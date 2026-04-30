@@ -44,6 +44,15 @@ interface Translations {
     title: string
     upcoming: string
     dateTbd: string
+    stats: {
+      wins: string
+      draws: string
+      losses: string
+      goalsFor: string
+      goalsAgainst: string
+      played: string
+      goalDifference: string
+    }
   }
   contact: {
     title: string
@@ -114,6 +123,15 @@ const translations: Record<Language, Translations> = {
       title: "MATCHES",
       upcoming: "Upcoming",
       dateTbd: "Date TBD",
+      stats: {
+        wins: "Wins",
+        draws: "Draws",
+        losses: "Losses",
+        goalsFor: "Goals For",
+        goalsAgainst: "Goals Against",
+        played: "Played",
+        goalDifference: "Goal Difference",
+      }
     },
     contact: {
       title: "GET IN TOUCH",
@@ -182,6 +200,15 @@ const translations: Record<Language, Translations> = {
       title: "ম্যাচসমূহ",
       upcoming: "আসন্ন",
       dateTbd: "তারিখ পরে জানানো হবে",
+      stats: {
+        wins: "জয়",
+        draws: "ড্র",
+        losses: "হার",
+        goalsFor: "গোল করা",
+        goalsAgainst: "গোল খাওয়া",
+        played: "খেলা হয়েছে",
+        goalDifference: "গোল পার্থক্য",
+      }
     },
     contact: {
       title: "যোগাযোগ করুন",

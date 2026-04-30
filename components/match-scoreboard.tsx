@@ -54,6 +54,28 @@ export function MatchScoreboard() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
+  // Calculate team statistics
+  const stats = {
+    played: scoreboardMatches.length,
+    wins: scoreboardMatches.filter(m => 
+      (m.home === "Titan Force" && m.homeScore > m.awayScore) ||
+      (m.away === "Titan Force" && m.awayScore > m.homeScore)
+    ).length,
+    draws: scoreboardMatches.filter(m => m.homeScore === m.awayScore).length,
+    losses: scoreboardMatches.filter(m =>
+      (m.home === "Titan Force" && m.homeScore < m.awayScore) ||
+      (m.away === "Titan Force" && m.awayScore < m.homeScore)
+    ).length,
+    goalsFor: scoreboardMatches.reduce((acc, m) => {
+      return acc + (m.home === "Titan Force" ? m.homeScore : m.awayScore)
+    }, 0),
+    goalsAgainst: scoreboardMatches.reduce((acc, m) => {
+      return acc + (m.home === "Titan Force" ? m.awayScore : m.homeScore)
+    }, 0),
+  }
+
+  stats.goalDifference = stats.goalsFor - stats.goalsAgainst
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -95,7 +117,112 @@ export function MatchScoreboard() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Wins Card */}
+          <div
+            className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "0ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-5xl text-green-500 mb-2">
+                {stats.wins}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "জয়" : "Wins"}
+              </div>
+            </div>
+          </div>
+
+          {/* Draws Card */}
+          <div
+            className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "100ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-5xl text-yellow-500 mb-2">
+                {stats.draws}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "ড্র" : "Draws"}
+              </div>
+            </div>
+          </div>
+
+          {/* Losses Card */}
+          <div
+            className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "200ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-5xl text-red-500 mb-2">
+                {stats.losses}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "হার" : "Losses"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Goals Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Goals For */}
+          <div
+            className={`rounded-xl p-6 border-2 border-primary/30 bg-card transition-all duration-600 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "300ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-4xl text-primary mb-2">
+                {stats.goalsFor}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "গোল করা" : "Goals For"}
+              </div>
+            </div>
+          </div>
+
+          {/* Matches Played */}
+          <div
+            className={`rounded-xl p-6 border-2 border-primary/30 bg-card transition-all duration-600 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "400ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-4xl text-primary mb-2">
+                {stats.played}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "খেলা হয়েছে" : "Played"}
+              </div>
+            </div>
+          </div>
+
+          {/* Goals Against */}
+          <div
+            className={`rounded-xl p-6 border-2 border-primary/30 bg-card transition-all duration-600 ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "500ms" }}
+          >
+            <div className="text-center">
+              <div className="font-[var(--font-display)] text-4xl text-primary mb-2">
+                {stats.goalsAgainst}
+              </div>
+              <div className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "গোল খাওয়া" : "Goals Against"}
+              </div>
+            </div>
+          </div>
+        </div>
           {scoreboardMatches.map((match, index) => {
             const titanForceHome = match.home === "Titan Force"
             const titanForceWon =
