@@ -33,10 +33,10 @@ interface Match {
 const matches: Match[] = [
   { 
     home: "Titan Force", 
-    away: "FC United", 
+    away: "TBD", 
     score: null, 
-    date: "Jan 15, 2025", 
-    time: "3:00 PM", 
+    date: "TBD", 
+    time: "", 
     venue: "Mulikandi Ground", 
     status: "Upcoming" 
   },
