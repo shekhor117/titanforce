@@ -223,6 +223,9 @@ export function MatchScoreboard() {
             </div>
           </div>
         </div>
+
+        {/* Match Cards */}
+        <div className="space-y-6">
           {scoreboardMatches.map((match, index) => {
             const titanForceHome = match.home === "Titan Force"
             const titanForceWon =
