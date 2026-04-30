@@ -53,7 +53,7 @@ const matches: Match[] = [
       { player: "", minute: "'" }
     ],
     awayGoals: [
-      { player: "Ahmed Hassan", minute: "45'" }
+      { player: "", minute: "'" }
     ],
     homeLineup: [
       { position: "GK", player: "Shuronjit Ahmed", number: 1 },
