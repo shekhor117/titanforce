@@ -76,35 +76,6 @@ const matches: Match[] = [
       { position: "FWD", player: "", number: null }
     ]
   },
-  { 
-    home: "Royal FC", 
-    away: "Titan Force", 
-    score: "1-1", 
-    date: "Jan 5, 2025", 
-    time: "4:00 PM", 
-    venue: "Royal Stadium", 
-    status: "D",
-    homeGoals: [
-      { player: "Hassan Malik", minute: "31'" }
-    ],
-    awayGoals: [
-      { player: "Sujon Ahmed", minute: "52'", assist: "Sojib Hossain" }
-    ]
-  },
-  { 
-    home: "Titan Force", 
-    away: "City Eagles", 
-    score: "0-2", 
-    date: "Dec 29, 2024", 
-    time: "3:30 PM", 
-    venue: "Mulikandi Ground", 
-    status: "L",
-    homeGoals: [],
-    awayGoals: [
-      { player: "Carlos Silva", minute: "18'" },
-      { player: "Diego Martinez", minute: "64'" }
-    ]
-  },
 ]
 
 export function Matches() {
