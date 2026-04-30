@@ -42,15 +42,15 @@ const matches: Match[] = [
   },
   { 
     home: "Titan Force", 
-    away: "Star Academy", 
-    score: "2-1", 
-    date: "Jan 10, 2025", 
-    time: "2:30 PM", 
+    away: "TBD", 
+    score: "", 
+    date: "", 
+    time: "", 
     venue: "Mulikandi Ground", 
     status: "W",
     homeGoals: [
-      { player: "Sajon Khan", minute: "23'", assist: "Shuvo Islam" },
-      { player: "Shuvo Islam", minute: "67'" }
+      { player: "", minute: "'", assist: "" },
+      { player: "", minute: "'" }
     ],
     awayGoals: [
       { player: "Ahmed Hassan", minute: "45'" }
