@@ -44,10 +44,10 @@ const matches: Match[] = [
     home: "Titan Force", 
     away: "TBD", 
     score: "", 
-    date: "", 
+    date: "TBD", 
     time: "", 
     venue: "Mulikandi Ground", 
-    status: "W",
+    status: "upcoming",
     homeGoals: [
       { player: "", minute: "'", assist: "" },
       { player: "", minute: "'" }
