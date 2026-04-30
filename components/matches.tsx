@@ -56,24 +56,24 @@ const matches: Match[] = [
       { player: "", minute: "'" }
     ],
     homeLineup: [
-      { position: "GK", player: "Shuronjit Ahmed", number: 1 },
-      { position: "DEF", player: "Srijon Das", number: 3 },
-      { position: "DEF", player: "Akash Rahman", number: 4 },
-      { position: "DEF", player: "Shekhor Chandra Das", number: 17 },
-      { position: "MID", player: "Sujon Ahmed", number: 6 },
-      { position: "MID", player: "Sojib Hossain", number: 8 },
-      { position: "FWD", player: "Shuvo Islam", number: 7 },
-      { position: "FWD", player: "Sajon Khan", number: 9 },
-      { position: "FWD", player: "Kourov Ahmed", number: 11 }
+      { position: "GK", player: "Shuronjit", number: 1 },
+      { position: "DEF", player: "Srijon", number: 3 },
+      { position: "DEF", player: "Akash", number: 4 },
+      { position: "DEF", player: "Shekhor", number: 17 },
+      { position: "MID", player: "Sujon", number: 6 },
+      { position: "MID", player: "Sojib", number: 8 },
+      { position: "FWD", player: "Shuvo", number: 7 },
+      { position: "FWD", player: "Sajon", number: 9 },
+      { position: "FWD", player: "Kourov", number: 11 }
     ],
     awayLineup: [
-      { position: "GK", player: "John Smith", number: 1 },
-      { position: "DEF", player: "Mike Johnson", number: 2 },
-      { position: "DEF", player: "Chris Brown", number: 3 },
-      { position: "MID", player: "David Lee", number: 4 },
-      { position: "MID", player: "Robert Taylor", number: 5 },
-      { position: "FWD", player: "Ahmed Hassan", number: 7 },
-      { position: "FWD", player: "James Wilson", number: 9 }
+      { position: "GK", player: "", number: null },
+      { position: "DEF", player: "", number: null },
+      { position: "DEF", player: "", number: null },
+      { position: "MID", player: "", number: null },
+      { position: "MID", player: "", number: null },
+      { position: "FWD", player: "", number: null },
+      { position: "FWD", player: "", number: null }
     ]
   },
   { 
