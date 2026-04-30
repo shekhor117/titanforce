@@ -55,6 +55,19 @@ interface Translations {
     success: string
     followUs: string
   }
+  join: {
+    subtitle: string
+    title: string
+    description: string
+    card1Title: string
+    card1Desc: string
+    card2Title: string
+    card2Desc: string
+    card3Title: string
+    card3Desc: string
+    contactBtn: string
+    emailBtn: string
+  }
   footer: {
     rights: string
   }
@@ -112,8 +125,21 @@ const translations: Record<Language, Translations> = {
       success: "Message sent! We'll get back to you.",
       followUs: "Follow Us",
     },
+    join: {
+      subtitle: "Be Part of the Legacy",
+      title: "JOIN TITAN FORCE",
+      description: "Are you passionate about football? Interested in joining one of the most exciting teams in Sylhet? We&apos;re always looking for dedicated players and supporters.",
+      card1Title: "For Players",
+      card1Desc: "Showcase your skills and represent Titan Force. Play at the highest level with a team that values hard work and dedication.",
+      card2Title: "For Supporters",
+      card2Desc: "Join our growing community of passionate fans. Get exclusive updates, behind-the-scenes content, and match day experiences.",
+      card3Title: "For Partners",
+      card3Desc: "Partner with Titan Force and grow your brand. We offer sponsorship opportunities and community engagement programs.",
+      contactBtn: "Contact Us",
+      emailBtn: "Email: titanforcefc@gmail.com",
+    },
     footer: {
-      rights: "Titan Force Mulikandi FT. All rights reserved.",
+      rights: "Titan Force Mulikandi FC. All rights reserved.",
     },
   },
   bn: {
@@ -166,6 +192,19 @@ const translations: Record<Language, Translations> = {
       send: "বার্তা পাঠান",
       success: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
       followUs: "আমাদের অনুসরণ করুন",
+    },
+    join: {
+      subtitle: "ঐতিহ্যের অংশ হন",
+      title: "টাইটান ফোর্সে যোগ দিন",
+      description: "ফুটবল সম্পর্কে আপনার আবেগ কী? সিলেটের সবচেয়ে রোমাঞ্চকর দলে যোগ দিতে আগ্রহী? আমরা সর্বদা নিবেদিত খেলোয়াড় এবং সমর্থক খুঁজছি।",
+      card1Title: "খেলোয়াড়দের জন্য",
+      card1Desc: "আপনার দক্ষতা প্রদর্শন করুন এবং টাইটান ফোর্সের প্রতিনিধিত্ব করুন। একটি দলের সাথে সর্বোচ্চ স্তরে খেলুন যা কঠোর পরিশ্রম মূল্য দেয়।",
+      card2Title: "সমর্থকদের জন্য",
+      card2Desc: "আমাদের ক্রমবর্ধমান উত্সাহী ভক্তদের সম্প্রদায়ে যোগ দিন। এক্সক্লুসিভ আপডেট, বিহাইন্ড-দ্য-সিন কন্টেন্ট এবং ম্যাচ দিনের অভিজ্ঞতা পান।",
+      card3Title: "অংশীদারদের জন্য",
+      card3Desc: "টাইটান ফোর্সের সাথে অংশীদারিত্ব করুন এবং আপনার ব্র্যান্ড বৃদ্ধি করুন। আমরা স্পন্সরশিপের সুযোগ এবং কমিউনিটি এনগেজমেন্ট প্রোগ্রাম অফার করি।",
+      contactBtn: "আমাদের সাথে যোগাযোগ করুন",
+      emailBtn: "ইমেল: titanforcefc@gmail.com",
     },
     footer: {
       rights: "টাইটান ফোর্স মুলিকান্দি এফসি। সর্বস্বত্ব সংরক্ষিত।",
