@@ -3,6 +3,7 @@ import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
+import { AdminProvider } from '@/lib/admin-context'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -36,11 +37,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
-        <AuthProvider>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </AuthProvider>
+        <AdminProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
+          </AuthProvider>
+        </AdminProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
