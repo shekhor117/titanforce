@@ -1,9 +1,11 @@
 "use client"
 
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Matches } from "@/components/matches"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
+import { ArrowLeft } from "lucide-react"
 
 export default function FixturesResultsPage() {
   const { language, t } = useLanguage()
@@ -21,6 +23,12 @@ export default function FixturesResultsPage() {
             }}
           />
           <div className="relative max-w-6xl mx-auto px-4 text-center">
+            <Link href="/" className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300">
+              <ArrowLeft className="w-4 h-4" />
+              <span className={`text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "বাড়িতে ফিরুন" : "Back Home"}
+              </span>
+            </Link>
             <h1 className={`text-5xl md:text-7xl font-black tracking-wider text-primary mb-4 animate-fade-up ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
               {isBn ? "ফিক্সচার ও ফলাফল" : "FIXTURES & RESULTS"}
             </h1>
