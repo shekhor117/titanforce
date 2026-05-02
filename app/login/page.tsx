@@ -24,7 +24,15 @@ export default function LoginPage() {
     weight: "",
     foot: "",
     address: "",
-    experience: ""
+    experience: "",
+    company: "",
+    ownerName: "",
+    country: "",
+    website: "",
+    sponsorshipType: "",
+    budget: "",
+    currency: "BDT",
+    message: ""
   })
   const [isLoading, setIsLoading] = useState(false)
   
@@ -144,7 +152,7 @@ export default function LoginPage() {
                 onClick={() => {
                   setStep("role-select")
                   setSelectedRole(null)
-                  setFormData({ name: "", email: "", password: "", fullName: "", phone: "", age: "", position: "", jersey: "", height: "", weight: "", foot: "", address: "", experience: "" })
+                  setFormData({ name: "", email: "", password: "", fullName: "", phone: "", age: "", position: "", jersey: "", height: "", weight: "", foot: "", address: "", experience: "", company: "", ownerName: "", country: "", website: "", sponsorshipType: "", budget: "", currency: "BDT", message: "" })
                 }}
                 className="p-2 hover:bg-secondary rounded-full transition"
               >
@@ -365,6 +373,188 @@ export default function LoginPage() {
                     </div>
                   </div>
                 </>
+              ) : !isLoginMode && selectedRole === "partner" ? (
+                /* Partner Registration Form */
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Company Name */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "কোম্পানির নাম" : "Company Name"}
+                      </label>
+                      <input
+                        type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "কোম্পানির নাম" : "Company name"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Owner/CEO Name */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "মালিক / সিইও" : "Owner / CEO"}
+                      </label>
+                      <input
+                        type="text"
+                        name="ownerName"
+                        value={formData.ownerName}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "মালিকের নাম" : "Owner name"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "ইমেল" : "Email"}
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "আপনার ইমেল" : "your@email.com"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "ফোন নম্বর" : "Phone"}
+                      </label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "ফোন নম্বর" : "+880 XXXX XXXX"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Country */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "দেশ" : "Country"}
+                      </label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "দেশ" : "Country"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Website */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "ওয়েবসাইট" : "Website (optional)"}
+                      </label>
+                      <input
+                        type="text"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "ওয়েবসাইট" : "https://example.com"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                      />
+                    </div>
+
+                    {/* Sponsorship Type */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "স্পন্সরশিপ ধরন" : "Sponsorship Type"}
+                      </label>
+                      <select
+                        name="sponsorshipType"
+                        value={formData.sponsorshipType}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      >
+                        <option value="">{isBn ? "ধরন নির্বাচন করুন" : "Select type"}</option>
+                        <option value="kit">{isBn ? "কিট স্পন্সর" : "Kit Sponsor"}</option>
+                        <option value="main">{isBn ? "প্রধান স্পন্সর" : "Main Sponsor"}</option>
+                        <option value="event">{isBn ? "ইভেন্ট স্পন্সর" : "Event Sponsor"}</option>
+                        <option value="digital">{isBn ? "ডিজিটাল স্পন্সর" : "Digital Sponsor"}</option>
+                      </select>
+                    </div>
+
+                    {/* Budget */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "বাজেট" : "Budget"}
+                      </label>
+                      <input
+                        type="text"
+                        name="budget"
+                        value={formData.budget}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "বাজেট পরিমাণ" : "Budget amount"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                      />
+                    </div>
+
+                    {/* Currency */}
+                    <div>
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "মুদ্রা" : "Currency"}
+                      </label>
+                      <select
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:outline-none focus:border-primary transition"
+                      >
+                        <option value="BDT">BDT</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+
+                    {/* Password */}
+                    <div className="md:col-span-2">
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "পাসওয়ার্ড" : "Password"}
+                      </label>
+                      <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "পাসওয়ার্ড" : "••••••••"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <div className="md:col-span-2">
+                      <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "বার্তা" : "Partnership Proposal"}
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                        placeholder={isBn ? "আপনার প্রস্তাব সম্পর্কে বলুন" : "Tell us about your partnership proposal"}
+                        className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition resize-none"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </>
               ) : !isLoginMode ? (
                 /* Other roles signup form */
                 <>
@@ -460,7 +650,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => {
                   setIsLoginMode(!isLoginMode)
-                  setFormData({ name: "", email: "", password: "", fullName: "", phone: "", age: "", position: "", jersey: "", height: "", weight: "", foot: "", address: "", experience: "" })
+                  setFormData({ name: "", email: "", password: "", fullName: "", phone: "", age: "", position: "", jersey: "", height: "", weight: "", foot: "", address: "", experience: "", company: "", ownerName: "", country: "", website: "", sponsorshipType: "", budget: "", currency: "BDT", message: "" })
                 }}
                 className={`w-full text-sm text-primary hover:text-primary/80 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
