@@ -13,13 +13,21 @@ export default function TeamSquadPage() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
+  const handleBack = () => {
+    setIsExiting(true)
+    setTimeout(() => {
+      router.back()
+    }, 600)
+  }
+
   return (
-    <div className={`min-h-screen bg-background stripe-bg transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+    <div className={`min-h-screen bg-background stripe-bg transition-all duration-600 ${isLoaded && !isExiting ? "opacity-100" : isExiting ? "opacity-0 scale-95" : "opacity-0"}`}>
       <Navbar />
       <main>
         {/* Hero Section */}
@@ -30,7 +38,7 @@ export default function TeamSquadPage() {
             }}
           />
           <div className="relative max-w-6xl mx-auto px-4 text-center">
-            <button onClick={() => router.back()} className={`inline-flex items-center gap-2 mb-6 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"} transition-all duration-700`}>
+            <button onClick={handleBack} className={`inline-flex items-center gap-2 mb-6 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"} transition-all duration-700`}>
               <ArrowLeft className="w-4 h-4" />
               <span className={`text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {isBn ? "বাড়িতে ফিরুন" : "Back Home"}
