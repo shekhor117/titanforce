@@ -110,6 +110,11 @@ export function Hero() {
               {t.hero.matches}
             </Link>
           </div>
+
+          {/* Floating Text */}
+          <div className="absolute bottom-10 text-[80px] md:text-[160px] font-black text-white/5 whitespace-nowrap animate-[slide_18s_linear_infinite] font-[var(--font-display)]">
+            TITAN FORCE • TITAN FORCE •
+          </div>
         </div>
 
         <style jsx>{`
@@ -133,6 +138,16 @@ export function Hero() {
             100% {
               opacity: 1;
               transform: translateY(0);
+            }
+          }
+
+          @keyframes slide {
+            0% {
+              transform: translateX(0);
+            }
+
+            100% {
+              transform: translateX(-50%);
             }
           }
 
