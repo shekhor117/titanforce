@@ -20,11 +20,14 @@ export default function TeamSquadPage() {
               background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
             }}
           />
+          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-red-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-3xl animate-pulse" />
+          
           <div className="relative max-w-6xl mx-auto px-4 text-center">
             <h1 className={`text-5xl md:text-7xl font-black tracking-wider text-primary mb-4 animate-fade-up ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
               {isBn ? "দল স্কোয়াড" : "TEAM SQUAD"}
             </h1>
-            <p className={`text-lg text-foreground/70 max-w-2xl mx-auto animate-fade-up ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-lg text-foreground/70 max-w-2xl mx-auto animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "আমাদের প্রতিভাবান খেলোয়াড়দের দেখুন যারা টাইটান ফোর্সের গর্বের প্রতিনিধিত্ব করে" : "Meet the talented players representing Titan Force on the pitch"}
             </p>
           </div>
