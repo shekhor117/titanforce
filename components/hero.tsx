@@ -141,6 +141,44 @@ export function Hero() {
             }
           }
 
+          @keyframes smoothFadeUp {
+            0% {
+              opacity: 0;
+              transform: translateY(40px);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes smoothScale {
+            0% {
+              transform: scale(0.8);
+              opacity: 0;
+            }
+
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+
+          @keyframes glow {
+            0% {
+              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            }
+
+            50% {
+              box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+            }
+
+            100% {
+              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            }
+          }
+
           @keyframes slide {
             0% {
               transform: translateX(0);
@@ -156,6 +194,24 @@ export function Hero() {
               opacity: 0;
               transform: scale(0.3) rotate(-15deg);
               filter: blur(10px);
+            }
+
+            100% {
+              opacity: 1;
+              transform: scale(1) rotate(0deg);
+              filter: blur(0px);
+            }
+          }
+
+          @keyframes smoothLogoIntro {
+            0% {
+              opacity: 0;
+              transform: scale(0.4) rotate(-20deg);
+              filter: blur(15px);
+            }
+
+            50% {
+              transform: scale(1.05) rotate(5deg);
             }
 
             100% {
@@ -229,8 +285,45 @@ export function Hero() {
             }
           }
 
+          @keyframes buttonSlideIn {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes pulseGlow {
+            0%,
+            100% {
+              opacity: 0.5;
+              filter: blur(30px);
+            }
+
+            50% {
+              opacity: 1;
+              filter: blur(20px);
+            }
+          }
+
           .animate-fadeIn {
-            animation: fadeIn 1s ease forwards;
+            animation: fadeIn 1s ease-out forwards;
+          }
+
+          .animate-smoothFadeUp {
+            animation: smoothFadeUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          }
+
+          .animate-smoothScale {
+            animation: smoothScale 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          }
+
+          .animate-buttonSlideIn {
+            animation: buttonSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
           }
 
           .delay-300 {
@@ -244,16 +337,21 @@ export function Hero() {
           .animate-typingWelcome {
             width: 0;
             animation:
-              typingWelcome 2s steps(20, end) forwards,
+              typingWelcome 2.5s steps(20, end) forwards,
               blink 0.8s infinite;
           }
 
           .animate-typingTitan {
             width: 0;
             animation:
-              typingTitan 2s steps(20, end) 1.8s forwards,
+              typingTitan 2.5s steps(20, end) 2.2s forwards,
               blink 0.8s infinite;
           }
+
+          .transition-smooth {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+        `}
         `}</style>
       </section>
     </>
