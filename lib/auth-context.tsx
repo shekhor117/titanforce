@@ -4,12 +4,25 @@ import React, { createContext, useContext, useState, useEffect } from "react"
 
 export type UserRole = "player" | "fan" | "partner" | null
 
+interface PlayerProfile {
+  phone?: string
+  age?: string
+  position?: string
+  jersey?: string
+  height?: string
+  weight?: string
+  foot?: string
+  address?: string
+  experience?: string
+}
+
 interface User {
   id: string
   name: string
   email: string
   role: UserRole
   avatar?: string
+  playerProfile?: PlayerProfile
 }
 
 interface AuthContextType {
@@ -18,6 +31,7 @@ interface AuthContextType {
   login: (email: string, password: string, role: UserRole) => Promise<void>
   logout: () => void
   signup: (name: string, email: string, password: string, role: UserRole) => Promise<void>
+  updatePlayerProfile: (profile: PlayerProfile) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -84,8 +98,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("titanforce_user")
   }
 
+  const updatePlayerProfile = async (profile: PlayerProfile) => {
+    setIsLoading(true)
+    try {
+      // Simulate API call - in production, call your backend
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      if (user) {
+        const updatedUser: User = {
+          ...user,
+          playerProfile: profile,
+        }
+        setUser(updatedUser)
+        localStorage.setItem("titanforce_user", JSON.stringify(updatedUser))
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, signup, updatePlayerProfile }}>
       {children}
     </AuthContext.Provider>
   )
