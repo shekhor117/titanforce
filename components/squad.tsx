@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { X, MapPin, Calendar, Footprints, Trophy, Target } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
@@ -220,10 +221,10 @@ export function Squad() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredPlayers.map((player, index) => (
-            <button
+            <Link
               key={`${player.num}-${player.name}`}
-              onClick={() => setSelectedPlayer(player)}
-              className={`card-glow rounded-xl p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              href={`/player/${player.num}`}
+              className={`card-glow rounded-xl p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
               style={{ transitionDelay: `${index * 50}ms` }}
             >
@@ -250,7 +251,7 @@ export function Squad() {
                   {player.assists}
                 </span>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>
@@ -262,7 +263,7 @@ export function Squad() {
           onClick={() => setSelectedPlayer(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-card border-2 border-primary rounded-2xl p-6 md:p-8"
+            className="relative w-full max-w-lg bg-card border-2 border-primary rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -345,9 +346,17 @@ export function Squad() {
               )}
             </div>
 
-            <p className="text-sm leading-relaxed text-foreground/80">
-              {selectedPlayer.bio}
-            </p>
+            <div className="flex gap-3">
+              <p className="flex-1 text-sm leading-relaxed text-foreground/80">
+                {selectedPlayer.bio}
+              </p>
+              <Link
+                href={`/player/${selectedPlayer.num}`}
+                className="px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition whitespace-nowrap h-fit"
+              >
+                {isBn ? "বিস্তারিত" : "View"}
+              </Link>
+            </div>
           </div>
         </div>
       )}
