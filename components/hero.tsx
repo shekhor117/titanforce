@@ -86,10 +86,10 @@ export function Hero() {
             </p>
           </div>
           <h2 className={`text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            <span className="block text-white overflow-hidden whitespace-nowrap border-r-4 border-white animate-typingWelcome mx-auto w-fit">
+            <span className="block text-white mx-auto">
               {t.hero.welcome}
             </span>
-            <span className="block text-primary mt-2 overflow-hidden whitespace-nowrap border-r-4 border-primary animate-typingTitan mx-auto w-fit">
+            <span className="block text-primary mt-2 mx-auto">
               {t.hero.clubName}
             </span>
           </h2>
@@ -165,26 +165,6 @@ export function Hero() {
             }
           }
 
-          @keyframes typingWelcome {
-            from {
-              width: 0;
-            }
-
-            to {
-              width: 100%;
-            }
-          }
-
-          @keyframes typingTitan {
-            from {
-              width: 0;
-            }
-
-            to {
-              width: 100%;
-            }
-          }
-
           @keyframes blink {
             50% {
               border-color: transparent;
@@ -239,20 +219,6 @@ export function Hero() {
 
           .delay-500 {
             animation-delay: 0.5s;
-          }
-
-          .animate-typingWelcome {
-            width: 0;
-            animation:
-              typingWelcome 2s steps(20, end) forwards,
-              blink 0.8s infinite;
-          }
-
-          .animate-typingTitan {
-            width: 0;
-            animation:
-              typingTitan 2s steps(20, end) 1.8s forwards,
-              blink 0.8s infinite;
           }
         `}</style>
       </section>
