@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
-import { LogOut, Home } from "lucide-react"
+import { LogOut, Home, Edit } from "lucide-react"
 
 export default function PlayerDashboard() {
   const { user, logout } = useAuth()
@@ -77,10 +77,11 @@ export default function PlayerDashboard() {
 
           {/* Quick Links */}
           <div className="grid md:grid-cols-2 gap-4">
-            <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition text-center font-semibold">
+            <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2">
+              <Edit className="w-5 h-5" />
               {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
             </Link>
-            <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition text-center font-semibold">
+            <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2">
               {isBn ? "পরিসংখ্যান দেখুন" : "View Stats"}
             </Link>
           </div>
