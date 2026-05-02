@@ -351,7 +351,6 @@ export function Hero() {
           .transition-smooth {
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
           }
-        `}
         `}</style>
       </section>
     </>
