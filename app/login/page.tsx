@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { ChevronLeft, User, Users, Handshake } from "lucide-react"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { useRouter } from "next/navigation"
@@ -163,42 +164,63 @@ export default function LoginPage() {
         </div>
 
         {/* Role Selection */}
-        {step === "role-select" && (
-          <div className="space-y-4 animate-fade-up">
-            <p className={`text-center text-foreground/60 mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "আপনার ভূমিকা নির্বাচন করুন" : "Select your role to get started"}
-            </p>
+        <AnimatePresence mode="wait">
+          {step === "role-select" && (
+            <motion.div 
+              key="role-select"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4"
+            >
+              <p className={`text-center text-foreground/60 mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "আপনার ভূমিকা নির্বাচন করুন" : "Select your role to get started"}
+              </p>
 
-            <div className="space-y-3">
-              {roles.map(role => {
-                const Icon = role.icon
-                return (
-                  <button
-                    key={role.id}
-                    onClick={() => handleRoleSelect(role.id)}
-                    className="w-full p-4 rounded-lg border-2 border-secondary bg-card hover:border-primary hover:bg-secondary/30 transition-all text-left"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Icon className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-                      <div>
-                        <h3 className={`font-semibold text-foreground text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                          {role.label}
-                        </h3>
-                        <p className={`text-xs text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                          {role.description}
-                        </p>
+              <div className="space-y-3">
+                {roles.map((role, index) => {
+                  const Icon = role.icon
+                  return (
+                    <motion.button
+                      key={role.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1, duration: 0.3 }}
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      onClick={() => handleRoleSelect(role.id)}
+                      className="w-full p-4 rounded-lg border-2 border-secondary bg-card hover:border-primary hover:bg-secondary/30 transition-all text-left"
+                    >
+                      <div className="flex items-start gap-3">
+                        <Icon className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                        <div>
+                          <h3 className={`font-semibold text-foreground text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                            {role.label}
+                          </h3>
+                          <p className={`text-xs text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                            {role.description}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Login/Signup Form */}
-        {(step === "login" || step === "signup") && selectedRole && (
-          <div className="space-y-6 animate-fade-up">
+        <AnimatePresence mode="wait">
+          {(step === "login" || step === "signup") && selectedRole && (
+            <motion.div 
+              key={`${step}-${selectedRole}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
             <div className="flex items-center gap-3 mb-6">
               <button
                 onClick={() => {
@@ -623,7 +645,7 @@ export default function LoginPage() {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder={isBn ? "আপনার পূর্ণ নাম" : "Your full name"}
+                        placeholder={isBn ? "আপনার পূর্��� নাম" : "Your full name"}
                         className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
                         required
                       />
@@ -979,8 +1001,9 @@ export default function LoginPage() {
                 {isLoginMode ? (isBn ? "অ্যাকাউন্ট নেই? সাইন আপ করুন" : "Don't have an account? Sign Up") : (isBn ? "ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন" : "Already have an account? Login")}
               </button>
             </form>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
