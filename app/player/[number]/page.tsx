@@ -162,27 +162,27 @@ export default function PlayerProfile() {
   }
 
   const stats = [
-    { title: "Appearances", value: "28" },
+    { title: "Appearances", value: "0" },
     { title: "Goals", value: player.goals.toString() },
     { title: "Assists", value: player.assists.toString() },
-    { title: "Minutes", value: "2,430" },
+    { title: "Minutes", value: "0" },
     { title: "Pass Accuracy", value: "92%" },
     { title: "Chances Created", value: "41" },
   ]
 
   const seasonStats = [
-    { label: "Premier Matches", value: "20" },
-    { label: "Cup Matches", value: "8" },
-    { label: "Yellow Cards", value: "2" },
+    { label: "Premier Matches", value: "0" },
+    { label: "Cup Matches", value: "0" },
+    { label: "Yellow Cards", value: "0" },
     { label: "Red Cards", value: "0" },
-    { label: "Man of the Match", value: "6" },
-    { label: "Average Rating", value: "8.9" },
+    { label: "Man of the Match", value: "0" },
+    { label: "Average Rating", value: "0" },
   ]
 
   const trophies = [
-    { name: "Titan Force League Cup", year: "2025" },
-    { name: "Sylhet District Championship", year: "2025" },
-    { name: "Best Young Player Award", year: "2026" },
+    { name: "Daudpur Tournament Champion", year: "2026" },
+    { name: "Championship", year: "" },
+    { name: "Best Young Player Award", year: "" },
   ]
 
   return (
