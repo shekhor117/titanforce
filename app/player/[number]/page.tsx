@@ -18,7 +18,7 @@ const players = [
     foot: "Right",
     goals: 0,
     assists: 0,
-    cleanSheets: 8,
+    cleanSheets: 0,
     bio: "A commanding presence in goal with excellent reflexes and shot-stopping ability. The last line of defense for Titan Force.",
   },
   {
@@ -30,8 +30,8 @@ const players = [
     age: 21,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 2,
-    assists: 3,
+    goals: 0,
+    assists: 0,
     bio: "Versatile defender who can play both center-back and right-back. Known for his pace and recovery runs.",
   },
   {
@@ -43,8 +43,8 @@ const players = [
     age: 17,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 1,
-    assists: 2,
+    goals: 0,
+    assists: 0,
     bio: "Strong left-footed defender with excellent aerial ability. A rock at the back for the team.",
   },
   {
@@ -56,8 +56,8 @@ const players = [
     age: 19,
     hometown: "Mulikandi, Sylhet",
     foot: "Both",
-    goals: 3,
-    assists: 1,
+    goals: 0,
+    assists: 0,
     bio: "The defensive anchor who can drop back or push forward. Great at breaking up opposition attacks.",
   },
   {
@@ -69,8 +69,8 @@ const players = [
     age: 20,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 7,
-    assists: 9,
+    goals: 0,
+    assists: 0,
     bio: "Creative playmaker with excellent vision and passing range. The engine of Titan Force's attack.",
   },
   {
@@ -82,8 +82,8 @@ const players = [
     age: 19,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 12,
-    assists: 8,
+    goals: 0,
+    assists: 0,
     bio: "Explosive winger with pace to burn. Can play on either flank and loves to cut inside to shoot.",
   },
   {
@@ -95,8 +95,8 @@ const players = [
     age: 20,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 5,
-    assists: 11,
+    goals: 0,
+    assists: 0,
     bio: "Box-to-box midfielder who covers every blade of grass. Combines work rate with technical quality.",
   },
   {
@@ -108,8 +108,8 @@ const players = [
     age: 17,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 15,
-    assists: 4,
+    goals: 0,
+    assists: 0,
     bio: "Clinical striker with a natural instinct for goal. The team's top scorer and focal point of the attack.",
   },
   {
@@ -121,8 +121,8 @@ const players = [
     age: 18,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 10,
-    assists: 6,
+    goals: 0,
+    assists: 0,
     bio: "Tricky left winger who can also play as a second striker. Dangerous in one-on-one situations.",
   },
   {
@@ -134,8 +134,8 @@ const players = [
     age: 20,
     hometown: "Mulikandi, Sylhet",
     foot: "Right",
-    goals: 4,
-    assists: 5,
+    goals: 0,
+    assists: 0,
     bio: "Versatile player who can slot into defense or midfield. A true utility player with leadership qualities.",
   },
 ]
@@ -162,27 +162,27 @@ export default function PlayerProfile() {
   }
 
   const stats = [
-    { title: "Appearances", value: "28" },
+    { title: "Appearances", value: "0" },
     { title: "Goals", value: player.goals.toString() },
     { title: "Assists", value: player.assists.toString() },
-    { title: "Minutes", value: "2,430" },
+    { title: "Minutes", value: "0" },
     { title: "Pass Accuracy", value: "92%" },
     { title: "Chances Created", value: "41" },
   ]
 
   const seasonStats = [
-    { label: "Premier Matches", value: "20" },
-    { label: "Cup Matches", value: "8" },
-    { label: "Yellow Cards", value: "2" },
+    { label: "Premier Matches", value: "0" },
+    { label: "Cup Matches", value: "0" },
+    { label: "Yellow Cards", value: "0" },
     { label: "Red Cards", value: "0" },
-    { label: "Man of the Match", value: "6" },
-    { label: "Average Rating", value: "8.9" },
+    { label: "Man of the Match", value: "0" },
+    { label: "Average Rating", value: "0" },
   ]
 
   const trophies = [
-    { name: "Titan Force League Cup", year: "2025" },
-    { name: "Sylhet District Championship", year: "2025" },
-    { name: "Best Young Player Award", year: "2026" },
+    { name: "Daudpur Tournament Champion", year: "2026" },
+    { name: "Championship", year: "" },
+    { name: "Best Young Player Award", year: "" },
   ]
 
   return (
