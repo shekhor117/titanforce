@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { TransitionLink } from "@/components/transition-link"
 
 export function Hero() {
   const { language, t } = useLanguage()
@@ -97,18 +97,18 @@ export function Hero() {
             {t.hero.tagline}
           </p>
           <div className="mt-8 flex justify-center gap-4 animate-fade-up animation-delay-300 animate-fadeIn delay-500">
-            <Link
+            <TransitionLink
               href="/team-squad"
               className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.viewSquad}
-            </Link>
-            <Link
+            </TransitionLink>
+            <TransitionLink
               href="/fixtures-results"
               className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.matches}
-            </Link>
+            </TransitionLink>
           </div>
         </div>
 

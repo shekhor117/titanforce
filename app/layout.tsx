@@ -4,6 +4,8 @@ import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
 import { AdminProvider } from '@/lib/admin-context'
+import { TransitionProvider } from '@/lib/transition-context'
+import { PageTransition } from '@/components/page-transition'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -37,13 +39,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
-        <AdminProvider>
-          <AuthProvider>
-            <LanguageProvider>
-              {children}
-            </LanguageProvider>
-          </AuthProvider>
-        </AdminProvider>
+        <TransitionProvider>
+          <PageTransition />
+          <AdminProvider>
+            <AuthProvider>
+              <LanguageProvider>
+                {children}
+              </LanguageProvider>
+            </AuthProvider>
+          </AdminProvider>
+        </TransitionProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
