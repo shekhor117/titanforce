@@ -14,6 +14,7 @@ interface PlayerProfile {
   foot?: string
   address?: string
   experience?: string
+  photoUrl?: string
 }
 
 interface User {

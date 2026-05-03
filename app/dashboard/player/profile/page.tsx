@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
+import { PhotoUpload } from "@/components/photo-upload"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
@@ -27,6 +28,7 @@ export default function PlayerProfileEditPage() {
     foot: user?.playerProfile?.foot || "",
     address: user?.playerProfile?.address || "",
     experience: user?.playerProfile?.experience || "",
+    photoUrl: user?.playerProfile?.photoUrl || "",
   })
 
   useEffect(() => {
@@ -91,6 +93,18 @@ export default function PlayerProfileEditPage() {
 
         {/* Edit Form */}
         <form onSubmit={handleSubmit} className="bg-card rounded-lg border-2 border-secondary p-8 md:p-12">
+          {/* Photo Upload Section */}
+          <div className="mb-12 pb-12 border-b-2 border-secondary">
+            <h2 className={`text-2xl font-bold text-primary mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "প্রোফাইল ছবি" : "PROFILE PHOTO"}
+            </h2>
+            <PhotoUpload
+              currentPhoto={formData.photoUrl}
+              onPhotoUpload={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
+              isLoading={isSubmitting}
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phone */}
             <div>
