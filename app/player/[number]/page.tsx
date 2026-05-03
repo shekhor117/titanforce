@@ -1,9 +1,8 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { FloatingBackButton } from "@/components/floating-back-button"
 
 // Player data from squad
 const players = [
@@ -212,17 +211,13 @@ export default function PlayerProfile() {
       `}</style>
 
       {/* Back Button */}
+      <FloatingBackButton />
+
       <div className="bg-secondary/20 border-b border-secondary">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link
-            href="/#squad"
-            className="flex items-center gap-2 text-primary hover:text-primary/80 transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "দলে ফিরুন" : "Back to Squad"}
-            </span>
-          </Link>
+          <p className={`text-sm text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "দলে ফিরুন" : "Back to Squad"}
+          </p>
         </div>
       </div>
 
