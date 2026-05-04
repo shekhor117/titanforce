@@ -26,6 +26,50 @@
   --radius: 0.625rem;
 }
 
+.dark {
+  --background: #000000;
+  --foreground: #f5f5f5;
+  --card: #1a1a1a;
+  --card-foreground: #f5f5f5;
+  --popover: #1a1a1a;
+  --popover-foreground: #f5f5f5;
+  --primary: #dc2626;
+  --primary-foreground: #000000;
+  --secondary: #991b1b;
+  --secondary-foreground: #f5f5f5;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #991b1b;
+  --accent-foreground: #f5f5f5;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #262626;
+  --input: #262626;
+  --ring: #dc2626;
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #f5f5f5;
+  --card-foreground: #1a1a1a;
+  --popover: #f5f5f5;
+  --popover-foreground: #1a1a1a;
+  --primary: #dc2626;
+  --primary-foreground: #ffffff;
+  --secondary: #fee2e2;
+  --secondary-foreground: #7f1d1d;
+  --muted: #e5e5e5;
+  --muted-foreground: #737373;
+  --accent: #991b1b;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e5e5;
+  --input: #f5f5f5;
+  --ring: #dc2626;
+}
+
 @theme inline {
   --font-sans: 'Barlow', sans-serif;
   --font-display: 'Bebas Neue', sans-serif;
@@ -98,6 +142,10 @@
 /* Hero gradient */
 .hero-gradient {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 40%, #2a0505 60%, #0a0a0a 100%);
+}
+
+.light .hero-gradient {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 40%, #fecaca 60%, #fef2f2 100%);
 }
 
 /* Stripe background */

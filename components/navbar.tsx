@@ -6,6 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -54,6 +55,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
@@ -102,14 +104,17 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <button
-            onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all w-fit"
-            aria-label="Toggle language"
-          >
-            <Globe className="w-4 h-4" />
-            <span className="text-xs font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
-          </button>
+          <div className="w-full flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setLanguage(language === "en" ? "bn" : "en")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-1"
+              aria-label="Toggle language"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="text-xs font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
+            </button>
+          </div>
 
           {user ? (
             <>
