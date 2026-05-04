@@ -18,9 +18,14 @@ export function ThemeToggle() {
 
   const { theme, setTheme, isDark } = context
 
+  const handleToggle = () => {
+    console.log("[v0] Theme toggle clicked. Current isDark:", isDark)
+    setTheme(isDark ? "light" : "dark")
+  }
+
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={handleToggle}
       className="p-2 rounded-lg border border-primary/30 hover:bg-primary/10 transition-colors duration-300"
       aria-label="Toggle theme"
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
