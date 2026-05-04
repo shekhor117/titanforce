@@ -5,6 +5,7 @@ import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
 import { AdminProvider } from '@/lib/admin-context'
 import { TransitionProvider } from '@/lib/transition-context'
+import { ThemeProvider } from '@/lib/theme-context'
 import { PageTransition } from '@/components/page-transition'
 import './globals.css'
 
@@ -39,16 +40,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
-        <TransitionProvider>
-          <PageTransition />
-          <AdminProvider>
-            <AuthProvider>
-              <LanguageProvider>
-                {children}
-              </LanguageProvider>
-            </AuthProvider>
-          </AdminProvider>
-        </TransitionProvider>
+        <ThemeProvider>
+          <TransitionProvider>
+            <PageTransition />
+            <AdminProvider>
+              <AuthProvider>
+                <LanguageProvider>
+                  {children}
+                </LanguageProvider>
+              </AuthProvider>
+            </AdminProvider>
+          </TransitionProvider>
+        </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
