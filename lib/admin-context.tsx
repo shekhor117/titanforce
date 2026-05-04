@@ -1,75 +1,87 @@
 "use client"
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
+import React, { createContext, useContext, ReactNode, useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 
 interface AdminUser {
   id: string
   email: string
-  name: string
-  role: "admin"
+  role: "admin" | "player" | "fan"
 }
 
 interface AdminContextType {
   admin: AdminUser | null
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
   isLoading: boolean
   error: string | null
+  isAdmin: boolean
+  logout: () => Promise<void>
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<AdminUser | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if admin is logged in on mount
   useEffect(() => {
-    const stored = localStorage.getItem("titanforce_admin")
-    if (stored) {
-      setAdmin(JSON.parse(stored))
+    const checkAdmin = async () => {
+      try {
+        const supabase = createClient()
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          // Fetch user profile from Supabase to check role
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("id, email, role")
+            .eq("id", user.id)
+            .single()
+
+          if (profileError) throw profileError
+
+          if (profile) {
+            setAdmin({
+              id: profile.id,
+              email: profile.email,
+              role: profile.role,
+            })
+          }
+        }
+      } catch (err) {
+        console.error("[v0] Error checking admin:", err)
+        setError(err instanceof Error ? err.message : "Failed to check admin status")
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    checkAdmin()
   }, [])
 
-  const login = async (email: string, password: string) => {
-    setIsLoading(true)
-    setError(null)
-
+  const logout = async () => {
     try {
-      // Hardcoded admin credentials (in production, this would be a real API call)
-      const ADMIN_EMAIL = "admin@titanforce.com"
-      const ADMIN_PASSWORD = "admin123456"
-
-      if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-        throw new Error("Invalid admin credentials")
-      }
-
-      const adminUser: AdminUser = {
-        id: "admin-1",
-        email: email,
-        name: "Admin",
-        role: "admin",
-      }
-
-      setAdmin(adminUser)
-      localStorage.setItem("titanforce_admin", JSON.stringify(adminUser))
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      setAdmin(null)
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Login failed"
-      setError(message)
-      throw err
-    } finally {
-      setIsLoading(false)
+      console.error("[v0] Error logging out:", err)
+      setError(err instanceof Error ? err.message : "Failed to logout")
     }
-  }
-
-  const logout = () => {
-    setAdmin(null)
-    localStorage.removeItem("titanforce_admin")
   }
 
   return (
-    <AdminContext.Provider value={{ admin, login, logout, isLoading, error }}>
+    <AdminContext.Provider
+      value={{
+        admin,
+        isLoading,
+        error,
+        isAdmin: admin?.role === "admin",
+        logout,
+      }}
+    >
       {children}
     </AdminContext.Provider>
   )

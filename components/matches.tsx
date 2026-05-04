@@ -4,84 +4,28 @@ import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
-interface Goal {
-  player: string
-  minute: string
-  assist?: string
-}
-
-interface Lineup {
-  position: string
-  player: string
-  number: number
-}
-
-interface Match {
-  home: string
-  away: string
-  score: string | null
+interface MatchData {
+  id: string
+  title: string
+  opponent: string
   date: string
-  time: string
-  venue: string
-  status: "Upcoming" | "W" | "L" | "D"
-  homeGoals?: Goal[]
-  awayGoals?: Goal[]
-  homeLineup?: Lineup[]
-  awayLineup?: Lineup[]
+  time?: string
+  location: string
+  status: "upcoming" | "completed" | "cancelled"
+  titan_force_score?: number
+  opponent_score?: number
+  description?: string
+  created_at: string
+  updated_at: string
 }
-
-const matches: Match[] = [
-  { 
-    home: "Titan Force", 
-    away: "TBD", 
-    score: null, 
-    date: "TBD", 
-    time: "", 
-    venue: "Mulikandi Ground", 
-    status: "Upcoming" 
-  },
-  { 
-    home: "Titan Force", 
-    away: "TBD", 
-    score: "", 
-    date: "TBD", 
-    time: "", 
-    venue: "Mulikandi Ground", 
-    status: "upcoming",
-    homeGoals: [
-      { player: "", minute: "'", assist: "" },
-      { player: "", minute: "'" }
-    ],
-    awayGoals: [
-      { player: "", minute: "'" }
-    ],
-    homeLineup: [
-      { position: "GK", player: "Shuronjit", number: 1 },
-      { position: "DEF", player: "Srijon", number: 3 },
-      { position: "DEF", player: "Akash", number: 4 },
-      { position: "DEF", player: "Shekhor", number: 17 },
-      { position: "MID", player: "Sujon", number: 6 },
-      { position: "MID", player: "Sojib", number: 8 },
-      { position: "FWD", player: "Shuvo", number: 7 },
-      { position: "FWD", player: "Sajon", number: 9 },
-      { position: "FWD", player: "Kourov", number: 11 }
-    ],
-    awayLineup: [
-      { position: "GK", player: "", number: null },
-      { position: "DEF", player: "", number: null },
-      { position: "DEF", player: "", number: null },
-      { position: "MID", player: "", number: null },
-      { position: "MID", player: "", number: null },
-      { position: "FWD", player: "", number: null },
-      { position: "FWD", player: "", number: null }
-    ]
-  },
-]
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
-  const sectionRef = useRef<HTMLElement>(null)
+  const [selectedMatch, setSelectedMatch] = useState<MatchData | null>(null)
+  const [matches, setMatches] = useState<MatchData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const sectionRef = useRef<HTMLSection>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
@@ -102,17 +46,64 @@ export function Matches() {
     return () => observer.disconnect()
   }, [])
 
-  const getStatusColor = (status: Match["status"]) => {
-    switch (status) {
-      case "W":
-        return { bg: "rgba(34, 197, 94, 0.2)", text: "#22c55e", label: "Win" }
-      case "L":
-        return { bg: "rgba(239, 68, 68, 0.2)", text: "#ef4444", label: "Loss" }
-      case "D":
-        return { bg: "rgba(251, 191, 36, 0.2)", text: "#fbbf24", label: "Draw" }
-      default:
-        return { bg: "rgba(220, 38, 38, 0.2)", text: "var(--primary)", label: t.matches.upcoming }
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch("/api/matches")
+        if (!response.ok) {
+          throw new Error("Failed to fetch matches")
+        }
+        const data = await response.json()
+        setMatches(data || [])
+        setError(null)
+      } catch (err) {
+        console.error("[v0] Error fetching matches:", err)
+        setError(err instanceof Error ? err.message : "Failed to load matches")
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    fetchMatches()
+  }, [])
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "completed":
+        return { bg: "rgba(34, 197, 94, 0.2)", text: "#22c55e", label: isBn ? "সম্পন্ন" : "Completed" }
+      case "cancelled":
+        return { bg: "rgba(239, 68, 68, 0.2)", text: "#ef4444", label: isBn ? "বাতিল" : "Cancelled" }
+      default:
+        return { bg: "rgba(220, 38, 38, 0.2)", text: "var(--primary)", label: isBn ? "আসন্ন" : "Upcoming" }
+    }
+  }
+
+  const formatScore = (titanForceScore?: number, opponentScore?: number) => {
+    if (titanForceScore === undefined || opponentScore === undefined) {
+      return "vs"
+    }
+    return `${titanForceScore} - ${opponentScore}`
+  }
+
+  if (isLoading) {
+    return (
+      <section ref={sectionRef} className="py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center text-foreground/60">
+          {isBn ? "ম্যাচ লোড হচ্ছে..." : "Loading matches..."}
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section ref={sectionRef} className="py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center text-red-500">
+          {error}
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -130,53 +121,60 @@ export function Matches() {
           </h2>
         </div>
 
-        <div className="space-y-4">
-          {matches.map((match, index) => {
-            const statusStyle = getStatusColor(match.status)
-            return (
-            <button
-              onClick={() => setSelectedMatch(match)}
-              className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {/* Date & Time */}
-                  <div className="flex flex-col justify-center">
-                    <div className={`text-xs uppercase tracking-wider font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.date}
+        {matches.length === 0 ? (
+          <div className={`text-center py-12 text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "কোন ম্যাচ নির্ধারিত নেই" : "No matches scheduled"}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {matches.map((match, index) => {
+              const statusStyle = getStatusStyle(match.status)
+              return (
+                <button
+                  key={match.id}
+                  onClick={() => setSelectedMatch(match)}
+                  className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                    }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* Date & Time */}
+                    <div className="flex flex-col justify-center">
+                      <div className={`text-xs uppercase tracking-wider font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {match.date}
+                      </div>
+                      <div className={`text-sm text-foreground/70 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {match.time || "-"}
+                      </div>
                     </div>
-                    <div className={`text-sm text-foreground/70 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.time}
-                    </div>
-                  </div>
 
-                  {/* Match Score */}
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <div className="font-[var(--font-display)] text-2xl tracking-wider text-center text-foreground">
-                      {match.home}{" "}
-                      <span className="text-primary">{match.score || "vs"}</span>{" "}
-                      {match.away}
+                    {/* Match Score */}
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <div className="font-[var(--font-display)] text-2xl tracking-wider text-center text-foreground">
+                        Titan Force{" "}
+                        <span className="text-primary">{formatScore(match.titan_force_score, match.opponent_score)}</span>{" "}
+                        {match.opponent}
+                      </div>
+                      <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {match.location}
+                      </div>
                     </div>
-                    <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.venue}
-                    </div>
-                  </div>
 
-                  {/* Status Badge */}
-                  <div className="flex items-center justify-end">
-                    <span
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                      style={{ background: statusStyle.bg, color: statusStyle.text }}
-                    >
-                      {match.status === "Upcoming" ? t.matches.upcoming : statusStyle.label}
-                    </span>
+                    {/* Status Badge */}
+                    <div className="flex items-center justify-end">
+                      <span
+                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        style={{ background: statusStyle.bg, color: statusStyle.text }}
+                      >
+                        {statusStyle.label}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </button>
-            )
-          })}
-        </div>
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         {/* Match Details Modal */}
         {selectedMatch && (
@@ -198,95 +196,45 @@ export function Matches() {
               {/* Match Header */}
               <div className="mb-6">
                 <div className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-center mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.home} <span className="text-primary">{selectedMatch.score || "vs"}</span> {selectedMatch.away}
+                  Titan Force <span className="text-primary">{formatScore(selectedMatch.titan_force_score, selectedMatch.opponent_score)}</span> {selectedMatch.opponent}
                 </div>
                 <div className={`text-sm text-foreground/60 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.date} • {selectedMatch.time} • {selectedMatch.venue}
+                  {selectedMatch.date} • {selectedMatch.time || "-"} • {selectedMatch.location}
                 </div>
               </div>
 
-              {selectedMatch.status === "Upcoming" ? (
-                <div className={`text-center text-foreground/70 py-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
+              {/* Match Details */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "বিবরণ" : "Details"}
+                  </h3>
+                  <p className={`text-sm text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {selectedMatch.description || (isBn ? "বিবরণ পাওয়া যায়নি" : "No description available")}
+                  </p>
                 </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Goals */}
-                  {(selectedMatch.homeGoals?.length || 0) > 0 && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "গোলকারী" : "Goal Scorers"}
-                      </h3>
-                      <div className="space-y-2">
-                        {selectedMatch.homeGoals?.map((goal, i) => (
-                          <div key={i} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
-                        {selectedMatch.awayGoals?.map((goal, i) => (
-                          <div key={`away-${i}`} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
+
+                {selectedMatch.status === "completed" && (
+                  <div>
+                    <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                      {isBn ? "চূড়ান্ত ফলাফল" : "Final Result"}
+                    </h3>
+                    <div className="p-4 rounded-lg bg-secondary/20 text-center">
+                      <div className="text-2xl font-bold text-primary">
+                        {selectedMatch.titan_force_score} - {selectedMatch.opponent_score}
+                      </div>
+                      <div className={`text-sm text-foreground/70 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {selectedMatch.titan_force_score! > selectedMatch.opponent_score! 
+                          ? (isBn ? "জয়" : "Victory")
+                          : selectedMatch.titan_force_score! < selectedMatch.opponent_score!
+                          ? (isBn ? "পরাজয়" : "Defeat")
+                          : (isBn ? "ড্র" : "Draw")
+                        }
                       </div>
                     </div>
-                  )}
-
-                  {/* Lineups */}
-                  {selectedMatch.homeLineup && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "লাইনআপ" : "Lineups"}
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Home Lineup */}
-                        <div>
-                          <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.home}</div>
-                          <div className="space-y-2">
-                            {selectedMatch.homeLineup?.map((player, i) => (
-                              <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                <span className="text-primary font-bold w-6">#{player.number}</span>
-                                <span className="flex-1 text-foreground">{player.player}</span>
-                                <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Away Lineup */}
-                        <div>
-                          <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.away}</div>
-                          <div className="space-y-2">
-                            {selectedMatch.awayLineup?.map((player, i) => (
-                              <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                <span className="text-primary font-bold w-6">#{player.number}</span>
-                                <span className="flex-1 text-foreground">{player.player}</span>
-                                <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
