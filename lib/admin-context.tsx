@@ -94,37 +94,3 @@ export function useAdmin() {
   }
   return context
 }
-        name: "Admin",
-        role: "admin",
-      }
-
-      setAdmin(adminUser)
-      localStorage.setItem("titanforce_admin", JSON.stringify(adminUser))
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Login failed"
-      setError(message)
-      throw err
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const logout = () => {
-    setAdmin(null)
-    localStorage.removeItem("titanforce_admin")
-  }
-
-  return (
-    <AdminContext.Provider value={{ admin, login, logout, isLoading, error }}>
-      {children}
-    </AdminContext.Provider>
-  )
-}
-
-export function useAdmin() {
-  const context = useContext(AdminContext)
-  if (!context) {
-    throw new Error("useAdmin must be used within AdminProvider")
-  }
-  return context
-}
