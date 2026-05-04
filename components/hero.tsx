@@ -38,7 +38,7 @@ export function Hero() {
               />
             </div>
 
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2s_ease] font-[var(--font-display)]">
+            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[12px] text-white animate-[openingText_2s_ease] font-[var(--font-display)]">
               TITAN FORCE
             </h1>
 
