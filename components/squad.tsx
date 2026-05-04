@@ -275,7 +275,7 @@ export function Squad() {
             </button>
 
             <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center">
+              <div className="flex-shrink-0 w-5 h-5 rounded-xl bg-primary/20 flex items-center justify-center">
                 <span className="font-[var(--font-display)] text-4xl text-primary">
                   {selectedPlayer.num}
                 </span>
