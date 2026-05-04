@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useCallback } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 
 interface TransitionContextType {
   isTransitioning: boolean
@@ -20,6 +20,17 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const endTransition = useCallback(() => {
     setIsTransitioning(false)
   }, [])
+
+  // Auto-reset transition after page navigation completes
+  useEffect(() => {
+    if (isTransitioning) {
+      // Reset transition after fade-out + navigation time
+      const timer = setTimeout(() => {
+        setIsTransitioning(false)
+      }, 600)
+      return () => clearTimeout(timer)
+    }
+  }, [isTransitioning])
 
   return (
     <TransitionContext.Provider value={{ isTransitioning, startTransition, endTransition }}>
