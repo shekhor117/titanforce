@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     if (!user) {
+      console.error("[v0] Upload error: User not authenticated")
       return NextResponse.json(
         { error: "User not authenticated" },
         { status: 401 }
@@ -59,6 +60,8 @@ export async function POST(request: NextRequest) {
     // Convert file to buffer
     const buffer = await file.arrayBuffer()
 
+    console.log("[v0] Uploading file:", { filePath, fileSize: file.size, contentType: file.type })
+
     // Upload to Supabase Storage
     const { data, error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
@@ -68,13 +71,21 @@ export async function POST(request: NextRequest) {
       })
 
     if (uploadError) {
+      console.error("[v0] Storage upload error:", uploadError)
       throw uploadError
     }
 
+    console.log("[v0] File uploaded successfully:", data.path)
+
     // Get signed URL (valid for 1 year)
-    const { data: signedData } = await supabase.storage
+    const { data: signedData, error: signedError } = await supabase.storage
       .from(BUCKET_NAME)
       .createSignedUrl(filePath, 31536000)
+
+    if (signedError) {
+      console.error("[v0] Signed URL error:", signedError)
+      throw signedError
+    }
 
     return NextResponse.json({
       success: true,
@@ -85,7 +96,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("[v0] Upload error:", error)
     return NextResponse.json(
-      { error: "Upload failed" },
+      { error: error instanceof Error ? error.message : "Upload failed" },
       { status: 500 }
     )
   }

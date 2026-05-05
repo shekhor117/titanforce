@@ -44,6 +44,7 @@ export function PhotoUpload({
     try {
       setUploading(true)
       setError("")
+      console.log("[v0] Starting file upload:", file.name, file.size, file.type)
 
       // Create FormData and upload to Supabase Storage
       const formData = new FormData()
@@ -54,17 +55,26 @@ export function PhotoUpload({
         body: formData,
       })
 
+      console.log("[v0] Upload response status:", response.status)
+
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || "Upload failed")
+        console.error("[v0] Upload error response:", errorData)
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`)
       }
 
-      const { signedUrl, filePath } = await response.json()
+      const data = await response.json()
+      console.log("[v0] Upload successful:", data)
+
+      if (!data.signedUrl) {
+        throw new Error("No signed URL received from server")
+      }
 
       // Update preview with signed URL
-      setPreview(signedUrl)
-      onPhotoUpload({ signedUrl, filePath })
+      setPreview(data.signedUrl)
+      onPhotoUpload({ signedUrl: data.signedUrl, filePath: data.filePath })
     } catch (err) {
+      console.error("[v0] Upload exception:", err)
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
       setUploading(false)
