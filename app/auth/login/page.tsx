@@ -25,32 +25,13 @@ export default function LoginPage() {
       setIsLoading(true)
       setError(null)
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (error) throw error
-
-      // Get user role from profiles
-      if (data.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, is_approved')
-          .eq('id', data.user.id)
-          .single()
-
-        if (profile) {
-          if (!profile.is_approved && profile.role !== 'fan') {
-            router.push(`/auth/pending-approval?role=${profile.role}`)
-            return
-          }
-          router.push(`/dashboard/${profile.role}`)
-          return
-        }
-      }
-
-      router.push('/dashboard/fan')
+      router.push('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login')
     } finally {
@@ -97,46 +78,45 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <Card className="w-full max-w-md bg-zinc-900 border-zinc-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-white">Welcome Back</CardTitle>
-          <CardDescription className="text-zinc-400">
-            Sign in to your Titan Force account
-          </CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           {error && (
-            <div className="bg-red-900/20 text-red-400 text-sm p-3 rounded-md border border-red-800">
+            <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
               {error}
             </div>
           )}
 
-          {/* OAuth Buttons */}
           <div className="space-y-3">
             <Button
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full py-6 bg-white text-black hover:bg-zinc-200 font-semibold"
+              variant="outline"
+              className="w-full"
             >
-              {isGoogleLoading ? 'Signing in...' : 'Continue with Google'}
+              {isGoogleLoading ? 'Logging in...' : 'Continue with Google'}
             </Button>
 
             <Button
               onClick={handleFacebookLogin}
               disabled={isFacebookLoading}
-              className="w-full py-6 bg-blue-600 text-white hover:bg-blue-700 font-semibold"
+              variant="outline"
+              className="w-full"
             >
-              {isFacebookLoading ? 'Signing in...' : 'Continue with Facebook'}
+              {isFacebookLoading ? 'Logging in...' : 'Continue with Facebook'}
             </Button>
           </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-700" />
+              <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-zinc-900 px-2 text-zinc-500">
+              <span className="bg-background px-2 text-muted-foreground">
                 Or login with email
               </span>
             </div>
@@ -144,7 +124,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -152,35 +132,29 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-zinc-300">Password</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
               />
             </div>
 
-            <Button 
-              type="submit" 
-              disabled={isLoading} 
-              className="w-full py-6 bg-red-600 hover:bg-red-700 text-white font-semibold"
-            >
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 
-          <div className="text-center text-sm text-zinc-400">
+          <div className="text-center text-sm">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/sign-up" className="text-red-500 hover:underline">
+            <Link href="/auth/sign-up" className="text-primary hover:underline">
               Sign up
             </Link>
           </div>
