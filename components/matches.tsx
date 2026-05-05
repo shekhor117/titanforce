@@ -135,6 +135,7 @@ export function Matches() {
             const statusStyle = getStatusColor(match.status)
             return (
             <button
+              key={index}
               onClick={() => setSelectedMatch(match)}
               className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
