@@ -3,14 +3,23 @@
 import { useState, useRef } from "react"
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
+import { deleteFileFromSupabase } from "@/lib/supabase-storage"
 
 interface PhotoUploadProps {
   currentPhoto?: string
-  onPhotoUpload: (url: string) => void
+  currentFilePath?: string
+  onPhotoUpload: (data: { signedUrl: string; filePath: string }) => void
+  onPhotoDelete?: () => void
   isLoading?: boolean
 }
 
-export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: PhotoUploadProps) {
+export function PhotoUpload({
+  currentPhoto,
+  currentFilePath,
+  onPhotoUpload,
+  onPhotoDelete,
+  isLoading = false,
+}: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentPhoto || null)
   const [error, setError] = useState("")
@@ -35,8 +44,9 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
     try {
       setUploading(true)
       setError("")
+      console.log("[v0] Starting file upload:", file.name, file.size, file.type)
 
-      // Create FormData and upload to Blob
+      // Create FormData and upload to Supabase Storage
       const formData = new FormData()
       formData.append("file", file)
 
@@ -45,27 +55,50 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
         body: formData,
       })
 
+      console.log("[v0] Upload response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Upload failed")
+        const errorData = await response.json()
+        console.error("[v0] Upload error response:", errorData)
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`)
       }
 
-      const { url } = await response.json()
+      const data = await response.json()
+      console.log("[v0] Upload successful:", data)
 
-      // Update preview
-      setPreview(url)
-      onPhotoUpload(url)
+      if (!data.signedUrl) {
+        throw new Error("No signed URL received from server")
+      }
+
+      // Update preview with signed URL
+      setPreview(data.signedUrl)
+      onPhotoUpload({ signedUrl: data.signedUrl, filePath: data.filePath })
     } catch (err) {
+      console.error("[v0] Upload exception:", err)
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
       setUploading(false)
     }
   }
 
-  const handleRemovePhoto = () => {
-    setPreview(null)
-    onPhotoUpload("")
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+  const handleRemovePhoto = async () => {
+    try {
+      // Delete from Supabase Storage if file path exists
+      if (currentFilePath) {
+        const result = await deleteFileFromSupabase(currentFilePath)
+        if (!result.success) {
+          setError(result.error || "Failed to delete file")
+          return
+        }
+      }
+
+      setPreview(null)
+      onPhotoDelete?.()
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to remove photo")
     }
   }
 
@@ -80,6 +113,7 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
               alt="Player photo"
               fill
               className="object-cover"
+              priority
             />
             <button
               type="button"
