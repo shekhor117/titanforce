@@ -3,18 +3,33 @@
 import { useState, useRef } from "react"
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
+import { createClient } from "@/lib/supabase/client"
+import { uploadFile, deleteFile } from "@/lib/supabase-storage"
 
 interface PhotoUploadProps {
   currentPhoto?: string
-  onPhotoUpload: (url: string) => void
+  currentPhotoPath?: string
+  onPhotoUpload: (url: string, path: string) => void
+  onPhotoDelete?: (path: string) => void
   isLoading?: boolean
+  featureName: string // e.g., "player-photos", "news-images"
+  itemId: string // e.g., player-id, news-post-id
 }
 
-export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: PhotoUploadProps) {
+export function PhotoUpload({
+  currentPhoto,
+  currentPhotoPath,
+  onPhotoUpload,
+  onPhotoDelete,
+  isLoading = false,
+  featureName,
+  itemId,
+}: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentPhoto || null)
   const [error, setError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const supabase = createClient()
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -36,24 +51,36 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
       setUploading(true)
       setError("")
 
-      // Create FormData and upload to Blob
-      const formData = new FormData()
-      formData.append("file", file)
+      // Get current user
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
-      const response = await fetch("/api/upload-player-photo", {
-        method: "POST",
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error("Upload failed")
+      if (!user) {
+        setError("You must be logged in to upload files")
+        setUploading(false)
+        return
       }
 
-      const { url } = await response.json()
+      // Upload to Supabase Storage
+      const result = await uploadFile(file, featureName, itemId, user.id)
+
+      if ("error" in result) {
+        setError(result.error)
+        setUploading(false)
+        return
+      }
+
+      // Delete old file if exists
+      if (currentPhotoPath) {
+        await deleteFile(currentPhotoPath)
+      }
 
       // Update preview
-      setPreview(url)
-      onPhotoUpload(url)
+      setPreview(result.signedUrl)
+      onPhotoUpload(result.signedUrl, result.path)
+
+      console.log("[v0] File uploaded successfully:", result.path)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
@@ -61,11 +88,27 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
     }
   }
 
-  const handleRemovePhoto = () => {
-    setPreview(null)
-    onPhotoUpload("")
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+  const handleRemovePhoto = async () => {
+    try {
+      // Delete from storage if path exists
+      if (currentPhotoPath) {
+        await deleteFile(currentPhotoPath)
+      }
+
+      setPreview(null)
+      onPhotoUpload("", "")
+
+      if (onPhotoDelete && currentPhotoPath) {
+        onPhotoDelete(currentPhotoPath)
+      }
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+
+      console.log("[v0] Photo removed successfully")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to remove photo")
     }
   }
 
@@ -77,9 +120,10 @@ export function PhotoUpload({ currentPhoto, onPhotoUpload, isLoading = false }: 
           <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-primary">
             <Image
               src={preview}
-              alt="Player photo"
+              alt="Photo preview"
               fill
               className="object-cover"
+              unoptimized={preview.includes("supabase")} // Signed URLs don't need optimization
             />
             <button
               type="button"

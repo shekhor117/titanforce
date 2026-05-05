@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, X } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { uploadNewsImage, deleteFile, getSignedUrl } from "@/lib/supabase-storage"
 
 interface NewsPost {
   id: string
@@ -10,6 +12,7 @@ interface NewsPost {
   title: string
   content: string
   image_url?: string
+  image_path?: string
   published: boolean
   created_at: string
 }
@@ -22,7 +25,10 @@ export default function AdminNews() {
   const [formData, setFormData] = useState<Partial<NewsPost>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [fileError, setFileError] = useState("")
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const isBn = language === "bn"
+  const supabase = createClient()
 
   useEffect(() => {
     fetchPosts()
@@ -34,7 +40,21 @@ export default function AdminNews() {
       const response = await fetch("/api/news-posts")
       if (!response.ok) throw new Error("Failed to fetch posts")
       const data = await response.json()
-      setPosts(data)
+      
+      // Refresh signed URLs for image_path fields
+      const postsWithSignedUrls = await Promise.all(
+        data.map(async (post: NewsPost) => {
+          if (post.image_path) {
+            const { url, error } = await getSignedUrl(post.image_path)
+            if (!error && url) {
+              return { ...post, image_url: url }
+            }
+          }
+          return post
+        })
+      )
+      
+      setPosts(postsWithSignedUrls)
     } catch (error) {
       console.error("[v0] Error loading posts:", error)
     } finally {
@@ -42,10 +62,68 @@ export default function AdminNews() {
     }
   }
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate image type
+    if (!file.type.startsWith("image/")) {
+      setFileError("Please select an image file")
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setFileError("File size must be less than 5MB")
+      return
+    }
+
+    setImageFile(file)
+    setFileError("")
+    console.log("[v0] Image selected:", file.name)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       setIsSaving(true)
+
+      // Get current user
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        alert(isBn ? "আপনাকে লগইন করতে হবে" : "You must be logged in")
+        setIsSaving(false)
+        return
+      }
+
+      let imageUrl = formData.image_url || ""
+      let imagePath = formData.image_path || ""
+
+      // Upload image if a new file was selected
+      if (imageFile) {
+        const newsPostId = editingId || `new-${Date.now()}`
+        const result = await uploadNewsImage(imageFile, user.id, newsPostId)
+
+        if ("error" in result) {
+          setFileError(result.error)
+          setIsSaving(false)
+          return
+        }
+
+        imageUrl = result.signedUrl
+        imagePath = result.path
+
+        // Delete old image if updating
+        if (editingId && formData.image_path) {
+          await deleteFile(formData.image_path)
+        }
+
+        setImageFile(null)
+      }
+
       const url = editingId ? `/api/news-posts` : `/api/news-posts`
       const method = editingId ? "PUT" : "POST"
 
@@ -56,7 +134,8 @@ export default function AdminNews() {
           postId: editingId,
           title: formData.title,
           content: formData.content,
-          imageUrl: formData.image_url,
+          imageUrl: imageUrl,
+          imagePath: imagePath,
           published: formData.published,
         }),
       })
@@ -72,11 +151,16 @@ export default function AdminNews() {
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (post: NewsPost) => {
     if (!window.confirm(isBn ? "এই পোস্ট মুছতে চান?" : "Delete this post?")) return
 
     try {
-      const response = await fetch(`/api/news-posts?postId=${id}`, {
+      // Delete image from storage if exists
+      if (post.image_path) {
+        await deleteFile(post.image_path)
+      }
+
+      const response = await fetch(`/api/news-posts?postId=${post.id}`, {
         method: "DELETE",
       })
 
@@ -84,6 +168,7 @@ export default function AdminNews() {
       await fetchPosts()
     } catch (error) {
       console.error("[v0] Error deleting post:", error)
+      alert(isBn ? "পোস্ট মুছতে ব্যর্থ" : "Failed to delete post")
     }
   }
 
@@ -97,6 +182,8 @@ export default function AdminNews() {
     setFormData({})
     setEditingId(null)
     setShowForm(false)
+    setImageFile(null)
+    setFileError("")
   }
 
   return (
@@ -160,13 +247,30 @@ export default function AdminNews() {
               required
             />
 
-            <input
-              type="url"
-              placeholder={isBn ? "ছবির URL" : "Image URL"}
-              value={formData.image_url || ""}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground"
-            />
+            {/* Image Upload */}
+            <div>
+              <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "পোস্ট ছবি" : "Post Image"}
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="flex-1 px-4 py-2 rounded border-2 border-secondary bg-transparent text-foreground text-sm"
+                />
+                {formData.image_url && (
+                  <div className="w-16 h-16 rounded border-2 border-primary overflow-hidden">
+                    <img
+                      src={formData.image_url}
+                      alt="Post image"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+              {fileError && <p className="text-red-500 text-sm mt-1">{fileError}</p>}
+            </div>
 
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -210,6 +314,11 @@ export default function AdminNews() {
                   <p className={`text-sm text-foreground/60 mt-1 line-clamp-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                     {post.content}
                   </p>
+                  {post.image_url && (
+                    <div className="mt-2 w-20 h-20 rounded overflow-hidden">
+                      <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                   <div className="flex items-center gap-4 mt-3 text-xs">
                     <span className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                       {new Date(post.created_at).toLocaleDateString()}
@@ -240,7 +349,7 @@ export default function AdminNews() {
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => handleDelete(post.id)}
+                    onClick={() => handleDelete(post)}
                     className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
                   >
                     <Trash2 className="w-4 h-4" />
