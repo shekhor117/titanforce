@@ -18,6 +18,7 @@ export function Navbar() {
     { href: "#about", label: t.nav.about },
     { href: "#squad", label: t.nav.squad },
     { href: "#matches", label: t.nav.matches },
+    { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
     { href: "#contact", label: t.nav.contact },
   ]
 
