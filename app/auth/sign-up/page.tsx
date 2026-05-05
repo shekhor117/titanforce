@@ -1,51 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import { User, Heart, Handshake } from 'lucide-react'
+
+type Role = 'player' | 'fan' | 'partner'
 
 export default function SignUpPage() {
-  const router = useRouter()
   const supabase = createClient()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [selectedRole, setSelectedRole] = useState<Role>('player')
   const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
 
-  const handleEmailSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      if (password !== confirmPassword) {
-        throw new Error('Passwords do not match')
-      }
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
-
-      if (error) throw error
-      router.push('/auth/sign-up-success')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign up')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const roles: { id: Role; label: string; icon: React.ReactNode; description: string }[] = [
+    { id: 'player', label: 'Player', icon: <User className="w-5 h-5" />, description: 'Join the squad' },
+    { id: 'fan', label: 'Fan', icon: <Heart className="w-5 h-5" />, description: 'Support the team' },
+    { id: 'partner', label: 'Partner', icon: <Handshake className="w-5 h-5" />, description: 'Business collaboration' },
+  ]
 
   const handleGoogleSignUp = async () => {
     try {
@@ -55,7 +30,7 @@ export default function SignUpPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
         },
       })
 
@@ -74,7 +49,7 @@ export default function SignUpPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
         },
       })
 
@@ -86,25 +61,49 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-black px-4">
+      <Card className="w-full max-w-md bg-zinc-900 border-zinc-800">
+        <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-bold text-white">Join Titan Force</CardTitle>
+          <CardDescription className="text-zinc-400">
+            Select your role and sign up
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {error && (
-            <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
+            <div className="bg-red-900/20 text-red-400 text-sm p-3 rounded-md border border-red-800">
               {error}
             </div>
           )}
 
+          {/* Role Selection */}
+          <div className="grid grid-cols-3 gap-2">
+            {roles.map((role) => (
+              <button
+                key={role.id}
+                onClick={() => setSelectedRole(role.id)}
+                className={`flex flex-col items-center gap-2 py-4 px-2 rounded-lg transition-all ${
+                  selectedRole === role.id
+                    ? 'bg-red-600 text-white'
+                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                }`}
+              >
+                {role.icon}
+                <span className="font-semibold text-sm">{role.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <p className="text-xs text-zinc-500 text-center">
+            {roles.find(r => r.id === selectedRole)?.description}
+          </p>
+
+          {/* OAuth Buttons */}
           <div className="space-y-3">
             <Button
               onClick={handleGoogleSignUp}
               disabled={isGoogleLoading}
-              variant="outline"
-              className="w-full"
+              className="w-full py-6 bg-white text-black hover:bg-zinc-200 font-semibold"
             >
               {isGoogleLoading ? 'Signing up...' : 'Continue with Google'}
             </Button>
@@ -112,69 +111,19 @@ export default function SignUpPage() {
             <Button
               onClick={handleFacebookSignUp}
               disabled={isFacebookLoading}
-              variant="outline"
-              className="w-full"
+              className="w-full py-6 bg-blue-600 text-white hover:bg-blue-700 font-semibold"
             >
               {isFacebookLoading ? 'Signing up...' : 'Continue with Facebook'}
             </Button>
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or sign up with email
-              </span>
-            </div>
-          </div>
+          <p className="text-xs text-zinc-500 text-center">
+            Player / Fan / Partner accounts are verified by Titan Force Admin
+          </p>
 
-          <form onSubmit={handleEmailSignUp} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? 'Signing up...' : 'Sign Up'}
-            </Button>
-          </form>
-
-          <div className="text-center text-sm">
+          <div className="text-center text-sm text-zinc-400">
             Already have an account?{' '}
-            <Link href="/auth/login" className="text-primary hover:underline">
+            <Link href="/auth/login" className="text-red-500 hover:underline">
               Login
             </Link>
           </div>
