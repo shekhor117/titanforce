@@ -22,6 +22,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
   const router = useRouter()
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -37,7 +38,7 @@ export default function Page() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -47,7 +48,14 @@ export default function Page() {
         },
       })
       if (error) throw error
-      router.push('/')
+      
+      // Check if session exists (auto-confirmed or instant signup)
+      if (data.session) {
+        router.push('/')
+      } else {
+        // No session means email confirmation is required
+        setShowConfirmation(true)
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
@@ -82,83 +90,103 @@ export default function Page() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Sign up</CardTitle>
-              <CardDescription>Create a new account</CardDescription>
+              <CardTitle className="text-2xl">
+                {showConfirmation ? 'Confirm Your Email' : 'Sign up'}
+              </CardTitle>
+              <CardDescription>
+                {showConfirmation
+                  ? 'Check your email and confirm your account before logging in.'
+                  : 'Create a new account'}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSignUp}>
-                <div className="flex flex-col gap-6">
+              {showConfirmation ? (
+                <div className="flex flex-col gap-4">
+                  <p className="text-sm text-foreground/70">
+                    We sent a confirmation link to <strong>{email}</strong>. Click the link in the email to verify your account, then you can log in.
+                  </p>
                   <Button
-                    type="button"
-                    variant="outline"
+                    onClick={() => router.push('/auth/login')}
                     className="w-full"
-                    onClick={handleGoogleSignUp}
-                    disabled={isGoogleLoading}
                   >
-                    {isGoogleLoading ? 'Signing up with Google...' : 'Sign up with Google'}
-                  </Button>
-
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or continue with email
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Password</Label>
-                    </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                      <Label htmlFor="repeat-password">Repeat Password</Label>
-                    </div>
-                    <Input
-                      id="repeat-password"
-                      type="password"
-                      required
-                      value={repeatPassword}
-                      onChange={(e) => setRepeatPassword(e.target.value)}
-                    />
-                  </div>
-                  {error && <p className="text-sm text-red-500">{error}</p>}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating an account...' : 'Sign up'}
+                    Go to Login
                   </Button>
                 </div>
-                <div className="mt-4 text-center text-sm">
-                  Already have an account?{' '}
-                  <Link
-                    href="/auth/login"
-                    className="underline underline-offset-4"
-                  >
-                    Login
-                  </Link>
-                </div>
-              </form>
+              ) : (
+                <form onSubmit={handleSignUp}>
+                  <div className="flex flex-col gap-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleGoogleSignUp}
+                      disabled={isGoogleLoading}
+                    >
+                      {isGoogleLoading ? 'Signing up with Google...' : 'Sign up with Google'}
+                    </Button>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Or continue with email
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="flex items-center">
+                        <Label htmlFor="password">Password</Label>
+                      </div>
+                      <Input
+                        id="password"
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="flex items-center">
+                        <Label htmlFor="repeat-password">Repeat Password</Label>
+                      </div>
+                      <Input
+                        id="repeat-password"
+                        type="password"
+                        required
+                        value={repeatPassword}
+                        onChange={(e) => setRepeatPassword(e.target.value)}
+                      />
+                    </div>
+                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? 'Creating an account...' : 'Sign up'}
+                    </Button>
+                  </div>
+                  <div className="mt-4 text-center text-sm">
+                    Already have an account?{' '}
+                    <Link
+                      href="/auth/login"
+                      className="underline underline-offset-4"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                </form>
+              )}
             </CardContent>
           </Card>
         </div>

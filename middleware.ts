@@ -1,8 +1,31 @@
 import { updateSession } from '@/lib/supabase/proxy'
-import { type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  // Update session
+  let response = await updateSession(request)
+
+  // Check if accessing protected routes
+  const protectedRoutes = ['/admin', '/dashboard']
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  )
+
+  // If protected route, verify session exists
+  if (isProtectedRoute) {
+    const supabase = createClient()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // Redirect to login if no session
+    if (!session) {
+      return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
+  }
+
+  return response
 }
 
 export const config = {
@@ -18,3 +41,4 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
+
