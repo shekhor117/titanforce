@@ -32,6 +32,7 @@ export function Navbar() {
             width={50}
             height={50}
             className="object-contain"
+            priority
           />
           <h1 className="font-[var(--font-display)] text-2xl tracking-wider text-primary">
             TITAN FORCE

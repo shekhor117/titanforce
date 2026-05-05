@@ -58,6 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     const supabase = createClient()
+    if (!supabase) return null
+    
     const { data } = await supabase
       .from("profiles")
       .select("*")
@@ -80,6 +82,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initAuth = async () => {
       // First check Supabase auth
       const supabase = createClient()
+      
+      if (!supabase) {
+        // Supabase not configured - use localStorage fallback only
+        const savedUser = localStorage.getItem("titanforce_user")
+        if (savedUser) {
+          try {
+            const parsed = JSON.parse(savedUser)
+            setUser(parsed)
+            setProfile({
+              id: parsed.id,
+              email: parsed.email,
+              name: parsed.name,
+              role: parsed.role,
+              status: "approved",
+            })
+          } catch (error) {
+            localStorage.removeItem("titanforce_user")
+          }
+        }
+        setIsLoading(false)
+        return
+      }
+      
       const { data: { session } } = await supabase.auth.getSession()
       
       if (session?.user) {
@@ -119,6 +144,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const supabase = createClient()
+    if (!supabase) return
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session?.user) {
         const supabaseUser = session.user
@@ -144,6 +171,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
     try {
       const supabase = createClient()
+      
+      if (!supabase) {
+        // Supabase not configured - use localStorage demo
+        const newUser: User = {
+          id: Math.random().toString(36).substr(2, 9),
+          name: email.split("@")[0],
+          email,
+          role,
+        }
+        setUser(newUser)
+        setProfile({
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role,
+          status: "approved",
+        })
+        localStorage.setItem("titanforce_user", JSON.stringify(newUser))
+        return
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -178,6 +226,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
     try {
       const supabase = createClient()
+      
+      if (!supabase) {
+        // Supabase not configured - use localStorage demo
+        const newUser: User = {
+          id: Math.random().toString(36).substr(2, 9),
+          name,
+          email,
+          role,
+        }
+        setUser(newUser)
+        setProfile({
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role,
+          status: role === "fan" ? "approved" : "pending",
+        })
+        localStorage.setItem("titanforce_user", JSON.stringify(newUser))
+        return
+      }
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -211,7 +280,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     const supabase = createClient()
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     setUser(null)
     setProfile(null)
     localStorage.removeItem("titanforce_user")
