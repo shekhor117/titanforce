@@ -4,8 +4,6 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, X } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import { useAuth } from "@/lib/auth-hook"
-import { getPlayers, createPlayer, updatePlayer, deletePlayer } from "@/lib/supabase-crud"
 
 interface Player {
   id: string
@@ -21,8 +19,8 @@ interface Player {
 
 export default function AdminPlayers() {
   const { language } = useLanguage()
-  const { user } = useAuth()
   const isBn = language === "bn"
+  const supabase = createClient()
   const [showForm, setShowForm] = useState(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -41,10 +39,15 @@ export default function AdminPlayers() {
     const fetchPlayers = async () => {
       try {
         setIsLoading(true)
-        const { data, error: fetchError } = await getPlayers()
+        const { data, error: fetchError } = await supabase
+          .from("player_profiles")
+          .select("*")
+          .order("jersey", { ascending: true })
+
         if (fetchError) throw fetchError
         setPlayers(data || [])
         setError(null)
+        console.log("[v0] Players loaded:", data?.length)
       } catch (err) {
         console.error("[v0] Error fetching players:", err)
         setError(err instanceof Error ? err.message : "Failed to load players")
@@ -59,29 +62,46 @@ export default function AdminPlayers() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!user) {
-      setError("You must be logged in")
-      return
-    }
-
     try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setError("You must be logged in")
+        return
+      }
+
+      const playerData = {
+        user_id: user.id,
+        jersey: parseInt(formData.jersey),
+        position: formData.position,
+        age: parseInt(formData.age),
+        address: formData.address || null,
+        foot: formData.foot,
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
+      }
+
       if (editingId) {
         // Update existing player
-        const { data, error: updateError } = await updatePlayer(editingId, formData)
+        const { data, error: updateError } = await supabase
+          .from("player_profiles")
+          .update(playerData)
+          .eq("id", editingId)
+          .select()
+
         if (updateError) throw updateError
         setPlayers(players.map(p => p.id === editingId ? data[0] : p))
+        console.log("[v0] Player updated:", data?.[0])
       } else {
         // Create new player
-        const { data, error: createError } = await createPlayer({
-          user_id: user.id,
-          ...formData,
-          jersey: parseInt(formData.jersey),
-          age: parseInt(formData.age),
-          goals: 0,
-          assists: 0,
-        })
+        const { data, error: createError } = await supabase
+          .from("player_profiles")
+          .insert([playerData])
+          .select()
+
         if (createError) throw createError
         setPlayers([...players, data[0]])
+        console.log("[v0] Player created:", data?.[0])
       }
 
       // Reset form
@@ -111,9 +131,14 @@ export default function AdminPlayers() {
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
 
     try {
-      const { error: deleteError } = await deletePlayer(playerId)
+      const { error: deleteError } = await supabase
+        .from("player_profiles")
+        .delete()
+        .eq("id", playerId)
+
       if (deleteError) throw deleteError
       setPlayers(players.filter(p => p.id !== playerId))
+      console.log("[v0] Player deleted:", playerId)
     } catch (err) {
       console.error("[v0] Error deleting player:", err)
       setError(err instanceof Error ? err.message : "Failed to delete player")
