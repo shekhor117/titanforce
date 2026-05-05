@@ -19,12 +19,6 @@ interface Player {
   goals?: number
   assists?: number
   cleanSheets?: number
-  profiles: {
-    id: string
-    email: string
-    first_name?: string
-    last_name?: string
-  } | null
 }
 
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
@@ -73,21 +67,13 @@ export function Squad() {
         setIsLoading(true)
         const { data, error: fetchError } = await supabase
           .from("player_profiles")
-          .select(`
-            id,
-            user_id,
-            jersey,
-            position,
-            age,
-            address,
-            foot,
-            profiles:user_id(id, email, first_name, last_name)
-          `)
+          .select("*")
           .order("jersey", { ascending: true })
 
         if (fetchError) throw fetchError
         setPlayers(data || [])
         setError(null)
+        console.log("[v0] Players fetched:", data)
       } catch (err) {
         console.error("[v0] Error fetching players:", err)
         setError(err instanceof Error ? err.message : "Failed to load players")
@@ -101,10 +87,8 @@ export function Squad() {
   }, [supabase])
 
   const getPlayerName = (player: Player): string => {
-    if (player.profiles?.first_name && player.profiles?.last_name) {
-      return `${player.profiles.first_name} ${player.profiles.last_name}`
-    }
-    return player.profiles?.email?.split("@")[0] || "Unknown"
+    // Use jersey number as identifier or "Player" as fallback
+    return `Player ${player.jersey}`
   }
 
   const filteredPlayers =

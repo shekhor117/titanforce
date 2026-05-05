@@ -8,14 +8,17 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from('matches')
       .select('*')
-      .order('date', { ascending: true })
+      .order('match_date', { ascending: true })
 
     if (error) {
+      console.error("[v0] Supabase error:", error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json(data)
+    console.log("[v0] Matches fetched:", data?.length || 0)
+    return NextResponse.json(data || [])
   } catch (error) {
+    console.error("[v0] API error:", error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
