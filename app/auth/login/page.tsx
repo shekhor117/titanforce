@@ -12,8 +12,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 export default function Page() {
   const [email, setEmail] = useState('')
@@ -21,7 +21,23 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Check if coming from successful signup
+    const signupEmail = searchParams.get('email')
+    const isSignupSuccess = searchParams.get('signup') === 'success'
+
+    if (signupEmail) {
+      setEmail(decodeURIComponent(signupEmail))
+    }
+
+    if (isSignupSuccess) {
+      setShowSuccess(true)
+    }
+  }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,6 +98,13 @@ export default function Page() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {showSuccess && (
+                <div className="mb-4 p-3 rounded bg-green-500/10 border border-green-500/30">
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    Your account has been created. Please check your email and verify your address before logging in.
+                  </p>
+                </div>
+              )}
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-6">
                   <Button

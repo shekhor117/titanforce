@@ -22,7 +22,6 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const [showConfirmation, setShowConfirmation] = useState(false)
   const router = useRouter()
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -54,7 +53,8 @@ export default function Page() {
         router.push('/')
       } else {
         // No session means email confirmation is required
-        setShowConfirmation(true)
+        // Redirect to login page with email as query param and success flag
+        router.push(`/auth/login?email=${encodeURIComponent(email)}&signup=success`)
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
@@ -90,30 +90,11 @@ export default function Page() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">
-                {showConfirmation ? 'Confirm Your Email' : 'Sign up'}
-              </CardTitle>
-              <CardDescription>
-                {showConfirmation
-                  ? 'Check your email and confirm your account before logging in.'
-                  : 'Create a new account'}
-              </CardDescription>
+              <CardTitle className="text-2xl">Sign up</CardTitle>
+              <CardDescription>Create a new account</CardDescription>
             </CardHeader>
             <CardContent>
-              {showConfirmation ? (
-                <div className="flex flex-col gap-4">
-                  <p className="text-sm text-foreground/70">
-                    We sent a confirmation link to <strong>{email}</strong>. Click the link in the email to verify your account, then you can log in.
-                  </p>
-                  <Button
-                    onClick={() => router.push('/auth/login')}
-                    className="w-full"
-                  >
-                    Go to Login
-                  </Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSignUp}>
+              <form onSubmit={handleSignUp}>
                   <div className="flex flex-col gap-6">
                     <Button
                       type="button"
@@ -186,7 +167,6 @@ export default function Page() {
                     </Link>
                   </div>
                 </form>
-              )}
             </CardContent>
           </Card>
         </div>
