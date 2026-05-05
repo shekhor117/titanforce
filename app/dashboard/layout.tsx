@@ -3,11 +3,11 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, Suspense } from "react"
 import { Clock, CheckCircle, XCircle, Home } from "lucide-react"
 import Link from "next/link"
 
-export default function DashboardLayout({
+function DashboardContent({
   children,
 }: {
   children: React.ReactNode
@@ -116,4 +116,27 @@ export default function DashboardLayout({
   }
 
   return <>{children}</>
+}
+
+function DashboardFallback() {
+  return (
+    <div className="flex items-center justify-center h-screen bg-background">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-foreground/60">Loading...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <Suspense fallback={<DashboardFallback />}>
+      <DashboardContent>{children}</DashboardContent>
+    </Suspense>
+  )
 }

@@ -1,145 +1,170 @@
-'use client';
+"use client"
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/src/supabaseClient';
-import { getProfile, updateProfile } from '@/src/profileService';
+import { useAuth } from "@/lib/auth-context"
+import { useLanguage } from "@/lib/language-context"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
+import { ArrowLeft, User, Mail, Calendar, Shield } from "lucide-react"
+import Link from "next/link"
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({ username: '' });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { user, profile, isLoading } = useAuth()
+  const { language } = useLanguage()
+  const router = useRouter()
+  const isBn = language === "bn"
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    try {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setError('Please log in to view your profile');
-        return;
-      }
-
-      const result = await getProfile(user.id);
-      if (result.success) {
-        setProfile(result.data);
-        setFormData({ username: result.data.username });
-      } else {
-        setError(result.error);
-      }
-    } catch (err) {
-      setError('Failed to load profile');
-      console.error(err);
-    } finally {
-      setLoading(false);
+    if (!isLoading && !user) {
+      router.push("/auth/login")
     }
-  };
+  }, [user, isLoading, router])
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      setError('');
-      setSuccess('');
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError('Not authenticated');
-        return;
-      }
-
-      const result = await updateProfile(user.id, { username: formData.username });
-      if (result.success) {
-        setProfile(result.data[0]);
-        setEditing(false);
-        setSuccess('Profile updated successfully!');
-        setTimeout(() => setSuccess(''), 3000);
-      } else {
-        setError(result.error);
-      }
-    } catch (err) {
-      setError('Failed to update profile');
-      console.error(err);
-    }
-  };
-
-  if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "লোড হচ্ছে..." : "Loading..."}
+          </p>
+        </div>
+      </div>
+    )
   }
 
-  if (!profile) {
-    return <div className="flex justify-center items-center min-h-screen text-red-500">Profile not found</div>;
+  if (!user) {
+    return null
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
-
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
-      {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{success}</div>}
-
-      {!editing ? (
-        <div className="bg-white rounded-lg shadow p-6 space-y-4">
-          <div>
-            <label className="text-gray-600 font-semibold">User ID:</label>
-            <p className="text-lg text-gray-900">{profile.id}</p>
-          </div>
-
-          <div>
-            <label className="text-gray-600 font-semibold">Username:</label>
-            <p className="text-lg text-gray-900">{profile.username}</p>
-          </div>
-
-          <div>
-            <label className="text-gray-600 font-semibold">Created:</label>
-            <p className="text-lg text-gray-900">{new Date(profile.created_at).toLocaleDateString()}</p>
-          </div>
-
-          <button
-            onClick={() => setEditing(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="max-w-4xl mx-auto px-4 py-16">
+        {/* Header */}
+        <div className="mb-12">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 mb-8"
           >
-            Edit Profile
-          </button>
+            <ArrowLeft className="w-4 h-4" />
+            <span className={`text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "ফিরে যান" : "Back"}
+            </span>
+          </Link>
+
+          <h1 className={`text-5xl md:text-6xl font-black tracking-wider text-primary mb-4 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
+            {isBn ? "আমার প্রোফাইল" : "MY PROFILE"}
+          </h1>
+          <p className={`text-lg text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "আপনার অ্যাকাউন্ট তথ্য দেখুন" : "View your account information"}
+          </p>
         </div>
-      ) : (
-        <form onSubmit={handleUpdate} className="bg-white rounded-lg shadow p-6 space-y-4">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">Username:</label>
-            <input
-              type="text"
-              value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              required
-            />
+
+        {/* Profile Card */}
+        <div className="bg-card rounded-lg border-2 border-secondary p-8 md:p-12">
+          {/* Avatar */}
+          <div className="flex flex-col items-center mb-8 pb-8 border-b-2 border-secondary">
+            <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center mb-4">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+              ) : (
+                <User className="w-12 h-12 text-primary" />
+              )}
+            </div>
+            <h2 className={`text-2xl font-bold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {user.name}
+            </h2>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold capitalize mt-2">
+              <Shield className="w-4 h-4" />
+              {profile?.role || user.role || "User"}
+            </span>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-            >
-              Save Changes
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(false);
-                setFormData({ username: profile.username });
-              }}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-            >
-              Cancel
-            </button>
+          {/* Profile Details */}
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                <User className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "আইডি" : "User ID"}
+                </label>
+                <p className="text-foreground font-medium">{user.id}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                <Mail className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "ইমেইল" : "Email"}
+                </label>
+                <p className="text-foreground font-medium">{user.email}</p>
+              </div>
+            </div>
+
+            {profile?.created_at && (
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "তৈরির তারিখ" : "Created"}
+                  </label>
+                  <p className="text-foreground font-medium">
+                    {new Date(profile.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {profile?.status && (
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                  <Shield className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "অবস্থা" : "Status"}
+                  </label>
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold capitalize ${
+                    profile.status === "approved"
+                      ? "bg-green-500/20 text-green-500"
+                      : profile.status === "pending"
+                      ? "bg-yellow-500/20 text-yellow-500"
+                      : "bg-red-500/20 text-red-500"
+                  }`}>
+                    {profile.status}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        </form>
-      )}
+
+          {/* Edit Button for Players */}
+          {(profile?.role === "player" || user.role === "player") && (
+            <div className="mt-8 pt-8 border-t-2 border-secondary">
+              <Link
+                href="/dashboard/player/profile"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
+              >
+                {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
+              </Link>
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
     </div>
-  );
+  )
 }
