@@ -5,71 +5,111 @@ export async function GET() {
   try {
     const supabase = await createClient()
 
-    // Get a demo user ID (we'll use a hardcoded UUID or get from auth)
-    const testPlayers = [
+    // Complete squad of 10 players
+    const squadPlayers = [
       {
         jersey: 1,
         position: 'GK',
-        age: 28,
+        age: 17,
         foot: 'Right',
-        address: 'Dhaka, Bangladesh',
+        address: 'Mulikandi, Sylhet',
         goals: 0,
         assists: 0,
-        clean_sheets: 12,
+        clean_sheets: 0,
+      },
+      {
+        jersey: 3,
+        position: 'CB / RB',
+        age: 21,
+        foot: 'Right',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
       },
       {
         jersey: 4,
-        position: 'CB',
-        age: 26,
+        position: 'CB / LB',
+        age: 17,
         foot: 'Right',
-        address: 'Chittagong, Bangladesh',
-        goals: 2,
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
         assists: 0,
-        clean_sheets: 10,
+        clean_sheets: 0,
+      },
+      {
+        jersey: 5,
+        position: 'CB / CDM',
+        age: 19,
+        foot: 'Both',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
+      },
+      {
+        jersey: 6,
+        position: 'CAM',
+        age: 20,
+        foot: 'Right',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
       },
       {
         jersey: 7,
-        position: 'CM',
-        age: 24,
+        position: 'LW / RW / CAM',
+        age: 19,
         foot: 'Right',
-        address: 'Dhaka, Bangladesh',
-        goals: 5,
-        assists: 3,
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
+      },
+      {
+        jersey: 8,
+        position: 'CM / CAM',
+        age: 20,
+        foot: 'Right',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
         clean_sheets: 0,
       },
       {
         jersey: 9,
-        position: 'ST',
-        age: 25,
+        position: 'ST / CF',
+        age: 17,
         foot: 'Right',
-        address: 'Khulna, Bangladesh',
-        goals: 15,
-        assists: 4,
-        clean_sheets: 0,
-      },
-      {
-        jersey: 10,
-        position: 'CAM',
-        age: 23,
-        foot: 'Left',
-        address: 'Sylhet, Bangladesh',
-        goals: 8,
-        assists: 7,
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
         clean_sheets: 0,
       },
       {
         jersey: 11,
-        position: 'LW',
-        age: 22,
-        foot: 'Left',
-        address: 'Dhaka, Bangladesh',
-        goals: 6,
-        assists: 5,
+        position: 'LW / ST',
+        age: 18,
+        foot: 'Right',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
+        clean_sheets: 0,
+      },
+      {
+        jersey: 17,
+        position: 'CB / CM / CDM',
+        age: 20,
+        foot: 'Right',
+        address: 'Mulikandi, Sylhet',
+        goals: 0,
+        assists: 0,
         clean_sheets: 0,
       },
     ]
 
-    // Get current user or create with service role
+    // Get current user
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -79,11 +119,11 @@ export async function GET() {
       )
     }
 
-    // Insert test players
+    // Insert squad players
     const { data, error } = await supabase
       .from('player_profiles')
       .insert(
-        testPlayers.map((player) => ({
+        squadPlayers.map((player) => ({
           ...player,
           user_id: user.id,
         }))
@@ -98,10 +138,10 @@ export async function GET() {
       )
     }
 
-    console.log('[v0] Test players created:', data?.length)
+    console.log('[v0] Squad players created:', data?.length)
     return NextResponse.json({
       success: true,
-      message: `Created ${data?.length || 0} test players`,
+      message: `Successfully added ${data?.length || 0} players to your squad`,
       data,
     })
   } catch (error) {
