@@ -11,32 +11,22 @@ export function Hero() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const handleLoad = () => {
-      setTimeout(() => {
-        setLoading(false)
-      }, 1800)
-    }
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 3500)
 
-    if (document.readyState === "complete") {
-      handleLoad()
-    } else {
-      window.addEventListener("load", handleLoad)
-    }
-
-    return () => {
-      window.removeEventListener("load", handleLoad)
-    }
+    return () => clearTimeout(timer)
   }, [])
 
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black overflow-hidden transition-opacity duration-700">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-black to-black" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-2xl animate-[pulse_4s_ease-in-out_infinite]" />
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl animate-pulse" />
 
               <Image
                 src="/logo.png"
@@ -48,12 +38,12 @@ export function Hero() {
               />
             </div>
 
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2s_ease] font-[var(--font-display)] text-center">
+            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2s_ease] font-[var(--font-display)]">
               TITAN FORCE
             </h1>
 
             <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 animate-[loadingBar_2.5s_linear_forwards]" />
+              <div className="h-full bg-red-500 animate-[loadingBar_3s_linear_forwards]" />
             </div>
 
             <p className="mt-4 text-zinc-400 tracking-[6px] text-sm animate-pulse">
@@ -63,17 +53,11 @@ export function Hero() {
         </div>
       )}
 
-      <section
-        id="home"
-        className="hero-gradient relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-b before:from-transparent before:to-black/40 before:pointer-events-none"
-      >
-        {/* Background */}
+      <section id="home" className="hero-gradient relative overflow-hidden">
+        {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-red-600/20 rounded-full blur-2xl animate-[pulse_4s_ease-in-out_infinite]" />
-
-          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-2xl animate-[pulse_6s_ease-in-out_infinite]" />
-
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-soft-light" />
+          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-red-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-3xl animate-pulse" />
         </div>
 
         <div
@@ -91,7 +75,7 @@ export function Hero() {
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-105 transition-all duration-500"
+                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
                 priority
               />
             </div>
@@ -102,32 +86,26 @@ export function Hero() {
             </p>
           </div>
           <h2 className={`text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            <span className="block text-white overflow-hidden whitespace-nowrap max-w-full border-r-4 border-white animate-typingWelcome mx-auto w-fit">
+            <span className="block text-white overflow-hidden whitespace-nowrap border-r-4 border-white animate-typingWelcome mx-auto w-fit">
               {t.hero.welcome}
             </span>
-
-            <span className="block text-primary mt-2 overflow-hidden whitespace-nowrap max-w-full border-r-4 border-primary animate-typingTitan mx-auto w-fit">
+            <span className="block text-primary mt-2 overflow-hidden whitespace-nowrap border-r-4 border-primary animate-typingTitan mx-auto w-fit">
               {t.hero.clubName}
             </span>
           </h2>
           <p className={`mt-6 text-lg text-foreground/70 max-w-xl mx-auto animate-fade-up animation-delay-200 animate-fadeIn delay-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
-          <div className="mt-8 flex justify-center gap-4 animate-fade-up animation-delay-300 animate-fadeIn delay-500 flex-wrap">
+          <div className="mt-8 flex justify-center gap-4 animate-fade-up animation-delay-300 animate-fadeIn delay-500">
             <TransitionLink
               href="/team-squad"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${
-                isBn ? "font-[var(--font-bengali)]" : ""
-              }`}
+              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.viewSquad}
             </TransitionLink>
-
             <TransitionLink
               href="/fixtures-results"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-105 active:scale-95 ${
-                isBn ? "font-[var(--font-bengali)]" : ""
-              }`}
+              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.matches}
             </TransitionLink>
@@ -302,12 +280,53 @@ export function Hero() {
             }
           }
 
-          .animate-fade-up {
-            animation: fadeUp 1s ease forwards;
+          @keyframes buttonSlideIn {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes pulseGlow {
+            0%,
+            100% {
+              opacity: 0.5;
+              filter: blur(30px);
+            }
+
+            50% {
+              opacity: 1;
+              filter: blur(20px);
+            }
           }
 
           .animate-fadeIn {
             animation: fadeIn 1s ease-out forwards;
+          }
+
+          .animate-smoothFadeUp {
+            animation: smoothFadeUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          }
+
+          .animate-smoothScale {
+            animation: smoothScale 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          }
+
+          .animate-buttonSlideIn {
+            animation: buttonSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          }
+
+          .delay-300 {
+            animation-delay: 0.3s;
+          }
+
+          .delay-500 {
+            animation-delay: 0.5s;
           }
 
           .animate-typingWelcome {
@@ -324,25 +343,8 @@ export function Hero() {
               blink 0.8s infinite;
           }
 
-          .delay-300 {
-            animation-delay: 0.3s;
-          }
-
-          .delay-500 {
-            animation-delay: 0.5s;
-          }
-
-          @media (max-width: 768px) {
-            h2 span {
-              word-break: break-word;
-            }
-          }
-
-          @media (prefers-reduced-motion: reduce) {
-            * {
-              animation: none !important;
-              transition: none !important;
-            }
+          .transition-smooth {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
           }
         `}</style>
       </section>
