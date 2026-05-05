@@ -4,80 +4,157 @@ import { useParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { createClient } from "@/lib/supabase/client"
-import { useState, useEffect } from "react"
 
-interface Player {
-  id: string
-  user_id: string
-  jersey: number
-  position: string
-  age: number
-  address?: string
-  foot: string
-  goals?: number
-  assists?: number
-  cleanSheets?: number
-}
+// Player data from squad
+const players = [
+  {
+    num: 1,
+    name: "Shuronjit",
+    fullName: "Shuronjit Biswas",
+    pos: "Goalkeeper",
+    cat: "GK",
+    age: 17,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    cleanSheets: 0,
+    bio: "A commanding presence in goal with excellent reflexes and shot-stopping ability. The last line of defense for Titan Force.",
+  },
+  {
+    num: 3,
+    name: "Srijon",
+    fullName: "Srijon Roy",
+    pos: "CB / RB",
+    cat: "DEF",
+    age: 21,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Versatile defender who can play both center-back and right-back. Known for his pace and recovery runs.",
+  },
+  {
+    num: 4,
+    name: "Akash",
+    fullName: "Akash Roy",
+    pos: "CB / LB",
+    cat: "DEF",
+    age: 17,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Strong left-footed defender with excellent aerial ability. A rock at the back for the team.",
+  },
+  {
+    num: 5,
+    name: "Akash",
+    fullName: "Akash Roy",
+    pos: "CB / CDM",
+    cat: "DEF",
+    age: 19,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Both",
+    goals: 0,
+    assists: 0,
+    bio: "The defensive anchor who can drop back or push forward. Great at breaking up opposition attacks.",
+  },
+  {
+    num: 6,
+    name: "Sujon",
+    fullName: "Sujon Roy",
+    pos: "CAM",
+    cat: "MID",
+    age: 20,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Creative playmaker with excellent vision and passing range. The engine of Titan Force's attack.",
+  },
+  {
+    num: 7,
+    name: "Shuvo",
+    fullName: "Shuvo Roy",
+    pos: "LW / RW / CAM",
+    cat: "FWD",
+    age: 19,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Explosive winger with pace to burn. Can play on either flank and loves to cut inside to shoot.",
+  },
+  {
+    num: 8,
+    name: "Sojib",
+    fullName: "Sojib Roy",
+    pos: "CM / CAM",
+    cat: "MID",
+    age: 20,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Box-to-box midfielder who covers every blade of grass. Combines work rate with technical quality.",
+  },
+  {
+    num: 9,
+    name: "Sajon",
+    fullName: "Sajon Biswas",
+    pos: "ST / CF",
+    cat: "FWD",
+    age: 17,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Clinical striker with a natural instinct for goal. The team's top scorer and focal point of the attack.",
+  },
+  {
+    num: 11,
+    name: "Kourov",
+    fullName: "Kourov Chakroborty",
+    pos: "LW / ST",
+    cat: "FWD",
+    age: 18,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Tricky left winger who can also play as a second striker. Dangerous in one-on-one situations.",
+  },
+  {
+    num: 17,
+    name: "Shekhor",
+    fullName: "Shekhor Mohan Roy",
+    pos: "CB / CM / CDM",
+    cat: "DEF",
+    age: 20,
+    hometown: "Mulikandi, Sylhet",
+    foot: "Right",
+    goals: 0,
+    assists: 0,
+    bio: "Versatile player who can slot into defense or midfield. A true utility player with leadership qualities.",
+  },
+]
 
 export default function PlayerProfile() {
   const params = useParams()
-  const playerJersey = parseInt(params.number as string)
+  const playerNum = parseInt(params.number as string)
   const { language } = useLanguage()
   const isBn = language === "bn"
-  
-  const [player, setPlayer] = useState<Player | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchPlayer = async () => {
-      try {
-        setIsLoading(true)
-        const supabase = createClient()
+  const player = players.find((p) => p.num === playerNum)
 
-        const { data, error: fetchError } = await supabase
-          .from("player_profiles")
-          .select("*")
-          .eq("jersey", playerJersey)
-          .single()
-
-        if (fetchError) throw fetchError
-        if (!data) throw new Error("Player not found")
-
-        setPlayer(data)
-        setError(null)
-        console.log("[v0] Player loaded:", data)
-      } catch (err) {
-        console.error("[v0] Error fetching player:", err)
-        setError(err instanceof Error ? err.message : "Failed to load player")
-        setPlayer(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchPlayer()
-  }, [playerJersey])
-
-  if (isLoading) {
+  if (!player) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !player) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-foreground mb-4">{isBn ? "খেলোয়াড় খুঁজে পাওয়া যায়নি" : "Player Not Found"}</h1>
-          <p className="text-foreground/60 mb-6">{error}</p>
-          <Link href="/#squad" className="text-primary hover:text-primary/80">
-            {isBn ? "দলে ফিরুন" : "Go Back to Squad"}
+          <h1 className="text-3xl font-bold text-foreground mb-4">Player Not Found</h1>
+          <Link href="/players" className="text-primary hover:text-primary/80">
+            Go Back to Squad
           </Link>
         </div>
       </div>
@@ -86,8 +163,8 @@ export default function PlayerProfile() {
 
   const stats = [
     { title: "Appearances", value: "0" },
-    { title: "Goals", value: (player.goals || 0).toString() },
-    { title: "Assists", value: (player.assists || 0).toString() },
+    { title: "Goals", value: player.goals.toString() },
+    { title: "Assists", value: player.assists.toString() },
     { title: "Minutes", value: "0" },
     { title: "Pass Accuracy", value: "92%" },
     { title: "Chances Created", value: "41" },
@@ -164,7 +241,7 @@ export default function PlayerProfile() {
           <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
             <div className="w-40 h-40 md:w-52 md:h-52 object-cover rounded-3xl border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center">
               <span className="font-[var(--font-display)] text-6xl md:text-7xl text-primary">
-                #{player.jersey}
+                #{player.num}
               </span>
             </div>
 
@@ -174,12 +251,12 @@ export default function PlayerProfile() {
               </p>
 
               <h1 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-none text-foreground">
-                {isBn ? "খেলোয়াড়" : `Player ${player.jersey}`}
+                {player.fullName.split(" ")[0]}
               </h1>
 
               <div className={`flex flex-wrap items-center gap-4 mt-4 text-base md:text-lg text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                <span className="text-primary font-bold">#{player.jersey}</span>
-                <span>{player.position}</span>
+                <span className="text-primary font-bold">#{player.num}</span>
+                <span>{player.pos}</span>
                 <span>Bangladesh</span>
                 <span>{player.foot} Footed</span>
               </div>
@@ -216,11 +293,11 @@ export default function PlayerProfile() {
 
             <div className={`space-y-4 text-foreground/80 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {[
-                ["Full Name", isBn ? "খেলোয়াড়" : "Player"],
-                ["Position", player.position],
+                ["Full Name", player.fullName],
+                ["Position", player.pos],
                 ["Age", player.age.toString()],
-                ["Jersey Number", player.jersey.toString()],
-                ["Address", player.address || "N/A"],
+                ["Jersey Number", player.num.toString()],
+                ["Hometown", player.hometown],
                 ["Preferred Foot", player.foot],
                 ["Club", "Titan Force FC"],
                 ["Status", "Active"],
@@ -262,7 +339,7 @@ export default function PlayerProfile() {
               {isBn ? "জীবনী" : "Biography"}
             </h2>
             <p className={`text-foreground/80 leading-8 text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "প্রতিভাবান খেলোয়াড়ের একটি বিস্তৃত বায়োগ্রাফি" : "An accomplished player representing Titan Force FC with dedication and skill on the field."}
+              {player.bio}
             </p>
           </div>
 

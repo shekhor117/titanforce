@@ -29,7 +29,6 @@ export default function PlayerProfileEditPage() {
     address: user?.playerProfile?.address || "",
     experience: user?.playerProfile?.experience || "",
     photoUrl: user?.playerProfile?.photoUrl || "",
-    photoPath: user?.playerProfile?.photoPath || "",
   })
 
   useEffect(() => {
@@ -101,12 +100,8 @@ export default function PlayerProfileEditPage() {
             </h2>
             <PhotoUpload
               currentPhoto={formData.photoUrl}
-              currentPhotoPath={formData.photoPath}
-              onPhotoUpload={(url, path) => setFormData(prev => ({ ...prev, photoUrl: url, photoPath: path }))}
-              onPhotoDelete={(path) => console.log("[v0] Photo deleted:", path)}
+              onPhotoUpload={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
               isLoading={isSubmitting}
-              featureName="player-photos"
-              itemId={user?.id || "unknown"}
             />
           </div>
 

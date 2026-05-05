@@ -29,7 +29,7 @@ export function PageTransition() {
       {/* Optional: Loading indicator */}
       {isTransitioning && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none">
-          <div className="w-5 h-5 bg-primary rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
         </div>
       )}
     </>
