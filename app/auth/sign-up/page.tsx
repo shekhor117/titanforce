@@ -22,6 +22,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [isFacebookLoading, setIsFacebookLoading] = useState(false)
   const router = useRouter()
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -84,6 +85,27 @@ export default function Page() {
     }
   }
 
+  const handleFacebookSignUp = async () => {
+    setIsFacebookLoading(true)
+    setError(null)
+    const supabase = createClient()
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo:
+            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+            `${window.location.origin}/auth/callback`,
+        },
+      })
+      if (error) throw error
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Failed to sign up with Facebook')
+      setIsFacebookLoading(false)
+    }
+  }
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -104,6 +126,15 @@ export default function Page() {
                       disabled={isGoogleLoading}
                     >
                       {isGoogleLoading ? 'Signing up with Google...' : 'Sign up with Google'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleFacebookSignUp}
+                      disabled={isFacebookLoading}
+                    >
+                      {isFacebookLoading ? 'Signing up with Facebook...' : 'Sign up with Facebook'}
                     </Button>
 
                     <div className="relative">
