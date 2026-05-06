@@ -2,17 +2,22 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { motion } from 'motion/react'
+import { Eye, EyeOff, User, Heart, Handshake } from 'lucide-react'
 import Link from 'next/link'
-import { User, Heart, Handshake } from 'lucide-react'
+import Image from 'next/image'
 
 type Role = 'player' | 'fan' | 'partner'
 
 export default function SignUpPage() {
   const supabase = createClient()
-  const [selectedRole, setSelectedRole] = useState<Role>('player')
+  const [selectedRole, setSelectedRole] = useState<Role>('fan')
+  const [showPassword, setShowPassword] = useState(false)
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
 
@@ -21,6 +26,33 @@ export default function SignUpPage() {
     { id: 'fan', label: 'Fan', icon: <Heart className="w-5 h-5" />, description: 'Support the team' },
     { id: 'partner', label: 'Partner', icon: <Handshake className="w-5 h-5" />, description: 'Business collaboration' },
   ]
+
+  const handleEmailSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: selectedRole,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
+        },
+      })
+
+      if (error) throw error
+      window.location.href = '/auth/sign-up-success'
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to sign up')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleGoogleSignUp = async () => {
     try {
@@ -61,31 +93,50 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <Card className="w-full max-w-md bg-zinc-900 border-zinc-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-white">Join Titan Force</CardTitle>
-          <CardDescription className="text-zinc-400">
-            Select your role and sign up
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {error && (
-            <div className="bg-red-900/20 text-red-400 text-sm p-3 rounded-md border border-red-800">
-              {error}
-            </div>
-          )}
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="w-full max-w-md flex flex-col items-center gap-6"
+      >
+        {/* Logo */}
+        <div className="mb-2">
+          <Image 
+            src="/logo.png" 
+            alt="Titan Force Logo" 
+            width={80}
+            height={80}
+            className="object-contain"
+          />
+        </div>
 
-          {/* Role Selection */}
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-display font-bold text-foreground tracking-tight">
+            Sign Up
+          </h1>
+          <p className="text-base font-medium text-muted-foreground">
+            Already have an account?{' '}
+            <Link href="/auth/login" className="text-primary hover:underline transition-colors">
+              Log In
+            </Link>
+          </p>
+        </div>
+
+        {/* Role Selection */}
+        <div className="w-full space-y-3">
+          <p className="text-sm text-center text-muted-foreground">Select your role</p>
           <div className="grid grid-cols-3 gap-2">
             {roles.map((role) => (
               <button
                 key={role.id}
+                type="button"
                 onClick={() => setSelectedRole(role.id)}
-                className={`flex flex-col items-center gap-2 py-4 px-2 rounded-lg transition-all ${
+                className={`flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all border ${
                   selectedRole === role.id
-                    ? 'bg-red-600 text-white'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                 }`}
               >
                 {role.icon}
@@ -93,42 +144,130 @@ export default function SignUpPage() {
               </button>
             ))}
           </div>
-
-          <p className="text-xs text-zinc-500 text-center">
+          <p className="text-xs text-center text-muted-foreground">
             {roles.find(r => r.id === selectedRole)?.description}
           </p>
+        </div>
 
-          {/* OAuth Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={handleGoogleSignUp}
-              disabled={isGoogleLoading}
-              className="w-full py-6 bg-white text-black hover:bg-zinc-200 font-semibold"
-            >
-              {isGoogleLoading ? 'Signing up...' : 'Continue with Google'}
-            </Button>
+        {/* Error Message */}
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full bg-destructive/10 text-destructive text-sm p-4 rounded-2xl border border-destructive/20"
+          >
+            {error}
+          </motion.div>
+        )}
 
-            <Button
-              onClick={handleFacebookSignUp}
-              disabled={isFacebookLoading}
-              className="w-full py-6 bg-blue-600 text-white hover:bg-blue-700 font-semibold"
-            >
-              {isFacebookLoading ? 'Signing up...' : 'Continue with Facebook'}
-            </Button>
+        {/* Form */}
+        <form onSubmit={handleEmailSignUp} className="w-full space-y-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              className="w-full p-5 text-base bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
+            />
           </div>
 
-          <p className="text-xs text-zinc-500 text-center">
+          <div className="relative">
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full p-5 text-base bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
+            />
+          </div>
+
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="w-full p-5 pr-14 text-base bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground text-foreground"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-5 rounded-2xl transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="w-full flex items-center py-2">
+          <div className="flex-grow border-t border-border"></div>
+          <span className="px-4 text-base text-muted-foreground">Or</span>
+          <div className="flex-grow border-t border-border"></div>
+        </div>
+
+        {/* Social Buttons */}
+        <div className="w-full space-y-3">
+          <button
+            type="button"
+            onClick={handleGoogleSignUp}
+            disabled={isGoogleLoading}
+            className="w-full flex items-center justify-center p-4 bg-card border border-border rounded-2xl hover:bg-muted transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+              <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+              <path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z" />
+              <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
+              <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
+            </svg>
+            <span className="text-base font-bold text-foreground">
+              {isGoogleLoading ? 'Signing up...' : 'Sign up with Google'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleFacebookSignUp}
+            disabled={isFacebookLoading}
+            className="w-full flex items-center justify-center p-4 bg-card border border-border rounded-2xl hover:bg-muted transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+              <path fill="#3F51B5" d="M42 37c0 2.762-2.238 5-5 5H11c-2.761 0-5-2.238-5-5V11c0-2.762 2.239-5 5-5h26c2.762 0 5 2.238 5 5v26z" />
+              <path fill="#FFF" d="M34.368 25H31v13h-5V25h-3v-4h3v-2.41c0-4.088 2.056-6.59 5.607-6.59c1.699 0 2.483.126 2.909.183v4.133h-2.383c-1.446 0-1.745.719-1.745 2.012V21h4.15l-.67 4z" />
+            </svg>
+            <span className="text-base font-bold text-foreground">
+              {isFacebookLoading ? 'Signing up...' : 'Sign up with Facebook'}
+            </span>
+          </button>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center pt-2 space-y-2">
+          <p className="text-xs text-muted-foreground">
             Player / Fan / Partner accounts are verified by Titan Force Admin
           </p>
-
-          <div className="text-center text-sm text-zinc-400">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="text-red-500 hover:underline">
-              Login
+          <p className="text-sm text-muted-foreground">
+            Having trouble?{' '}
+            <Link href="#" className="font-bold underline text-foreground">
+              Get Help
             </Link>
-          </div>
-        </CardContent>
-      </Card>
+          </p>
+        </div>
+      </motion.div>
     </div>
   )
 }
