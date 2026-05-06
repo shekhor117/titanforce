@@ -17,6 +17,9 @@ export function TransitionLink({ href, children, className }: TransitionLinkProp
     e.preventDefault()
     startTransition()
 
+    // Clear the visited flag so loader shows again
+    sessionStorage.removeItem("titan-visited")
+
     // Wait for fade out animation to complete, then navigate
     setTimeout(() => {
       window.location.href = href
