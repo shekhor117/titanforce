@@ -11,11 +11,16 @@ export function Hero() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log("[v0] Hero useEffect running, loading:", loading)
     const timer = setTimeout(() => {
+      console.log("[v0] Hero timer complete, setting loading to false")
       setLoading(false)
     }, 3500)
 
-    return () => clearTimeout(timer)
+    return () => {
+      console.log("[v0] Hero cleanup, clearing timer")
+      clearTimeout(timer)
+    }
   }, [])
 
   return (
