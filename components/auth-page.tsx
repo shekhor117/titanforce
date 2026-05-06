@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake } from 'lucide-react'
+import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 type Role = 'player' | 'fan' | 'partner'
@@ -93,7 +93,17 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Go back"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm font-medium">Back</span>
+      </button>
+
       <motion.div
         key={view}
         initial={{ opacity: 0, y: 20 }}
