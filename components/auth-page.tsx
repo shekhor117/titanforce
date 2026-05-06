@@ -105,10 +105,9 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       </button>
 
       <motion.div
-        key={view}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
         className="w-full max-w-md flex flex-col items-center gap-8"
       >
         {/* Logo */}
@@ -159,18 +158,14 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
 
         {/* Role Selection (Sign Up only) */}
         {view === 'signup' && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="w-full"
-          >
+          <div className="w-full">
             <div className="grid grid-cols-3 gap-2">
               {roles.map((role) => (
                 <button
                   key={role.id}
                   type="button"
                   onClick={() => setSelectedRole(role.id)}
-                  className={`flex flex-col items-center gap-2 py-3 px-2 rounded-xl transition-all ${
+                  className={`flex flex-col items-center gap-2 py-3 px-2 rounded-xl transition-colors ${
                     selectedRole === role.id
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
@@ -181,25 +176,20 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Form */}
         <form onSubmit={handleEmailAuth} className="w-full space-y-4">
           {view === 'signup' && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-            >
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required={view === 'signup'}
-                className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
-              />
-            </motion.div>
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required={view === 'signup'}
+              className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+            />
           )}
 
           <input
@@ -208,7 +198,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+            className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
           />
 
           <div className="relative">
@@ -233,7 +223,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-all duration-200 text-base disabled:opacity-50"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50"
           >
             {isLoading
               ? 'Loading...'
