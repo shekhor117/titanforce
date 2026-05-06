@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { TransitionLink } from '@/components/transition-link'
 
 type Role = 'player' | 'fan' | 'partner'
 
@@ -95,14 +96,13 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
-      <button
-        onClick={() => router.push('/')}
+      <TransitionLink
+        href="/"
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Go back to home"
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="text-sm font-medium">Back</span>
-      </button>
+      </TransitionLink>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
