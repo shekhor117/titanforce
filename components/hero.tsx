@@ -5,7 +5,11 @@ import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 
-export function Hero() {
+interface HeroProps {
+  onLoadingChange?: (loading: boolean) => void
+}
+
+export function Hero({ onLoadingChange }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [loading, setLoading] = useState(true)
@@ -13,10 +17,11 @@ export function Hero() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
+      onLoadingChange?.(false)
     }, 3500)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [onLoadingChange])
 
   return (
     <>
