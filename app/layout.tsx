@@ -8,7 +8,6 @@ import { TransitionProvider } from '@/lib/transition-context'
 import { ThemeProvider } from '@/lib/theme-context'
 import { PageTransition } from '@/components/page-transition'
 import LoaderWrapper from '@/components/loader-wrapper'
-import OpeningAnimation from '@/components/opening-animation'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -48,11 +47,9 @@ export default function RootLayout({
             <AdminProvider>
               <AuthProvider>
                 <LanguageProvider>
-                  <OpeningAnimation>
-                    <LoaderWrapper>
-                      {children}
-                    </LoaderWrapper>
-                  </OpeningAnimation>
+                  <LoaderWrapper>
+                    {children}
+                  </LoaderWrapper>
                 </LanguageProvider>
               </AuthProvider>
             </AdminProvider>
