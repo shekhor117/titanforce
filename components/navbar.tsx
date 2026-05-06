@@ -85,7 +85,7 @@ export function Navbar() {
             </div>
           ) : (
             <Link
-              href="/auth/login"
+              href="/login"
               className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {language === "bn" ? "লগইন" : "Login"}
@@ -140,7 +140,7 @@ export function Navbar() {
             </>
           ) : (
             <Link
-              href="/auth/login"
+              href="/login"
               className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
               onClick={() => setMobileMenuOpen(false)}
             >
