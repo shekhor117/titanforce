@@ -11,7 +11,9 @@ export function Hero() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log("[v0] Hero mounted, loading state:", loading)
     const timer = setTimeout(() => {
+      console.log("[v0] Hero loading complete, hiding loader")
       setLoading(false)
     }, 3500)
 

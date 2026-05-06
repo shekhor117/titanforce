@@ -97,7 +97,9 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       {/* Back Button */}
       <button
         onClick={() => {
+          console.log("[v0] Back button clicked, clearing sessionStorage")
           sessionStorage.removeItem("titan-visited")
+          console.log("[v0] Navigating to home with full reload")
           window.location.href = "/"
         }}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
