@@ -96,7 +96,10 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
       <button
-        onClick={() => router.push('/')}
+        onClick={() => {
+          sessionStorage.removeItem("titan-visited")
+          window.location.href = "/"
+        }}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Go back to home"
       >
