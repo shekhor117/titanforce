@@ -8,31 +8,21 @@ export default function WebsiteIntro({
 }: {
   children: React.ReactNode
 }) {
-  const [showIntro, setShowIntro] =
-    useState(false)
-
-  const [mounted, setMounted] =
-    useState(false)
+  const [showIntro, setShowIntro] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
 
-    if (typeof window === "undefined")
-      return
+    if (typeof window === "undefined") return
 
     // Show intro only first open
-    const introSeen =
-      sessionStorage.getItem(
-        "titan-intro-seen"
-      )
+    const introSeen = sessionStorage.getItem("titan-intro-seen")
 
     if (!introSeen) {
       setShowIntro(true)
 
-      sessionStorage.setItem(
-        "titan-intro-seen",
-        "true"
-      )
+      sessionStorage.setItem("titan-intro-seen", "true")
 
       const timer = setTimeout(() => {
         setShowIntro(false)
@@ -60,7 +50,6 @@ export default function WebsiteIntro({
           >
             {/* Background */}
             <div className="absolute inset-0">
-
               {/* Stadium Image */}
               <img
                 src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1600&auto=format&fit=crop"
@@ -72,13 +61,11 @@ export default function WebsiteIntro({
 
               {/* Glow */}
               <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-red-600/20 rounded-full blur-3xl" />
-
               <div className="absolute bottom-[-120px] right-[-120px] w-[350px] h-[350px] bg-red-500/10 rounded-full blur-3xl" />
             </div>
 
             {/* Main Content */}
             <div className="relative z-10 flex flex-col items-center text-center px-6">
-
               {/* Logo */}
               <motion.div
                 initial={{
@@ -95,9 +82,7 @@ export default function WebsiteIntro({
                 }}
                 className="w-28 h-28 rounded-full border-4 border-red-600 bg-black flex items-center justify-center"
               >
-                <span className="text-white text-4xl font-black">
-                  TF
-                </span>
+                <span className="text-white text-4xl font-black">TF</span>
               </motion.div>
 
               {/* Club Name */}
@@ -187,7 +172,6 @@ export default function WebsiteIntro({
               >
                 BUILT FROM PASSION
               </motion.p>
-
             </div>
 
             {/* Bottom Gradient */}
