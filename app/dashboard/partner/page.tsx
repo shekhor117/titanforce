@@ -3,7 +3,6 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { LogOut, Home, ArrowLeft } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
@@ -14,8 +13,15 @@ import { PersonalizedRecommendations } from "@/components/dashboard/personalized
 export default function PartnerDashboard() {
   const { user, logout } = useAuth()
   const { language } = useLanguage()
-  const router = useRouter()
   const isBn = language === "bn"
+
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back()
+    } else {
+      window.location.href = '/'
+    }
+  }
 
   const profileFields = [
     { name: "company_name", completed: true, label: isBn ? "কোম্পানির নাম" : "Company Name" },
@@ -64,7 +70,7 @@ export default function PartnerDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => router.back()}
+              onClick={handleBack}
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
               title="Back"
             >
