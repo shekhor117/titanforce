@@ -13,35 +13,37 @@ export function Hero({ onLoadingChange }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   
-  // Check if intro has already been shown this session
-  const [loading, setLoading] = useState(() => {
-    if (typeof window !== "undefined") {
-      const hasSeenIntro = sessionStorage.getItem("titanforce_intro_shown")
-      return !hasSeenIntro
-    }
-    return true
-  })
+  // Start with null to avoid hydration mismatch, then check sessionStorage on client
+  const [loading, setLoading] = useState<boolean | null>(null)
 
   useEffect(() => {
-    // If intro was already shown, notify parent immediately
-    if (!loading) {
-      onLoadingChange?.(false)
-      return
-    }
-
-    // Show intro and mark as seen
-    const timer = setTimeout(() => {
+    // Check if intro has already been shown this session
+    const hasSeenIntro = sessionStorage.getItem("titanforce_intro_shown")
+    
+    if (hasSeenIntro) {
+      // Intro already shown - skip it
       setLoading(false)
       onLoadingChange?.(false)
-      sessionStorage.setItem("titanforce_intro_shown", "true")
-    }, 3500)
+    } else {
+      // Show intro for the first time
+      setLoading(true)
+      
+      const timer = setTimeout(() => {
+        setLoading(false)
+        onLoadingChange?.(false)
+        sessionStorage.setItem("titanforce_intro_shown", "true")
+      }, 3500)
 
-    return () => clearTimeout(timer)
-  }, [loading, onLoadingChange])
+      return () => clearTimeout(timer)
+    }
+  }, [onLoadingChange])
 
+  // Don't render intro overlay until we know the state (prevents flash)
+  // null = checking sessionStorage, true = show intro, false = skip intro
+  
   return (
     <>
-      {loading && (
+      {loading === true && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-black to-black" />
 
