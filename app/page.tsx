@@ -10,11 +10,24 @@ import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
-  const [heroLoading, setHeroLoading] = useState(true)
+  // Check if hero animation has been shown this session
+  const [heroLoading, setHeroLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !sessionStorage.getItem("hero-shown")
+    }
+    return true
+  })
 
   useEffect(() => {
+    // Skip animation if already shown this session
+    if (sessionStorage.getItem("hero-shown")) {
+      setHeroLoading(false)
+      return
+    }
+
     const timer = setTimeout(() => {
       setHeroLoading(false)
+      sessionStorage.setItem("hero-shown", "true")
     }, 3500)
 
     return () => clearTimeout(timer)
@@ -22,7 +35,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background stripe-bg">
-      {!heroLoading && <Navbar />}
+      <Navbar />
       <main>
         <Hero onLoadingChange={setHeroLoading} />
         <About />

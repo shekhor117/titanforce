@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useTransition } from "@/lib/transition-context"
+import { useRouter } from "next/navigation"
 import { ReactNode } from "react"
 
 interface TransitionLinkProps {
@@ -11,16 +11,12 @@ interface TransitionLinkProps {
 }
 
 export function TransitionLink({ href, children, className }: TransitionLinkProps) {
-  const { startTransition } = useTransition()
+  const router = useRouter()
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    startTransition()
-
-    // Wait for fade out animation to complete, then navigate
-    setTimeout(() => {
-      window.location.href = href
-    }, 300)
+    // Navigate instantly without delay
+    router.push(href)
   }
 
   return (
