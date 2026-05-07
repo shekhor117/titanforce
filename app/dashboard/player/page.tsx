@@ -2,19 +2,72 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { LogOut, Home, Edit } from "lucide-react"
+import { LogOut, Home, Edit, ArrowLeft } from "lucide-react"
+import { ProfileCompletion } from "@/components/dashboard/profile-completion"
+import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
+import { ActivityFeed } from "@/components/dashboard/activity-feed"
+import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
+import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
+import { UsernameChangeComponent } from "@/components/dashboard/username-change"
 
 export default function PlayerDashboard() {
   const { user, logout } = useAuth()
-  const { language, t } = useLanguage()
+  const { language } = useLanguage()
+  const [canGoBack, setCanGoBack] = useState(false)
   const isBn = language === "bn"
+
+  useEffect(() => {
+    setCanGoBack(window.history.length > 1)
+  }, [])
+
+  const handleBack = () => {
+    if (canGoBack) {
+      window.history.back()
+    }
+  }
+
+
+
+  const profileFields = [
+    { name: "bio", completed: true, label: isBn ? "জীবনী" : "Bio" },
+    { name: "photo", completed: true, label: isBn ? "ছবি" : "Photo" },
+    { name: "stats", completed: false, label: isBn ? "পরিসংখ্যান" : "Statistics" },
+    { name: "achievements", completed: false, label: isBn ? "সাফল্য" : "Achievements" },
+    { name: "contact", completed: true, label: isBn ? "যোগাযোগ" : "Contact Info" },
+  ]
+
+  const metrics = [
+    { id: "1", label: isBn ? "খেলা" : "Matches", value: 12, unit: isBn ? "খেলা" : "matches", change: 8, changeType: "increase" as const },
+    { id: "2", label: isBn ? "গোল" : "Goals", value: 8, change: 12, changeType: "increase" as const },
+    { id: "3", label: isBn ? "সহায়তা" : "Assists", value: 5, change: 3, changeType: "increase" as const },
+    { id: "4", label: isBn ? "রেটিং" : "Rating", value: "8.5/10", change: 5, changeType: "increase" as const },
+  ]
+
+  const activities = [
+    { id: "1", type: "match" as const, title: isBn ? "টাইটান শক্তি বনাম শহর এফসি" : "TitanForce vs City FC", description: isBn ? "আপনি ম্যাচে 2 গোল এবং 1 সহায়তা করেছেন" : "You scored 2 goals and 1 assist in the match", timestamp: "2 hours ago" },
+    { id: "2", type: "goal" as const, title: isBn ? "শীর্ষ 5 স্কোরার" : "Top 5 Scorer", description: isBn ? "আপনি এই মাসের শীর্ষ স্কোরার তালিকায় প্রবেশ করেছেন" : "You made it to the top scorers list for this month", timestamp: "5 hours ago" },
+    { id: "3", type: "achievement" as const, title: isBn ? "ম্যাচ মাইলস্টোন" : "Match Milestone", description: isBn ? "আপনার 10 ম্যাচে পৌঁছেছেন!" : "You've reached 10 matches!", timestamp: "1 day ago" },
+  ]
+
+  const upcomingEvents = [
+    { id: "1", title: isBn ? "টাইটান শক্তি প্রশিক্ষণ" : "TitanForce Training", date: "May 8", time: "3:00 PM", type: "training" as const, status: "upcoming" as const },
+    { id: "2", title: isBn ? "চূড়ান্ত লিগ ম্যাচ" : "Final League Match", date: "May 10", time: "5:00 PM", type: "match" as const, status: "upcoming" as const },
+    { id: "3", title: isBn ? "দলীয় কৌশল সেশন" : "Team Strategy Session", date: "May 9", time: "4:00 PM", type: "event" as const, status: "upcoming" as const },
+  ]
+
+  const recommendations = [
+    { id: "1", title: isBn ? "ফিটনেস প্রশিক্ষণ উন্নত করুন" : "Improve Fitness Training", description: isBn ? "আপনার সহনশীলতা বাড়ানোর জন্য সাপ্তাহিক কার্ডিও সেশন যোগ করুন" : "Add weekly cardio sessions to boost your endurance", action: isBn ? "দেখুন" : "View", priority: "high" as const },
+    { id: "2", title: isBn ? "নতুন খেলোয়াড়দের সাথে সংযোগ স্থাপন করুন" : "Connect with New Players", description: isBn ? "দলের নতুন সদস্যদের সাথে বন্ধুত্ব তৈরি করুন এবং আপনার নেটওয়ার্ক প্রসারিত করুন" : "Build connections with team newcomers and expand your network", action: isBn ? "অন্বেষণ করুন" : "Explore", priority: "medium" as const },
+    { id: "3", title: isBn ? "স্পন্সরশিপ সুযোগ" : "Sponsorship Opportunity", description: isBn ? "আপনার পারফরম্যান্স অনুযায়ী বিপণনকারীদের কাছ থেকে নতুন অফার আছে" : "You have new offers from marketers matching your performance", action: isBn ? "অফার দেখুন" : "View Offers", priority: "medium" as const },
+  ]
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b-2 border-primary bg-card/50 backdrop-blur">
-        <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
           <div>
             <h1 className={`text-3xl font-[var(--font-display)] tracking-wider text-primary ${isBn ? "font-[var(--font-bengali)] font-bold" : ""}`}>
               {isBn ? "খেলোয়াড় ড্যাশবোর্ড" : "Player Dashboard"}
@@ -24,6 +77,13 @@ export default function PlayerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
@@ -43,48 +103,52 @@ export default function PlayerDashboard() {
       </div>
 
       {/* Welcome Section */}
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-card border-2 border-secondary rounded-xl p-8">
-          <h2 className={`text-2xl font-semibold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "স্বাগতম, " : "Welcome, "} {user?.name}!
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {/* Stats Card */}
-            <div className="rounded-lg bg-secondary/30 p-6 border-2 border-secondary">
-              <div className="text-4xl font-[var(--font-display)] text-primary mb-2">12</div>
-              <p className={`text-sm text-foreground/60 uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "ম্যাচ খেলা হয়েছে" : "Matches Played"}
-              </p>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <h2 className={`text-2xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          {isBn ? "স্বাগতম, " : "Welcome back, "} {user?.name}!
+        </h2>
 
-            {/* Goals Card */}
-            <div className="rounded-lg bg-secondary/30 p-6 border-2 border-secondary">
-              <div className="text-4xl font-[var(--font-display)] text-primary mb-2">8</div>
-              <p className={`text-sm text-foreground/60 uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "গোল করা" : "Goals Scored"}
-              </p>
-            </div>
+        {/* Top Section - Key Metrics */}
+        <div className="mb-8">
+          <PerformanceMetrics metrics={metrics} language={language as "en" | "bn"} />
+        </div>
 
-            {/* Assists Card */}
-            <div className="rounded-lg bg-secondary/30 p-6 border-2 border-secondary">
-              <div className="text-4xl font-[var(--font-display)] text-primary mb-2">5</div>
-              <p className={`text-sm text-foreground/60 uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "অ্যাসিস্ট" : "Assists"}
-              </p>
-            </div>
+        {/* Main Grid - Profile, Activity, Events */}
+        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          {/* Left Column - Profile & Recommendations */}
+          <div className="lg:col-span-1 space-y-8">
+            <ProfileCompletion fields={profileFields} language={language as "en" | "bn"} />
+            <PersonalizedRecommendations recommendations={recommendations} language={language as "en" | "bn"} />
           </div>
 
-          {/* Quick Links */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2">
-              <Edit className="w-5 h-5" />
-              {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
-            </Link>
-            <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2">
-              {isBn ? "পরিসংখ্যান দেখুন" : "View Stats"}
-            </Link>
+          {/* Middle Column - Activity Feed */}
+          <div className="lg:col-span-1">
+            <ActivityFeed items={activities} language={language as "en" | "bn"} />
           </div>
+
+          {/* Right Column - Upcoming Events */}
+          <div className="lg:col-span-1">
+            <UpcomingEvents events={upcomingEvents} language={language as "en" | "bn"} />
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2">
+            <Edit className="w-5 h-5" />
+            {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
+          </Link>
+          <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2">
+            {isBn ? "বিস্তারিত পরিসংখ্যান" : "View Detailed Stats"}
+          </Link>
+        </div>
+
+        {/* Username Change Section */}
+        <div className="mt-12">
+          <h3 className={`text-xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "অ্যাকাউন্ট সেটিংস" : "Account Settings"}
+          </h3>
+          <UsernameChangeComponent language={language as string} />
         </div>
       </div>
     </div>
