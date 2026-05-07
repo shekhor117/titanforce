@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Clock, Trophy, TrendingUp } from "lucide-react"
 
 interface ActivityItem {
@@ -9,11 +10,14 @@ interface ActivityItem {
   description: string
   timestamp: string
   icon?: React.ReactNode
+  onClick?: () => void
+  href?: string
 }
 
 interface ActivityFeedProps {
   items: ActivityItem[]
   language?: "en" | "bn"
+  onItemClick?: (item: ActivityItem) => void
 }
 
 const iconMap = {
@@ -32,8 +36,19 @@ const colorMap = {
   milestone: "bg-pink-500/20 text-pink-500",
 }
 
-export function ActivityFeed({ items, language = "en" }: ActivityFeedProps) {
+export function ActivityFeed({ items, language = "en", onItemClick }: ActivityFeedProps) {
+  const router = useRouter()
   const isBn = language === "bn"
+
+  const handleItemClick = (item: ActivityItem) => {
+    if (item.onClick) {
+      item.onClick()
+    } else if (item.href) {
+      router.push(item.href)
+    } else if (onItemClick) {
+      onItemClick(item)
+    }
+  }
 
   return (
     <div className="bg-card border-2 border-secondary rounded-xl p-6">
@@ -48,12 +63,16 @@ export function ActivityFeed({ items, language = "en" }: ActivityFeedProps) {
           </p>
         ) : (
           items.map((item) => (
-            <div key={item.id} className="flex gap-4 p-4 rounded-lg hover:bg-secondary/20 transition group cursor-pointer">
+            <button
+              key={item.id}
+              onClick={() => handleItemClick(item)}
+              className="w-full flex gap-4 p-4 rounded-lg hover:bg-secondary/30 transition-all duration-200 group cursor-pointer hover:scale-102"
+            >
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colorMap[item.type]}`}>
                 {iconMap[item.type] || item.icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                   {item.title}
                 </p>
                 <p className={`text-xs text-foreground/60 mt-1 line-clamp-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -63,7 +82,7 @@ export function ActivityFeed({ items, language = "en" }: ActivityFeedProps) {
               <div className={`text-xs text-foreground/50 whitespace-nowrap flex-shrink-0 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {item.timestamp}
               </div>
-            </div>
+            </button>
           ))
         )}
       </div>

@@ -35,6 +35,8 @@ interface User {
   email: string
   role: UserRole
   avatar?: string
+  username?: string
+  usernameChanges?: number
   playerProfile?: PlayerProfile
 }
 
@@ -47,6 +49,7 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string, role: UserRole) => Promise<void>
   updatePlayerProfile: (profile: PlayerProfile) => Promise<void>
   refreshProfile: () => Promise<void>
+  changeUsername: (newUsername: string) => Promise<{ success: boolean; message: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -311,8 +314,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const changeUsername = async (newUsername: string): Promise<{ success: boolean; message: string }> => {
+    if (!user?.id) {
+      return { success: false, message: "User not found" }
+    }
+
+    try {
+      const supabase = createClient()
+      
+      if (!supabase) {
+        // Demo mode
+        if (user) {
+          const updatedUser: User = {
+            ...user,
+            username: newUsername,
+            usernameChanges: (user.usernameChanges || 0) + 1,
+          }
+          setUser(updatedUser)
+          localStorage.setItem("titanforce_user", JSON.stringify(updatedUser))
+        }
+        return { success: true, message: "Username changed successfully" }
+      }
+
+      // Check how many changes the user has made
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("username_changes")
+        .eq("id", user.id)
+        .single()
+
+      if (profileData && (profileData.username_changes || 0) >= 3) {
+        return { success: false, message: "You have reached the maximum number of username changes (3)" }
+      }
+
+      // Check if username is available
+      const { data: existingUsername } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", newUsername)
+        .neq("id", user.id)
+
+      if (existingUsername && existingUsername.length > 0) {
+        return { success: false, message: "This username is already taken" }
+      }
+
+      // Update the username
+      const changesCount = (profileData?.username_changes || 0) + 1
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          username: newUsername,
+          username_changes: changesCount,
+          last_username_change_at: new Date().toISOString(),
+        })
+        .eq("id", user.id)
+
+      if (error) {
+        return { success: false, message: error.message }
+      }
+
+      // Update local user state
+      const updatedUser: User = {
+        ...user,
+        username: newUsername,
+        usernameChanges: changesCount,
+      }
+      setUser(updatedUser)
+      localStorage.setItem("titanforce_user", JSON.stringify(updatedUser))
+
+      return { success: true, message: "Username changed successfully" }
+    } catch (error) {
+      return { success: false, message: "An error occurred while changing username" }
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, profile, isLoading, login, logout, signup, updatePlayerProfile, refreshProfile }}>
+    <AuthContext.Provider value={{ user, profile, isLoading, login, logout, signup, updatePlayerProfile, refreshProfile, changeUsername }}>
       {children}
     </AuthContext.Provider>
   )

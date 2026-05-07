@@ -2,8 +2,9 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { LogOut, Home } from "lucide-react"
+import { LogOut, Home, ArrowLeft } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
@@ -13,7 +14,20 @@ import { PersonalizedRecommendations } from "@/components/dashboard/personalized
 export default function PartnerDashboard() {
   const { user, logout } = useAuth()
   const { language } = useLanguage()
+  const [canGoBack, setCanGoBack] = useState(false)
   const isBn = language === "bn"
+
+  useEffect(() => {
+    setCanGoBack(window.history.length > 1)
+  }, [])
+
+  const handleBack = () => {
+    if (canGoBack) {
+      window.history.back()
+    }
+  }
+
+
 
   const profileFields = [
     { name: "company_name", completed: true, label: isBn ? "কোম্পানির নাম" : "Company Name" },
@@ -61,6 +75,13 @@ export default function PartnerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"

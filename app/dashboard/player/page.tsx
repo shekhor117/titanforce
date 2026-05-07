@@ -2,18 +2,33 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { LogOut, Home, Edit } from "lucide-react"
+import { LogOut, Home, Edit, ArrowLeft } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
+import { UsernameChangeComponent } from "@/components/dashboard/username-change"
 
 export default function PlayerDashboard() {
   const { user, logout } = useAuth()
   const { language } = useLanguage()
+  const [canGoBack, setCanGoBack] = useState(false)
   const isBn = language === "bn"
+
+  useEffect(() => {
+    setCanGoBack(window.history.length > 1)
+  }, [])
+
+  const handleBack = () => {
+    if (canGoBack) {
+      window.history.back()
+    }
+  }
+
+
 
   const profileFields = [
     { name: "bio", completed: true, label: isBn ? "জীবনী" : "Bio" },
@@ -62,6 +77,13 @@ export default function PlayerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
@@ -111,7 +133,7 @@ export default function PlayerDashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
           <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2">
             <Edit className="w-5 h-5" />
             {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
@@ -119,6 +141,14 @@ export default function PlayerDashboard() {
           <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2">
             {isBn ? "বিস্তারিত পরিসংখ্যান" : "View Detailed Stats"}
           </Link>
+        </div>
+
+        {/* Username Change Section */}
+        <div className="mt-12">
+          <h3 className={`text-xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "অ্যাকাউন্ট সেটিংস" : "Account Settings"}
+          </h3>
+          <UsernameChangeComponent language={language as string} />
         </div>
       </div>
     </div>
