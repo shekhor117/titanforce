@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { ArrowUpRight, ArrowDownRight } from "lucide-react"
 
 interface MetricCard {
@@ -11,30 +10,16 @@ interface MetricCard {
   change?: number
   changeType?: "increase" | "decrease"
   trend?: number[]
-  onClick?: () => void
-  href?: string
 }
 
 interface PerformanceMetricsProps {
   metrics: MetricCard[]
   language?: "en" | "bn"
   title?: string
-  onMetricClick?: (metric: MetricCard) => void
 }
 
-export function PerformanceMetrics({ metrics, language = "en", title, onMetricClick }: PerformanceMetricsProps) {
-  const router = useRouter()
+export function PerformanceMetrics({ metrics, language = "en", title }: PerformanceMetricsProps) {
   const isBn = language === "bn"
-
-  const handleMetricClick = (metric: MetricCard) => {
-    if (metric.onClick) {
-      metric.onClick()
-    } else if (metric.href) {
-      router.push(metric.href)
-    } else if (onMetricClick) {
-      onMetricClick(metric)
-    }
-  }
 
   return (
     <div className="bg-card border-2 border-secondary rounded-xl p-6">
@@ -46,10 +31,9 @@ export function PerformanceMetrics({ metrics, language = "en", title, onMetricCl
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((metric) => (
-          <button
+          <div
             key={metric.id}
-            onClick={() => handleMetricClick(metric)}
-            className="p-4 rounded-lg bg-secondary/30 border border-secondary hover:shadow-lg hover:bg-secondary/50 transition-all duration-200 cursor-pointer text-left transform hover:scale-105"
+            className="p-4 rounded-lg bg-secondary/30 border border-secondary hover:shadow-md transition"
           >
             <p className={`text-xs uppercase tracking-wider text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {metric.label}
@@ -80,7 +64,7 @@ export function PerformanceMetrics({ metrics, language = "en", title, onMetricCl
                 </div>
               )}
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>

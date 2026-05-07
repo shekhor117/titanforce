@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Star, ArrowRight } from "lucide-react"
 
 interface Recommendation {
@@ -11,34 +10,21 @@ interface Recommendation {
   actionUrl?: string
   icon?: React.ReactNode
   priority?: "high" | "medium" | "low"
-  onClick?: () => void
 }
 
 interface PersonalizedRecommendationsProps {
   recommendations: Recommendation[]
   language?: "en" | "bn"
-  onRecommendationClick?: (recommendation: Recommendation) => void
 }
 
 const priorityStyles = {
-  high: "border-red-500 bg-red-500/10 hover:bg-red-500/20",
-  medium: "border-amber-500 bg-amber-500/10 hover:bg-amber-500/20",
-  low: "border-green-500 bg-green-500/10 hover:bg-green-500/20",
+  high: "border-red-500 bg-red-500/10",
+  medium: "border-amber-500 bg-amber-500/10",
+  low: "border-green-500 bg-green-500/10",
 }
 
-export function PersonalizedRecommendations({ recommendations, language = "en", onRecommendationClick }: PersonalizedRecommendationsProps) {
-  const router = useRouter()
+export function PersonalizedRecommendations({ recommendations, language = "en" }: PersonalizedRecommendationsProps) {
   const isBn = language === "bn"
-
-  const handleRecommendationClick = (rec: Recommendation) => {
-    if (rec.onClick) {
-      rec.onClick()
-    } else if (rec.actionUrl) {
-      router.push(rec.actionUrl)
-    } else if (onRecommendationClick) {
-      onRecommendationClick(rec)
-    }
-  }
 
   return (
     <div className="bg-card border-2 border-secondary rounded-xl p-6">
@@ -56,14 +42,13 @@ export function PersonalizedRecommendations({ recommendations, language = "en", 
           </p>
         ) : (
           recommendations.map((rec) => (
-            <button
+            <div
               key={rec.id}
-              onClick={() => handleRecommendationClick(rec)}
-              className={`w-full p-4 rounded-lg border-2 ${priorityStyles[rec.priority || "medium"]} hover:shadow-lg transition-all duration-200 transform hover:scale-102 text-left`}
+              className={`p-4 rounded-lg border-2 ${priorityStyles[rec.priority || "medium"]} hover:shadow-md transition`}
             >
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-sm text-foreground hover:text-primary transition-colors">
+                  <h4 className="font-semibold text-sm text-foreground">
                     {rec.title}
                   </h4>
                   <p className={`text-xs text-foreground/70 mt-1 line-clamp-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -71,7 +56,7 @@ export function PersonalizedRecommendations({ recommendations, language = "en", 
                   </p>
                 </div>
               </div>
-              <div
+              <button
                 className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded mt-3 transition ${
                   rec.priority === "high"
                     ? "bg-red-500 hover:bg-red-600 text-white"
@@ -82,8 +67,8 @@ export function PersonalizedRecommendations({ recommendations, language = "en", 
               >
                 {rec.action}
                 <ArrowRight className="w-3 h-3" />
-              </div>
-            </button>
+              </button>
+            </div>
           ))
         )}
       </div>
