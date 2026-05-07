@@ -12,16 +12,32 @@ interface HeroProps {
 export function Hero({ onLoadingChange }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
-  const [loading, setLoading] = useState(true)
+  
+  // Check if intro has already been shown this session
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      const hasSeenIntro = sessionStorage.getItem("titanforce_intro_shown")
+      return !hasSeenIntro
+    }
+    return true
+  })
 
   useEffect(() => {
+    // If intro was already shown, notify parent immediately
+    if (!loading) {
+      onLoadingChange?.(false)
+      return
+    }
+
+    // Show intro and mark as seen
     const timer = setTimeout(() => {
       setLoading(false)
       onLoadingChange?.(false)
+      sessionStorage.setItem("titanforce_intro_shown", "true")
     }, 3500)
 
     return () => clearTimeout(timer)
-  }, [onLoadingChange])
+  }, [loading, onLoadingChange])
 
   return (
     <>
