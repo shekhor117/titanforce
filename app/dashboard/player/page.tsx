@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { LogOut, Home, Edit, ArrowLeft } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
@@ -13,7 +14,18 @@ import { PersonalizedRecommendations } from "@/components/dashboard/personalized
 export default function PlayerDashboard() {
   const { user, logout } = useAuth()
   const { language } = useLanguage()
+  const [canGoBack, setCanGoBack] = useState(false)
   const isBn = language === "bn"
+
+  useEffect(() => {
+    setCanGoBack(window.history.length > 1)
+  }, [])
+
+  const handleBack = () => {
+    if (canGoBack) {
+      window.history.back()
+    }
+  }
 
 
 
@@ -64,13 +76,13 @@ export default function PlayerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
+            <button
+              onClick={handleBack}
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
               title="Back"
             >
               <ArrowLeft className="w-5 h-5" />
-            </Link>
+            </button>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
