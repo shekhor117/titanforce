@@ -181,7 +181,11 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           transition={{ delay: 0.1 }}
           className="mb-2"
         >
-          <h2 className="text-4xl font-bold text-primary font-[family-name:var(--font-display)]">TF</h2>
+          <img
+            src="/logo.png"
+            alt="Titan Force Logo"
+            className="w-20 h-20 object-contain"
+          />
         </motion.div>
 
         {/* Header */}
