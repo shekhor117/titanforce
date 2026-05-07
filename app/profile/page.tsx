@@ -343,7 +343,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইউজার আইডি" : "Member ID"}
+                    {isBn ? "ইউজার আইডি" : "User ID"}
                   </p>
                   <p className="text-foreground font-medium font-mono text-sm truncate">{user.id}</p>
                 </div>
