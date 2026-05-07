@@ -40,6 +40,11 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setIsLoading(true)
       setError(null)
 
+      if (!supabase) {
+        setError('Authentication is not configured. Please contact support.')
+        return
+      }
+
       if (view === 'login') {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -75,6 +80,14 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       if (provider === 'facebook') setIsFacebookLoading(true)
       if (provider === 'apple') setIsAppleLoading(true)
       setError(null)
+
+      if (!supabase) {
+        setError('Authentication is not configured. Please contact support.')
+        setIsGoogleLoading(false)
+        setIsFacebookLoading(false)
+        setIsAppleLoading(false)
+        return
+      }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
