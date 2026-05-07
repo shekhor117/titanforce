@@ -64,7 +64,7 @@ export default function PartnerDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/dashboard"
+              href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
               title="Back"
             >
