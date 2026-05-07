@@ -46,7 +46,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           password,
         })
         if (error) throw error
-        router.push('/dashboard')
+        router.push('/profile')
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -96,7 +96,9 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
       <button
-        onClick={() => router.push('/')}
+        onClick={() => {
+          window.location.href = "/"
+        }}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Go back to home"
       >
