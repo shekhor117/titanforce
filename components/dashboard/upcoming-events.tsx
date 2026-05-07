@@ -1,7 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-
 interface UpcomingEvent {
   id: string
   title: string
@@ -9,14 +7,11 @@ interface UpcomingEvent {
   time: string
   type: "match" | "training" | "event" | "deadline"
   status: "upcoming" | "today" | "overdue"
-  onClick?: () => void
-  href?: string
 }
 
 interface UpcomingEventsProps {
   events: UpcomingEvent[]
   language?: "en" | "bn"
-  onEventClick?: (event: UpcomingEvent) => void
 }
 
 const typeStyles = {
@@ -41,20 +36,9 @@ const typeLabels = {
   },
 }
 
-export function UpcomingEvents({ events, language = "en", onEventClick }: UpcomingEventsProps) {
-  const router = useRouter()
+export function UpcomingEvents({ events, language = "en" }: UpcomingEventsProps) {
   const isBn = language === "bn"
   const labels = typeLabels[isBn ? "bn" : "en"]
-
-  const handleEventClick = (event: UpcomingEvent) => {
-    if (event.onClick) {
-      event.onClick()
-    } else if (event.href) {
-      router.push(event.href)
-    } else if (onEventClick) {
-      onEventClick(event)
-    }
-  }
 
   return (
     <div className="bg-card border-2 border-secondary rounded-xl p-6">
@@ -69,10 +53,9 @@ export function UpcomingEvents({ events, language = "en", onEventClick }: Upcomi
           </p>
         ) : (
           events.map((event) => (
-            <button
+            <div
               key={event.id}
-              onClick={() => handleEventClick(event)}
-              className={`w-full p-4 rounded-lg border-2 ${typeStyles[event.type]} hover:shadow-lg transition-all duration-200 transform hover:scale-102 text-left`}
+              className={`p-4 rounded-lg border-2 ${typeStyles[event.type]} hover:shadow-md transition`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -86,7 +69,7 @@ export function UpcomingEvents({ events, language = "en", onEventClick }: Upcomi
                       </span>
                     )}
                   </div>
-                  <p className="font-semibold text-sm text-foreground hover:text-primary transition-colors">
+                  <p className="font-semibold text-sm text-foreground">
                     {event.title}
                   </p>
                   <p className={`text-xs text-current/70 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -94,7 +77,7 @@ export function UpcomingEvents({ events, language = "en", onEventClick }: Upcomi
                   </p>
                 </div>
               </div>
-            </button>
+            </div>
           ))
         )}
       </div>
