@@ -181,8 +181,6 @@ export default function PlayerProfile() {
 
   const trophies = [
     { name: "Daudpur Tournament Champion", year: "2026" },
-    { name: "Championship", year: "" },
-    { name: "Best Young Player Award", year: "" },
   ]
 
   return (
