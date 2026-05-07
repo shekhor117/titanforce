@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background stripe-bg">
-      {!heroLoading && <Navbar />}
+      <Navbar />
       <main>
         <Hero onLoadingChange={setHeroLoading} />
         <About />
