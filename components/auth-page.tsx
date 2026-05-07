@@ -46,7 +46,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           password,
         })
         if (error) throw error
-        router.push('/dashboard')
+        router.push('/profile')
       } else {
         const { error } = await supabase.auth.signUp({
           email,
