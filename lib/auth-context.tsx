@@ -79,6 +79,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    let subscription: { unsubscribe: () => void } | null = null
+
     const initAuth = async () => {
       // First check Supabase auth
       const supabase = createClient()
@@ -105,6 +107,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return
       }
       
+      // Set up auth state change listener
+      const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          const supabaseUser = session.user
+          const newUser: User = {
+            id: supabaseUser.id,
+            name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
+            email: supabaseUser.email || "",
+            role: null,
+            avatar: supabaseUser.user_metadata?.avatar_url,
+          }
+          setUser(newUser)
+          await fetchProfile(supabaseUser.id)
+        } else if (event === "SIGNED_OUT") {
+          setUser(null)
+          setProfile(null)
+        }
+      })
+      subscription = data.subscription
+      
+      // Get current session
       const { data: { session } } = await supabase.auth.getSession()
       
       if (session?.user) {
@@ -142,29 +165,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initAuth()
 
-    // Listen for auth changes
-    const supabase = createClient()
-    if (!supabase) return
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        const supabaseUser = session.user
-        const newUser: User = {
-          id: supabaseUser.id,
-          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-          email: supabaseUser.email || "",
-          role: null,
-          avatar: supabaseUser.user_metadata?.avatar_url,
-        }
-        setUser(newUser)
-        await fetchProfile(supabaseUser.id)
-      } else if (event === "SIGNED_OUT") {
-        setUser(null)
-        setProfile(null)
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe()
       }
-    })
-
-    return () => subscription.unsubscribe()
+    }
   }, [])
 
   const login = async (email: string, password: string, role: UserRole) => {
