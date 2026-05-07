@@ -111,15 +111,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           const supabaseUser = session.user
+          // Fetch profile first to get role
+          const profileData = await fetchProfile(supabaseUser.id)
           const newUser: User = {
             id: supabaseUser.id,
             name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
             email: supabaseUser.email || "",
-            role: null,
+            role: profileData?.role || null,
             avatar: supabaseUser.user_metadata?.avatar_url,
           }
           setUser(newUser)
-          await fetchProfile(supabaseUser.id)
         } else if (event === "SIGNED_OUT") {
           setUser(null)
           setProfile(null)
@@ -132,15 +133,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (session?.user) {
         const supabaseUser = session.user
+        // Fetch profile first to get role
+        const profileData = await fetchProfile(supabaseUser.id)
         const newUser: User = {
           id: supabaseUser.id,
           name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
           email: supabaseUser.email || "",
-          role: null,
+          role: profileData?.role || null,
           avatar: supabaseUser.user_metadata?.avatar_url,
         }
         setUser(newUser)
-        await fetchProfile(supabaseUser.id)
       } else {
         // Fallback to localStorage for demo
         const savedUser = localStorage.getItem("titanforce_user")
@@ -220,6 +222,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
         localStorage.setItem("titanforce_user", JSON.stringify(newUser))
       } else if (data.user) {
+        // Set user state immediately after successful login
+        const supabaseUser = data.user
+        const newUser: User = {
+          id: supabaseUser.id,
+          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
+          email: supabaseUser.email || "",
+          role: role,
+          avatar: supabaseUser.user_metadata?.avatar_url,
+        }
+        setUser(newUser)
         await fetchProfile(data.user.id)
       }
     } finally {

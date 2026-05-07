@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/lib/auth-context'
 
 type Role = 'player' | 'fan' | 'partner'
 
@@ -15,6 +16,7 @@ interface AuthPageProps {
 export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
+  const { login } = useAuth()
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [showPassword, setShowPassword] = useState(false)
@@ -46,11 +48,8 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       }
 
       if (view === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-        if (error) throw error
+        // Use auth context for login to ensure user state is set before redirect
+        await login(email, password, selectedRole)
         router.push('/profile')
       } else {
         const { error } = await supabase.auth.signUp({
