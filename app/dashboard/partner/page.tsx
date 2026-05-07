@@ -15,13 +15,7 @@ export default function PartnerDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
 
-  const handleBack = () => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-      window.history.back()
-    } else {
-      window.location.href = '/'
-    }
-  }
+
 
   const profileFields = [
     { name: "company_name", completed: true, label: isBn ? "কোম্পানির নাম" : "Company Name" },
@@ -69,13 +63,13 @@ export default function PartnerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleBack}
+            <Link
+              href="/dashboard"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
               title="Back"
             >
               <ArrowLeft className="w-5 h-5" />
-            </button>
+            </Link>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
