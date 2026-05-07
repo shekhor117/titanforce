@@ -1,82 +1,15 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 
-interface HeroProps {
-  onLoadingChange?: (loading: boolean) => void
-}
-
-export function Hero({ onLoadingChange }: HeroProps) {
+export function Hero() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
-  
-  // Start with null to avoid hydration mismatch, then check sessionStorage on client
-  const [loading, setLoading] = useState<boolean | null>(null)
 
-  useEffect(() => {
-    // Check if intro has already been shown this session
-    const hasSeenIntro = sessionStorage.getItem("titanforce_intro_shown")
-    
-    if (hasSeenIntro) {
-      // Intro already shown - skip it
-      setLoading(false)
-      onLoadingChange?.(false)
-    } else {
-      // Show intro for the first time
-      setLoading(true)
-      
-      const timer = setTimeout(() => {
-        setLoading(false)
-        onLoadingChange?.(false)
-        sessionStorage.setItem("titanforce_intro_shown", "true")
-      }, 3500)
-
-      return () => clearTimeout(timer)
-    }
-  }, [onLoadingChange])
-
-  // Don't render intro overlay until we know the state (prevents flash)
-  // null = checking sessionStorage, true = show intro, false = skip intro
-  
   return (
-    <>
-      {loading === true && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-black to-black" />
-
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl animate-pulse" />
-
-              <Image
-                src="/logo.png"
-                alt="Opening Logo"
-                width={160}
-                height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2s_ease] drop-shadow-[0_0_40px_rgba(59,130,246,0.9)]"
-                priority
-              />
-            </div>
-
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2s_ease] font-[var(--font-display)]">
-              TITAN FORCE
-            </h1>
-
-            <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 animate-[loadingBar_3s_linear_forwards]" />
-            </div>
-
-            <p className="mt-4 text-zinc-400 tracking-[6px] text-sm animate-pulse">
-              LOADING EXPERIENCE
-            </p>
-          </div>
-        </div>
-      )}
-
-      <section id="home" className="hero-gradient relative overflow-hidden">
+    <section id="home" className="hero-gradient relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-red-600/20 rounded-full blur-3xl animate-pulse" />
@@ -371,6 +304,5 @@ export function Hero({ onLoadingChange }: HeroProps) {
           }
         `}</style>
       </section>
-    </>
   )
 }
