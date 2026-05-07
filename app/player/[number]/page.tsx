@@ -167,7 +167,7 @@ export default function PlayerProfile() {
     { title: "Assists", value: player.assists.toString() },
     { title: "Minutes", value: "0" },
     { title: "Pass Accuracy", value: "92%" },
-    { title: "Chances Created", value: "41" },
+    { title: "Chances Created", value: "0" },
   ]
 
   const seasonStats = [
