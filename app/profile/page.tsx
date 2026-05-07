@@ -105,6 +105,18 @@ export default function ProfilePage() {
     }
   }
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      await logout()
+      router.push("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
