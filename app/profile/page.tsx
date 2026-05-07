@@ -183,58 +183,58 @@ export default function ProfilePage() {
 
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-2xl mx-auto px-4 py-3 md:py-4 flex items-center justify-between gap-2">
           <button
             onClick={() => {
               window.location.href = "/"
             }}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1 md:gap-2 text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
+            <ArrowLeft className="w-4 md:w-5 h-4 md:h-5" />
+            <span className="text-xs md:text-sm font-medium hidden sm:inline">{isBn ? "ফিরে যান" : "Back"}</span>
           </button>
           
-          <h1 className={`text-lg font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <h1 className={`text-base md:text-lg font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide flex-1 text-center truncate ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "প্রোফাইল" : "MY PROFILE"}
           </h1>
           
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center gap-2 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50 flex-shrink-0"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 md:w-5 h-4 md:h-5" />
           </button>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <main className="max-w-2xl mx-auto px-4 py-4 md:py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="space-y-6"
+          className="space-y-4 md:space-y-6"
         >
           {/* Profile Header Card */}
           <div className="bg-card rounded-2xl border border-border overflow-hidden">
             {/* Banner with gradient */}
-            <div className="h-28 bg-gradient-to-br from-primary/30 via-primary/15 to-transparent relative overflow-hidden">
+            <div className="h-20 md:h-28 bg-gradient-to-br from-primary/30 via-primary/15 to-transparent relative overflow-hidden">
               <div className="absolute inset-0 bg-[url('/logo.png')] bg-center bg-no-repeat bg-contain opacity-5" />
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-card to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-12 md:h-16 bg-gradient-to-t from-card to-transparent" />
             </div>
             
             {/* Avatar & Basic Info */}
-            <div className="px-6 pb-6 relative">
+            <div className="px-4 md:px-6 pb-4 md:pb-6 relative">
               {/* Avatar */}
-              <div className="relative -mt-16 mb-4 flex justify-center sm:justify-start">
+              <div className="relative -mt-14 md:-mt-16 mb-3 md:mb-4 flex justify-center sm:justify-start">
                 <div className="relative group">
-                  <Avatar className="w-28 h-28 border-4 border-card shadow-xl">
+                  <Avatar className="w-20 md:w-28 h-20 md:h-28 border-4 border-card shadow-xl">
                     <AvatarImage 
                       src={displayAvatar} 
                       alt={user.name}
                       className="object-cover"
                     />
-                    <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-primary/20 to-primary/10 text-primary">
+                    <AvatarFallback className="text-2xl md:text-3xl font-bold bg-gradient-to-br from-primary/20 to-primary/10 text-primary">
                       {userInitials}
                     </AvatarFallback>
                   </Avatar>
@@ -246,11 +246,11 @@ export default function ProfilePage() {
                     className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
                   >
                     {isUploading ? (
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
+                      <Loader2 className="w-5 md:w-6 h-5 md:h-6 text-white animate-spin" />
                     ) : uploadSuccess ? (
-                      <CheckCircle className="w-6 h-6 text-green-400" />
+                      <CheckCircle className="w-5 md:w-6 h-5 md:h-6 text-green-400" />
                     ) : (
-                      <Camera className="w-6 h-6 text-white" />
+                      <Camera className="w-5 md:w-6 h-5 md:h-6 text-white" />
                     )}
                   </button>
 
@@ -258,24 +258,24 @@ export default function ProfilePage() {
                   <button 
                     onClick={handlePhotoClick}
                     disabled={isUploading}
-                    className="absolute bottom-1 right-1 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg border-2 border-card disabled:opacity-50"
+                    className="absolute bottom-0 right-0 w-8 md:w-9 h-8 md:h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg border-2 border-card disabled:opacity-50"
                   >
                     {isUploading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-3.5 md:w-4 h-3.5 md:h-4 animate-spin" />
                     ) : (
-                      <Camera className="w-4 h-4" />
+                      <Camera className="w-3.5 md:w-4 h-3.5 md:h-4" />
                     )}
                   </button>
                 </div>
               </div>
 
               {/* Name & Role */}
-              <div className="flex flex-col items-center sm:items-start gap-3">
+              <div className="flex flex-col items-center sm:items-start gap-2 md:gap-3">
                 <div className="text-center sm:text-left">
-                  <h2 className={`text-2xl font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  <h2 className={`text-xl md:text-2xl font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide truncate ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                     {user.name}
                   </h2>
-                  <p className="text-muted-foreground text-sm mt-0.5">{user.email}</p>
+                  <p className="text-muted-foreground text-xs md:text-sm mt-0.5 truncate">{user.email}</p>
                 </div>
                 
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">

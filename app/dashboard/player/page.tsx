@@ -51,16 +51,52 @@ export default function PlayerDashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b-2 border-primary bg-card/50 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-          <div>
-            <h1 className={`text-3xl font-[var(--font-display)] tracking-wider text-primary ${isBn ? "font-[var(--font-bengali)] font-bold" : ""}`}>
+      <div className="border-b-2 border-primary bg-card/50 backdrop-blur sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6 flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-primary truncate ${isBn ? "font-[var(--font-bengali)] font-bold" : ""}`}>
               {isBn ? "খেলোয়াড় ড্যাশবোর্ড" : "Player Dashboard"}
             </h1>
-            <p className={`text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-xs md:text-sm text-foreground/60 mt-1 hidden sm:block ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "আপনার পরিসংখ্যান এবং প্রোফাইল পরিচালনা করুন" : "Manage your stats and profile"}
             </p>
           </div>
+          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+            <Link
+              href="/dashboard/player/profile"
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Profile"
+            >
+              <User className="w-4 md:w-5 h-4 md:h-5" />
+            </Link>
+            <Link
+              href="/"
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Home"
+            >
+              <Home className="w-4 md:w-5 h-4 md:h-5" />
+            </Link>
+            <button
+              onClick={logout}
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Logout"
+            >
+              <LogOut className="w-4 md:w-5 h-4 md:h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Welcome Section */}
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+        <h2 className={`text-xl md:text-2xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          {isBn ? "স্বাগতম, " : "Welcome back, "} {user?.name}!
+        </h2>
+
+        {/* Top Section - Key Metrics */}
+        <div className="mb-8">
+          <PerformanceMetrics metrics={metrics} language={language as "en" | "bn"} />
+        </div>
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard/player/profile"
@@ -99,31 +135,31 @@ export default function PlayerDashboard() {
         </div>
 
         {/* Main Grid - Profile, Activity, Events */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
           {/* Left Column - Profile & Recommendations */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="space-y-6 md:space-y-8">
             <ProfileCompletion fields={profileFields} language={language as "en" | "bn"} />
             <PersonalizedRecommendations recommendations={recommendations} language={language as "en" | "bn"} />
           </div>
 
           {/* Middle Column - Activity Feed */}
-          <div className="lg:col-span-1">
+          <div>
             <ActivityFeed items={activities} language={language as "en" | "bn"} />
           </div>
 
           {/* Right Column - Upcoming Events */}
-          <div className="lg:col-span-1">
+          <div>
             <UpcomingEvents events={upcomingEvents} language={language as "en" | "bn"} />
           </div>
         </div>
 
         {/* Quick Links */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <Link href="/dashboard/player/profile" className="p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2">
-            <Edit className="w-5 h-5" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+          <Link href="/dashboard/player/profile" className="p-3 md:p-4 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition font-semibold flex items-center justify-center gap-2 text-sm md:text-base">
+            <Edit className="w-4 md:w-5 h-4 md:h-5" />
             {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
           </Link>
-          <Link href="/dashboard/player/stats" className="p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2">
+          <Link href="/dashboard/player/stats" className="p-3 md:p-4 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition font-semibold flex items-center justify-center gap-2 text-sm md:text-base">
             {isBn ? "বিস্তারিত পরিসংখ্যান" : "View Detailed Stats"}
           </Link>
         </div>
