@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
-import { LogOut, Home, Edit } from "lucide-react"
+import { LogOut, Home, Edit, User } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
@@ -63,6 +63,13 @@ export default function PlayerDashboard() {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              href="/dashboard/player/profile"
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title="Profile"
+            >
+              <User className="w-5 h-5" />
+            </Link>
+            <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
               title="Home"
@@ -83,7 +90,7 @@ export default function PlayerDashboard() {
       {/* Welcome Section */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h2 className={`text-2xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "স্বাগতম, " : "Welcome back, "} {user?.name}!
+          {isBn ? "স্��াগতম, " : "Welcome back, "} {user?.name}!
         </h2>
 
         {/* Top Section - Key Metrics */}
