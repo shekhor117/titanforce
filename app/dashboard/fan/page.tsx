@@ -2,9 +2,8 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { LogOut, Home, ArrowLeft } from "lucide-react"
+import { LogOut, Home, User } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
@@ -14,20 +13,7 @@ import { PersonalizedRecommendations } from "@/components/dashboard/personalized
 export default function FanDashboard() {
   const { user, logout } = useAuth()
   const { language } = useLanguage()
-  const [canGoBack, setCanGoBack] = useState(false)
   const isBn = language === "bn"
-
-  useEffect(() => {
-    setCanGoBack(window.history.length > 1)
-  }, [])
-
-  const handleBack = () => {
-    if (canGoBack) {
-      window.history.back()
-    }
-  }
-
-
 
   const profileFields = [
     { name: "username", completed: true, label: isBn ? "ব্যবহারকারী নাম" : "Username" },
@@ -75,13 +61,13 @@ export default function FanDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleBack}
+            <Link
+              href="/dashboard/fan/profile"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
-              title="Back"
+              title="Profile"
             >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+              <User className="w-5 h-5" />
+            </Link>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"

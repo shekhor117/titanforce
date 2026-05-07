@@ -17,18 +17,60 @@ export default function ProfilePage() {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    position: "",
+    jersey: "",
+    experience: "",
+  })
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login")
     }
+    // Initialize form data
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.playerProfile?.phone || "",
+        address: user.playerProfile?.address || "",
+        position: user.playerProfile?.position || "",
+        jersey: user.playerProfile?.jersey || "",
+        experience: user.playerProfile?.experience || "",
+      })
+    }
   }, [user, isLoading, router])
 
-  const handleLogout = async () => {
-    setIsLoggingOut(true)
-    await logout()
-    router.push("/")
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    try {
+      // Save to localStorage for demo purposes
+      localStorage.setItem("profileData", JSON.stringify(formData))
+      setSuccessMessage(isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!")
+      setIsEditing(false)
+      setTimeout(() => {
+        setSuccessMessage("")
+      }, 3000)
+    } catch (error) {
+      console.error("Error updating profile:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handlePhotoClick = () => {
@@ -281,6 +323,17 @@ export default function ProfilePage() {
             </motion.div>
           )}
 
+          {/* Success Message */}
+          {successMessage && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 rounded-xl bg-green-500/20 border border-green-500 text-green-400"
+            >
+              {successMessage}
+            </motion.div>
+          )}
+
           {/* Details Card */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -288,11 +341,148 @@ export default function ProfilePage() {
             transition={{ delay: 0.15 }}
             className="bg-card rounded-2xl border border-border p-5"
           >
-            <h3 className={`text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "অ্যাকাউন্ট তথ্য" : "Account Information"}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`text-xs font-semibold text-muted-foreground uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isEditing ? (isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile") : (isBn ? "অ্যাকাউন্ট তথ্য" : "Account Information")}
+              </h3>
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="text-xs font-semibold text-primary hover:text-primary/80 transition"
+                >
+                  {isBn ? "সম্পাদনা" : "Edit"}
+                </button>
+              )}
+            </div>
             
-            <div className="space-y-3">
+            {isEditing ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Name */}
+                <div>
+                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "নাম" : "Name"}
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ইমেইল" : "Email"}
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled
+                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground disabled:opacity-60 focus:outline-none transition"
+                  />
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ফোন" : "Phone"}
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder={isBn ? "আপনার ফোন নম্বর" : "Your phone number"}
+                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                  />
+                </div>
+
+                {/* Address */}
+                <div>
+                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ঠিকানা" : "Address"}
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder={isBn ? "আপনার ঠিকানা" : "Your address"}
+                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                  />
+                </div>
+
+                {/* Player-specific fields */}
+                {userRole === "player" && (
+                  <>
+                    <div>
+                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "পজিশন" : "Position"}
+                      </label>
+                      <input
+                        type="text"
+                        name="position"
+                        value={formData.position}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "আপনার পজিশন" : "Your position"}
+                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "জার্সি নম্বর" : "Jersey Number"}
+                      </label>
+                      <input
+                        type="text"
+                        name="jersey"
+                        value={formData.jersey}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "জার্সি নম্বর" : "Jersey number"}
+                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "অভিজ্ঞতা" : "Experience"}
+                      </label>
+                      <input
+                        type="text"
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        placeholder={isBn ? "অভিজ্ঞতা" : "Years of experience"}
+                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold transition disabled:opacity-50"
+                  >
+                    {isSubmitting ? (isBn ? "সংরক্ষণ করা হচ্ছে..." : "Saving...") : (isBn ? "সংরক্ষণ" : "Save")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="flex-1 px-4 py-2 border border-border text-foreground hover:bg-muted/50 rounded-lg font-semibold transition"
+                  >
+                    {isBn ? "বাতিল" : "Cancel"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="space-y-3">
               {/* Email */}
               <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -343,7 +533,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইউজার আইডি" : "Member ID"}
+                    {isBn ? "ইউজার আইডি" : "User ID"}
                   </p>
                   <p className="text-foreground font-medium font-mono text-sm truncate">{user.id}</p>
                 </div>
@@ -370,6 +560,7 @@ export default function ProfilePage() {
                 </div>
               )}
             </div>
+            )}
           </motion.div>
 
           {/* Actions */}
