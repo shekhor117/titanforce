@@ -7,21 +7,29 @@ import { TransitionLink } from "@/components/transition-link"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
+  skipAnimation?: boolean
 }
 
-export function Hero({ onLoadingChange }: HeroProps) {
+export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!skipAnimation)
 
   useEffect(() => {
+    // Skip animation if requested
+    if (skipAnimation) {
+      setLoading(false)
+      onLoadingChange?.(false)
+      return
+    }
+
     const timer = setTimeout(() => {
       setLoading(false)
       onLoadingChange?.(false)
     }, 3500)
 
     return () => clearTimeout(timer)
-  }, [onLoadingChange])
+  }, [onLoadingChange, skipAnimation])
 
   return (
     <>
