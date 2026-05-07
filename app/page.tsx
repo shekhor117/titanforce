@@ -11,33 +11,30 @@ import { Footer } from "@/components/footer"
 
 export default function Home() {
   // Check if hero animation has been shown this session
-  const [heroLoading, setHeroLoading] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !sessionStorage.getItem("hero-shown")
-    }
-    return true
-  })
+  const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
+  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
-    // Skip animation if already shown this session
-    if (sessionStorage.getItem("hero-shown")) {
+    // Check sessionStorage after mount
+    const alreadyShown = sessionStorage.getItem("hero-shown")
+    if (alreadyShown) {
+      setHasSeenAnimation(true)
       setHeroLoading(false)
-      return
     }
-
-    const timer = setTimeout(() => {
-      setHeroLoading(false)
-      sessionStorage.setItem("hero-shown", "true")
-    }, 3500)
-
-    return () => clearTimeout(timer)
   }, [])
+
+  const handleLoadingChange = (loading: boolean) => {
+    setHeroLoading(loading)
+    if (!loading) {
+      sessionStorage.setItem("hero-shown", "true")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background stripe-bg">
       <Navbar />
       <main>
-        <Hero onLoadingChange={setHeroLoading} />
+        <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <About />
         <Squad />
         <Matches />
