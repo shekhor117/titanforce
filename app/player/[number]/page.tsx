@@ -9,6 +9,7 @@ import { useLanguage } from "@/lib/language-context"
 // Player photos mapping
 const playerPhotos: Record<number, string> = {
   4: "/players/player-4.png",
+  5: "/players/player-5.png",
   11: "/players/player-11.png",
   17: "/players/player-17.png",
 }
