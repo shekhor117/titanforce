@@ -5,7 +5,7 @@ import { Facebook, Instagram, Youtube, Twitter } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+  { icon: Facebook, href: "https://facebook.com/TitanForceMulikandi", label: "Facebook" },
   { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
   { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
   { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
