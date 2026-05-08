@@ -14,11 +14,7 @@ interface UserData {
 }
 
 const mockUsers: UserData[] = [
-  { id: "1", name: "Admin User", email: "admin@titanforce.com", role: "admin", status: "active", joinedAt: "2024-01-15" },
-  { id: "2", name: "John Doe", email: "john@example.com", role: "player", status: "active", joinedAt: "2024-02-20" },
-  { id: "3", name: "Jane Smith", email: "jane@example.com", role: "fan", status: "active", joinedAt: "2024-03-10" },
-  { id: "4", name: "Partner Corp", email: "partner@corp.com", role: "partner", status: "active", joinedAt: "2024-03-15" },
-  { id: "5", name: "Mike Wilson", email: "mike@example.com", role: "fan", status: "inactive", joinedAt: "2024-01-25" },
+  { id: "1", name: "Admin User", email: "admin@titanforce.com", role: "admin", status: "active", joinedAt: "2026-08-9" },,
 ]
 
 export default function AdminUsersPage() {
