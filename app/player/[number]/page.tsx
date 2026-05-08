@@ -13,6 +13,7 @@ const playerPhotos: Record<number, string> = {
   5: "/players/player-5.png",
   6: "/players/player-6.png",
   7: "/players/player-7.png",
+  9: "/players/player-9.png",
   11: "/players/player-11.png",
   17: "/players/player-17.png",
 }
