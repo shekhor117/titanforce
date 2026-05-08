@@ -42,16 +42,26 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setIsLoading(true)
       setError(null)
 
-      if (!supabase) {
-        setError('Authentication is not configured. Please contact support.')
-        return
-      }
-
       if (view === 'login') {
-        // Use auth context for login to ensure user state is set before redirect
+        // Use auth context for login - it handles both Supabase and demo mode
         await login(email, password, selectedRole)
         router.push('/profile')
       } else {
+        if (!supabase) {
+          // Demo mode signup - use auth context
+          const { signup } = await import('@/lib/auth-context').then(mod => ({ signup: mod.useAuth }))
+          // For demo mode, simulate signup via localStorage
+          const demoUser = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: fullName,
+            email,
+            role: selectedRole,
+          }
+          localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
+          router.push('/profile')
+          return
+        }
+        
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -81,10 +91,15 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setError(null)
 
       if (!supabase) {
-        setError('Authentication is not configured. Please contact support.')
-        setIsGoogleLoading(false)
-        setIsFacebookLoading(false)
-        setIsAppleLoading(false)
+        // Demo mode - simulate OAuth login with localStorage
+        const demoUser = {
+          id: Math.random().toString(36).substr(2, 9),
+          name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
+          email: `demo@${provider}.com`,
+          role: selectedRole,
+        }
+        localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
+        router.push('/profile')
         return
       }
 
