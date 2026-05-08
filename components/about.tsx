@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { dataStore, useDataStore } from "@/lib/data-store"
 
 export function About() {
   const [isVisible, setIsVisible] = useState(false)
@@ -9,8 +10,13 @@ export function About() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
+  // Get settings and players from data store
+  const settings = useDataStore(dataStore.getSettings, "settings")
+  const players = useDataStore(dataStore.getPlayers, "players")
+  const activePlayers = players.filter(p => p.status === "active")
+
   const stats = [
-    { value: "10+", label: t.about.players },
+    { value: `${activePlayers.length}+`, label: t.about.players },
     { value: "⚡", label: t.about.spirit },
     { value: "1", label: t.about.team },
   ]
@@ -42,10 +48,10 @@ export function About() {
           {t.about.location}
         </p>
         <h2 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-          {t.about.title}
+          {settings.aboutTitle || t.about.title}
         </h2>
         <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {t.about.description}
+          {settings.aboutDescription || t.about.description}
         </p>
         <div className="grid grid-cols-3 gap-6 mt-12 max-w-lg mx-auto">
           {stats.map((stat) => (
