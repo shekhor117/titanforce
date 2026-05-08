@@ -10,7 +10,7 @@ export function About() {
   const isBn = language === "bn"
 
   const stats = [
-    { value: "10+", label: t.about.players },
+    { value: "10", label: t.about.players },
     { value: "⚡", label: t.about.spirit },
     { value: "1", label: t.about.team },
   ]
