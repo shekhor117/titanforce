@@ -2,20 +2,8 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, X, Save, Calendar, MapPin } from "lucide-react"
-
-interface Match {
-  id: string
-  homeTeam: string
-  awayTeam: string
-  date: string
-  time: string
-  venue: string
-  homeScore: number | null
-  awayScore: number | null
-  status: "upcoming" | "live" | "completed"
-  competition: string
-}
+import { dataStore, Match, useDataStore } from "@/lib/data-store"
+import { Plus, Edit, Trash2, X, Save, Calendar, MapPin, Search } from "lucide-react"
 
 export default function AdminMatches() {
   const { language } = useLanguage()
@@ -23,57 +11,53 @@ export default function AdminMatches() {
   const [showForm, setShowForm] = useState(false)
   const [editingMatch, setEditingMatch] = useState<Match | null>(null)
   const [filter, setFilter] = useState<"all" | "upcoming" | "live" | "completed">("all")
+  const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
-    homeTeam: "Titan Force",
-    awayTeam: "",
+    home: "Titan Force",
+    away: "",
     date: "",
     time: "",
-    venue: "",
+    venue: "Mulikandi Ground",
     homeScore: "",
     awayScore: "",
     status: "upcoming" as Match["status"],
-    competition: "",
+    result: "" as Match["result"] | "",
   })
-  const [matches, setMatches] = useState<Match[]>([])
+  
+  const matches = useDataStore(dataStore.getMatches, "matches")
 
   const handleSaveMatch = () => {
-    if (!formData.awayTeam || !formData.date || !formData.venue) {
+    if (!formData.away || !formData.date || !formData.venue) {
       alert(isBn ? "সব ফিল্ড পূরণ করুন" : "Please fill all required fields")
       return
     }
 
+    // Calculate result based on scores
+    let result: Match["result"] | undefined
+    if (formData.status === "completed" && formData.homeScore && formData.awayScore) {
+      const homeScore = parseInt(formData.homeScore)
+      const awayScore = parseInt(formData.awayScore)
+      if (homeScore > awayScore) result = "W"
+      else if (homeScore < awayScore) result = "L"
+      else result = "D"
+    }
+
+    const matchData: Omit<Match, "id"> = {
+      home: formData.home,
+      away: formData.away,
+      date: formData.date,
+      time: formData.time,
+      venue: formData.venue,
+      homeScore: formData.homeScore ? parseInt(formData.homeScore) : null,
+      awayScore: formData.awayScore ? parseInt(formData.awayScore) : null,
+      status: formData.status,
+      result,
+    }
+
     if (editingMatch) {
-      setMatches(matches.map(m => 
-        m.id === editingMatch.id 
-          ? { 
-              ...m,
-              homeTeam: formData.homeTeam,
-              awayTeam: formData.awayTeam,
-              date: formData.date,
-              time: formData.time,
-              venue: formData.venue,
-              homeScore: formData.homeScore ? parseInt(formData.homeScore) : null,
-              awayScore: formData.awayScore ? parseInt(formData.awayScore) : null,
-              status: formData.status,
-              competition: formData.competition,
-            } 
-          : m
-      ))
-      setEditingMatch(null)
+      dataStore.updateMatch(editingMatch.id, matchData)
     } else {
-      const newMatch: Match = {
-        id: Math.random().toString(36).substr(2, 9),
-        homeTeam: formData.homeTeam,
-        awayTeam: formData.awayTeam,
-        date: formData.date,
-        time: formData.time,
-        venue: formData.venue,
-        homeScore: formData.homeScore ? parseInt(formData.homeScore) : null,
-        awayScore: formData.awayScore ? parseInt(formData.awayScore) : null,
-        status: formData.status,
-        competition: formData.competition,
-      }
-      setMatches([...matches, newMatch])
+      dataStore.addMatch(matchData)
     }
     
     resetForm()
@@ -82,41 +66,48 @@ export default function AdminMatches() {
   const handleEditMatch = (match: Match) => {
     setEditingMatch(match)
     setFormData({
-      homeTeam: match.homeTeam,
-      awayTeam: match.awayTeam,
+      home: match.home,
+      away: match.away,
       date: match.date,
       time: match.time,
       venue: match.venue,
       homeScore: match.homeScore?.toString() || "",
       awayScore: match.awayScore?.toString() || "",
       status: match.status,
-      competition: match.competition,
+      result: match.result || "",
     })
     setShowForm(true)
   }
 
   const handleDeleteMatch = async (matchId: string) => {
     if (!confirm(isBn ? "এই ম্যাচ মুছতে চান?" : "Delete this match?")) return
-    setMatches(matches.filter((m) => m.id !== matchId))
+    dataStore.deleteMatch(matchId)
   }
 
   const resetForm = () => {
     setFormData({
-      homeTeam: "Titan Force",
-      awayTeam: "",
+      home: "Titan Force",
+      away: "",
       date: "",
       time: "",
-      venue: "",
+      venue: "Mulikandi Ground",
       homeScore: "",
       awayScore: "",
       status: "upcoming",
-      competition: "",
+      result: "",
     })
     setShowForm(false)
     setEditingMatch(null)
   }
 
-  const filteredMatches = filter === "all" ? matches : matches.filter(m => m.status === filter)
+  const filteredMatches = matches
+    .filter(m => filter === "all" || m.status === filter)
+    .filter(m => 
+      searchTerm === "" || 
+      m.home.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.away.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.venue.toLowerCase().includes(searchTerm.toLowerCase())
+    )
 
   const statusBadge = (status: Match["status"]) => {
     const styles = {
@@ -136,6 +127,25 @@ export default function AdminMatches() {
     )
   }
 
+  const resultBadge = (result: Match["result"]) => {
+    if (!result) return null
+    const styles = {
+      W: "bg-green-500/20 text-green-400",
+      L: "bg-red-500/20 text-red-400",
+      D: "bg-yellow-500/20 text-yellow-400",
+    }
+    const labels = {
+      W: isBn ? "জয়" : "Win",
+      L: isBn ? "হার" : "Loss",
+      D: isBn ? "ড্র" : "Draw",
+    }
+    return (
+      <span className={`px-2 py-1 rounded text-xs font-semibold ${styles[result]}`}>
+        {labels[result]}
+      </span>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -144,6 +154,9 @@ export default function AdminMatches() {
           <h1 className={`font-[var(--font-display)] text-3xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "ম্যাচ ব্যবস্থাপনা" : "Match Management"}
           </h1>
+          <p className="text-foreground/60 text-sm mt-1">
+            {matches.length} {isBn ? "টি ম্যাচ" : "matches"}
+          </p>
         </div>
         <button
           onClick={() => {
@@ -157,24 +170,36 @@ export default function AdminMatches() {
         </button>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {(["all", "upcoming", "live", "completed"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-              filter === tab
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
-            }`}
-          >
-            {tab === "all" && (isBn ? "সব" : "All")}
-            {tab === "upcoming" && (isBn ? "আসন্ন" : "Upcoming")}
-            {tab === "live" && (isBn ? "লাইভ" : "Live")}
-            {tab === "completed" && (isBn ? "সম্পন্ন" : "Completed")}
-          </button>
-        ))}
+      {/* Search & Filter */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+          <input
+            type="text"
+            placeholder={isBn ? "খোঁজ করুন..." : "Search matches..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          {(["all", "upcoming", "live", "completed"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                filter === tab
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
+              }`}
+            >
+              {tab === "all" && (isBn ? "সব" : "All")}
+              {tab === "upcoming" && (isBn ? "আসন্ন" : "Upcoming")}
+              {tab === "live" && (isBn ? "লাইভ" : "Live")}
+              {tab === "completed" && (isBn ? "সম্পন্ন" : "Completed")}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Add/Edit Form */}
@@ -196,27 +221,29 @@ export default function AdminMatches() {
               <input
                 type="text"
                 placeholder={isBn ? "হোম টিম" : "Home Team"}
-                value={formData.homeTeam}
-                onChange={(e) => setFormData((prev) => ({ ...prev, homeTeam: e.target.value }))}
+                value={formData.home}
+                onChange={(e) => setFormData((prev) => ({ ...prev, home: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
               <input
                 type="text"
                 placeholder={isBn ? "অ্যাওয়ে টিম" : "Away Team"}
-                value={formData.awayTeam}
-                onChange={(e) => setFormData((prev) => ({ ...prev, awayTeam: e.target.value }))}
+                value={formData.away}
+                onChange={(e) => setFormData((prev) => ({ ...prev, away: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               <input
-                type="date"
+                type="text"
+                placeholder={isBn ? "তারিখ (যেমন: Jan 15, 2025)" : "Date (e.g. Jan 15, 2025)"}
                 value={formData.date}
                 onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
               <input
-                type="time"
+                type="text"
+                placeholder={isBn ? "সময় (যেমন: 4:00 PM)" : "Time (e.g. 4:00 PM)"}
                 value={formData.time}
                 onChange={(e) => setFormData((prev) => ({ ...prev, time: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
@@ -230,13 +257,6 @@ export default function AdminMatches() {
               />
             </div>
             <div className="grid md:grid-cols-3 gap-4">
-              <input
-                type="text"
-                placeholder={isBn ? "প্রতিযোগিতা" : "Competition"}
-                value={formData.competition}
-                onChange={(e) => setFormData((prev) => ({ ...prev, competition: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
               <select
                 value={formData.status}
                 onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Match["status"] }))}
@@ -246,25 +266,25 @@ export default function AdminMatches() {
                 <option value="live">{isBn ? "লাইভ" : "Live"}</option>
                 <option value="completed">{isBn ? "সম্পন্ন" : "Completed"}</option>
               </select>
+              {(formData.status === "completed" || formData.status === "live") && (
+                <>
+                  <input
+                    type="number"
+                    placeholder={isBn ? "হোম স্কোর" : "Home Score"}
+                    value={formData.homeScore}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, homeScore: e.target.value }))}
+                    className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                  <input
+                    type="number"
+                    placeholder={isBn ? "অ্যাওয়ে স্কোর" : "Away Score"}
+                    value={formData.awayScore}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, awayScore: e.target.value }))}
+                    className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </>
+              )}
             </div>
-            {(formData.status === "completed" || formData.status === "live") && (
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="number"
-                  placeholder={isBn ? "হোম স্কোর" : "Home Score"}
-                  value={formData.homeScore}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, homeScore: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                />
-                <input
-                  type="number"
-                  placeholder={isBn ? "অ্যাওয়ে স্কোর" : "Away Score"}
-                  value={formData.awayScore}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, awayScore: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                />
-              </div>
-            )}
             <div className="flex gap-2">
               <button
                 onClick={handleSaveMatch}
@@ -292,19 +312,17 @@ export default function AdminMatches() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   {statusBadge(match.status)}
-                  {match.competition && (
-                    <span className="text-xs text-foreground/60">{match.competition}</span>
-                  )}
+                  {resultBadge(match.result)}
                 </div>
                 <div className="flex items-center gap-4 text-lg font-semibold">
-                  <span>{match.homeTeam}</span>
+                  <span>{match.home}</span>
                   <span className="text-primary">
                     {match.status === "completed" || match.status === "live"
                       ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`
                       : "vs"
                     }
                   </span>
-                  <span>{match.awayTeam}</span>
+                  <span>{match.away}</span>
                 </div>
                 <div className="flex items-center gap-4 mt-2 text-sm text-foreground/60">
                   <span className="flex items-center gap-1">
