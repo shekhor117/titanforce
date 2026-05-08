@@ -1,45 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, X, Save, Eye, EyeOff, Calendar } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
-
-interface NewsArticle {
-  id: string
-  title: string
-  titleBn?: string
-  content: string
-  contentBn?: string
-  image_url?: string
-  status: "draft" | "published"
-  created_at: string
-  author: string
-}
+import { dataStore, NewsItem, useDataStore } from "@/lib/data-store"
 
 export default function AdminNews() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const [showForm, setShowForm] = useState(false)
-  const [editingNews, setEditingNews] = useState<NewsArticle | null>(null)
+  const [editingNews, setEditingNews] = useState<NewsItem | null>(null)
   const [filter, setFilter] = useState<"all" | "draft" | "published">("all")
   const [formData, setFormData] = useState({
     title: "",
-    titleBn: "",
+    excerpt: "",
     content: "",
-    contentBn: "",
     author: "",
-    status: "draft" as NewsArticle["status"],
-    image: { signedUrl: "", filePath: "" },
+    category: "club" as NewsItem["category"],
+    status: "draft" as NewsItem["status"],
+    featured: false,
+    image: "",
   })
-  const [news, setNews] = useState<NewsArticle[]>([])
+
+  // Get news from data store
+  const news = useDataStore(dataStore.getNews, "news")
 
   const handleImageUpload = (data: { signedUrl: string; filePath: string }) => {
-    setFormData((prev) => ({ ...prev, image: data }))
+    setFormData((prev) => ({ ...prev, image: data.signedUrl }))
   }
 
   const handleImageDelete = () => {
-    setFormData((prev) => ({ ...prev, image: { signedUrl: "", filePath: "" } }))
+    setFormData((prev) => ({ ...prev, image: "" }))
   }
 
   const handleSaveNews = () => {
@@ -49,75 +41,73 @@ export default function AdminNews() {
     }
 
     if (editingNews) {
-      setNews(news.map(n => 
-        n.id === editingNews.id 
-          ? { 
-              ...n,
-              title: formData.title,
-              titleBn: formData.titleBn,
-              content: formData.content,
-              contentBn: formData.contentBn,
-              author: formData.author,
-              status: formData.status,
-              image_url: formData.image.signedUrl,
-            } 
-          : n
-      ))
+      dataStore.updateNews(editingNews.id, {
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        author: formData.author || "Admin",
+        category: formData.category,
+        status: formData.status,
+        featured: formData.featured,
+        image: formData.image,
+      })
       setEditingNews(null)
     } else {
-      const newArticle: NewsArticle = {
-        id: Math.random().toString(36).substr(2, 9),
+      dataStore.addNews({
         title: formData.title,
-        titleBn: formData.titleBn,
+        excerpt: formData.excerpt || formData.content.substring(0, 150) + "...",
         content: formData.content,
-        contentBn: formData.contentBn,
         author: formData.author || "Admin",
+        category: formData.category,
         status: formData.status,
-        image_url: formData.image.signedUrl,
-        created_at: new Date().toLocaleDateString(),
-      }
-      setNews([newArticle, ...news])
+        featured: formData.featured,
+        image: formData.image,
+        publishDate: new Date().toLocaleDateString(),
+      })
     }
     
     resetForm()
   }
 
-  const handleEditNews = (article: NewsArticle) => {
+  const handleEditNews = (article: NewsItem) => {
     setEditingNews(article)
     setFormData({
       title: article.title,
-      titleBn: article.titleBn || "",
+      excerpt: article.excerpt,
       content: article.content,
-      contentBn: article.contentBn || "",
       author: article.author,
+      category: article.category,
       status: article.status,
-      image: { signedUrl: article.image_url || "", filePath: "" },
+      featured: article.featured,
+      image: article.image || "",
     })
     setShowForm(true)
   }
 
-  const handleDeleteNews = async (newsId: string) => {
+  const handleDeleteNews = (newsId: string) => {
     if (!confirm(isBn ? "এই সংবাদ মুছতে চান?" : "Delete this news article?")) return
-    setNews(news.filter((n) => n.id !== newsId))
+    dataStore.deleteNews(newsId)
   }
 
   const handleToggleStatus = (newsId: string) => {
-    setNews(news.map(n => 
-      n.id === newsId 
-        ? { ...n, status: n.status === "published" ? "draft" as const : "published" as const } 
-        : n
-    ))
+    const article = news.find(n => n.id === newsId)
+    if (article) {
+      dataStore.updateNews(newsId, { 
+        status: article.status === "published" ? "draft" : "published" 
+      })
+    }
   }
 
   const resetForm = () => {
     setFormData({
       title: "",
-      titleBn: "",
+      excerpt: "",
       content: "",
-      contentBn: "",
       author: "",
+      category: "club",
       status: "draft",
-      image: { signedUrl: "", filePath: "" },
+      featured: false,
+      image: "",
     })
     setShowForm(false)
     setEditingNews(null)
@@ -183,43 +173,34 @@ export default function AdminNews() {
                 {isBn ? "ছবি" : "Featured Image"}
               </label>
               <PhotoUpload
-                currentPhoto={formData.image.signedUrl}
-                currentFilePath={formData.image.filePath}
+                currentPhoto={formData.image}
+                currentFilePath=""
                 onPhotoUpload={handleImageUpload}
                 onPhotoDelete={handleImageDelete}
               />
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder={isBn ? "শিরোনাম (ইংরেজি)" : "Title (English)"}
-                value={formData.title}
-                onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-              <input
-                type="text"
-                placeholder={isBn ? "শিরোনাম (বাংলা)" : "Title (Bengali)"}
-                value={formData.titleBn}
-                onChange={(e) => setFormData((prev) => ({ ...prev, titleBn: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder={isBn ? "শিরোনাম" : "Title"}
+              value={formData.title}
+              onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+              className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+            />
+            <input
+              type="text"
+              placeholder={isBn ? "সংক্ষিপ্ত বিবরণ" : "Excerpt"}
+              value={formData.excerpt}
+              onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
+              className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+            />
             <textarea
-              placeholder={isBn ? "বিষয়বস্তু (ইংরেজি)" : "Content (English)"}
+              placeholder={isBn ? "বিষয়বস্তু" : "Content"}
               value={formData.content}
               onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
-              rows={4}
+              rows={6}
               className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
             />
-            <textarea
-              placeholder={isBn ? "বিষয়বস্তু (বাংলা)" : "Content (Bengali)"}
-              value={formData.contentBn}
-              onChange={(e) => setFormData((prev) => ({ ...prev, contentBn: e.target.value }))}
-              rows={4}
-              className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
-            />
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <input
                 type="text"
                 placeholder={isBn ? "লেখক" : "Author"}
@@ -228,14 +209,35 @@ export default function AdminNews() {
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
               <select
+                value={formData.category}
+                onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value as NewsItem["category"] }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              >
+                <option value="club">{isBn ? "ক্লাব" : "Club"}</option>
+                <option value="match">{isBn ? "ম্যাচ" : "Match"}</option>
+                <option value="transfer">{isBn ? "ট্রান্সফার" : "Transfer"}</option>
+                <option value="community">{isBn ? "কমিউনিটি" : "Community"}</option>
+              </select>
+              <select
                 value={formData.status}
-                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as NewsArticle["status"] }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as NewsItem["status"] }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               >
                 <option value="draft">{isBn ? "খসড়া" : "Draft"}</option>
                 <option value="published">{isBn ? "প্রকাশিত" : "Published"}</option>
               </select>
             </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.checked }))}
+                className="w-4 h-4 accent-primary"
+              />
+              <span className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                {isBn ? "ফিচার্ড নিউজ" : "Featured News"}
+              </span>
+            </label>
             <div className="flex gap-2">
               <button
                 onClick={handleSaveNews}
@@ -260,24 +262,34 @@ export default function AdminNews() {
         {filteredNews.map((article) => (
           <div key={article.id} className="rounded-xl border-2 border-secondary bg-card p-6 hover:border-primary transition">
             <div className="flex items-start gap-4">
-              {article.image_url && (
-                <img src={article.image_url} alt={article.title} className="w-24 h-24 rounded-lg object-cover flex-shrink-0" />
+              {article.image && (
+                <img src={article.image} alt={article.title} className="w-24 h-24 rounded-lg object-cover flex-shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className={`text-lg font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn && article.titleBn ? article.titleBn : article.title}
-                    </h3>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className={`text-lg font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {article.title}
+                      </h3>
+                      {article.featured && (
+                        <span className="px-2 py-0.5 rounded text-xs bg-yellow-500/20 text-yellow-400">
+                          Featured
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-foreground/60 mt-1 line-clamp-2">
-                      {isBn && article.contentBn ? article.contentBn : article.content}
+                      {article.excerpt}
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-foreground/50">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {article.created_at}
+                        {article.publishDate}
                       </span>
                       <span>{article.author}</span>
+                      <span className="px-2 py-0.5 rounded bg-secondary/50 text-foreground/70">
+                        {article.category}
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">

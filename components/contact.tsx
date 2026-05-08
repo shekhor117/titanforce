@@ -3,13 +3,7 @@
 import { useState, useEffect, useRef, type FormEvent } from "react"
 import { Facebook, Instagram, Youtube, Twitter, MapPin, Phone, Mail } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-
-const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/TitanForceMulikandi", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-]
+import { dataStore, useDataStore } from "@/lib/data-store"
 
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
@@ -18,6 +12,16 @@ export function Contact() {
   const formRef = useRef<HTMLFormElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
+
+  // Get settings from data store
+  const settings = useDataStore(dataStore.getSettings, "settings")
+
+  const socialLinks = [
+    { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
+    { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
+    { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
+    { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
+  ].filter(link => link.href && link.href !== "#")
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -101,38 +105,42 @@ export function Contact() {
           <div className="flex flex-col items-center gap-4 mb-6">
             <div className="flex items-center gap-2 text-foreground/70">
               <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm">Mulikandi, Zakiganj, Sylhet, Bangladesh</span>
+              <span className="text-sm">{settings.address}</span>
             </div>
             <div className="flex items-center gap-2 text-foreground/70">
               <Phone className="w-4 h-4 text-primary" />
-              <span className="text-sm">+880 9697377938</span>
+              <span className="text-sm">{settings.contactPhone}</span>
             </div>
             <a
-              href="mailto:titanforcemulikandi@gmail.com"
+              href={`mailto:${settings.contactEmail}`}
               className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors"
             >
               <Mail className="w-4 h-4 text-primary" />
-              <span className="text-sm">titanforcemulikandi@gmail.com</span>
+              <span className="text-sm">{settings.contactEmail}</span>
             </a>
           </div>
 
-          <p className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.contact.followUs}
-          </p>
-          <div className="flex justify-center gap-3">
-            {socialLinks.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              >
-                <social.icon className="w-5 h-5" />
-              </a>
-            ))}
-          </div>
+          {socialLinks.length > 0 && (
+            <>
+              <p className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {t.contact.followUs}
+              </p>
+              <div className="flex justify-center gap-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                  >
+                    <social.icon className="w-5 h-5" />
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
