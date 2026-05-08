@@ -161,6 +161,7 @@ const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
 
 // Player photos mapping
 const playerPhotos: Record<number, string> = {
+  11: "/players/player-11.png",
   17: "/players/player-17.png",
 }
 
