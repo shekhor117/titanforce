@@ -56,7 +56,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </h1>
 
             <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 animate-[loadingBar_3s_linear_forwards]" />
+              <div className="h-full bg-red-500 animate-[loadingBar_2s_linear_forwards]" />
             </div>
 
             <p className="mt-4 text-zinc-400 tracking-[6px] text-sm animate-pulse">
