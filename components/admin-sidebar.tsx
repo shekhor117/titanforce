@@ -20,6 +20,10 @@ export function AdminSidebar() {
     { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝" },
     { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢" },
     { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸" },
+    { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤" },
+    { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️" },
+    { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️" },
+    { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧" },
   ]
 
   return (
