@@ -30,7 +30,7 @@ export default function TeamSquadPage() {
               </span>
             </Link>
             <h1 className={`text-5xl md:text-7xl font-black tracking-wider text-primary mb-4 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
-              {isBn ? "দল স্কোয়াড" : "TEAM SQUAD"}
+              {isBn ? "আমাদের দল" : "OUR SQUAD"}
             </h1>
             <p className={`text-lg text-foreground/70 max-w-2xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "আমাদের প্রতিভাবান খেলোয়াড়দের দেখুন যারা টাইটান ফোর্সের গর্বের প্রতিনিধিত্ব করে" : "Meet the talented players representing Titan Force on the pitch"}
