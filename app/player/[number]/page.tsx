@@ -2,8 +2,23 @@
 
 import { useParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+
+// Player photos mapping
+const playerPhotos: Record<number, string> = {
+  1: "/players/player-1.png",
+  3: "/players/player-3.png",
+  4: "/players/player-4.png",
+  5: "/players/player-5.png",
+  6: "/players/player-6.png",
+  7: "/players/player-7.png",
+  8: "/players/player-8.png",
+  9: "/players/player-9.png",
+  11: "/players/player-11.png",
+  17: "/players/player-17.png",
+}
 
 // Player data from squad
 const players = [
@@ -237,11 +252,23 @@ export default function PlayerProfile() {
 
         <div className="relative z-10 max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
-            <div className="w-40 h-40 md:w-52 md:h-52 object-cover rounded-3xl border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center">
-              <span className="font-[var(--font-display)] text-6xl md:text-7xl text-primary">
-                #{player.num}
-              </span>
-            </div>
+            {playerPhotos[player.num] ? (
+              <div className="w-40 h-40 md:w-52 md:h-52 rounded-3xl border-4 border-primary shadow-2xl card overflow-hidden">
+                <Image
+                  src={playerPhotos[player.num]}
+                  alt={player.fullName}
+                  width={208}
+                  height={208}
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            ) : (
+              <div className="w-40 h-40 md:w-52 md:h-52 rounded-3xl border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center">
+                <span className="font-[var(--font-display)] text-6xl md:text-7xl text-primary">
+                  #{player.num}
+                </span>
+              </div>
+            )}
 
             <div className="flex-1">
               <p className="uppercase tracking-[0.3em] text-foreground/60 text-sm mb-2">

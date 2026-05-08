@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { X, MapPin, Calendar, Footprints, Trophy, Target } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
@@ -158,6 +159,20 @@ const players: Player[] = [
 
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
 
+// Player photos mapping
+const playerPhotos: Record<number, string> = {
+  1: "/players/player-1.png",
+  3: "/players/player-3.png",
+  4: "/players/player-4.png",
+  5: "/players/player-5.png",
+  6: "/players/player-6.png",
+  7: "/players/player-7.png",
+  8: "/players/player-8.png",
+  9: "/players/player-9.png",
+  11: "/players/player-11.png",
+  17: "/players/player-17.png",
+}
+
 export function Squad() {
   const [activeFilter, setActiveFilter] = useState<Position>("all")
   const [isVisible, setIsVisible] = useState(false)
@@ -228,7 +243,21 @@ export function Squad() {
                 }`}
               style={{ transitionDelay: `${index * 50}ms` }}
             >
-              <div className="font-[var(--font-display)] text-4xl text-primary">{player.num}</div>
+              {playerPhotos[player.num] ? (
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-secondary/30">
+                  <Image
+                    src={playerPhotos[player.num]}
+                    alt={player.fullName}
+                    fill
+                    className="object-cover object-top"
+                  />
+                  <div className="absolute top-2 left-2 font-[var(--font-display)] text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {player.num}
+                  </div>
+                </div>
+              ) : (
+                <div className="font-[var(--font-display)] text-4xl text-primary">{player.num}</div>
+              )}
               <h3 className="font-[var(--font-display)] text-xl tracking-wider mt-2 text-foreground">
                 {player.name.toUpperCase()}
               </h3>
