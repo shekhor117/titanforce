@@ -2,37 +2,27 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, ExternalLink, X, Save } from "lucide-react"
+import { dataStore, Partner, useDataStore } from "@/lib/data-store"
+import { Plus, Edit, Trash2, ExternalLink, X, Save, Search } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
-
-interface Partner {
-  id: string
-  name: string
-  email: string
-  company_name: string
-  partnership_type: "sponsor" | "media" | "equipment" | "other"
-  website: string | null
-  value: string
-  logo_url?: string
-  status: "pending" | "approved" | "rejected"
-}
 
 export default function AdminPartners() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const [showForm, setShowForm] = useState(false)
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null)
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all")
+  const [filter, setFilter] = useState<"all" | "title" | "main" | "official" | "media">("all")
+  const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    company_name: "",
-    partnership_type: "sponsor" as Partner["partnership_type"],
+    type: "official" as Partner["type"],
     website: "",
-    value: "",
+    description: "",
     logo: { signedUrl: "", filePath: "" },
+    status: "active" as Partner["status"],
   })
-  const [partners, setPartners] = useState<Partner[]>([])
+  
+  const partners = useDataStore(dataStore.getPartners, "partners")
 
   const handleLogoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, logo: data }))
@@ -42,54 +32,25 @@ export default function AdminPartners() {
     setFormData((prev) => ({ ...prev, logo: { signedUrl: "", filePath: "" } }))
   }
 
-  const handleApprove = async (partnerId: string) => {
-    setPartners(partners.map(p => 
-      p.id === partnerId ? { ...p, status: "approved" as const } : p
-    ))
-  }
-
-  const handleReject = async (partnerId: string) => {
-    if (!confirm(isBn ? "এই অংশীদারিত্ব প্রত্যাখ্যান করতে চান?" : "Reject this partnership?")) return
-    setPartners(partners.map(p => 
-      p.id === partnerId ? { ...p, status: "rejected" as const } : p
-    ))
-  }
-
   const handleSavePartner = () => {
-    if (!formData.company_name || !formData.email) {
-      alert(isBn ? "সব ফিল্ড পূরণ করুন" : "Please fill all required fields")
+    if (!formData.name) {
+      alert(isBn ? "নাম প্রয়োজন" : "Name is required")
       return
     }
 
+    const partnerData: Omit<Partner, "id"> = {
+      name: formData.name,
+      type: formData.type,
+      website: formData.website || undefined,
+      description: formData.description || undefined,
+      logo: formData.logo.signedUrl || undefined,
+      status: formData.status,
+    }
+
     if (editingPartner) {
-      setPartners(partners.map(p => 
-        p.id === editingPartner.id 
-          ? { 
-              ...p,
-              name: formData.name,
-              email: formData.email,
-              company_name: formData.company_name,
-              partnership_type: formData.partnership_type,
-              website: formData.website || null,
-              value: formData.value,
-              logo_url: formData.logo.signedUrl,
-            } 
-          : p
-      ))
-      setEditingPartner(null)
+      dataStore.updatePartner(editingPartner.id, partnerData)
     } else {
-      const newPartner: Partner = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: formData.name,
-        email: formData.email,
-        company_name: formData.company_name,
-        partnership_type: formData.partnership_type,
-        website: formData.website || null,
-        value: formData.value,
-        logo_url: formData.logo.signedUrl,
-        status: "approved",
-      }
-      setPartners([...partners, newPartner])
+      dataStore.addPartner(partnerData)
     }
     
     resetForm()
@@ -99,73 +60,52 @@ export default function AdminPartners() {
     setEditingPartner(partner)
     setFormData({
       name: partner.name,
-      email: partner.email,
-      company_name: partner.company_name,
-      partnership_type: partner.partnership_type,
+      type: partner.type,
       website: partner.website || "",
-      value: partner.value,
-      logo: { signedUrl: partner.logo_url || "", filePath: "" },
+      description: partner.description || "",
+      logo: { signedUrl: partner.logo || "", filePath: "" },
+      status: partner.status,
     })
     setShowForm(true)
   }
 
   const handleDeletePartner = async (partnerId: string) => {
     if (!confirm(isBn ? "এই অংশীদার মুছতে চান?" : "Delete this partner?")) return
-    setPartners(partners.filter((p) => p.id !== partnerId))
+    dataStore.deletePartner(partnerId)
   }
 
   const resetForm = () => {
     setFormData({
       name: "",
-      email: "",
-      company_name: "",
-      partnership_type: "sponsor",
+      type: "official",
       website: "",
-      value: "",
+      description: "",
       logo: { signedUrl: "", filePath: "" },
+      status: "active",
     })
     setShowForm(false)
     setEditingPartner(null)
   }
 
-  const filteredPartners = filter === "all" ? partners : partners.filter(p => p.status === filter)
-  const pendingCount = partners.filter(p => p.status === "pending").length
-
-  const statusBadge = (status: Partner["status"]) => {
-    const styles = {
-      pending: "bg-yellow-500/20 text-yellow-400",
-      approved: "bg-green-500/20 text-green-400",
-      rejected: "bg-red-500/20 text-red-400",
-    }
-    const icons = {
-      pending: <Clock className="w-3 h-3" />,
-      approved: <CheckCircle className="w-3 h-3" />,
-      rejected: <XCircle className="w-3 h-3" />,
-    }
-    const labels = {
-      pending: isBn ? "অপেক্ষমান" : "Pending",
-      approved: isBn ? "অনুমোদিত" : "Approved",
-      rejected: isBn ? "প্রত্যাখ্যান" : "Rejected",
-    }
-    return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${styles[status]}`}>
-        {icons[status]} {labels[status]}
-      </span>
+  const filteredPartners = partners
+    .filter(p => filter === "all" || p.type === filter)
+    .filter(p => 
+      searchTerm === "" || 
+      p.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-  }
 
-  const typeBadge = (type: Partner["partnership_type"]) => {
+  const typeBadge = (type: Partner["type"]) => {
     const styles = {
-      sponsor: "bg-primary/20 text-primary",
-      media: "bg-blue-500/20 text-blue-400",
-      equipment: "bg-purple-500/20 text-purple-400",
-      other: "bg-gray-500/20 text-gray-400",
+      title: "bg-yellow-500/20 text-yellow-400",
+      main: "bg-blue-500/20 text-blue-400",
+      official: "bg-green-500/20 text-green-400",
+      media: "bg-purple-500/20 text-purple-400",
     }
     const labels = {
-      sponsor: isBn ? "স্পন্সর" : "Sponsor",
-      media: isBn ? "মিডিয়া" : "Media",
-      equipment: isBn ? "সরঞ্জাম" : "Equipment",
-      other: isBn ? "অন্যান্য" : "Other",
+      title: isBn ? "টাইটেল স্পন্সর" : "Title Sponsor",
+      main: isBn ? "মেইন স্পন্সর" : "Main Sponsor",
+      official: isBn ? "অফিশিয়াল পার্টনার" : "Official Partner",
+      media: isBn ? "মিডিয়া পার্টনার" : "Media Partner",
     }
     return (
       <span className={`px-2 py-1 rounded text-xs font-semibold ${styles[type]}`}>
@@ -182,12 +122,9 @@ export default function AdminPartners() {
           <h1 className={`font-[var(--font-display)] text-3xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "অংশীদার ব্যবস্থাপনা" : "Partner Management"}
           </h1>
-          {pendingCount > 0 && (
-            <p className="text-yellow-500 text-sm mt-1 flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {pendingCount} {isBn ? "অনুমোদনের অপেক্ষায়" : "pending approval"}
-            </p>
-          )}
+          <p className="text-foreground/60 text-sm mt-1">
+            {partners.length} {isBn ? "জন অংশীদার" : "partners"}
+          </p>
         </div>
         <button
           onClick={() => {
@@ -201,29 +138,37 @@ export default function AdminPartners() {
         </button>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {(["all", "pending", "approved", "rejected"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-              filter === tab
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
-            }`}
-          >
-            {tab === "all" && (isBn ? "সব" : "All")}
-            {tab === "pending" && (isBn ? "অপেক্ষমান" : "Pending")}
-            {tab === "approved" && (isBn ? "অনুমোদিত" : "Approved")}
-            {tab === "rejected" && (isBn ? "প্রত্যাখ্যান" : "Rejected")}
-            {tab === "pending" && pendingCount > 0 && (
-              <span className="ml-2 px-1.5 py-0.5 rounded-full bg-yellow-500 text-black text-xs">
-                {pendingCount}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* Search & Filter */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+          <input
+            type="text"
+            placeholder={isBn ? "খোঁজ করুন..." : "Search partners..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+          />
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {(["all", "title", "main", "official", "media"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                filter === tab
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
+              }`}
+            >
+              {tab === "all" && (isBn ? "সব" : "All")}
+              {tab === "title" && (isBn ? "টাইটেল" : "Title")}
+              {tab === "main" && (isBn ? "মেইন" : "Main")}
+              {tab === "official" && (isBn ? "অফিশিয়াল" : "Official")}
+              {tab === "media" && (isBn ? "মিডিয়া" : "Media")}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Add/Edit Form */}
@@ -255,50 +200,46 @@ export default function AdminPartners() {
             <div className="grid md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder={isBn ? "কোম্পানির নাম" : "Company Name"}
-                value={formData.company_name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, company_name: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-              <input
-                type="text"
-                placeholder={isBn ? "যোগাযোগকারীর নাম" : "Contact Name"}
+                placeholder={isBn ? "নাম" : "Name"}
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
-              <input
-                type="email"
-                placeholder={isBn ? "ইমেইল" : "Email"}
-                value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+              <select
+                value={formData.type}
+                onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as Partner["type"] }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
+              >
+                <option value="title">{isBn ? "টাইটেল স্পন্সর" : "Title Sponsor"}</option>
+                <option value="main">{isBn ? "মেইন স্পন্সর" : "Main Sponsor"}</option>
+                <option value="official">{isBn ? "অফিশিয়াল পার্টনার" : "Official Partner"}</option>
+                <option value="media">{isBn ? "মিডিয়া পার্টনার" : "Media Partner"}</option>
+              </select>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
               <input
                 type="url"
-                placeholder={isBn ? "ওয়েবসাইট" : "Website"}
+                placeholder={isBn ? "ওয়েবসাইট" : "Website URL"}
                 value={formData.website}
                 onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
               <select
-                value={formData.partnership_type}
-                onChange={(e) => setFormData((prev) => ({ ...prev, partnership_type: e.target.value as Partner["partnership_type"] }))}
+                value={formData.status}
+                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Partner["status"] }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               >
-                <option value="sponsor">{isBn ? "স্পন্সর" : "Sponsor"}</option>
-                <option value="media">{isBn ? "মিডিয়া" : "Media"}</option>
-                <option value="equipment">{isBn ? "সরঞ্জাম" : "Equipment"}</option>
-                <option value="other">{isBn ? "অন্যান্য" : "Other"}</option>
+                <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
+                <option value="pending">{isBn ? "অপেক্ষমান" : "Pending"}</option>
               </select>
-              <input
-                type="text"
-                placeholder={isBn ? "মূল্য (যেমন $5000)" : "Value (e.g. $5000)"}
-                value={formData.value}
-                onChange={(e) => setFormData((prev) => ({ ...prev, value: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
             </div>
+            <textarea
+              placeholder={isBn ? "বিবরণ" : "Description"}
+              value={formData.description}
+              onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+              rows={3}
+              className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
+            />
             <div className="flex gap-2">
               <button
                 onClick={handleSavePartner}
@@ -318,101 +259,78 @@ export default function AdminPartners() {
         </div>
       )}
 
-      {/* Partners Table */}
-      <div className="rounded-xl border-2 border-secondary bg-card overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-secondary">
-              <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "কোম্পানি" : "Company"}
-              </th>
-              <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "ধরন" : "Type"}
-              </th>
-              <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "মূল্য" : "Value"}
-              </th>
-              <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "অবস্থা" : "Status"}
-              </th>
-              <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "কার্যক্রম" : "Actions"}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPartners.map((partner) => (
-              <tr key={partner.id} className="border-b border-secondary hover:bg-secondary/20 transition">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    {partner.logo_url && (
-                      <img src={partner.logo_url} alt={partner.company_name} className="w-10 h-10 rounded object-cover" />
-                    )}
-                    <div>
-                      <div className="text-sm font-medium text-foreground">{partner.company_name}</div>
-                      <div className="text-xs text-foreground/60">{partner.email}</div>
-                      {partner.website && (
-                        <a href={partner.website} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
-                          <ExternalLink className="w-3 h-3" /> Website
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3">{typeBadge(partner.partnership_type)}</td>
-                <td className="px-4 py-3 text-sm font-semibold text-primary">{partner.value || "-"}</td>
-                <td className="px-4 py-3">{statusBadge(partner.status)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    {partner.status === "pending" && (
-                      <>
-                        <button
-                          onClick={() => handleApprove(partner.id)}
-                          className="p-2 rounded hover:bg-green-500/20 transition text-green-400"
-                          title={isBn ? "অনুমোদন করুন" : "Approve"}
-                        >
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleReject(partner.id)}
-                          className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
-                          title={isBn ? "প্রত্যাখ্যান করুন" : "Reject"}
-                        >
-                          <XCircle className="w-4 h-4" />
-                        </button>
-                      </>
-                    )}
-                    <button 
-                      onClick={() => handleEditPartner(partner)}
-                      className="p-2 rounded hover:bg-primary/20 transition text-primary"
-                      title={isBn ? "সম্পাদনা করুন" : "Edit"}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeletePartner(partner.id)}
-                      className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
-                      title={isBn ? "মুছুন" : "Delete"}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {filteredPartners.length === 0 && (
-          <div className="text-center py-12 text-foreground/60">
-            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "কোন অংশীদার পাওয়া যায়নি" : "No partners found"}
-            </p>
-            <p className={`text-sm mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "নতুন অংশীদার যোগ করতে উপরের বোতাম ক্লিক করুন" : "Click the button above to add a new partner"}
-            </p>
+      {/* Partners Grid */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredPartners.map((partner) => (
+          <div key={partner.id} className="rounded-xl border-2 border-secondary bg-card p-4 hover:border-primary/50 transition">
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {partner.logo ? (
+                  <img src={partner.logo} alt={partner.name} className="w-full h-full object-contain" />
+                ) : (
+                  <span className="font-[var(--font-display)] text-xl text-primary">{partner.name[0]}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {typeBadge(partner.type)}
+                </div>
+                <h3 className="font-semibold truncate">{partner.name}</h3>
+                {partner.description && (
+                  <p className="text-sm text-foreground/60 line-clamp-2 mt-1">{partner.description}</p>
+                )}
+                {partner.website && (
+                  <a 
+                    href={partner.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    {isBn ? "ওয়েবসাইট" : "Website"}
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-secondary">
+              <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                partner.status === "active" 
+                  ? "bg-green-500/20 text-green-400" 
+                  : "bg-yellow-500/20 text-yellow-400"
+              }`}>
+                {partner.status === "active" ? (isBn ? "সক্রিয়" : "Active") : (isBn ? "অপেক্ষমান" : "Pending")}
+              </span>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={() => handleEditPartner(partner)}
+                  className="p-2 rounded hover:bg-primary/20 transition text-primary"
+                  title={isBn ? "সম্পাদনা করুন" : "Edit"}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDeletePartner(partner.id)}
+                  className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
+                  title={isBn ? "মুছুন" : "Delete"}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
+
+      {filteredPartners.length === 0 && (
+        <div className="text-center py-12 text-foreground/60 rounded-xl border-2 border-secondary bg-card">
+          <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+            {isBn ? "কোন অংশীদার পাওয়া যায়নি" : "No partners found"}
+          </p>
+          <p className={`text-sm mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "নতুন অংশীদার যোগ করতে উপরের বোতাম ক্লিক করুন" : "Click the button above to add a new partner"}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

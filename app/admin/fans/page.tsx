@@ -2,30 +2,25 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { CheckCircle, XCircle, Clock, Users, Trash2, Edit, X, Save, Plus } from "lucide-react"
-
-interface Fan {
-  id: string
-  name: string
-  email: string
-  phone?: string
-  avatar_url: string | null
-  status: "pending" | "approved" | "rejected"
-  created_at: string
-}
+import { dataStore, Fan, useDataStore } from "@/lib/data-store"
+import { CheckCircle, XCircle, Clock, Users, Trash2, Edit, X, Save, Plus, Search } from "lucide-react"
 
 export default function AdminFans() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all")
+  const [filter, setFilter] = useState<"all" | "regular" | "premium" | "vip">("all")
+  const [searchTerm, setSearchTerm] = useState("")
   const [showForm, setShowForm] = useState(false)
   const [editingFan, setEditingFan] = useState<Fan | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    membershipType: "regular" as Fan["membershipType"],
+    status: "active" as Fan["status"],
   })
-  const [fans, setFans] = useState<Fan[]>([])
+  
+  const fans = useDataStore(dataStore.getFans, "fans")
 
   const handleSaveFan = () => {
     if (!formData.name || !formData.email) {
@@ -33,29 +28,19 @@ export default function AdminFans() {
       return
     }
 
+    const fanData: Omit<Fan, "id"> = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      membershipType: formData.membershipType,
+      joinDate: new Date().toLocaleDateString(),
+      status: formData.status,
+    }
+
     if (editingFan) {
-      setFans(fans.map(f => 
-        f.id === editingFan.id 
-          ? { 
-              ...f, 
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-            } 
-          : f
-      ))
-      setEditingFan(null)
+      dataStore.updateFan(editingFan.id, fanData)
     } else {
-      const newFan: Fan = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        avatar_url: null,
-        status: "approved",
-        created_at: new Date().toLocaleDateString(),
-      }
-      setFans([...fans, newFan])
+      dataStore.addFan(fanData)
     }
     
     resetForm()
@@ -67,57 +52,63 @@ export default function AdminFans() {
       name: fan.name,
       email: fan.email,
       phone: fan.phone || "",
+      membershipType: fan.membershipType,
+      status: fan.status,
     })
     setShowForm(true)
   }
 
   const handleDeleteFan = async (fanId: string) => {
     if (!confirm(isBn ? "এই অনুরাগী মুছতে চান?" : "Delete this fan?")) return
-    setFans(fans.filter((f) => f.id !== fanId))
-  }
-
-  const handleApprove = async (fanId: string) => {
-    setFans(fans.map(f => 
-      f.id === fanId ? { ...f, status: "approved" as const } : f
-    ))
-  }
-
-  const handleReject = async (fanId: string) => {
-    if (!confirm(isBn ? "এই অনুরাগী প্রত্যাখ্যান করতে চান?" : "Reject this fan?")) return
-    setFans(fans.map(f => 
-      f.id === fanId ? { ...f, status: "rejected" as const } : f
-    ))
+    dataStore.deleteFan(fanId)
   }
 
   const resetForm = () => {
-    setFormData({ name: "", email: "", phone: "" })
+    setFormData({ name: "", email: "", phone: "", membershipType: "regular", status: "active" })
     setShowForm(false)
     setEditingFan(null)
   }
 
-  const filteredFans = filter === "all" ? fans : fans.filter(f => f.status === filter)
-  const totalFans = fans.filter(f => f.status === "approved").length
-  const pendingCount = fans.filter(f => f.status === "pending").length
+  const filteredFans = fans
+    .filter(f => filter === "all" || f.membershipType === filter)
+    .filter(f => 
+      searchTerm === "" || 
+      f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      f.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+  const totalFans = fans.filter(f => f.status === "active").length
+
+  const membershipBadge = (type: Fan["membershipType"]) => {
+    const styles = {
+      regular: "bg-gray-500/20 text-gray-400",
+      premium: "bg-blue-500/20 text-blue-400",
+      vip: "bg-yellow-500/20 text-yellow-400",
+    }
+    const labels = {
+      regular: isBn ? "রেগুলার" : "Regular",
+      premium: isBn ? "প্রিমিয়াম" : "Premium",
+      vip: "VIP",
+    }
+    return (
+      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${styles[type]}`}>
+        {labels[type]}
+      </span>
+    )
+  }
 
   const statusBadge = (status: Fan["status"]) => {
     const styles = {
+      active: "bg-green-500/20 text-green-400",
       pending: "bg-yellow-500/20 text-yellow-400",
-      approved: "bg-green-500/20 text-green-400",
-      rejected: "bg-red-500/20 text-red-400",
-    }
-    const icons = {
-      pending: <Clock className="w-3 h-3" />,
-      approved: <CheckCircle className="w-3 h-3" />,
-      rejected: <XCircle className="w-3 h-3" />,
     }
     const labels = {
+      active: isBn ? "সক্রিয়" : "Active",
       pending: isBn ? "অপেক্ষমান" : "Pending",
-      approved: isBn ? "অনুমোদিত" : "Approved",
-      rejected: isBn ? "প্রত্যাখ্যান" : "Rejected",
     }
     return (
       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${styles[status]}`}>
-        {icons[status]} {labels[status]}
+        {labels[status]}
       </span>
     )
   }
@@ -130,12 +121,9 @@ export default function AdminFans() {
           <h1 className={`font-[var(--font-display)] text-3xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "অনুরাগী ব্যবস্থাপনা" : "Fan Management"}
           </h1>
-          {pendingCount > 0 && (
-            <p className="text-yellow-500 text-sm mt-1 flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {pendingCount} {isBn ? "অনুমোদনের অপেক্ষায়" : "pending approval"}
-            </p>
-          )}
+          <p className="text-foreground/60 text-sm mt-1">
+            {fans.length} {isBn ? "জন অনুরাগী" : "fans"}
+          </p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 border border-primary/30">
@@ -160,29 +148,36 @@ export default function AdminFans() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {(["all", "pending", "approved", "rejected"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-              filter === tab
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
-            }`}
-          >
-            {tab === "all" && (isBn ? "সব" : "All")}
-            {tab === "pending" && (isBn ? "অপেক্ষমান" : "Pending")}
-            {tab === "approved" && (isBn ? "অনুমোদিত" : "Approved")}
-            {tab === "rejected" && (isBn ? "প্রত্যাখ্যান" : "Rejected")}
-            {tab === "pending" && pendingCount > 0 && (
-              <span className="ml-2 px-1.5 py-0.5 rounded-full bg-yellow-500 text-black text-xs">
-                {pendingCount}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* Search & Filter */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+          <input
+            type="text"
+            placeholder={isBn ? "খোঁজ করুন..." : "Search fans..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          {(["all", "regular", "premium", "vip"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                filter === tab
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
+              }`}
+            >
+              {tab === "all" && (isBn ? "সব" : "All")}
+              {tab === "regular" && (isBn ? "রেগুলার" : "Regular")}
+              {tab === "premium" && (isBn ? "প্রিমিয়াম" : "Premium")}
+              {tab === "vip" && "VIP"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Add/Edit Form */}
@@ -223,6 +218,25 @@ export default function AdminFans() {
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
             </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <select
+                value={formData.membershipType}
+                onChange={(e) => setFormData((prev) => ({ ...prev, membershipType: e.target.value as Fan["membershipType"] }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              >
+                <option value="regular">{isBn ? "রেগুলার" : "Regular"}</option>
+                <option value="premium">{isBn ? "প্রিমিয়াম" : "Premium"}</option>
+                <option value="vip">VIP</option>
+              </select>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Fan["status"] }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              >
+                <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
+                <option value="pending">{isBn ? "অপেক্ষমান" : "Pending"}</option>
+              </select>
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={handleSaveFan}
@@ -252,7 +266,7 @@ export default function AdminFans() {
               </th>
               <th className="px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold">Email</th>
               <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "ফোন" : "Phone"}
+                {isBn ? "সদস্যপদ" : "Membership"}
               </th>
               <th className={`px-4 py-3 text-left text-xs uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {isBn ? "অবস্থা" : "Status"}
@@ -273,33 +287,18 @@ export default function AdminFans() {
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
                       {fan.name.charAt(0)}
                     </div>
-                    <span className="text-sm text-foreground">{fan.name}</span>
+                    <div>
+                      <span className="text-sm text-foreground">{fan.name}</span>
+                      {fan.phone && <p className="text-xs text-foreground/60">{fan.phone}</p>}
+                    </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-foreground/80">{fan.email}</td>
-                <td className="px-4 py-3 text-sm text-foreground/80">{fan.phone || "-"}</td>
+                <td className="px-4 py-3">{membershipBadge(fan.membershipType)}</td>
                 <td className="px-4 py-3">{statusBadge(fan.status)}</td>
-                <td className="px-4 py-3 text-sm text-foreground">{fan.created_at}</td>
+                <td className="px-4 py-3 text-sm text-foreground">{fan.joinDate}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {fan.status === "pending" && (
-                      <>
-                        <button
-                          onClick={() => handleApprove(fan.id)}
-                          className="p-2 rounded hover:bg-green-500/20 transition text-green-400"
-                          title={isBn ? "অনুমোদন করুন" : "Approve"}
-                        >
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleReject(fan.id)}
-                          className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
-                          title={isBn ? "প্রত্যাখ্যান করুন" : "Reject"}
-                        >
-                          <XCircle className="w-4 h-4" />
-                        </button>
-                      </>
-                    )}
                     <button 
                       onClick={() => handleEditFan(fan)}
                       className="p-2 rounded hover:bg-primary/20 transition text-primary"

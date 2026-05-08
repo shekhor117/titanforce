@@ -5,161 +5,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { X, MapPin, Calendar, Footprints, Trophy, Target } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { dataStore, Player, useDataStore } from "@/lib/data-store"
 
 type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
 
-interface Player {
-  num: number
-  name: string
-  fullName: string
-  pos: string
-  cat: Exclude<Position, "all">
-  age: number
-  hometown: string
-  foot: "Left" | "Right" | "Both"
-  goals: number
-  assists: number
-  cleanSheets?: number
-  bio: string
-}
-
-const players: Player[] = [
-  {
-    num: 1,
-    name: "Shuronjit",
-    fullName: "Shuronjit Biswas",
-    pos: "Goalkeeper",
-    cat: "GK",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    cleanSheets: 0,
-    bio: "A commanding presence in goal with excellent reflexes and shot-stopping ability. The last line of defense for Titan Force."
-  },
-  {
-    num: 3,
-    name: "Srijon",
-    fullName: "Srijon Roy",
-    pos: "CB / RB",
-    cat: "DEF",
-    age: 21,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Versatile defender who can play both center-back and right-back. Known for his pace and recovery runs."
-  },
-  {
-    num: 4,
-    name: "Akash",
-    fullName: "Akash Roy",
-    pos: "CB / LB",
-    cat: "DEF",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Strong left-footed defender with excellent aerial ability. A rock at the back for the team."
-  },
-  {
-    num: 5,
-    name: "Akash",
-    fullName: "Akash Roy",
-    pos: "CB / CDM",
-    cat: "DEF",
-    age: 19,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Both",
-    goals: 0,
-    assists: 0,
-    bio: "The defensive anchor who can drop back or push forward. Great at breaking up opposition attacks."
-  },
-  {
-    num: 6,
-    name: "Sujon",
-    fullName: "Sujon Roy",
-    pos: "CAM",
-    cat: "MID",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Creative playmaker with excellent vision and passing range. The engine of Titan Force&apos;s attack."
-  },
-  {
-    num: 7,
-    name: "Shuvo",
-    fullName: "Shuvo Roy",
-    pos: "LW / RW / CAM",
-    cat: "FWD",
-    age: 19,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Explosive winger with pace to burn. Can play on either flank and loves to cut inside to shoot."
-  },
-  {
-    num: 8,
-    name: "Sojib",
-    fullName: "Sojib Roy",
-    pos: "CM / CAM",
-    cat: "MID",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Box-to-box midfielder who covers every blade of grass. Combines work rate with technical quality."
-  },
-  {
-    num: 9,
-    name: "Sajon",
-    fullName: "Sajon Biswas",
-    pos: "ST / CF",
-    cat: "FWD",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Clinical striker with a natural instinct for goal. The team&apos;s top scorer and focal point of the attack."
-  },
-  {
-    num: 11,
-    name: "Kourov",
-    fullName: "Kourov Chakroborty",
-    pos: "LW / ST",
-    cat: "FWD",
-    age: 18,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Tricky left winger who can also play as a second striker. Dangerous in one-on-one situations."
-  },
-  {
-    num: 17,
-    name: "Shekhor",
-    fullName: "Shekhor Mohan Roy",
-    pos: "CB / CM / CDM",
-    cat: "DEF",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    bio: "Versatile player who can slot into defense or midfield. A true utility player with leadership qualities."
-  },
-]
-
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
 
-// Player photos mapping
+// Player photos mapping (fallback for players without uploaded photos)
 const playerPhotos: Record<number, string> = {
   1: "/players/player-1.png",
   3: "/players/player-3.png",
@@ -181,6 +33,10 @@ export function Squad() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
+  // Get players from data store
+  const players = useDataStore(dataStore.getPlayers, "players")
+  const activePlayers = players.filter(p => p.status === "active")
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -199,7 +55,11 @@ export function Squad() {
   }, [])
 
   const filteredPlayers =
-    activeFilter === "all" ? players : players.filter((p) => p.cat === activeFilter)
+    activeFilter === "all" ? activePlayers : activePlayers.filter((p) => p.cat === activeFilter)
+
+  const getPlayerPhoto = (player: Player) => {
+    return player.photo || playerPhotos[player.num] || null
+  }
 
   return (
     <section id="squad" ref={sectionRef} className="py-16 px-4">
@@ -235,54 +95,65 @@ export function Squad() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredPlayers.map((player, index) => (
-            <Link
-              key={`${player.num}-${player.name}`}
-              href={`/player/${player.num}`}
-              className={`card-glow rounded-xl p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
-              style={{ transitionDelay: `${index * 50}ms` }}
-            >
-              {playerPhotos[player.num] ? (
-                <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-secondary/30">
-                  <Image
-                    src={playerPhotos[player.num]}
-                    alt={player.fullName}
-                    fill
-                    className="object-cover object-top"
-                  />
-                  <div className="absolute top-2 left-2 font-[var(--font-display)] text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {player.num}
+          {filteredPlayers.map((player, index) => {
+            const photo = getPlayerPhoto(player)
+            return (
+              <Link
+                key={player.id}
+                href={`/player/${player.num}`}
+                className={`card-glow rounded-xl p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  }`}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                {photo ? (
+                  <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-secondary/30">
+                    <Image
+                      src={photo}
+                      alt={player.fullName}
+                      fill
+                      className="object-cover object-top"
+                    />
+                    <div className="absolute top-2 left-2 font-[var(--font-display)] text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                      {player.num}
+                    </div>
                   </div>
+                ) : (
+                  <div className="font-[var(--font-display)] text-4xl text-primary">{player.num}</div>
+                )}
+                <h3 className="font-[var(--font-display)] text-xl tracking-wider mt-2 text-foreground">
+                  {player.name.toUpperCase()}
+                </h3>
+                <p className="text-xs uppercase tracking-wider mt-1 text-foreground/60">
+                  {player.pos}
+                </p>
+                <div className="flex items-center gap-2 mt-3">
+                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-secondary text-primary">
+                    {player.cat}
+                  </span>
+                  <span className={`text-[10px] text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
                 </div>
-              ) : (
-                <div className="font-[var(--font-display)] text-4xl text-primary">{player.num}</div>
-              )}
-              <h3 className="font-[var(--font-display)] text-xl tracking-wider mt-2 text-foreground">
-                {player.name.toUpperCase()}
-              </h3>
-              <p className="text-xs uppercase tracking-wider mt-1 text-foreground/60">
-                {player.pos}
-              </p>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-secondary text-primary">
-                  {player.cat}
-                </span>
-                <span className={`text-[10px] text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
-              </div>
-              <div className="flex items-center gap-3 mt-2 text-[10px] text-foreground/60">
-                <span className="flex items-center gap-1">
-                  <Target className="w-3 h-3" />
-                  {player.goals}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Trophy className="w-3 h-3" />
-                  {player.assists}
-                </span>
-              </div>
-            </Link>
-          ))}
+                <div className="flex items-center gap-3 mt-2 text-[10px] text-foreground/60">
+                  <span className="flex items-center gap-1">
+                    <Target className="w-3 h-3" />
+                    {player.goals}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Trophy className="w-3 h-3" />
+                    {player.assists}
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
+
+        {filteredPlayers.length === 0 && (
+          <div className="text-center py-12 text-foreground/60">
+            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+              {isBn ? "কোন খেলোয়াড় পাওয়া যায়নি" : "No players found"}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Player Detail Modal */}
@@ -304,10 +175,20 @@ export function Squad() {
             </button>
 
             <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center">
-                <span className="font-[var(--font-display)] text-4xl text-primary">
-                  {selectedPlayer.num}
-                </span>
+              <div className="flex-shrink-0 w-20 h-20 rounded-xl bg-primary/20 flex items-center justify-center overflow-hidden">
+                {getPlayerPhoto(selectedPlayer) ? (
+                  <Image
+                    src={getPlayerPhoto(selectedPlayer)!}
+                    alt={selectedPlayer.fullName}
+                    width={80}
+                    height={80}
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="font-[var(--font-display)] text-4xl text-primary">
+                    {selectedPlayer.num}
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="font-[var(--font-display)] text-2xl md:text-3xl tracking-wider text-foreground">
