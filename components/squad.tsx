@@ -170,6 +170,7 @@ const playerPhotos: Record<number, string> = {
   8: "/players/player-8.png",
   9: "/players/player-9.png",
   11: "/players/player-11.png",
+  17: "/players/player-17.png",
 }
 
 export function Squad() {
