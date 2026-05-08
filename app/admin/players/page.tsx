@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock } from "lucide-react"
+import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
-import { createClient } from "@/lib/supabase/client"
 
 interface Player {
   id: string
@@ -21,18 +20,16 @@ export default function AdminPlayers() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const [showForm, setShowForm] = useState(false)
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all")
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     number: "",
     position: "",
     photo: { signedUrl: "", filePath: "" },
   })
-  const [players, setPlayers] = useState<Player[]>([
-    { id: "1", name: "Sajon Khan", email: "sajon@example.com", position: "ST", jersey_number: 9, status: "approved", created_at: "2025-01-01" },
-    { id: "2", name: "Shuvo Islam", email: "shuvo@example.com", position: "FWD", jersey_number: 7, status: "approved", created_at: "2025-01-02" },
-    { id: "3", name: "New Player", email: "new@example.com", position: null, jersey_number: null, status: "pending", created_at: "2025-05-05" },
-  ])
+  const [players, setPlayers] = useState<Player[]>([])
 
   const handlePhotoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, photo: data }))
@@ -43,7 +40,6 @@ export default function AdminPlayers() {
   }
 
   const handleApprove = async (playerId: string) => {
-    // In production, update Supabase
     setPlayers(players.map(p => 
       p.id === playerId ? { ...p, status: "approved" as const } : p
     ))
@@ -62,25 +58,58 @@ export default function AdminPlayers() {
       return
     }
 
-    const newPlayer: Player = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: formData.name,
-      email: "",
-      jersey_number: parseInt(formData.number),
-      position: formData.position,
-      status: "approved",
-      avatar_url: formData.photo.signedUrl,
-      created_at: new Date().toISOString(),
+    if (editingPlayer) {
+      setPlayers(players.map(p => 
+        p.id === editingPlayer.id 
+          ? { 
+              ...p, 
+              name: formData.name,
+              email: formData.email,
+              jersey_number: parseInt(formData.number),
+              position: formData.position,
+              avatar_url: formData.photo.signedUrl,
+            } 
+          : p
+      ))
+      setEditingPlayer(null)
+    } else {
+      const newPlayer: Player = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: formData.name,
+        email: formData.email,
+        jersey_number: parseInt(formData.number),
+        position: formData.position,
+        status: "approved",
+        avatar_url: formData.photo.signedUrl,
+        created_at: new Date().toISOString(),
+      }
+      setPlayers([...players, newPlayer])
     }
+    
+    resetForm()
+  }
 
-    setPlayers([...players, newPlayer])
-    setFormData({ name: "", number: "", position: "", photo: { signedUrl: "", filePath: "" } })
-    setShowForm(false)
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player)
+    setFormData({
+      name: player.name,
+      email: player.email || "",
+      number: player.jersey_number?.toString() || "",
+      position: player.position || "",
+      photo: { signedUrl: player.avatar_url || "", filePath: "" },
+    })
+    setShowForm(true)
   }
 
   const handleDeletePlayer = async (playerId: string) => {
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
     setPlayers(players.filter((p) => p.id !== playerId))
+  }
+
+  const resetForm = () => {
+    setFormData({ name: "", email: "", number: "", position: "", photo: { signedUrl: "", filePath: "" } })
+    setShowForm(false)
+    setEditingPlayer(null)
   }
 
   const filteredPlayers = filter === "all" ? players : players.filter(p => p.status === filter)
@@ -125,7 +154,10 @@ export default function AdminPlayers() {
           )}
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            resetForm()
+            setShowForm(!showForm)
+          }}
           className={`flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
         >
           <Plus className="w-4 h-4" />
@@ -158,12 +190,20 @@ export default function AdminPlayers() {
         ))}
       </div>
 
-      {/* Add Form */}
+      {/* Add/Edit Form */}
       {showForm && (
         <div className="rounded-xl border-2 border-primary bg-card p-6">
-          <h3 className={`font-[var(--font-display)] text-xl tracking-wider mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "নতুন খেলোয়াড়" : "New Player"}
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className={`font-[var(--font-display)] text-xl tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {editingPlayer 
+                ? (isBn ? "খেলোয়াড় সম্পাদনা" : "Edit Player")
+                : (isBn ? "নতুন খেলোয়াড়" : "New Player")
+              }
+            </h3>
+            <button onClick={resetForm} className="p-2 hover:bg-secondary/20 rounded">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <div className="space-y-4">
             <div>
               <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -176,12 +216,19 @@ export default function AdminPlayers() {
                 onPhotoDelete={handlePhotoDelete}
               />
             </div>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <input
                 type="text"
                 placeholder={isBn ? "নাম" : "Name"}
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              />
+              <input
+                type="email"
+                placeholder={isBn ? "ইমেইল" : "Email"}
+                value={formData.email}
+                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
               <input
@@ -191,26 +238,29 @@ export default function AdminPlayers() {
                 onChange={(e) => setFormData((prev) => ({ ...prev, number: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
               />
-              <input
-                type="text"
-                placeholder={isBn ? "অবস্থান" : "Position"}
+              <select
                 value={formData.position}
                 onChange={(e) => setFormData((prev) => ({ ...prev, position: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
+              >
+                <option value="">{isBn ? "অবস্থান নির্বাচন করুন" : "Select Position"}</option>
+                <option value="GK">{isBn ? "গোলরক্ষক" : "Goalkeeper (GK)"}</option>
+                <option value="DEF">{isBn ? "ডিফেন্ডার" : "Defender (DEF)"}</option>
+                <option value="MID">{isBn ? "মিডফিল্ডার" : "Midfielder (MID)"}</option>
+                <option value="FWD">{isBn ? "ফরওয়ার্ড" : "Forward (FWD)"}</option>
+                <option value="ST">{isBn ? "স্ট্রাইকার" : "Striker (ST)"}</option>
+              </select>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={handleSavePlayer}
-                className={`flex-1 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
-                {isBn ? "সংরক্ষণ করুন" : "Save"}
+                <Save className="w-4 h-4" />
+                {editingPlayer ? (isBn ? "আপডেট করুন" : "Update") : (isBn ? "সংরক্ষণ করুন" : "Save")}
               </button>
               <button
-                onClick={() => {
-                  setShowForm(false)
-                  setFormData({ name: "", number: "", position: "", photo: { signedUrl: "", filePath: "" } })
-                }}
+                onClick={resetForm}
                 className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {isBn ? "বাতিল" : "Cancel"}
@@ -247,9 +297,14 @@ export default function AdminPlayers() {
                   {player.jersey_number || "-"}
                 </td>
                 <td className="px-4 py-3">
-                  <div>
-                    <div className="text-sm font-medium text-foreground">{player.name}</div>
-                    <div className="text-xs text-foreground/60">{player.email}</div>
+                  <div className="flex items-center gap-3">
+                    {player.avatar_url && (
+                      <img src={player.avatar_url} alt={player.name} className="w-10 h-10 rounded-full object-cover" />
+                    )}
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{player.name}</div>
+                      <div className="text-xs text-foreground/60">{player.email}</div>
+                    </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-foreground/80">
@@ -276,12 +331,17 @@ export default function AdminPlayers() {
                         </button>
                       </>
                     )}
-                    <button className="p-2 rounded hover:bg-primary/20 transition text-primary">
+                    <button 
+                      onClick={() => handleEditPlayer(player)}
+                      className="p-2 rounded hover:bg-primary/20 transition text-primary"
+                      title={isBn ? "সম্পাদনা করুন" : "Edit"}
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeletePlayer(player.id)}
                       className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
+                      title={isBn ? "মুছুন" : "Delete"}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -293,7 +353,12 @@ export default function AdminPlayers() {
         </table>
         {filteredPlayers.length === 0 && (
           <div className="text-center py-12 text-foreground/60">
-            {isBn ? "কোন খেলোয়াড় পাওয়া যায়নি" : "No players found"}
+            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+              {isBn ? "কোন খেলোয়াড় পাওয়া যায়নি" : "No players found"}
+            </p>
+            <p className={`text-sm mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "নতুন খেলোয়াড় যোগ করতে উপরের বোতাম ক্লিক করুন" : "Click the button above to add a new player"}
+            </p>
           </div>
         )}
       </div>
