@@ -271,15 +271,15 @@ export default function PlayerProfile() {
             )}
 
             <div className="flex-1">
-              <p className="uppercase tracking-[0.3em] text-foreground/60 text-sm mb-2">
+              <p className="uppercase tracking-[0.3em] text-white/60 text-sm mb-2">
                 Titan Force FC
               </p>
 
-              <h1 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-none text-foreground">
+              <h1 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-none text-white">
                 {player.fullName.split(" ")[0]}
               </h1>
 
-              <div className={`flex flex-wrap items-center gap-4 mt-4 text-base md:text-lg text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              <div className={`flex flex-wrap items-center gap-4 mt-4 text-base md:text-lg text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 <span className="text-primary font-bold">#{player.num}</span>
                 <span>{player.pos}</span>
                 <span>Bangladesh</span>
