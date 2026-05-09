@@ -2,13 +2,15 @@
 
 import { useAdmin } from "@/lib/admin-context"
 import { useLanguage } from "@/lib/language-context"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { LogOut, Menu } from "lucide-react"
 import { useState } from "react"
 
 export function AdminSidebar() {
-  const { logout } = useAdmin()
+  const { logout, isLoading } = useAdmin()
   const { language } = useLanguage()
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const isBn = language === "bn"
 
@@ -25,6 +27,16 @@ export function AdminSidebar() {
     { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️" },
     { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧" },
   ]
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push("/admin/login")
+      setMobileOpen(false)
+    } catch (err) {
+      console.error("[v0] Logout error:", err)
+    }
+  }
 
   return (
     <>
@@ -73,11 +85,9 @@ export function AdminSidebar() {
 
         {/* Logout */}
         <button
-          onClick={() => {
-            logout()
-            setMobileOpen(false)
-          }}
-          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition ${
+          onClick={handleLogout}
+          disabled={isLoading}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-50 transition ${
             isBn ? "font-[var(--font-bengali)]" : ""
           }`}
         >

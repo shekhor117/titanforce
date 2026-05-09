@@ -1,17 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Search, Mail, MailOpen, Trash2, Reply, Eye } from "lucide-react"
 
 interface ContactMessage {
   id: string
+  userId?: string
   name: string
   email: string
-  subject: string
+  subject?: string
   message: string
   status: "unread" | "read" | "replied"
-  createdAt: string
+  timestamp?: string
+  createdAt?: string
 }
 
 const mockContacts: ContactMessage[] = [
@@ -28,6 +30,31 @@ export default function AdminContactsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
+
+  // Load messages from localStorage on mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem("titanforce_messages")
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages)
+        // Format loaded messages to match the interface
+        const formatted = parsed.map((msg: any) => ({
+          id: msg.id,
+          userId: msg.userId,
+          name: msg.name,
+          email: msg.email,
+          subject: msg.subject || "Message",
+          message: msg.message,
+          status: msg.status || "unread",
+          createdAt: new Date(msg.timestamp || new Date()).toLocaleDateString(),
+        }))
+        // Combine with mock data, prioritizing user-submitted messages
+        setContacts([...formatted, ...mockContacts])
+      } catch (error) {
+        console.error("[v0] Error loading messages:", error)
+      }
+    }
+  }, [])
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
