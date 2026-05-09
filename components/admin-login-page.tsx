@@ -30,8 +30,8 @@ export function AdminLoginPage() {
 
     try {
       await login(email, password)
-      // Use window.location for a full page navigation to ensure admin state is fresh
-      window.location.href = "/admin/dashboard"
+      // Use router.push for Next.js compatible navigation
+      router.push("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setLocalError(message)
