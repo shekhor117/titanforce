@@ -59,9 +59,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         await signup(formData.name, formData.email, formData.password, selectedRole)
       }
       onClose()
+      // Use window.location for a full page navigation to ensure auth state is fresh
+      window.location.href = '/profile'
     } catch (error) {
       console.error("Auth error:", error)
-    } finally {
       setIsLoading(false)
     }
   }

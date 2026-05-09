@@ -45,12 +45,13 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       if (view === 'login') {
         // Use auth context for login - it handles both Supabase and demo mode
         await login(email, password, selectedRole)
-        router.push('/profile')
+        // Use window.location for a full page navigation to ensure auth state is fresh
+        window.location.href = '/profile'
       } else {
         if (!supabase) {
           // Demo mode signup — use the auth context signup helper
           await signup(fullName, email, password, selectedRole)
-          router.push('/profile')
+          window.location.href = '/profile'
           return
         }
 
@@ -71,7 +72,6 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed')
-    } finally {
       setIsLoading(false)
     }
   }
@@ -92,7 +92,8 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           role: selectedRole,
         }
         localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-        router.push('/profile')
+        // Use window.location for a full page navigation to ensure auth state is fresh
+        window.location.href = '/profile'
         return
       }
 
