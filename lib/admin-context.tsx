@@ -23,23 +23,25 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   // Check if admin is logged in on mount
   useEffect(() => {
+    let isMounted = true
+    
     const initializeAuth = async () => {
       try {
         const supabase = createClient()
         if (!supabase) {
           // Fallback to localStorage for hardcoded demo
           const stored = localStorage.getItem("titanforce_admin")
-          if (stored) {
+          if (stored && isMounted) {
             const userData = JSON.parse(stored)
             setAdmin(userData)
           }
-          setIsInitialized(true)
+          if (isMounted) setIsInitialized(true)
           return
         }
 
         // Get current user from Supabase session
         const { data } = await supabase.auth.getSession()
-        if (data.session?.user) {
+        if (data.session?.user && isMounted) {
           const user: AuthUser = {
             id: data.session.user.id,
             email: data.session.user.email || "",
@@ -53,15 +55,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         console.error("[v0] Error initializing auth:", err)
         // Fallback to localStorage
         const stored = localStorage.getItem("titanforce_admin")
-        if (stored) {
+        if (stored && isMounted) {
           setAdmin(JSON.parse(stored))
         }
       } finally {
-        setIsInitialized(true)
+        if (isMounted) setIsInitialized(true)
       }
     }
 
     initializeAuth()
+    
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const login = async (email: string, password: string) => {
