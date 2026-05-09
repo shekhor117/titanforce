@@ -26,23 +26,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     let isMounted = true
     
     const initializeAuth = async () => {
+      console.log("[v0] AdminContext: Starting initialization")
+      
       // Check localStorage for stored admin data
       const stored = localStorage.getItem("titanforce_admin")
+      console.log("[v0] AdminContext: localStorage stored =", stored ? "found" : "not found")
       
       if (stored && isMounted) {
         try {
           const userData = JSON.parse(stored)
+          console.log("[v0] AdminContext: Setting admin from localStorage:", userData.email)
           setAdmin(userData)
         } catch {
+          console.log("[v0] AdminContext: Failed to parse localStorage")
           localStorage.removeItem("titanforce_admin")
         }
       }
       
       try {
         const supabase = createClient()
+        console.log("[v0] AdminContext: Supabase =", supabase ? "available" : "null (demo mode)")
         
         if (!supabase) {
           // No Supabase - already handled localStorage above
+          console.log("[v0] AdminContext: Setting isInitialized=true (demo mode)")
           if (isMounted) setIsInitialized(true)
           return
         }
@@ -75,6 +82,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
+    console.log("[v0] AdminContext: login() called with email:", email)
     setIsLoading(true)
     setError(null)
 
@@ -82,6 +90,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const supabase = createClient()
       
       if (!supabase) {
+        console.log("[v0] AdminContext: Demo mode login")
         // Demo mode: accept any email with password length >= 6
         if (password.length < 6) {
           throw new Error("Password must be at least 6 characters")
@@ -95,8 +104,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           emailVerified: true,
         }
 
+        console.log("[v0] AdminContext: Setting admin and localStorage")
         setAdmin(demoUser)
-        localStorage.setItem("titanforce_admin", JSON.stringify(demoUser))
+        const userJson = JSON.stringify(demoUser)
+        localStorage.setItem("titanforce_admin", userJson)
+        // Verify localStorage was written
+        const verifyStored = localStorage.getItem("titanforce_admin")
+        console.log("[v0] AdminContext: Login successful, localStorage verified =", verifyStored ? "yes" : "NO")
         return
       }
 

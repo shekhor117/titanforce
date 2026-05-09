@@ -7,9 +7,12 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const { admin, isInitialized } = useAdmin()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
+  console.log("[v0] AdminProtectedRoute: isInitialized =", isInitialized, ", admin =", admin?.email || "null")
+
   useEffect(() => {
     // Only redirect if fully initialized and no admin
     if (isInitialized && !admin && !isRedirecting) {
+      console.log("[v0] AdminProtectedRoute: No admin found, redirecting to login")
       setIsRedirecting(true)
       // Use window.location for a full page reload to ensure clean state
       window.location.href = "/admin/login"
