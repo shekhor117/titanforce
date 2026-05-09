@@ -9,11 +9,13 @@ export function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [localError, setLocalError] = useState("")
-  const { login, error: contextError, isLoading } = useAdmin()
+  const { login, error: contextError } = useAdmin()
   const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === "bn"
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLocalError("")
@@ -28,13 +30,14 @@ export function AdminLoginPage() {
       return
     }
 
+    setIsSubmitting(true)
     try {
       await login(email, password)
-      // Use router.push for Next.js compatible navigation
       router.push("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setLocalError(message)
+      setIsSubmitting(false)
     }
   }
 
@@ -69,7 +72,7 @@ export function AdminLoginPage() {
                 }}
                 placeholder="admin@titanforce.com"
                 className="w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition"
-                disabled={isLoading}
+                disabled={isSubmitting}
                 required
               />
             </div>
@@ -87,7 +90,7 @@ export function AdminLoginPage() {
                 }}
                 placeholder="••••••••"
                 className="w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition"
-                disabled={isLoading}
+                disabled={isSubmitting}
                 required
               />
             </div>
@@ -100,10 +103,10 @@ export function AdminLoginPage() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className={`w-full py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
-              {isLoading ? (isBn ? "লগইন করছে..." : "Logging in...") : (isBn ? "লগইন করুন" : "Login")}
+              {isSubmitting ? (isBn ? "লগইন করছে..." : "Logging in...") : (isBn ? "লগইন করুন" : "Login")}
             </button>
           </form>
 
