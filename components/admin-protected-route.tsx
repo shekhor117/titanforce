@@ -1,21 +1,20 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { useAdmin } from "@/lib/admin-context"
 
 export function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   const { admin, isInitialized } = useAdmin()
-  const router = useRouter()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   useEffect(() => {
     // Only redirect if fully initialized and no admin
     if (isInitialized && !admin && !isRedirecting) {
       setIsRedirecting(true)
-      router.push("/admin/login")
+      // Use window.location for a full page reload to ensure clean state
+      window.location.href = "/admin/login"
     }
-  }, [admin, isInitialized, isRedirecting, router])
+  }, [admin, isInitialized, isRedirecting])
 
   // If we have admin data (from localStorage), render immediately
   if (admin) {

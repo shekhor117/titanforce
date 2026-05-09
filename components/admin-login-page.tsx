@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { useAdmin } from "@/lib/admin-context"
 import { useLanguage } from "@/lib/language-context"
 
@@ -9,12 +8,18 @@ export function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [localError, setLocalError] = useState("")
-  const { login, error: contextError } = useAdmin()
-  const router = useRouter()
+  const { login, error: contextError, admin, isInitialized } = useAdmin()
   const { language } = useLanguage()
   const isBn = language === "bn"
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (isInitialized && admin) {
+      window.location.href = "/admin/dashboard"
+    }
+  }, [admin, isInitialized])
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +38,8 @@ export function AdminLoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
-      router.push("/admin/dashboard")
+      // Use window.location for a full page reload to ensure admin state is properly read from localStorage
+      window.location.href = "/admin/dashboard"
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setLocalError(message)
@@ -112,22 +118,20 @@ export function AdminLoginPage() {
 
           {/* Links */}
           <div className={`mt-6 text-center text-xs text-foreground/70 space-y-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            <button
-              onClick={() => router.push("/admin/forgot-password")}
+            <a
+              href="/admin/forgot-password"
               className="block w-full text-primary hover:underline"
-              type="button"
             >
               {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
-            </button>
+            </a>
             <p>
               {isBn ? "নতুন ব্যবহারকারী?" : "New user?"}{" "}
-              <button
-                onClick={() => router.push("/admin/signup")}
+              <a
+                href="/admin/signup"
                 className="text-primary hover:underline"
-                type="button"
               >
                 {isBn ? "সাইন আপ করুন" : "Sign up"}
-              </button>
+              </a>
             </p>
           </div>
 
