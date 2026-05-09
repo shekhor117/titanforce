@@ -8,25 +8,36 @@ import { useLanguage } from "@/lib/language-context"
 export function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { login, error } = useAdmin()
+  const [localError, setLocalError] = useState("")
+  const { login, error: contextError, isLoading } = useAdmin()
   const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === "bn"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    setLocalError("")
+
+    if (!email || !password) {
+      setLocalError(isBn ? "সমস্ত ক্ষেত্র পূরণ করুন" : "Please fill in all fields")
+      return
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setLocalError(isBn ? "বৈধ ইমেল ঠিকানা প্রবেশ করুন" : "Please enter a valid email address")
+      return
+    }
 
     try {
       await login(email, password)
       router.push("/admin/dashboard")
-    } catch {
-      // Error is handled by context
-    } finally {
-      setIsLoading(false)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Login failed"
+      setLocalError(message)
     }
   }
+
+  const displayError = contextError || localError
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-black to-primary/20 flex items-center justify-center p-4">
@@ -51,9 +62,13 @@ export function AdminLoginPage() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setLocalError("")
+                }}
                 placeholder="admin@titanforce.com"
                 className="w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -65,16 +80,20 @@ export function AdminLoginPage() {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setLocalError("")
+                }}
                 placeholder="••••••••"
                 className="w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition"
+                disabled={isLoading}
                 required
               />
             </div>
 
-            {error && (
+            {displayError && (
               <div className={`p-3 rounded bg-red-500/10 border border-red-500/30 text-sm text-red-400 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {error}
+                {displayError}
               </div>
             )}
 
@@ -87,11 +106,33 @@ export function AdminLoginPage() {
             </button>
           </form>
 
+          {/* Links */}
+          <div className={`mt-6 text-center text-xs text-foreground/70 space-y-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <button
+              onClick={() => router.push("/admin/forgot-password")}
+              className="block w-full text-primary hover:underline"
+              type="button"
+            >
+              {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
+            </button>
+            <p>
+              {isBn ? "নতুন ব্যবহারকারী?" : "New user?"}{" "}
+              <button
+                onClick={() => router.push("/admin/signup")}
+                className="text-primary hover:underline"
+                type="button"
+              >
+                {isBn ? "সাইন আপ করুন" : "Sign up"}
+              </button>
+            </p>
+          </div>
+
           {/* Demo Credentials */}
           <div className={`mt-6 p-3 rounded bg-secondary/30 border border-secondary text-xs text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             <p className="font-semibold mb-1">{isBn ? "ডেমো শংসাপত্র:" : "Demo Credentials:"}</p>
             <p>Email: admin@titanforce.com</p>
             <p>Password: admin123456</p>
+            <p className="mt-2 text-xs opacity-70">{isBn ? "Supabase সক্ষম থাকলে আপনার নিবন্ধিত অ্যাকাউন্ট ব্যবহার করুন।" : "Use your registered account if Supabase is enabled."}</p>
           </div>
         </div>
       </div>
