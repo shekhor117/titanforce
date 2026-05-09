@@ -30,6 +30,8 @@ export function AdminLoginPage() {
 
     try {
       await login(email, password)
+      // Small delay to ensure localStorage is committed before navigation
+      await new Promise(resolve => setTimeout(resolve, 100))
       // Use window.location for a full page navigation to ensure admin state is fresh
       window.location.href = "/admin/dashboard"
     } catch (err) {
