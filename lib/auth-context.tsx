@@ -80,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | null = null
+    let isMounted = true
 
     const initAuth = async () => {
       // First check Supabase auth
@@ -91,28 +92,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (savedUser) {
           try {
             const parsed = JSON.parse(savedUser)
-            setUser(parsed)
-            setProfile({
-              id: parsed.id,
-              email: parsed.email,
-              name: parsed.name,
-              role: parsed.role,
-              status: "approved",
-            })
+            if (isMounted) {
+              setUser(parsed)
+              setProfile({
+                id: parsed.id,
+                email: parsed.email,
+                name: parsed.name,
+                role: parsed.role,
+                status: "approved",
+              })
+            }
           } catch (error) {
             localStorage.removeItem("titanforce_user")
           }
         }
-        setIsLoading(false)
+        if (isMounted) setIsLoading(false)
         return
       }
       
       // Set up auth state change listener
       const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (!isMounted) return
+        
         if (event === "SIGNED_IN" && session?.user) {
           const supabaseUser = session.user
           // Fetch profile first to get role
           const profileData = await fetchProfile(supabaseUser.id)
+          if (isMounted) {
+            const newUser: User = {
+              id: supabaseUser.id,
+              name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
+              email: supabaseUser.email || "",
+              role: profileData?.role || null,
+              avatar: supabaseUser.user_metadata?.avatar_url,
+            }
+            setUser(newUser)
+            setIsLoading(false)
+          }
+        } else if (event === "SIGNED_OUT") {
+          if (isMounted) {
+            setUser(null)
+            setProfile(null)
+            setIsLoading(false)
+          }
+        }
+      })
+      subscription = data.subscription
+      
+      // Get current session
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!isMounted) return
+      
+      if (session?.user) {
+        const supabaseUser = session.user
+        // Fetch profile first to get role
+        const profileData = await fetchProfile(supabaseUser.id)
+        if (isMounted) {
           const newUser: User = {
             id: supabaseUser.id,
             name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
@@ -121,53 +157,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             avatar: supabaseUser.user_metadata?.avatar_url,
           }
           setUser(newUser)
-        } else if (event === "SIGNED_OUT") {
-          setUser(null)
-          setProfile(null)
         }
-      })
-      subscription = data.subscription
-      
-      // Get current session
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (session?.user) {
-        const supabaseUser = session.user
-        // Fetch profile first to get role
-        const profileData = await fetchProfile(supabaseUser.id)
-        const newUser: User = {
-          id: supabaseUser.id,
-          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-          email: supabaseUser.email || "",
-          role: profileData?.role || null,
-          avatar: supabaseUser.user_metadata?.avatar_url,
-        }
-        setUser(newUser)
       } else {
         // Fallback to localStorage for demo
         const savedUser = localStorage.getItem("titanforce_user")
         if (savedUser) {
           try {
             const parsed = JSON.parse(savedUser)
-            setUser(parsed)
-            setProfile({
-              id: parsed.id,
-              email: parsed.email,
-              name: parsed.name,
-              role: parsed.role,
-              status: "approved",
-            })
+            if (isMounted) {
+              setUser(parsed)
+              setProfile({
+                id: parsed.id,
+                email: parsed.email,
+                name: parsed.name,
+                role: parsed.role,
+                status: "approved",
+              })
+            }
           } catch (error) {
             localStorage.removeItem("titanforce_user")
           }
         }
       }
-      setIsLoading(false)
+      if (isMounted) setIsLoading(false)
     }
 
     initAuth()
 
     return () => {
+      isMounted = false
       if (subscription) {
         subscription.unsubscribe()
       }
