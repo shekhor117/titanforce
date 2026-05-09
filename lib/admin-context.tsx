@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
-import { signInWithEmail, signOut, getCurrentUser, AuthUser } from "@/lib/auth-utils"
+import { signInWithEmail, signOut, AuthUser } from "@/lib/auth-utils"
 import { createClient } from "@/lib/supabase/client"
 
 interface AdminContextType {
@@ -16,7 +16,20 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
 export function AdminProvider({ children }: { children: ReactNode }) {
-  const [admin, setAdmin] = useState<AuthUser | null>(null)
+  const [admin, setAdmin] = useState<AuthUser | null>(() => {
+    // Initialize from localStorage synchronously to prevent flash
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem("titanforce_admin")
+      if (stored) {
+        try {
+          return JSON.parse(stored)
+        } catch {
+          localStorage.removeItem("titanforce_admin")
+        }
+      }
+    }
+    return null
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
@@ -26,14 +39,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     let isMounted = true
     
     const initializeAuth = async () => {
-      // First, immediately check localStorage for faster hydration
+      // Check localStorage again (in case SSR didn't have access)
       const stored = localStorage.getItem("titanforce_admin")
       
       if (stored && isMounted) {
         try {
           const userData = JSON.parse(stored)
           setAdmin(userData)
-        } catch (err) {
+        } catch {
           localStorage.removeItem("titanforce_admin")
         }
       }
@@ -61,8 +74,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           localStorage.setItem("titanforce_admin", JSON.stringify(user))
         }
       } catch (err) {
-        console.error("[v0] Error initializing auth:", err)
-        // localStorage fallback already handled above
+        console.error("Error initializing auth:", err)
       } finally {
         if (isMounted) setIsInitialized(true)
       }
