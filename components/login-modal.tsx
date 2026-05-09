@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { X, User, Users, Handshake } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
@@ -11,6 +12,7 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const router = useRouter()
   const [step, setStep] = useState<"role-select" | "login" | "signup">("role-select")
   const [selectedRole, setSelectedRole] = useState<UserRole>(null)
   const [isLoginMode, setIsLoginMode] = useState(true)
@@ -59,8 +61,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         await signup(formData.name, formData.email, formData.password, selectedRole)
       }
       onClose()
-      // Use window.location for a full page navigation to ensure auth state is fresh
-      window.location.href = '/profile'
+      router.push('/profile')
     } catch (error) {
       console.error("Auth error:", error)
       setIsLoading(false)

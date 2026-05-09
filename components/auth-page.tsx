@@ -45,13 +45,12 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       if (view === 'login') {
         // Use auth context for login - it handles both Supabase and demo mode
         await login(email, password, selectedRole)
-        // Use window.location for a full page navigation to ensure auth state is fresh
-        window.location.href = '/profile'
+        router.push('/profile')
       } else {
         if (!supabase) {
           // Demo mode signup — use the auth context signup helper
           await signup(fullName, email, password, selectedRole)
-          window.location.href = '/profile'
+          router.push('/profile')
           return
         }
 
@@ -92,8 +91,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           role: selectedRole,
         }
         localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-        // Use window.location for a full page navigation to ensure auth state is fresh
-        window.location.href = '/profile'
+        router.push('/profile')
         return
       }
 
@@ -117,9 +115,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
       <button
-        onClick={() => {
-          window.location.href = "/"
-        }}
+        onClick={() => router.push("/")}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Go back to home"
       >
