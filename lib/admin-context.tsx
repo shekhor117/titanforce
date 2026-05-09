@@ -82,18 +82,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const supabase = createClient()
       
       if (!supabase) {
-        // Fallback: hardcoded demo credentials for development
-        const ADMIN_EMAIL = "admin@titanforce.com"
-        const ADMIN_PASSWORD = "admin123456"
-
-        if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-          throw new Error("Invalid credentials. Use demo: admin@titanforce.com / admin123456")
+        // Demo mode: accept any email with password length >= 6
+        if (password.length < 6) {
+          throw new Error("Password must be at least 6 characters")
         }
 
         const demoUser: AuthUser = {
-          id: "demo-admin-1",
+          id: `demo-admin-${Date.now()}`,
           email: email,
-          name: "Admin",
+          name: email.split("@")[0] || "Admin",
           role: "admin",
           emailVerified: true,
         }
