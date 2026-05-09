@@ -131,11 +131,10 @@ export function AdminLoginPage() {
             </p>
           </div>
 
-          {/* Demo Credentials */}
+          {/* Demo Mode Info */}
           <div className={`mt-6 p-3 rounded bg-secondary/30 border border-secondary text-xs text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            <p className="font-semibold mb-1">{isBn ? "ডেমো শংসাপত্র:" : "Demo Credentials:"}</p>
-            <p>Email: admin@titanforce.com</p>
-            <p>Password: admin123456</p>
+            <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
+            <p>{isBn ? "যেকোনো ইমেল এবং পাসওয়ার্ড ব্যবহার করুন (ন্যূনতম ৬ অক্ষর)" : "Use any email and password (minimum 6 characters)"}</p>
             <p className="mt-2 text-xs opacity-70">{isBn ? "Supabase সক্ষম থাকলে আপনার নিবন্ধিত অ্যাকাউন্ট ব্যবহার করুন।" : "Use your registered account if Supabase is enabled."}</p>
           </div>
         </div>
