@@ -16,7 +16,7 @@ interface AuthPageProps {
 export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
-  const { login } = useAuth()
+  const { login, signup } = useAuth()
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [showPassword, setShowPassword] = useState(false)
@@ -48,20 +48,12 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         router.push('/profile')
       } else {
         if (!supabase) {
-          // Demo mode signup - use auth context
-          const { signup } = await import('@/lib/auth-context').then(mod => ({ signup: mod.useAuth }))
-          // For demo mode, simulate signup via localStorage
-          const demoUser = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: fullName,
-            email,
-            role: selectedRole,
-          }
-          localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
+          // Demo mode signup — use the auth context signup helper
+          await signup(fullName, email, password, selectedRole)
           router.push('/profile')
           return
         }
-        
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -74,7 +66,8 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           },
         })
         if (error) throw error
-        router.push('/auth/sign-up-success')
+        // Redirect to home with a query param so the page can show a "check your email" notice
+        router.push('/?signup=check-email')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed')
