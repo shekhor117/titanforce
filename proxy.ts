@@ -1,7 +1,7 @@
 import { updateSession } from '@/lib/supabase/proxy'
 import { type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Allow auth pages to be accessed without blocking
   const pathname = request.nextUrl.pathname
   
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   try {
     return await updateSession(request)
   } catch (error) {
-    console.error('[v0] Middleware error:', error)
+    console.error('[v0] Proxy middleware error:', error)
     // Continue request even if middleware fails
     return
   }
