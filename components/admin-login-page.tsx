@@ -38,9 +38,6 @@ export function AdminLoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
-      // Small delay to ensure localStorage is written before redirect
-      await new Promise(resolve => setTimeout(resolve, 100))
-      // Use window.location for a full page reload to ensure admin state is properly read from localStorage
       window.location.href = "/admin/dashboard"
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
