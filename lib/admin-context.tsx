@@ -26,15 +26,23 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     let isMounted = true
     
     const initializeAuth = async () => {
+      // First, immediately check localStorage for faster hydration
+      const stored = localStorage.getItem("titanforce_admin")
+      
+      if (stored && isMounted) {
+        try {
+          const userData = JSON.parse(stored)
+          setAdmin(userData)
+        } catch (err) {
+          localStorage.removeItem("titanforce_admin")
+        }
+      }
+      
       try {
         const supabase = createClient()
+        
         if (!supabase) {
-          // Fallback to localStorage for hardcoded demo
-          const stored = localStorage.getItem("titanforce_admin")
-          if (stored && isMounted) {
-            const userData = JSON.parse(stored)
-            setAdmin(userData)
-          }
+          // No Supabase - already handled localStorage above
           if (isMounted) setIsInitialized(true)
           return
         }
@@ -50,14 +58,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             emailVerified: data.session.user.email_confirmed_at ? true : false,
           }
           setAdmin(user)
+          localStorage.setItem("titanforce_admin", JSON.stringify(user))
         }
       } catch (err) {
         console.error("[v0] Error initializing auth:", err)
-        // Fallback to localStorage
-        const stored = localStorage.getItem("titanforce_admin")
-        if (stored && isMounted) {
-          setAdmin(JSON.parse(stored))
-        }
+        // localStorage fallback already handled above
       } finally {
         if (isMounted) setIsInitialized(true)
       }
