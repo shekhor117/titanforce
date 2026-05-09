@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft } from 'lucide-react'
@@ -13,24 +13,10 @@ interface AuthPageProps {
   defaultView?: 'login' | 'signup'
 }
 
-type SupabaseClient = ReturnType<typeof createClient> | null
-
 export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const router = useRouter()
-  const [supabase, setSupabase] = useState<SupabaseClient>(null)
-  const [supabaseError, setSupabaseError] = useState<string | null>(null)
-  const { login } = useAuth()
-  
-  // Safely initialize Supabase client
-  useEffect(() => {
-    try {
-      const client = createClient()
-      setSupabase(client)
-    } catch (err) {
-      console.error('[v0] Supabase initialization error:', err)
-      setSupabaseError('Demo mode active - using localStorage for authentication')
-    }
-  }, [])
+  const supabase = createClient()
+  const { login, signup } = useAuth()
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [showPassword, setShowPassword] = useState(false)
@@ -58,59 +44,30 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
 
       if (view === 'login') {
         // Use auth context for login - it handles both Supabase and demo mode
-        try {
-          await login(email, password, selectedRole)
-          router.push('/profile')
-        } catch (err) {
-          // Fallback to demo mode if login fails
-          const demoUser = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: 'Demo User',
-            email,
-            role: selectedRole,
-          }
-          localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-          router.push('/profile')
-        }
+        await login(email, password, selectedRole)
+        router.push('/profile')
       } else {
         if (!supabase) {
-          // Demo mode signup
-          const demoUser = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: fullName,
-            email,
-            role: selectedRole,
-          }
-          localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
+          // Demo mode signup — use the auth context signup helper
+          await signup(fullName, email, password, selectedRole)
           router.push('/profile')
           return
         }
-        
-        try {
-          const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                full_name: fullName,
-                role: selectedRole,
-              },
-              emailRedirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
+
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+              role: selectedRole,
             },
-          })
-          if (error) throw error
-          router.push('/auth/sign-up-success')
-        } catch (err) {
-          // Fallback to demo mode if signup fails
-          const demoUser = {
-            id: Math.random().toString(36).substr(2, 9),
-            name: fullName,
-            email,
-            role: selectedRole,
-          }
-          localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-          router.push('/profile')
-        }
+            emailRedirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
+          },
+        })
+        if (error) throw error
+        // Redirect to home with a query param so the page can show a "check your email" notice
+        router.push('/?signup=check-email')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed')
@@ -139,29 +96,16 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         return
       }
 
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback${view === 'signup' ? `?role=${selectedRole}` : ''}`,
-          },
-        })
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback${view === 'signup' ? `?role=${selectedRole}` : ''}`,
+        },
+      })
 
-        if (error) throw error
-      } catch (oauthError) {
-        // Fallback to demo mode if OAuth fails
-        const demoUser = {
-          id: Math.random().toString(36).substr(2, 9),
-          name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
-          email: `demo@${provider}.com`,
-          role: selectedRole,
-        }
-        localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-        router.push('/profile')
-      }
+      if (error) throw error
     } catch (err) {
       setError(err instanceof Error ? err.message : `Failed to ${view === 'login' ? 'login' : 'sign up'} with ${provider}`)
-    } finally {
       setIsGoogleLoading(false)
       setIsFacebookLoading(false)
       setIsAppleLoading(false)

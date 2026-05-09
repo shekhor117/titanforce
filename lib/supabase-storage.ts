@@ -14,6 +14,7 @@ export async function uploadFileToSupabase(
 ) {
   try {
     const supabase = createClient()
+    if (!supabase) throw new Error("Supabase is not configured")
 
     // Get current user
     const {
@@ -73,6 +74,7 @@ export async function uploadFileToSupabase(
 export async function deleteFileFromSupabase(filePath: string) {
   try {
     const supabase = createClient()
+    if (!supabase) throw new Error("Supabase is not configured")
 
     // Verify user owns this file
     const {
@@ -108,6 +110,7 @@ export async function deleteFileFromSupabase(filePath: string) {
 export async function getSignedUrl(filePath: string) {
   try {
     const supabase = createClient()
+    if (!supabase) throw new Error("Supabase is not configured")
 
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
