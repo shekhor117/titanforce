@@ -6,6 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Explicitly use proxy instead of middleware
+  experimental: {
+    useProxy: true,
+  },
 }
 
 export default nextConfig
