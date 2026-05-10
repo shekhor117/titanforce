@@ -22,76 +22,79 @@ export function Footer() {
   return (
     <footer className="border-t-2 border-primary py-12 px-4 bg-black/50">
       <div className="max-w-6xl mx-auto">
-        {/* Contact Information Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
-          {/* Email Card */}
-          <a
-            href={`mailto:${settings.contactEmail}`}
-            className="flex items-center gap-4 p-5 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-          >
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-              <Mail className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "ইমেল করুন" : "Email Us"}
-              </p>
-              <p className="text-foreground font-semibold text-sm">{settings.contactEmail}</p>
-            </div>
-          </a>
+        <div className="flex flex-col items-center">
+          {/* Logo and Site Name */}
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/logo.png"
+              alt={`${settings.siteName} Logo`}
+              width={60}
+              height={60}
+              className="object-contain"
+            />
+          </div>
+          <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
+            {settings.siteName.toUpperCase()}
+          </p>
+          <p className="text-sm text-foreground/60 text-center mb-8">
+            {settings.tagline}
+          </p>
 
-          {/* Phone Card */}
-          <a
-            href={`tel:${settings.contactPhone}`}
-            className="flex items-center gap-4 p-5 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-          >
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-              <Phone className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "কল করুন" : "Call Us"}
-              </p>
-              <p className="text-foreground font-semibold text-sm">{settings.contactPhone}</p>
-            </div>
-          </a>
+          {/* Contact Information Cards */}
+          <div className="w-full grid md:grid-cols-3 gap-4 mb-8">
+            {/* Email Card */}
+            <a
+              href={`mailto:${settings.contactEmail}`}
+              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+                <Mail className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+              </div>
+              <div>
+                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "ইমেল করুন" : "Email Us"}
+                </p>
+                <p className="text-foreground font-semibold text-sm">{settings.contactEmail}</p>
+              </div>
+            </a>
 
-          {/* Address Card */}
-          <div className="flex items-center gap-4 p-5 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <MapPin className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "আমাদের অবস্থান" : "Visit Us"}
-              </p>
-              <p className="text-foreground font-semibold text-sm">{settings.address}</p>
+            {/* Phone Card */}
+            <a
+              href={`tel:${settings.contactPhone}`}
+              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+                <Phone className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+              </div>
+              <div>
+                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "কল করুন" : "Call Us"}
+                </p>
+                <p className="text-foreground font-semibold text-sm">{settings.contactPhone}</p>
+              </div>
+            </a>
+
+            {/* Address Card */}
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "আমাদের অবস্থান" : "Visit Us"}
+                </p>
+                <p className="text-foreground font-semibold text-sm">{settings.address}</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-primary/20 pt-8">
-          <div className="flex flex-col items-center">
-            <div className="flex justify-center mb-4">
-              <Image
-                src="/logo.png"
-                alt={`${settings.siteName} Logo`}
-                width={60}
-                height={60}
-                className="object-contain"
-              />
-            </div>
-            <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
-              {settings.siteName.toUpperCase()}
-            </p>
-            <p className="text-sm text-foreground/60 text-center mb-4">
-              {settings.tagline}
-            </p>
-            
-            {/* Social Media Icons */}
-            {socialLinks.length > 0 && (
-              <div className="flex justify-center gap-3 mb-6">
+          
+          {/* Follow Us - Social Media Icons */}
+          {socialLinks.length > 0 && (
+            <div className="mb-6">
+              <p className={`text-sm text-foreground/60 text-center mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "আমাদের অনুসরণ করুন" : "Follow Us"}
+              </p>
+              <div className="flex justify-center gap-3">
                 {socialLinks.map((social) => (
                   <a
                     key={social.label}
@@ -105,12 +108,12 @@ export function Footer() {
                   </a>
                 ))}
               </div>
-            )}
+            </div>
+          )}
 
-            <p className={`text-sm text-foreground/50 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              &copy; {new Date().getFullYear()} {t.footer.rights}
-            </p>
-          </div>
+          <p className={`text-sm text-foreground/50 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            &copy; {new Date().getFullYear()} {t.footer.rights}
+          </p>
         </div>
       </div>
     </footer>
