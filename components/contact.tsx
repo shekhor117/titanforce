@@ -89,7 +89,7 @@ export function Contact() {
       <div className="max-w-6xl mx-auto relative">
         {/* Header */}
         <div
-          className={`text-center mb-16 transition-all duration-700 ${
+          className={`text-center mb-12 transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
@@ -110,92 +110,64 @@ export function Contact() {
           </p>
         </div>
 
-        {/* Main Content */}
+        {/* Contact Information Cards - Horizontal */}
         <div
-          className={`grid lg:grid-cols-5 gap-8 transition-all duration-700 delay-200 ${
+          className={`grid md:grid-cols-3 gap-6 mb-12 transition-all duration-700 delay-100 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          {/* Contact Info Side */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Contact Cards */}
-            <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-6 space-y-6">
-              <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "যোগাযোগের তথ্য" : "Contact Information"}
-              </h3>
-              
-              {/* Email */}
-              <a
-                href={`mailto:${settings.contactEmail}`}
-                className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Mail className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইমেল" : "Email"}
-                  </p>
-                  <p className="text-foreground font-medium">{settings.contactEmail}</p>
-                </div>
-              </a>
-
-              {/* Phone */}
-              <a
-                href={`tel:${settings.contactPhone}`}
-                className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <Phone className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ফোন" : "Phone"}
-                  </p>
-                  <p className="text-foreground font-medium">{settings.contactPhone}</p>
-                </div>
-              </a>
-
-              {/* Address */}
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <MapPin className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ঠিকানা" : "Address"}
-                  </p>
-                  <p className="text-foreground font-medium">{settings.address}</p>
-                </div>
-              </div>
+          {/* Email Card */}
+          <a
+            href={`mailto:${settings.contactEmail}`}
+            className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card hover:border-primary/50 hover:bg-primary/5 transition-all group"
+          >
+            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+              <Mail className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
             </div>
+            <div>
+              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "ইমেল করুন" : "Email Us"}
+              </p>
+              <p className="text-foreground font-semibold">{settings.contactEmail}</p>
+            </div>
+          </a>
 
-            {/* Social Links */}
-            {socialLinks.length > 0 && (
-              <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-6">
-                <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.contact.followUs}
-                </h3>
-                <div className="flex gap-3">
-                  {socialLinks.map((social) => (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      className="w-12 h-12 flex items-center justify-center rounded-xl border-2 border-border/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-                    >
-                      <social.icon className="w-5 h-5" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* Phone Card */}
+          <a
+            href={`tel:${settings.contactPhone}`}
+            className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card hover:border-primary/50 hover:bg-primary/5 transition-all group"
+          >
+            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+              <Phone className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
+            </div>
+            <div>
+              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "কল করুন" : "Call Us"}
+              </p>
+              <p className="text-foreground font-semibold">{settings.contactPhone}</p>
+            </div>
+          </a>
+
+          {/* Address Card */}
+          <div className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card">
+            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <MapPin className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "আমাদের অবস্থান" : "Visit Us"}
+              </p>
+              <p className="text-foreground font-semibold">{settings.address}</p>
+            </div>
           </div>
+        </div>
 
-          {/* Form Side */}
-          <div className="lg:col-span-3">
+        {/* Form Section */}
+        <div
+          className={`max-w-2xl mx-auto transition-all duration-700 delay-200 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
             <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-8">
               {showSuccess ? (
                 <div className="text-center py-12">
@@ -350,7 +322,29 @@ export function Contact() {
                 </form>
               )}
             </div>
-          </div>
+
+          {/* Social Links */}
+          {socialLinks.length > 0 && (
+            <div className="mt-8 text-center">
+              <p className={`text-sm text-foreground/60 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {t.contact.followUs}
+              </p>
+              <div className="flex justify-center gap-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="w-12 h-12 flex items-center justify-center rounded-xl border-2 border-border/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                  >
+                    <social.icon className="w-5 h-5" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
