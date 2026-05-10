@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft } from 'lucide-react'
+import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
+import { useLanguage } from '@/lib/language-context'
 
 type Role = 'player' | 'fan' | 'partner'
 
@@ -17,6 +18,8 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login, signup } = useAuth()
+  const { language } = useLanguage()
+  const isBn = language === 'bn'
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [showPassword, setShowPassword] = useState(false)
@@ -30,10 +33,10 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
   const [isAppleLoading, setIsAppleLoading] = useState(false)
 
-  const roles: { id: Role; label: string; icon: React.ReactNode }[] = [
-    { id: 'player', label: 'Player', icon: <User className="w-4 h-4" /> },
-    { id: 'fan', label: 'Fan', icon: <Heart className="w-4 h-4" /> },
-    { id: 'partner', label: 'Partner', icon: <Handshake className="w-4 h-4" /> },
+  const roles: { id: Role; label: string; labelBn: string; icon: React.ReactNode }[] = [
+    { id: 'player', label: 'Player', labelBn: 'খেলোয়াড়', icon: <User className="w-4 h-4" /> },
+    { id: 'fan', label: 'Fan', labelBn: 'অনুরাগী', icon: <Heart className="w-4 h-4" /> },
+    { id: 'partner', label: 'Partner', labelBn: 'অংশীদার', icon: <Handshake className="w-4 h-4" /> },
   ]
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -43,12 +46,10 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setError(null)
 
       if (view === 'login') {
-        // Use auth context for login - it handles both Supabase and demo mode
         await login(email, password, selectedRole)
         router.push('/profile')
       } else {
         if (!supabase) {
-          // Demo mode signup — use the auth context signup helper
           await signup(fullName, email, password, selectedRole)
           router.push('/profile')
           return
@@ -66,11 +67,10 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           },
         })
         if (error) throw error
-        // Redirect to home with a query param so the page can show a "check your email" notice
         router.push('/?signup=check-email')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed')
+      setError(err instanceof Error ? err.message : (isBn ? 'প্রমাণীকরণ ব্যর্থ হয়েছে' : 'Authentication failed'))
       setIsLoading(false)
     }
   }
@@ -83,7 +83,6 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setError(null)
 
       if (!supabase) {
-        // Demo mode - simulate OAuth login with localStorage
         const demoUser = {
           id: Math.random().toString(36).substr(2, 9),
           name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
@@ -117,10 +116,10 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       <button
         onClick={() => router.push("/")}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Go back to home"
+        aria-label={isBn ? "হোমে ফিরে যান" : "Go back to home"}
       >
         <ArrowLeft className="w-5 h-5" />
-        <span className="text-sm font-medium">Back</span>
+        <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
       </button>
 
       <motion.div
@@ -141,27 +140,27 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">
-            {view === 'login' ? 'Log In' : 'Sign Up'}
+            {view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up')}
           </h1>
           <p className="text-base font-medium text-muted-foreground">
             {view === 'login' ? (
               <>
-                Don&apos;t have an account?{' '}
+                {isBn ? 'অ্যাকাউন্ট নেই?' : "Don't have an account?"}{' '}
                 <button
                   onClick={() => setView('signup')}
                   className="text-primary hover:underline cursor-pointer transition-colors"
                 >
-                  Create an account
+                  {isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create an account'}
                 </button>
               </>
             ) : (
               <>
-                Already have an account?{' '}
+                {isBn ? 'ইতিমধ্যে অ্যাকাউন্ট আছে?' : 'Already have an account?'}{' '}
                 <button
                   onClick={() => setView('login')}
                   className="text-primary hover:underline cursor-pointer transition-colors"
                 >
-                  Log In
+                  {isBn ? 'লগইন করুন' : 'Log In'}
                 </button>
               </>
             )}
@@ -178,6 +177,9 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         {/* Role Selection (Sign Up only) */}
         {view === 'signup' && (
           <div className="w-full">
+            <p className="text-sm text-muted-foreground mb-3 text-center">
+              {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select your role'}
+            </p>
             <div className="grid grid-cols-3 gap-2">
               {roles.map((role) => (
                 <button
@@ -191,7 +193,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
                   }`}
                 >
                   {role.icon}
-                  <span className="font-semibold text-sm">{role.label}</span>
+                  <span className="font-semibold text-sm">{isBn ? role.labelBn : role.label}</span>
                 </button>
               ))}
             </div>
@@ -203,37 +205,37 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           {view === 'signup' && (
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder={isBn ? "পুরো নাম" : "Full Name"}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required={view === 'signup'}
-              className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+              className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
             />
           )}
 
           <input
             type="email"
-            placeholder={view === 'login' ? 'Email or Supporter ID' : 'Email Address'}
+            placeholder={view === 'login' ? (isBn ? "ইমেল বা সাপোর্টার আইডি" : "Email or Supporter ID") : (isBn ? "ইমেল ঠিকানা" : "Email Address")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-5 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+            className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
           />
 
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
+              placeholder={isBn ? "পাসওয়ার্ড" : "Password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-5 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+              className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
             >
               {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
             </button>
@@ -242,19 +244,24 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
             {isLoading
-              ? 'Loading...'
+              ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...')
               : view === 'login'
-                ? 'Continue'
-                : 'Create Account'}
+                ? (isBn ? 'লগইন করুন' : 'Continue')
+                : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
           </button>
 
           {view === 'login' && (
             <div className="flex justify-center gap-4 pt-2">
-              <button type="button" className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors">
-                Forgot password?
+              <button 
+                type="button" 
+                onClick={() => router.push('/auth/forgot-password')}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
+              >
+                {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
               </button>
             </div>
           )}
@@ -263,7 +270,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         {/* Divider */}
         <div className="w-full flex items-center py-2">
           <div className="flex-grow border-t border-border"></div>
-          <span className="px-4 text-base text-muted-foreground">Or</span>
+          <span className="px-4 text-base text-muted-foreground">{isBn ? "অথবা" : "Or"}</span>
           <div className="flex-grow border-t border-border"></div>
         </div>
 
@@ -275,11 +282,15 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             disabled={isAppleLoading}
             className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
-            <svg className="w-5 h-5 mr-3 fill-foreground" viewBox="0 0 384 512">
-              <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-            </svg>
+            {isAppleLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin mr-3" />
+            ) : (
+              <svg className="w-5 h-5 mr-3 fill-foreground" viewBox="0 0 384 512">
+                <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+              </svg>
+            )}
             <span className="text-base font-bold text-foreground">
-              {isAppleLoading ? 'Loading...' : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`}
+              {isAppleLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
             </span>
           </button>
 
@@ -289,14 +300,18 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             disabled={isGoogleLoading}
             className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
-            <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
-              <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
-              <path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z" />
-              <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
-              <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
-            </svg>
+            {isGoogleLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin mr-3" />
+            ) : (
+              <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+                <path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z" />
+                <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
+                <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
+              </svg>
+            )}
             <span className="text-base font-bold text-foreground">
-              {isGoogleLoading ? 'Loading...' : `Sign ${view === 'login' ? 'in' : 'up'} with Google`}
+              {isGoogleLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Google দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Google`)}
             </span>
           </button>
 
@@ -306,22 +321,32 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             disabled={isFacebookLoading}
             className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
-            <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
-              <path fill="#3F51B5" d="M42 37c0 2.762-2.238 5-5 5H11c-2.761 0-5-2.238-5-5V11c0-2.762 2.239-5 5-5h26c2.762 0 5 2.238 5 5v26z" />
-              <path fill="#FFF" d="M34.368 25H31v13h-5V25h-3v-4h3v-2.41c0-4.088 2.056-6.59 5.607-6.59c1.699 0 2.483.126 2.909.183v4.133h-2.383c-1.446 0-1.745.719-1.745 2.012V21h4.15l-.67 4z" />
-            </svg>
+            {isFacebookLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin mr-3" />
+            ) : (
+              <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+                <path fill="#3F51B5" d="M42 37c0 2.762-2.238 5-5 5H11c-2.761 0-5-2.238-5-5V11c0-2.762 2.239-5 5-5h26c2.762 0 5 2.238 5 5v26z" />
+                <path fill="#FFF" d="M34.368 25H31v13h-5V25h-3v-4h3v-2.41c0-4.088 2.056-6.59 5.607-6.59c1.699 0 2.483.126 2.909.183v4.133h-2.383c-1.446 0-1.745.719-1.745 2.012V21h4.15l-.67 4z" />
+              </svg>
+            )}
             <span className="text-base font-bold text-foreground">
-              {isFacebookLoading ? 'Loading...' : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`}
+              {isFacebookLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
             </span>
           </button>
+        </div>
+
+        {/* Demo Mode Info */}
+        <div className="w-full p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
+          <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
+          <p>{isBn ? "যেকোনো ইমেল এবং পাসওয়ার্ড ব্যবহার করুন" : "Use any email and password to test"}</p>
         </div>
 
         {/* Footer */}
         <div className="text-center pt-2">
           <p className="text-sm text-muted-foreground">
-            Having trouble logging in?{' '}
-            <a href="#" className="font-bold text-foreground hover:underline">
-              Get Help
+            {isBn ? "লগইন করতে সমস্যা হচ্ছে?" : "Having trouble logging in?"}{' '}
+            <a href="/contact" className="font-bold text-foreground hover:underline">
+              {isBn ? "সাহায্য নিন" : "Get Help"}
             </a>
           </p>
         </div>
