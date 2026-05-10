@@ -286,6 +286,40 @@ const defaultSettings: SiteSettings = {
   aboutDescription: "Titan Force is more than a football team — it's a brotherhood forged on the local pitches of Mulikandi. We play with pride, passion, and an unbreakable team spirit."
 }
 
+// Activity log types
+export interface ActivityLog {
+  id: string
+  action: "create" | "update" | "delete" | "login" | "export" | "import"
+  entity: string
+  entityId?: string
+  description: string
+  timestamp: string
+  user?: string
+}
+
+// User types for admin management
+export interface AdminUser {
+  id: string
+  name: string
+  email: string
+  role: "admin" | "player" | "fan" | "partner"
+  status: "active" | "inactive"
+  joinedAt: string
+  lastLogin?: string
+}
+
+// Contact message types
+export interface ContactMessage {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+  status: "unread" | "read" | "replied"
+  createdAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -294,7 +328,10 @@ const STORAGE_KEYS = {
   fans: "titanforce_fans",
   news: "titanforce_news",
   media: "titanforce_media",
-  settings: "titanforce_settings"
+  settings: "titanforce_settings",
+  activityLog: "titanforce_activity_log",
+  adminUsers: "titanforce_admin_users",
+  contacts: "titanforce_contacts"
 }
 
 // Helper functions
@@ -328,19 +365,26 @@ export const dataStore = {
     const players = dataStore.getPlayers()
     const newPlayer = { ...player, id: Date.now().toString() }
     dataStore.setPlayers([...players, newPlayer])
+    dataStore.addActivityLog({ action: "create", entity: "player", entityId: newPlayer.id, description: `Added player ${player.name}` })
     return newPlayer
   },
   updatePlayer: (id: string, updates: Partial<Player>) => {
     const players = dataStore.getPlayers()
     const index = players.findIndex(p => p.id === id)
     if (index !== -1) {
+      const oldName = players[index].name
       players[index] = { ...players[index], ...updates }
       dataStore.setPlayers(players)
+      dataStore.addActivityLog({ action: "update", entity: "player", entityId: id, description: `Updated player ${oldName}` })
     }
   },
   deletePlayer: (id: string) => {
-    const players = dataStore.getPlayers().filter(p => p.id !== id)
-    dataStore.setPlayers(players)
+    const players = dataStore.getPlayers()
+    const player = players.find(p => p.id === id)
+    dataStore.setPlayers(players.filter(p => p.id !== id))
+    if (player) {
+      dataStore.addActivityLog({ action: "delete", entity: "player", entityId: id, description: `Deleted player ${player.name}` })
+    }
   },
 
   // Matches
@@ -350,6 +394,7 @@ export const dataStore = {
     const matches = dataStore.getMatches()
     const newMatch = { ...match, id: Date.now().toString() }
     dataStore.setMatches([...matches, newMatch])
+    dataStore.addActivityLog({ action: "create", entity: "match", entityId: newMatch.id, description: `Added match ${match.home} vs ${match.away}` })
     return newMatch
   },
   updateMatch: (id: string, updates: Partial<Match>) => {
@@ -358,11 +403,16 @@ export const dataStore = {
     if (index !== -1) {
       matches[index] = { ...matches[index], ...updates }
       dataStore.setMatches(matches)
+      dataStore.addActivityLog({ action: "update", entity: "match", entityId: id, description: `Updated match ${matches[index].home} vs ${matches[index].away}` })
     }
   },
   deleteMatch: (id: string) => {
-    const matches = dataStore.getMatches().filter(m => m.id !== id)
-    dataStore.setMatches(matches)
+    const matches = dataStore.getMatches()
+    const match = matches.find(m => m.id === id)
+    dataStore.setMatches(matches.filter(m => m.id !== id))
+    if (match) {
+      dataStore.addActivityLog({ action: "delete", entity: "match", entityId: id, description: `Deleted match ${match.home} vs ${match.away}` })
+    }
   },
 
   // Partners
@@ -372,19 +422,26 @@ export const dataStore = {
     const partners = dataStore.getPartners()
     const newPartner = { ...partner, id: Date.now().toString() }
     dataStore.setPartners([...partners, newPartner])
+    dataStore.addActivityLog({ action: "create", entity: "partner", entityId: newPartner.id, description: `Added partner ${partner.name}` })
     return newPartner
   },
   updatePartner: (id: string, updates: Partial<Partner>) => {
     const partners = dataStore.getPartners()
     const index = partners.findIndex(p => p.id === id)
     if (index !== -1) {
+      const oldName = partners[index].name
       partners[index] = { ...partners[index], ...updates }
       dataStore.setPartners(partners)
+      dataStore.addActivityLog({ action: "update", entity: "partner", entityId: id, description: `Updated partner ${oldName}` })
     }
   },
   deletePartner: (id: string) => {
-    const partners = dataStore.getPartners().filter(p => p.id !== id)
-    dataStore.setPartners(partners)
+    const partners = dataStore.getPartners()
+    const partner = partners.find(p => p.id === id)
+    dataStore.setPartners(partners.filter(p => p.id !== id))
+    if (partner) {
+      dataStore.addActivityLog({ action: "delete", entity: "partner", entityId: id, description: `Deleted partner ${partner.name}` })
+    }
   },
 
   // Fans
@@ -394,19 +451,26 @@ export const dataStore = {
     const fans = dataStore.getFans()
     const newFan = { ...fan, id: Date.now().toString() }
     dataStore.setFans([...fans, newFan])
+    dataStore.addActivityLog({ action: "create", entity: "fan", entityId: newFan.id, description: `Added fan ${fan.name}` })
     return newFan
   },
   updateFan: (id: string, updates: Partial<Fan>) => {
     const fans = dataStore.getFans()
     const index = fans.findIndex(f => f.id === id)
     if (index !== -1) {
+      const oldName = fans[index].name
       fans[index] = { ...fans[index], ...updates }
       dataStore.setFans(fans)
+      dataStore.addActivityLog({ action: "update", entity: "fan", entityId: id, description: `Updated fan ${oldName}` })
     }
   },
   deleteFan: (id: string) => {
-    const fans = dataStore.getFans().filter(f => f.id !== id)
-    dataStore.setFans(fans)
+    const fans = dataStore.getFans()
+    const fan = fans.find(f => f.id === id)
+    dataStore.setFans(fans.filter(f => f.id !== id))
+    if (fan) {
+      dataStore.addActivityLog({ action: "delete", entity: "fan", entityId: id, description: `Deleted fan ${fan.name}` })
+    }
   },
 
   // News
@@ -416,19 +480,26 @@ export const dataStore = {
     const news = dataStore.getNews()
     const newItem = { ...newsItem, id: Date.now().toString() }
     dataStore.setNews([...news, newItem])
+    dataStore.addActivityLog({ action: "create", entity: "news", entityId: newItem.id, description: `Added news "${newsItem.title}"` })
     return newItem
   },
   updateNews: (id: string, updates: Partial<NewsItem>) => {
     const news = dataStore.getNews()
     const index = news.findIndex(n => n.id === id)
     if (index !== -1) {
+      const oldTitle = news[index].title
       news[index] = { ...news[index], ...updates }
       dataStore.setNews(news)
+      dataStore.addActivityLog({ action: "update", entity: "news", entityId: id, description: `Updated news "${oldTitle}"` })
     }
   },
   deleteNews: (id: string) => {
-    const news = dataStore.getNews().filter(n => n.id !== id)
-    dataStore.setNews(news)
+    const news = dataStore.getNews()
+    const item = news.find(n => n.id === id)
+    dataStore.setNews(news.filter(n => n.id !== id))
+    if (item) {
+      dataStore.addActivityLog({ action: "delete", entity: "news", entityId: id, description: `Deleted news "${item.title}"` })
+    }
   },
 
   // Media
@@ -438,11 +509,16 @@ export const dataStore = {
     const media = dataStore.getMedia()
     const newItem = { ...mediaItem, id: Date.now().toString() }
     dataStore.setMedia([...media, newItem])
+    dataStore.addActivityLog({ action: "create", entity: "media", entityId: newItem.id, description: `Added media "${mediaItem.title}"` })
     return newItem
   },
   deleteMedia: (id: string) => {
-    const media = dataStore.getMedia().filter(m => m.id !== id)
-    dataStore.setMedia(media)
+    const media = dataStore.getMedia()
+    const item = media.find(m => m.id === id)
+    dataStore.setMedia(media.filter(m => m.id !== id))
+    if (item) {
+      dataStore.addActivityLog({ action: "delete", entity: "media", entityId: id, description: `Deleted media "${item.title}"` })
+    }
   },
 
   // Settings
@@ -462,6 +538,135 @@ export const dataStore = {
     dataStore.setNews([])
     dataStore.setMedia([])
     dataStore.setSettings(defaultSettings)
+    dataStore.setActivityLog([])
+    dataStore.setAdminUsers([])
+    dataStore.setContacts([])
+  },
+
+  // Activity Log
+  getActivityLog: (): ActivityLog[] => getFromStorage(STORAGE_KEYS.activityLog, []),
+  setActivityLog: (logs: ActivityLog[]) => setToStorage(STORAGE_KEYS.activityLog, logs),
+  addActivityLog: (log: Omit<ActivityLog, "id" | "timestamp">) => {
+    const logs = dataStore.getActivityLog()
+    const newLog = { 
+      ...log, 
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString()
+    }
+    // Keep only last 100 logs
+    const updatedLogs = [newLog, ...logs].slice(0, 100)
+    dataStore.setActivityLog(updatedLogs)
+    return newLog
+  },
+  clearActivityLog: () => {
+    dataStore.setActivityLog([])
+  },
+
+  // Admin Users
+  getAdminUsers: (): AdminUser[] => getFromStorage(STORAGE_KEYS.adminUsers, []),
+  setAdminUsers: (users: AdminUser[]) => setToStorage(STORAGE_KEYS.adminUsers, users),
+  addAdminUser: (user: Omit<AdminUser, "id">) => {
+    const users = dataStore.getAdminUsers()
+    const newUser = { ...user, id: Date.now().toString() }
+    dataStore.setAdminUsers([...users, newUser])
+    dataStore.addActivityLog({ action: "create", entity: "user", entityId: newUser.id, description: `Created user ${user.name}` })
+    return newUser
+  },
+  updateAdminUser: (id: string, updates: Partial<AdminUser>) => {
+    const users = dataStore.getAdminUsers()
+    const index = users.findIndex(u => u.id === id)
+    if (index !== -1) {
+      const oldName = users[index].name
+      users[index] = { ...users[index], ...updates }
+      dataStore.setAdminUsers(users)
+      dataStore.addActivityLog({ action: "update", entity: "user", entityId: id, description: `Updated user ${oldName}` })
+    }
+  },
+  deleteAdminUser: (id: string) => {
+    const users = dataStore.getAdminUsers()
+    const user = users.find(u => u.id === id)
+    const filtered = users.filter(u => u.id !== id)
+    dataStore.setAdminUsers(filtered)
+    if (user) {
+      dataStore.addActivityLog({ action: "delete", entity: "user", entityId: id, description: `Deleted user ${user.name}` })
+    }
+  },
+
+  // Contacts
+  getContacts: (): ContactMessage[] => getFromStorage(STORAGE_KEYS.contacts, []),
+  setContacts: (contacts: ContactMessage[]) => setToStorage(STORAGE_KEYS.contacts, contacts),
+  addContact: (contact: Omit<ContactMessage, "id" | "createdAt" | "status">) => {
+    const contacts = dataStore.getContacts()
+    const newContact = { 
+      ...contact, 
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      status: "unread" as const
+    }
+    dataStore.setContacts([...contacts, newContact])
+    return newContact
+  },
+  updateContact: (id: string, updates: Partial<ContactMessage>) => {
+    const contacts = dataStore.getContacts()
+    const index = contacts.findIndex(c => c.id === id)
+    if (index !== -1) {
+      contacts[index] = { ...contacts[index], ...updates }
+      dataStore.setContacts(contacts)
+    }
+  },
+  deleteContact: (id: string) => {
+    const contacts = dataStore.getContacts().filter(c => c.id !== id)
+    dataStore.setContacts(contacts)
+  },
+
+  // Export all data
+  exportAllData: () => {
+    const data = {
+      players: dataStore.getPlayers(),
+      matches: dataStore.getMatches(),
+      partners: dataStore.getPartners(),
+      fans: dataStore.getFans(),
+      news: dataStore.getNews(),
+      media: dataStore.getMedia(),
+      settings: dataStore.getSettings(),
+      adminUsers: dataStore.getAdminUsers(),
+      contacts: dataStore.getContacts(),
+      exportDate: new Date().toISOString()
+    }
+    dataStore.addActivityLog({ action: "export", entity: "system", description: "Exported all data" })
+    return data
+  },
+
+  // Import all data
+  importAllData: (data: Record<string, unknown>) => {
+    if (data.players) dataStore.setPlayers(data.players as Player[])
+    if (data.matches) dataStore.setMatches(data.matches as Match[])
+    if (data.partners) dataStore.setPartners(data.partners as Partner[])
+    if (data.fans) dataStore.setFans(data.fans as Fan[])
+    if (data.news) dataStore.setNews(data.news as NewsItem[])
+    if (data.media) dataStore.setMedia(data.media as MediaItem[])
+    if (data.settings) dataStore.setSettings(data.settings as SiteSettings)
+    if (data.adminUsers) dataStore.setAdminUsers(data.adminUsers as AdminUser[])
+    if (data.contacts) dataStore.setContacts(data.contacts as ContactMessage[])
+    dataStore.addActivityLog({ action: "import", entity: "system", description: "Imported data backup" })
+  },
+
+  // Get dashboard stats
+  getDashboardStats: () => {
+    return {
+      players: dataStore.getPlayers().length,
+      matches: dataStore.getMatches().length,
+      fans: dataStore.getFans().length,
+      partners: dataStore.getPartners().length,
+      news: dataStore.getNews().length,
+      media: dataStore.getMedia().length,
+      users: dataStore.getAdminUsers().length,
+      contacts: dataStore.getContacts().length,
+      unreadContacts: dataStore.getContacts().filter(c => c.status === "unread").length,
+      activePartners: dataStore.getPartners().filter(p => p.status === "active").length,
+      upcomingMatches: dataStore.getMatches().filter(m => m.status === "upcoming").length,
+      publishedNews: dataStore.getNews().filter(n => n.status === "published").length
+    }
   }
 }
 

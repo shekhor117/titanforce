@@ -16,6 +16,7 @@ export function AdminSidebar() {
 
   const menuItems = [
     { href: "/admin/dashboard", label: isBn ? "ড্যাশবোর্ড" : "Dashboard", icon: "📊" },
+    { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈" },
     { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽" },
     { href: "/admin/player-profiles", label: isBn ? "খেলোয়াড় প্রোফাইল" : "Player Profiles", icon: "🎽" },
     { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆" },
@@ -26,6 +27,7 @@ export function AdminSidebar() {
     { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤" },
     { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️" },
     { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️" },
+    { href: "/admin/system", label: isBn ? "সিস্টেম" : "System", icon: "💾" },
     { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧" },
   ]
 

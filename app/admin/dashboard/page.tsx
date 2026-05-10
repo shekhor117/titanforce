@@ -1,49 +1,96 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
+import { dataStore, useDataStore } from "@/lib/data-store"
 import Link from "next/link"
-import { Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight } from "lucide-react"
+import { 
+  Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
+  TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell
+} from "lucide-react"
+import { useState, useEffect } from "react"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
+  
+  // Subscribe to data store changes
+  const players = useDataStore(dataStore.getPlayers, "players")
+  const matches = useDataStore(dataStore.getMatches, "matches")
+  const fans = useDataStore(dataStore.getFans, "fans")
+  const partners = useDataStore(dataStore.getPartners, "partners")
+  const news = useDataStore(dataStore.getNews, "news")
+  const media = useDataStore(dataStore.getMedia, "media")
+  const contacts = useDataStore(dataStore.getContacts, "contacts")
+  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
 
+  // Calculate stats
   const stats = [
     { 
       label: isBn ? "খেলোয়াড়" : "Players", 
-      value: "0", 
+      value: players.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/players",
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/30"
+      borderColor: "border-blue-500/30",
+      subtext: `${players.filter(p => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
     },
     { 
       label: isBn ? "ম্যাচ" : "Matches", 
-      value: "0", 
+      value: matches.length.toString(), 
       icon: <Trophy className="w-6 h-6" />, 
       href: "/admin/matches",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/30"
+      borderColor: "border-yellow-500/30",
+      subtext: `${matches.filter(m => m.status === "upcoming").length} ${isBn ? "আসন্ন" : "upcoming"}`
     },
     { 
       label: isBn ? "অনুরাগী" : "Fans", 
-      value: "0", 
+      value: fans.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/fans",
       color: "text-green-400",
       bgColor: "bg-green-500/10",
-      borderColor: "border-green-500/30"
+      borderColor: "border-green-500/30",
+      subtext: `${fans.filter(f => f.membershipType === "vip").length} VIP`
     },
     { 
       label: isBn ? "অংশীদার" : "Partners", 
-      value: "0", 
+      value: partners.length.toString(), 
       icon: <Handshake className="w-6 h-6" />, 
       href: "/admin/partners",
       color: "text-purple-400",
       bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/30"
+      borderColor: "border-purple-500/30",
+      subtext: `${partners.filter(p => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
+    },
+  ]
+
+  const additionalStats = [
+    {
+      label: isBn ? "সংবাদ" : "News",
+      value: news.length.toString(),
+      icon: <Newspaper className="w-5 h-5" />,
+      href: "/admin/news",
+      color: "text-orange-400",
+      subtext: `${news.filter(n => n.status === "published").length} ${isBn ? "প্রকাশিত" : "published"}`
+    },
+    {
+      label: isBn ? "মিডিয়া" : "Media",
+      value: media.length.toString(),
+      icon: <Image className="w-5 h-5" />,
+      href: "/admin/media",
+      color: "text-pink-400",
+      subtext: `${media.filter(m => m.type === "photo").length} ${isBn ? "ছবি" : "photos"}`
+    },
+    {
+      label: isBn ? "বার্তা" : "Messages",
+      value: contacts.length.toString(),
+      icon: <Mail className="w-5 h-5" />,
+      href: "/admin/contacts",
+      color: "text-cyan-400",
+      subtext: `${contacts.filter(c => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
     },
   ]
 
@@ -73,26 +120,69 @@ export default function AdminDashboard() {
       icon: <Image className="w-5 h-5" /> 
     },
     { 
-      label: isBn ? "সেটিংস" : "Settings", 
-      description: isBn ? "সাইট সেটিংস পরিচালনা করুন" : "Manage site settings",
-      href: "/admin/settings", 
+      label: isBn ? "সিস্টেম কন্ট্রোল" : "System Control", 
+      description: isBn ? "ব্যাকআপ, এক্সপোর্ট এবং ইম্পোর্ট" : "Backup, export and import data",
+      href: "/admin/system", 
       icon: <Settings className="w-5 h-5" /> 
     },
   ]
 
+  // Format activity time
+  const formatActivityTime = (timestamp: string) => {
+    const date = new Date(timestamp)
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+
+    if (minutes < 1) return isBn ? "এইমাত্র" : "Just now"
+    if (minutes < 60) return `${minutes} ${isBn ? "মিনিট আগে" : "min ago"}`
+    if (hours < 24) return `${hours} ${isBn ? "ঘন্টা আগে" : "hr ago"}`
+    return `${days} ${isBn ? "দিন আগে" : "days ago"}`
+  }
+
+  // Get action color
+  const getActionColor = (action: string) => {
+    switch (action) {
+      case "create": return "bg-green-500/20 text-green-400"
+      case "update": return "bg-blue-500/20 text-blue-400"
+      case "delete": return "bg-red-500/20 text-red-400"
+      case "login": return "bg-purple-500/20 text-purple-400"
+      case "export": return "bg-yellow-500/20 text-yellow-400"
+      case "import": return "bg-cyan-500/20 text-cyan-400"
+      default: return "bg-gray-500/20 text-gray-400"
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
-        </h1>
-        <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "টাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
+          </h1>
+          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "টাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {contacts.filter(c => c.status === "unread").length > 0 && (
+            <Link 
+              href="/admin/contacts"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="text-sm font-semibold">
+                {contacts.filter(c => c.status === "unread").length} {isBn ? "নতুন বার্তা" : "new messages"}
+              </span>
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
           <Link
@@ -105,58 +195,153 @@ export default function AdminDashboard() {
             <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {stat.label}
             </div>
+            {stat.subtext && (
+              <div className="text-xs text-foreground/40 mt-1">
+                {stat.subtext}
+              </div>
+            )}
           </Link>
         ))}
       </div>
 
-      {/* Quick Actions */}
-      <div className="rounded-xl border-2 border-secondary bg-card p-6">
-        <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "দ্রুত কার্যক্রম" : "Quick Actions"}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {quickActions.map((action) => (
-            <Link
-              key={action.label}
-              href={action.href}
-              className="flex items-center gap-4 p-4 rounded-lg bg-secondary/20 hover:bg-primary/10 hover:border-primary border border-transparent transition group"
+      {/* Secondary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {additionalStats.map((stat) => (
+          <Link
+            key={stat.label}
+            href={stat.href}
+            className="flex items-center gap-4 p-4 rounded-xl border-2 border-secondary bg-card hover:border-primary/50 transition"
+          >
+            <div className={`p-3 rounded-lg bg-secondary/50 ${stat.color}`}>
+              {stat.icon}
+            </div>
+            <div className="flex-1">
+              <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
+              <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {stat.label} - {stat.subtext}
+              </div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-foreground/30" />
+          </Link>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Quick Actions */}
+        <div className="rounded-xl border-2 border-secondary bg-card p-6">
+          <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "দ্রুত কার্যক্রম" : "Quick Actions"}
+          </h2>
+          <div className="grid gap-3">
+            {quickActions.map((action) => (
+              <Link
+                key={action.label}
+                href={action.href}
+                className="flex items-center gap-4 p-4 rounded-lg bg-secondary/20 hover:bg-primary/10 hover:border-primary border border-transparent transition group"
+              >
+                <div className="p-3 rounded-lg bg-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
+                  {action.icon}
+                </div>
+                <div className="flex-1">
+                  <div className={`font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {action.label}
+                  </div>
+                  <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {action.description}
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-foreground/40 group-hover:text-primary transition" />
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="rounded-xl border-2 border-secondary bg-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "সাম্প্রতিক কার্যকলাপ" : "Recent Activity"}
+            </h2>
+            <Link 
+              href="/admin/system"
+              className="text-sm text-primary hover:underline"
             >
-              <div className="p-3 rounded-lg bg-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
-                {action.icon}
-              </div>
-              <div className="flex-1">
-                <div className={`font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {action.label}
-                </div>
-                <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {action.description}
-                </div>
-              </div>
-              <ArrowRight className="w-5 h-5 text-foreground/40 group-hover:text-primary transition" />
+              {isBn ? "সব দেখুন" : "View all"}
             </Link>
-          ))}
+          </div>
+          <div className="space-y-3 max-h-[350px] overflow-y-auto">
+            {activityLog.length > 0 ? (
+              activityLog.slice(0, 8).map((log) => (
+                <div key={log.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/20">
+                  <div className={`px-2 py-1 rounded text-xs font-semibold uppercase ${getActionColor(log.action)}`}>
+                    {log.action}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-foreground truncate">{log.description}</p>
+                    <p className="text-xs text-foreground/50 flex items-center gap-1 mt-1">
+                      <Clock className="w-3 h-3" />
+                      {formatActivityTime(log.timestamp)}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-foreground/50">
+                <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                  {isBn ? "কোনো কার্যকলাপ নেই" : "No recent activity"}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Getting Started */}
+      {/* System Overview */}
       <div className="rounded-xl border-2 border-primary/50 bg-primary/5 p-6">
-        <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "শুরু করুন" : "Getting Started"}
-        </h2>
-        <div className={`text-foreground/80 space-y-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          <p>
-            {isBn 
-              ? "এটি আপনার টাইটান ফোর্স অ্যাডমিন প্যানেল। এখান থেকে আপনি পরিচালনা করতে পারেন:" 
-              : "This is your Titan Force admin panel. From here you can manage:"}
-          </p>
-          <ul className="list-disc list-inside space-y-1 ml-2">
-            <li>{isBn ? "খেলোয়াড় - দলের সদস্যদের যোগ এবং সম্পাদনা করুন" : "Players - Add and edit team members"}</li>
-            <li>{isBn ? "ম্যাচ - খেলার সময়সূচী এবং ফলাফল" : "Matches - Schedule games and record results"}</li>
-            <li>{isBn ? "সংবাদ - দলের আপডেট প্রকাশ করুন" : "News - Publish team updates"}</li>
-            <li>{isBn ? "মিডিয়া - ছবি এবং ভিডিও আপলোড করুন" : "Media - Upload photos and videos"}</li>
-            <li>{isBn ? "অংশীদার - স্পন্সর পরিচালনা করুন" : "Partners - Manage sponsors"}</li>
-            <li>{isBn ? "অনুরাগী - ফ্যান বেস পরিচালনা করুন" : "Fans - Manage your fan base"}</li>
-          </ul>
+        <div className="flex items-center gap-3 mb-4">
+          <BarChart3 className="w-6 h-6 text-primary" />
+          <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "সিস্টেম ওভারভিউ" : "System Overview"}
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-primary">{players.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "খেলোয়াড়" : "Players"}
+            </div>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-yellow-400">{matches.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "ম্যাচ" : "Matches"}
+            </div>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-green-400">{fans.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "অনুরাগী" : "Fans"}
+            </div>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-purple-400">{partners.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "অংশীদার" : "Partners"}
+            </div>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-orange-400">{news.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "সংবাদ" : "News"}
+            </div>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-background/50">
+            <div className="text-2xl font-bold text-pink-400">{media.length}</div>
+            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "মিডিয়া" : "Media"}
+            </div>
+          </div>
         </div>
       </div>
     </div>
