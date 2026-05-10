@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
-import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search } from "lucide-react"
+import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
 export default function AdminPlayers() {
@@ -28,7 +28,30 @@ export default function AdminPlayers() {
     cleanSheets: "0",
     bio: "",
     photo: { signedUrl: "", filePath: "" },
+    status: "active" as Player["status"],
+    // Extended Stats
+    appearances: "0",
+    minutes: "0",
+    passAccuracy: "0",
+    chancesCreated: "0",
+    // Season Stats
+    premierMatches: "0",
+    cupMatches: "0",
+    yellowCards: "0",
+    redCards: "0",
+    motmAwards: "0",
+    averageRating: "0",
+    // Player Attributes
+    pace: "70",
+    shooting: "70",
+    passing: "70",
+    dribbling: "70",
+    defending: "70",
+    physical: "70",
+    // Trophies
+    trophies: [] as { name: string; year: string }[],
   })
+  const [newTrophy, setNewTrophy] = useState({ name: "", year: "" })
   
   const players = useDataStore(dataStore.getPlayers, "players")
 
@@ -60,7 +83,28 @@ export default function AdminPlayers() {
       cleanSheets: formData.cat === "GK" ? parseInt(formData.cleanSheets) || 0 : undefined,
       bio: formData.bio,
       photo: formData.photo.signedUrl || undefined,
-      status: "active"
+      status: formData.status,
+      // Extended Stats
+      appearances: parseInt(formData.appearances) || 0,
+      minutes: parseInt(formData.minutes) || 0,
+      passAccuracy: parseInt(formData.passAccuracy) || 0,
+      chancesCreated: parseInt(formData.chancesCreated) || 0,
+      // Season Stats
+      premierMatches: parseInt(formData.premierMatches) || 0,
+      cupMatches: parseInt(formData.cupMatches) || 0,
+      yellowCards: parseInt(formData.yellowCards) || 0,
+      redCards: parseInt(formData.redCards) || 0,
+      motmAwards: parseInt(formData.motmAwards) || 0,
+      averageRating: parseFloat(formData.averageRating) || 0,
+      // Player Attributes
+      pace: parseInt(formData.pace) || 70,
+      shooting: parseInt(formData.shooting) || 70,
+      passing: parseInt(formData.passing) || 70,
+      dribbling: parseInt(formData.dribbling) || 70,
+      defending: parseInt(formData.defending) || 70,
+      physical: parseInt(formData.physical) || 70,
+      // Trophies
+      trophies: formData.trophies,
     }
 
     if (editingPlayer) {
@@ -89,6 +133,28 @@ export default function AdminPlayers() {
       cleanSheets: player.cleanSheets?.toString() || "0",
       bio: player.bio,
       photo: { signedUrl: player.photo || "", filePath: "" },
+      status: player.status,
+      // Extended Stats
+      appearances: player.appearances?.toString() || "0",
+      minutes: player.minutes?.toString() || "0",
+      passAccuracy: player.passAccuracy?.toString() || "0",
+      chancesCreated: player.chancesCreated?.toString() || "0",
+      // Season Stats
+      premierMatches: player.premierMatches?.toString() || "0",
+      cupMatches: player.cupMatches?.toString() || "0",
+      yellowCards: player.yellowCards?.toString() || "0",
+      redCards: player.redCards?.toString() || "0",
+      motmAwards: player.motmAwards?.toString() || "0",
+      averageRating: player.averageRating?.toString() || "0",
+      // Player Attributes
+      pace: player.pace?.toString() || "70",
+      shooting: player.shooting?.toString() || "70",
+      passing: player.passing?.toString() || "70",
+      dribbling: player.dribbling?.toString() || "70",
+      defending: player.defending?.toString() || "70",
+      physical: player.physical?.toString() || "70",
+      // Trophies
+      trophies: player.trophies || [],
     })
     setShowForm(true)
   }
@@ -102,8 +168,15 @@ export default function AdminPlayers() {
     setFormData({ 
       name: "", fullName: "", email: "", num: "", pos: "", cat: "", 
       age: "", hometown: "", foot: "Right", goals: "0", assists: "0", 
-      cleanSheets: "0", bio: "", photo: { signedUrl: "", filePath: "" } 
+      cleanSheets: "0", bio: "", photo: { signedUrl: "", filePath: "" },
+      status: "active",
+      appearances: "0", minutes: "0", passAccuracy: "0", chancesCreated: "0",
+      premierMatches: "0", cupMatches: "0", yellowCards: "0", redCards: "0",
+      motmAwards: "0", averageRating: "0",
+      pace: "70", shooting: "70", passing: "70", dribbling: "70", defending: "70", physical: "70",
+      trophies: [],
     })
+    setNewTrophy({ name: "", year: "" })
     setShowForm(false)
     setEditingPlayer(null)
   }
@@ -322,7 +395,254 @@ export default function AdminPlayers() {
               rows={3}
               className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
             />
-            <div className="flex gap-2">
+
+            {/* Match Stats Section */}
+            <div className="border-t-2 border-secondary pt-4 mt-4">
+              <h4 className={`flex items-center gap-2 font-semibold text-lg mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <Activity className="w-5 h-5 text-primary" />
+                {isBn ? "ম্যাচ পরিসংখ্যান" : "Match Statistics"}
+              </h4>
+              <div className="grid md:grid-cols-4 gap-4">
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "উপস্থিতি" : "Appearances"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.appearances}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, appearances: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "মিনিট" : "Minutes"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.minutes}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, minutes: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "পাস নির্ভুলতা (%)" : "Pass Accuracy (%)"}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.passAccuracy}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, passAccuracy: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "সুযোগ তৈরি" : "Chances Created"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.chancesCreated}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, chancesCreated: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Season Stats Section */}
+            <div className="border-t-2 border-secondary pt-4 mt-4">
+              <h4 className={`flex items-center gap-2 font-semibold text-lg mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <TrendingUp className="w-5 h-5 text-primary" />
+                {isBn ? "মৌসুমী পরিসংখ্যান" : "Season Stats"}
+              </h4>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "প্রিমিয়ার ম্যাচ" : "Premier Matches"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.premierMatches}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, premierMatches: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "কাপ ম্যাচ" : "Cup Matches"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.cupMatches}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, cupMatches: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "হলুদ কার্ড" : "Yellow Cards"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.yellowCards}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, yellowCards: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "লাল কার্ড" : "Red Cards"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.redCards}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, redCards: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ম্যান অফ দ্য ম্যাচ" : "MOTM Awards"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.motmAwards}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, motmAwards: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-xs text-foreground/60 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "গড় রেটিং" : "Average Rating"}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="10"
+                    value={formData.averageRating}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, averageRating: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Player Attributes Section */}
+            <div className="border-t-2 border-secondary pt-4 mt-4">
+              <h4 className={`flex items-center gap-2 font-semibold text-lg mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <Target className="w-5 h-5 text-primary" />
+                {isBn ? "খেলোয়াড়ের বৈশিষ্ট্য (0-100)" : "Player Attributes (0-100)"}
+              </h4>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { key: "pace", label: isBn ? "গতি" : "Pace" },
+                  { key: "shooting", label: isBn ? "শুটিং" : "Shooting" },
+                  { key: "passing", label: isBn ? "পাসিং" : "Passing" },
+                  { key: "dribbling", label: isBn ? "ড্রিবলিং" : "Dribbling" },
+                  { key: "defending", label: isBn ? "ডিফেন্ডিং" : "Defending" },
+                  { key: "physical", label: isBn ? "শারীরিক" : "Physical" },
+                ].map((attr) => (
+                  <div key={attr.key}>
+                    <label className="block text-xs text-foreground/60 mb-1">{attr.label}</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={formData[attr.key as keyof typeof formData] as string}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, [attr.key]: e.target.value }))}
+                        className="flex-1 h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                      />
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={formData[attr.key as keyof typeof formData] as string}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, [attr.key]: e.target.value }))}
+                        className="w-16 px-2 py-1 text-center rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trophies Section */}
+            <div className="border-t-2 border-secondary pt-4 mt-4">
+              <h4 className={`flex items-center gap-2 font-semibold text-lg mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <Trophy className="w-5 h-5 text-primary" />
+                {isBn ? "ট্রফি" : "Trophies"}
+              </h4>
+              
+              {/* Add Trophy */}
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  placeholder={isBn ? "ট্রফির নাম" : "Trophy Name"}
+                  value={newTrophy.name}
+                  onChange={(e) => setNewTrophy((prev) => ({ ...prev, name: e.target.value }))}
+                  className="flex-1 px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder={isBn ? "বছর" : "Year"}
+                  value={newTrophy.year}
+                  onChange={(e) => setNewTrophy((prev) => ({ ...prev, year: e.target.value }))}
+                  className="w-24 px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (newTrophy.name && newTrophy.year) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        trophies: [...prev.trophies, { ...newTrophy }],
+                      }))
+                      setNewTrophy({ name: "", year: "" })
+                    }
+                  }}
+                  className="px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Trophy List */}
+              {formData.trophies.length > 0 && (
+                <div className="space-y-2">
+                  {formData.trophies.map((trophy, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between px-4 py-2 rounded bg-secondary/30 border border-secondary"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🏆</span>
+                        <span className="font-semibold">{trophy.name}</span>
+                        <span className="text-foreground/60">({trophy.year})</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            trophies: prev.trophies.filter((_, i) => i !== index),
+                          }))
+                        }}
+                        className="p-1 rounded hover:bg-red-500/20 text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-2 pt-4">
               <button
                 onClick={handleSavePlayer}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
