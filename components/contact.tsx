@@ -1,35 +1,26 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, MapPin, Phone, Mail, ArrowRight } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, MapPin, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { useAuth } from "@/lib/auth-context"
 import { dataStore, useDataStore } from "@/lib/data-store"
-import Link from "next/link"
 
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [focusedField, setFocusedField] = useState<string | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const { language, t } = useLanguage()
-  const { user, isLoading: authLoading } = useAuth()
   const isBn = language === "bn"
 
   // Get settings from data store
   const settings = useDataStore(dataStore.getSettings, "settings")
-
-  // Pre-fill user info if authenticated
-  useEffect(() => {
-    if (user) {
-      setName(user.name)
-      setEmail(user.email)
-    }
-  }, [user])
 
   const socialLinks = [
     { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
@@ -58,19 +49,16 @@ export function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
-    if (!user) {
-      return
-    }
-
     setIsSubmitting(true)
     try {
-      // Save to localStorage for now (Phase 2: add API endpoint for database)
+      // Save to localStorage
       const existingMessages = JSON.parse(localStorage.getItem("titanforce_messages") || "[]")
       const newMessage = {
         id: Math.random().toString(36).substr(2, 9),
-        userId: user.id,
         name,
         email,
+        phone,
+        subject: isBn ? "ওয়েবসাইট থেকে বার্তা" : "Message from Website",
         message,
         timestamp: new Date().toISOString(),
         status: "unread",
@@ -81,177 +69,288 @@ export function Contact() {
       setShowSuccess(true)
       setName("")
       setEmail("")
+      setPhone("")
       setMessage("")
       formRef.current?.reset()
-      setTimeout(() => setShowSuccess(false), 3000)
+      setTimeout(() => setShowSuccess(false), 5000)
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <section id="contact" ref={sectionRef} className="py-16 px-4">
-      <div
-        className={`max-w-lg mx-auto text-center transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+    <section id="contact" ref={sectionRef} className="py-20 px-4 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-6xl mx-auto relative">
+        {/* Header */}
+        <div
+          className={`text-center mb-16 transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
-      >
-        <h2 className={`text-4xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-          {t.contact.title}
-        </h2>
-
-        {/* Auth Required Message */}
-        {!authLoading && !user ? (
-          <div className="bg-card border-2 border-primary rounded-lg p-8 mb-8">
-            <div className="mb-6">
-              <p className={`text-foreground/80 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "বার্তা পাঠাতে আপনাকে অবশ্যই লগইন করতে হবে।" : "You must be logged in to send a message."}
-              </p>
-              <p className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "আপনার অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন এবং আমাদের সাথে যোগাযোগ করুন।" : "Create an account or login to get in touch with us."}
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/auth/login"
-                className={`flex-1 px-6 py-3 rounded font-semibold uppercase tracking-wider bg-primary text-primary-foreground hover:opacity-90 transition flex items-center justify-center gap-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                {isBn ? "লগইন করুন" : "Login"}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/auth/sign-up"
-                className={`flex-1 px-6 py-3 rounded font-semibold uppercase tracking-wider border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                {isBn ? "সাইন আপ করুন" : "Sign Up"}
-              </Link>
-            </div>
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className={`text-sm font-medium text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "আমাদের সাথে যোগাযোগ করুন" : "Get In Touch"}
+            </span>
           </div>
-        ) : null}
+          <h2 className={`text-4xl md:text-5xl tracking-wide mb-4 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            {t.contact.title}
+          </h2>
+          <p className={`text-foreground/60 max-w-xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn 
+              ? "প্রশ্ন আছে? আমরা সাহায্য করতে এখানে আছি। নিচের ফর্মটি পূরণ করুন এবং আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।"
+              : "Have questions? We're here to help. Fill out the form below and we'll get back to you soon."
+            }
+          </p>
+        </div>
 
-        {/* Contact Form (Only shown when authenticated) */}
-        {!authLoading && user && (
-          <>
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 text-left">
-              <div>
-                <label
-                  htmlFor="c-name"
-                  className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {t.contact.name}
-                </label>
-                <input
-                  id="c-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={`w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground focus:outline-none focus:border-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                  placeholder={t.contact.namePlaceholder}
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="c-email"
-                  className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {isBn ? "ইমেল" : "Email"}
-                </label>
-                <input
-                  id="c-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground focus:outline-none focus:border-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                  placeholder={isBn ? "আপনার ইমেল" : "your@email.com"}
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="c-msg"
-                  className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {t.contact.message}
-                </label>
-                <textarea
-                  id="c-msg"
-                  rows={4}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className={`w-full px-4 py-3 rounded border-2 border-card bg-transparent text-foreground focus:outline-none focus:border-primary transition resize-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                  placeholder={t.contact.messagePlaceholder}
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+        {/* Main Content */}
+        <div
+          className={`grid lg:grid-cols-5 gap-8 transition-all duration-700 delay-200 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          {/* Contact Info Side */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Contact Cards */}
+            <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-6 space-y-6">
+              <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "যোগাযোগের তথ্য" : "Contact Information"}
+              </h3>
+              
+              {/* Email */}
+              <a
+                href={`mailto:${settings.contactEmail}`}
+                className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all group"
               >
-                {isSubmitting ? (isBn ? "পাঠাচ্ছে..." : "Sending...") : t.contact.send}
-              </button>
-            </form>
-            {showSuccess && (
-              <p className={`mt-4 text-sm font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                &#10003; {t.contact.success}
-              </p>
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <Mail className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ইমেল" : "Email"}
+                  </p>
+                  <p className="text-foreground font-medium">{settings.contactEmail}</p>
+                </div>
+              </a>
+
+              {/* Phone */}
+              <a
+                href={`tel:${settings.contactPhone}`}
+                className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <Phone className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ফোন" : "Phone"}
+                  </p>
+                  <p className="text-foreground font-medium">{settings.contactPhone}</p>
+                </div>
+              </a>
+
+              {/* Address */}
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/50">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ঠিকানা" : "Address"}
+                  </p>
+                  <p className="text-foreground font-medium">{settings.address}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            {socialLinks.length > 0 && (
+              <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-6">
+                <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.contact.followUs}
+                </h3>
+                <div className="flex gap-3">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      className="w-12 h-12 flex items-center justify-center rounded-xl border-2 border-border/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                    >
+                      <social.icon className="w-5 h-5" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             )}
-          </>
-        )}
-
-        {/* Loading State */}
-        {authLoading && (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin">
-              <div className="w-8 h-8 border-4 border-primary border-transparent border-t-primary rounded-full" />
-            </div>
-          </div>
-        )}
-
-        {/* Contact Info & Social Links */}
-        <div className="mt-10 pt-8 border-t border-card">
-          <div className="flex flex-col items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 text-foreground/70">
-              <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm">{settings.address}</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground/70">
-              <Phone className="w-4 h-4 text-primary" />
-              <span className="text-sm">{settings.contactPhone}</span>
-            </div>
-            <a
-              href={`mailto:${settings.contactEmail}`}
-              className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors"
-            >
-              <Mail className="w-4 h-4 text-primary" />
-              <span className="text-sm">{settings.contactEmail}</span>
-            </a>
           </div>
 
-          {socialLinks.length > 0 && (
-            <>
-              <p className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {t.contact.followUs}
-              </p>
-              <div className="flex justify-center gap-3">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+          {/* Form Side */}
+          <div className="lg:col-span-3">
+            <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-8">
+              {showSuccess ? (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 className="w-10 h-10 text-green-500" />
+                  </div>
+                  <h3 className={`text-2xl font-bold text-foreground mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "বার্তা পাঠানো হয়েছে!" : "Message Sent!"}
+                  </h3>
+                  <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {t.contact.success}
+                  </p>
+                </div>
+              ) : (
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                  {/* Name & Email Row */}
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {/* Name */}
+                    <div className="relative">
+                      <label
+                        htmlFor="c-name"
+                        className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                      >
+                        {t.contact.name} *
+                      </label>
+                      <div className="relative">
+                        <User className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "name" ? "text-primary" : "text-foreground/30"}`} />
+                        <input
+                          id="c-name"
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          onFocus={() => setFocusedField("name")}
+                          onBlur={() => setFocusedField(null)}
+                          className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
+                            focusedField === "name" ? "border-primary bg-background" : "border-border/50"
+                          } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          placeholder={t.contact.namePlaceholder}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="relative">
+                      <label
+                        htmlFor="c-email"
+                        className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                      >
+                        {isBn ? "ইমেল" : "Email"} *
+                      </label>
+                      <div className="relative">
+                        <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "email" ? "text-primary" : "text-foreground/30"}`} />
+                        <input
+                          id="c-email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          onFocus={() => setFocusedField("email")}
+                          onBlur={() => setFocusedField(null)}
+                          className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
+                            focusedField === "email" ? "border-primary bg-background" : "border-border/50"
+                          } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          placeholder={isBn ? "আপনার ইমেল" : "your@email.com"}
+                          required
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="relative">
+                    <label
+                      htmlFor="c-phone"
+                      className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                    >
+                      {isBn ? "ফোন নম্বর" : "Phone Number"}
+                    </label>
+                    <div className="relative">
+                      <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "phone" ? "text-primary" : "text-foreground/30"}`} />
+                      <input
+                        id="c-phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        onFocus={() => setFocusedField("phone")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
+                          focusedField === "phone" ? "border-primary bg-background" : "border-border/50"
+                        } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        placeholder={isBn ? "+৮৮০ ১২৩৪ ৫৬৭৮৯০" : "+880 1234 567890"}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="relative">
+                    <label
+                      htmlFor="c-msg"
+                      className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                    >
+                      {t.contact.message} *
+                    </label>
+                    <div className="relative">
+                      <MessageSquare className={`absolute left-4 top-4 w-5 h-5 transition-colors ${focusedField === "message" ? "text-primary" : "text-foreground/30"}`} />
+                      <textarea
+                        id="c-msg"
+                        rows={5}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onFocus={() => setFocusedField("message")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all resize-none ${
+                          focusedField === "message" ? "border-primary bg-background" : "border-border/50"
+                        } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        placeholder={t.contact.messagePlaceholder}
+                        required
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-4 font-bold text-sm uppercase tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center justify-center gap-3 group ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                   >
-                    <social.icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </>
-          )}
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                        {isBn ? "পাঠাচ্ছে..." : "Sending..."}
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {t.contact.send}
+                      </>
+                    )}
+                  </button>
+
+                  {/* Privacy Note */}
+                  <p className={`text-xs text-center text-foreground/40 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn 
+                      ? "এই ফর্ম জমা দিয়ে, আপনি আমাদের গোপনীয়তা নীতিতে সম্মত হচ্ছেন।"
+                      : "By submitting this form, you agree to our privacy policy."
+                    }
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>
