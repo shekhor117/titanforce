@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { PlayerRating } from "@/components/player-rating"
 
 // Player photos mapping
 const playerPhotos: Record<number, string> = {
@@ -285,6 +286,15 @@ export default function PlayerProfile() {
                 <span>{player.pos}</span>
                 <span>Bangladesh</span>
                 <span>{player.foot} Footed</span>
+              </div>
+              
+              {/* Player Rating - Viewers can rate */}
+              <div className="mt-6">
+                <PlayerRating 
+                  playerId={player.num.toString()} 
+                  playerName={player.fullName}
+                  size="lg"
+                />
               </div>
             </div>
           </div>
