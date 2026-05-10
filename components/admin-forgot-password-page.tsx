@@ -48,13 +48,13 @@ export function AdminForgotPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
-        <Link
-          href="/admin/login"
+        <button
+          onClick={() => router.back()}
           className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
-        </Link>
+          <span className="text-sm font-medium">{isBn ? "পিছনে" : "Back"}</span>
+        </button>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

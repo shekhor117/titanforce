@@ -6,8 +6,10 @@ import { useLanguage } from "@/lib/language-context"
 import { Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export function AdminLoginPage() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -54,13 +56,13 @@ export function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
       {/* Back Button */}
-      <Link
-        href="/"
+      <button
+        onClick={() => router.back()}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />
-        <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
-      </Link>
+        <span className="text-sm font-medium">{isBn ? "পিছনে" : "Back"}</span>
+      </button>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -174,7 +176,7 @@ export function AdminLoginPage() {
           {/* Demo Mode Info */}
           <div className="mt-6 p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
             <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
-            <p>{isBn ? "যেকোনো ইমেল এবং পাসওয়ার্ড ব্যবহার করুন (ন্যূনতম ৬ অক্ষর)" : "Use any email and password (minimum 6 characters)"}</p>
+            <p>{isBn ? "যেকোনো ই���েল এবং পাসওয়ার্ড ব্যবহার করুন (ন্যূনতম ৬ অক্ষর)" : "Use any email and password (minimum 6 characters)"}</p>
           </div>
 
           {/* User Login Link */}

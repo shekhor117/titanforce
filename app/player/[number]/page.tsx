@@ -1,6 +1,6 @@
 "use client"
 
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
@@ -157,6 +157,7 @@ const players = [
 
 export default function PlayerProfile() {
   const params = useParams()
+  const router = useRouter()
   const playerNum = parseInt(params.number as string)
   const { language } = useLanguage()
   const isBn = language === "bn"
@@ -227,15 +228,15 @@ export default function PlayerProfile() {
       {/* Back Button */}
       <div className="bg-secondary/20 border-b border-secondary">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link
-            href="/#squad"
+          <button
+            onClick={() => router.back()}
             className="flex items-center gap-2 text-primary hover:text-primary/80 transition"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "দলে ফিরুন" : "Back to Squad"}
+              {isBn ? "পিছনে" : "Back"}
             </span>
-          </Link>
+          </button>
         </div>
       </div>
 

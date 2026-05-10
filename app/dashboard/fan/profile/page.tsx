@@ -76,13 +76,13 @@ export default function FanProfilePage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard/fan"
+            <button
+              onClick={() => router.back()}
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
-              title={isBn ? "ড্যাশবোর্ড" : "Dashboard"}
+              title={isBn ? "পিছনে" : "Back"}
             >
               <ArrowLeft className="w-5 h-5" />
-            </Link>
+            </button>
             <Link
               href="/"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"

@@ -114,12 +114,12 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
       <button
-        onClick={() => router.push("/")}
+        onClick={() => router.back()}
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label={isBn ? "হোমে ফিরে যান" : "Go back to home"}
+        aria-label={isBn ? "পিছনে যান" : "Go back"}
       >
         <ArrowLeft className="w-5 h-5" />
-        <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
+        <span className="text-sm font-medium">{isBn ? "পিছনে" : "Back"}</span>
       </button>
 
       <motion.div
@@ -330,7 +330,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isFacebookLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
+              {isFacebookLoading ? (isBn ? 'অপেক���ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
             </span>
           </button>
         </div>
