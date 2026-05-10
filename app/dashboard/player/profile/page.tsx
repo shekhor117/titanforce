@@ -69,12 +69,12 @@ export default function PlayerProfileEditPage() {
       <main className="max-w-6xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/dashboard/player" className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 mb-8">
+          <button onClick={() => router.back()} className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 mb-8">
             <ArrowLeft className="w-4 h-4" />
             <span className={`text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "ফিরে যান" : "Back"}
+              {isBn ? "পিছনে" : "Back"}
             </span>
-          </Link>
+          </button>
           
           <h1 className={`text-5xl md:text-6xl font-black tracking-wider text-primary mb-4 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
             {isBn ? "প্রোফাইল সম্পাদনা করুন" : "EDIT PROFILE"}
@@ -100,7 +100,9 @@ export default function PlayerProfileEditPage() {
             </h2>
             <PhotoUpload
               currentPhoto={formData.photoUrl}
-              onPhotoUpload={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
+              currentFilePath=""
+              onPhotoUpload={(data) => setFormData(prev => ({ ...prev, photoUrl: data.signedUrl }))}
+              onPhotoDelete={() => setFormData(prev => ({ ...prev, photoUrl: "" }))}
               isLoading={isSubmitting}
             />
           </div>
@@ -158,7 +160,7 @@ export default function PlayerProfileEditPage() {
             {/* Jersey */}
             <div>
               <label className={`text-xs uppercase tracking-wider font-semibold text-foreground/70 block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "জার্সি নম্বর" : "Jersey Number"}
+                {isBn ? "জার্সি নম্���র" : "Jersey Number"}
               </label>
               <input
                 type="number"

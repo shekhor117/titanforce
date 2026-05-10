@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Search, Mail, MailOpen, Trash2, Reply, Eye } from "lucide-react"
+import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone } from "lucide-react"
 
 interface ContactMessage {
   id: string
   userId?: string
   name: string
   email: string
+  phone?: string
   subject?: string
   message: string
   status: "unread" | "read" | "replied"
@@ -43,6 +44,7 @@ export default function AdminContactsPage() {
           userId: msg.userId,
           name: msg.name,
           email: msg.email,
+          phone: msg.phone || "",
           subject: msg.subject || "Message",
           message: msg.message,
           status: msg.status || "unread",
@@ -170,6 +172,11 @@ export default function AdminContactsPage() {
                 <div>
                   <h2 className="text-xl font-bold text-foreground">{selectedMessage.subject}</h2>
                   <p className="text-sm text-foreground/60">{selectedMessage.name} &lt;{selectedMessage.email}&gt;</p>
+                  {selectedMessage.phone && (
+                    <p className="text-sm text-foreground/60 flex items-center gap-1">
+                      <Phone className="w-3 h-3" /> {selectedMessage.phone}
+                    </p>
+                  )}
                   <p className="text-xs text-foreground/40 mt-1">{selectedMessage.createdAt}</p>
                 </div>
                 <span className={`px-2 py-1 rounded text-xs uppercase ${getStatusColor(selectedMessage.status)}`}>

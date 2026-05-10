@@ -3,12 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
-import { sendPasswordReset } from "@/lib/auth-utils"
+import { createClient } from "@/lib/supabase/client"
 import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
-export function AdminForgotPasswordPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -16,6 +16,7 @@ export function AdminForgotPasswordPage() {
   const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,7 +35,19 @@ export function AdminForgotPasswordPage() {
     setIsLoading(true)
 
     try {
-      await sendPasswordReset(email)
+      if (!supabase) {
+        // Demo mode - simulate success
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        setSuccess(true)
+        setEmail("")
+        return
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      })
+
+      if (error) throw error
       setSuccess(true)
       setEmail("")
     } catch (err) {
@@ -48,13 +61,13 @@ export function AdminForgotPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
-        <button
-          onClick={() => router.back()}
+        <Link
+          href="/login"
           className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">{isBn ? "পিছনে" : "Back"}</span>
-        </button>
+          <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
+        </Link>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -77,7 +90,7 @@ export function AdminForgotPasswordPage() {
                 : "We've sent a password reset link to your inbox. Please check your email."}
             </p>
             <button
-              onClick={() => router.push("/admin/login")}
+              onClick={() => router.push("/login")}
               className="w-full py-3 font-bold text-sm uppercase tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition"
             >
               {isBn ? "লগইন পেজে ফিরুন" : "Back to Login"}
@@ -91,7 +104,7 @@ export function AdminForgotPasswordPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
       <Link
-        href="/admin/login"
+        href="/login"
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />
@@ -116,11 +129,11 @@ export function AdminForgotPasswordPage() {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="font-[family-name:var(--font-display)] text-4xl tracking-wider text-primary mb-2">
-              {isBn ? "অ্যাডমিন" : "ADMIN"}
+            <h1 className="font-[family-name:var(--font-display)] text-3xl tracking-wider text-foreground mb-2">
+              {isBn ? "পাসওয়ার্ড রিসেট" : "Reset Password"}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {isBn ? "পাসওয়ার্ড রিসেট করুন" : "Reset Password"}
+              {isBn ? "আপনার ইমেল ঠিকানা প্রবেশ করুন এবং আমরা আপনাকে একটি রিসেট লিঙ্ক পাঠাব" : "Enter your email address and we'll send you a reset link"}
             </p>
           </div>
 
@@ -137,7 +150,7 @@ export function AdminForgotPasswordPage() {
                   setEmail(e.target.value)
                   setError("")
                 }}
-                placeholder="admin@example.com"
+                placeholder="your@email.com"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-muted text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition"
                 disabled={isLoading}
               />
@@ -162,18 +175,24 @@ export function AdminForgotPasswordPage() {
           {/* Links */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <Link
-              href="/admin/login"
+              href="/login"
               className="text-primary hover:underline"
             >
               {isBn ? "লগইন করুন" : "Back to Login"}
             </Link>
             <span className="mx-2 text-border">|</span>
             <Link
-              href="/admin/signup"
+              href="/login"
               className="text-primary hover:underline"
             >
-              {isBn ? "নতুন অ্যাকাউন্ট তৈরি করুন" : "Create Account"}
+              {isBn ? "অ্যাকাউন্ট তৈরি করুন" : "Create Account"}
             </Link>
+          </div>
+
+          {/* Demo Mode Info */}
+          <div className="mt-6 p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
+            <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
+            <p>{isBn ? "ডেমো মোডে, ইমেল পাঠানো সিমুলেট করা হবে।" : "In demo mode, email sending will be simulated."}</p>
           </div>
         </div>
       </motion.div>

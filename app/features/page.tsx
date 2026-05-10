@@ -6,6 +6,7 @@ import { MatchVoting } from "@/components/match-voting"
 import { PlayerRanking } from "@/components/player-ranking"
 import { TrainingChart } from "@/components/training-chart"
 import { InjuryTracking } from "@/components/injury-tracking"
+import { BackButton } from "@/components/back-button"
 
 export const metadata = {
   title: "Advanced Features | Titan Force FC",
@@ -19,6 +20,9 @@ export default function FeaturesPage() {
       <main>
         {/* Hero */}
         <section className="py-20 px-4 text-center hero-gradient">
+          <div className="max-w-6xl mx-auto">
+            <BackButton className="mb-6" />
+          </div>
           <p className="text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary">
             ADVANCED TOOLS
           </p>

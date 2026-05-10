@@ -1,9 +1,11 @@
 "use client"
 
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
-import { LogOut, Home, Edit, User } from "lucide-react"
+import { LogOut, Home, Edit, User, ArrowLeft } from "lucide-react"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
@@ -11,9 +13,24 @@ import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
 
 export default function PlayerDashboard() {
-  const { user, logout } = useAuth()
+  const router = useRouter()
+  const { user, logout, isLoading } = useAuth()
   const { language } = useLanguage()
   const isBn = language === "bn"
+
+  useEffect(() => {
+    if (!isLoading && (!user || user.role !== "player")) {
+      router.push("/login")
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading || !user || user.role !== "player") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
 
   const profileFields = [
     { name: "bio", completed: true, label: isBn ? "জীবনী" : "Bio" },
@@ -62,6 +79,13 @@ export default function PlayerDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
+              title={isBn ? "পিছনে" : "Back"}
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
             <Link
               href="/dashboard/player/profile"
               className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
