@@ -19,6 +19,27 @@ export interface Player {
   bio: string
   photo?: string
   status: "active" | "injured" | "suspended"
+  // Extended Stats
+  appearances?: number
+  minutes?: number
+  passAccuracy?: number
+  chancesCreated?: number
+  // Season Stats
+  premierMatches?: number
+  cupMatches?: number
+  yellowCards?: number
+  redCards?: number
+  motmAwards?: number
+  averageRating?: number
+  // Player Attributes (0-100)
+  pace?: number
+  shooting?: number
+  passing?: number
+  dribbling?: number
+  defending?: number
+  physical?: number
+  // Trophies
+  trophies?: { name: string; year: string }[]
 }
 
 export interface Match {
