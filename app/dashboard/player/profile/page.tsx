@@ -100,7 +100,9 @@ export default function PlayerProfileEditPage() {
             </h2>
             <PhotoUpload
               currentPhoto={formData.photoUrl}
-              onPhotoUpload={(url) => setFormData(prev => ({ ...prev, photoUrl: url }))}
+              currentFilePath=""
+              onPhotoUpload={(data) => setFormData(prev => ({ ...prev, photoUrl: data.signedUrl }))}
+              onPhotoDelete={() => setFormData(prev => ({ ...prev, photoUrl: "" }))}
               isLoading={isSubmitting}
             />
           </div>
