@@ -2,61 +2,24 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone } from "lucide-react"
-
-interface ContactMessage {
-  id: string
-  userId?: string
-  name: string
-  email: string
-  phone?: string
-  subject?: string
-  message: string
-  status: "unread" | "read" | "replied"
-  timestamp?: string
-  createdAt?: string
-}
-
-const mockContacts: ContactMessage[] = [
-  { id: "1", name: "John Doe", email: "john@example.com", subject: "Sponsorship Inquiry", message: "We are interested in sponsoring your team for the upcoming season. Please contact us to discuss partnership opportunities.", status: "unread", createdAt: "2024-03-20" },
-  { id: "2", name: "Jane Smith", email: "jane@example.com", subject: "Fan Membership", message: "How can I become an official fan member? What are the benefits?", status: "read", createdAt: "2024-03-18" },
-  { id: "3", name: "Mike Wilson", email: "mike@example.com", subject: "Player Inquiry", message: "I am a scout looking for talented players. Can we arrange a meeting?", status: "replied", createdAt: "2024-03-15" },
-  { id: "4", name: "Sarah Johnson", email: "sarah@example.com", subject: "Media Request", message: "I am a journalist and would like to interview the team captain.", status: "unread", createdAt: "2024-03-19" },
-]
+import { dataStore, ContactMessage, useDataStore } from "@/lib/data-store"
+import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone, Plus, X, Save, CheckCircle } from "lucide-react"
 
 export default function AdminContactsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const [contacts, setContacts] = useState<ContactMessage[]>(mockContacts)
+  const contacts = useDataStore(dataStore.getContacts, "contacts")
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
-
-  // Load messages from localStorage on mount
-  useEffect(() => {
-    const savedMessages = localStorage.getItem("titanforce_messages")
-    if (savedMessages) {
-      try {
-        const parsed = JSON.parse(savedMessages)
-        // Format loaded messages to match the interface
-        const formatted = parsed.map((msg: any) => ({
-          id: msg.id,
-          userId: msg.userId,
-          name: msg.name,
-          email: msg.email,
-          phone: msg.phone || "",
-          subject: msg.subject || "Message",
-          message: msg.message,
-          status: msg.status || "unread",
-          createdAt: new Date(msg.timestamp || new Date()).toLocaleDateString(),
-        }))
-        // Combine with mock data, prioritizing user-submitted messages
-        setContacts([...formatted, ...mockContacts])
-      } catch (error) {
-        console.error("[v0] Error loading messages:", error)
-      }
-    }
-  }, [])
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  })
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -68,17 +31,46 @@ export default function AdminContactsPage() {
 
   const handleDelete = (id: string) => {
     if (confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) {
-      setContacts(contacts.filter(c => c.id !== id))
+      dataStore.deleteContact(id)
       if (selectedMessage?.id === id) setSelectedMessage(null)
     }
   }
 
   const handleMarkAsRead = (id: string) => {
-    setContacts(contacts.map(c => c.id === id ? { ...c, status: "read" } : c))
+    dataStore.updateContact(id, { status: "read" })
   }
 
   const handleMarkAsReplied = (id: string) => {
-    setContacts(contacts.map(c => c.id === id ? { ...c, status: "replied" } : c))
+    dataStore.updateContact(id, { status: "replied" })
+  }
+
+  const handleSelectMessage = (contact: ContactMessage) => {
+    setSelectedMessage(contact)
+    if (contact.status === "unread") {
+      handleMarkAsRead(contact.id)
+    }
+  }
+
+  const handleAddContact = () => {
+    if (!formData.name || !formData.email || !formData.message) {
+      alert(isBn ? "নাম, ইমেইল এবং বার্তা প্রয়োজন" : "Name, email and message are required")
+      return
+    }
+
+    dataStore.addContact({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      subject: formData.subject || "General Inquiry",
+      message: formData.message,
+    })
+
+    resetForm()
+  }
+
+  const resetForm = () => {
+    setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
+    setShowAddForm(false)
   }
 
   const getStatusColor = (status: string) => {
@@ -90,19 +82,121 @@ export default function AdminContactsPage() {
     }
   }
 
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, { en: string; bn: string }> = {
+      unread: { en: "Unread", bn: "অপঠিত" },
+      read: { en: "Read", bn: "পঠিত" },
+      replied: { en: "Replied", bn: "উত্তর দেওয়া" },
+    }
+    return labels[status]?.[isBn ? "bn" : "en"] || status
+  }
+
   const unreadCount = contacts.filter(c => c.status === "unread").length
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString(isBn ? "bn-BD" : "en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "যোগাযোগ বার্তা" : "Contact Messages"}
-        </h1>
-        <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? `${unreadCount} টি অপঠিত বার্তা` : `${unreadCount} unread messages`}
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "যোগাযোগ বার্তা" : "Contact Messages"}
+          </h1>
+          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {unreadCount > 0 
+              ? `${unreadCount} ${isBn ? "টি অপঠিত বার্তা" : "unread messages"}`
+              : (isBn ? "সব বার্তা পঠিত" : "All messages read")
+            }
+          </p>
+        </div>
+        <button
+          onClick={() => { resetForm(); setShowAddForm(true) }}
+          className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+        >
+          <Plus className="w-4 h-4" />
+          {isBn ? "বার্তা যোগ করুন" : "Add Message"}
+        </button>
       </div>
+
+      {/* Add Form Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-xl border-2 border-primary p-6 max-w-lg w-full">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className={`font-[var(--font-display)] text-xl tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "নতুন বার্তা" : "New Message"}
+              </h3>
+              <button onClick={resetForm} className="p-2 hover:bg-secondary/20 rounded">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder={isBn ? "নাম" : "Name"}
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+                <input
+                  type="email"
+                  placeholder={isBn ? "ইমেইল" : "Email"}
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  type="tel"
+                  placeholder={isBn ? "ফোন (ঐচ্ছিক)" : "Phone (optional)"}
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder={isBn ? "বিষয়" : "Subject"}
+                  value={formData.subject}
+                  onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+              </div>
+              <textarea
+                placeholder={isBn ? "বার্তা" : "Message"}
+                value={formData.message}
+                onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                rows={4}
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddContact}
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  <Save className="w-4 h-4" />
+                  {isBn ? "সংরক্ষণ করুন" : "Save"}
+                </button>
+                <button
+                  onClick={resetForm}
+                  className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "বাতিল" : "Cancel"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
@@ -116,16 +210,26 @@ export default function AdminContactsPage() {
             className={`w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:border-primary outline-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           />
         </div>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className={`px-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:border-primary outline-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-        >
-          <option value="all">{isBn ? "সব অবস্থা" : "All Status"}</option>
-          <option value="unread">{isBn ? "অপঠিত" : "Unread"}</option>
-          <option value="read">{isBn ? "পঠিত" : "Read"}</option>
-          <option value="replied">{isBn ? "উত্তর দেওয়া" : "Replied"}</option>
-        </select>
+        <div className="flex gap-2 flex-wrap">
+          {(["all", "unread", "read", "replied"] as const).map((status) => (
+            <button
+              key={status}
+              onClick={() => setFilterStatus(status)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                filterStatus === status
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
+              } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+            >
+              {status === "all" ? (isBn ? "সব" : "All") : getStatusLabel(status)}
+              {status === "unread" && unreadCount > 0 && (
+                <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-xs">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -135,29 +239,32 @@ export default function AdminContactsPage() {
             {filteredContacts.map((contact) => (
               <div
                 key={contact.id}
-                onClick={() => { setSelectedMessage(contact); handleMarkAsRead(contact.id) }}
+                onClick={() => handleSelectMessage(contact)}
                 className={`p-4 cursor-pointer hover:bg-secondary/30 transition ${selectedMessage?.id === contact.id ? "bg-secondary/50" : ""} ${contact.status === "unread" ? "border-l-4 border-l-primary" : ""}`}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
                     {contact.status === "unread" ? (
                       <Mail className="w-4 h-4 text-primary" />
+                    ) : contact.status === "replied" ? (
+                      <CheckCircle className="w-4 h-4 text-green-400" />
                     ) : (
                       <MailOpen className="w-4 h-4 text-foreground/50" />
                     )}
                     <span className="font-medium text-foreground">{contact.name}</span>
                   </div>
                   <span className={`px-2 py-0.5 rounded text-xs uppercase ${getStatusColor(contact.status)}`}>
-                    {contact.status}
+                    {getStatusLabel(contact.status)}
                   </span>
                 </div>
                 <p className="text-sm font-medium text-foreground/80 mb-1">{contact.subject}</p>
                 <p className="text-xs text-foreground/50 line-clamp-1">{contact.message}</p>
-                <p className="text-xs text-foreground/40 mt-2">{contact.createdAt}</p>
+                <p className="text-xs text-foreground/40 mt-2">{formatDate(contact.createdAt)}</p>
               </div>
             ))}
             {filteredContacts.length === 0 && (
               <div className={`p-8 text-center text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <Mail className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 {isBn ? "কোনো বার্তা নেই" : "No messages found"}
               </div>
             )}
@@ -171,16 +278,21 @@ export default function AdminContactsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <h2 className="text-xl font-bold text-foreground">{selectedMessage.subject}</h2>
-                  <p className="text-sm text-foreground/60">{selectedMessage.name} &lt;{selectedMessage.email}&gt;</p>
+                  <p className="text-sm text-foreground/60">{selectedMessage.name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Mail className="w-3 h-3 text-foreground/50" />
+                    <span className="text-sm text-foreground/60">{selectedMessage.email}</span>
+                  </div>
                   {selectedMessage.phone && (
-                    <p className="text-sm text-foreground/60 flex items-center gap-1">
-                      <Phone className="w-3 h-3" /> {selectedMessage.phone}
-                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Phone className="w-3 h-3 text-foreground/50" />
+                      <span className="text-sm text-foreground/60">{selectedMessage.phone}</span>
+                    </div>
                   )}
-                  <p className="text-xs text-foreground/40 mt-1">{selectedMessage.createdAt}</p>
+                  <p className="text-xs text-foreground/40 mt-2">{formatDate(selectedMessage.createdAt)}</p>
                 </div>
                 <span className={`px-2 py-1 rounded text-xs uppercase ${getStatusColor(selectedMessage.status)}`}>
-                  {selectedMessage.status}
+                  {getStatusLabel(selectedMessage.status)}
                 </span>
               </div>
 
@@ -188,21 +300,30 @@ export default function AdminContactsPage() {
                 <p className="text-foreground/80 whitespace-pre-wrap">{selectedMessage.message}</p>
               </div>
 
-              <div className="flex gap-2 pt-4 border-t border-secondary">
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-secondary">
                 <a
                   href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject}`}
                   onClick={() => handleMarkAsReplied(selectedMessage.id)}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition"
+                  className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   <Reply className="w-4 h-4" />
-                  <span className={isBn ? "font-[var(--font-bengali)]" : ""}>{isBn ? "উত্তর দিন" : "Reply"}</span>
+                  {isBn ? "উত্তর দিন" : "Reply"}
                 </a>
+                {selectedMessage.status !== "replied" && (
+                  <button
+                    onClick={() => handleMarkAsReplied(selectedMessage.id)}
+                    className={`flex items-center gap-2 px-4 py-2 border-2 border-green-500 text-green-400 rounded hover:bg-green-500/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    {isBn ? "উত্তর দেওয়া হয়েছে" : "Mark as Replied"}
+                  </button>
+                )}
                 <button
                   onClick={() => handleDelete(selectedMessage.id)}
-                  className="flex items-center gap-2 px-4 py-2 border-2 border-red-500 text-red-400 rounded hover:bg-red-500/20 transition"
+                  className={`flex items-center gap-2 px-4 py-2 border-2 border-red-500 text-red-400 rounded hover:bg-red-500/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   <Trash2 className="w-4 h-4" />
-                  <span className={isBn ? "font-[var(--font-bengali)]" : ""}>{isBn ? "মুছুন" : "Delete"}</span>
+                  {isBn ? "মুছুন" : "Delete"}
                 </button>
               </div>
             </div>
