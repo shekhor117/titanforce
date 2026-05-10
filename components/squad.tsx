@@ -3,13 +3,41 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { X, MapPin, Calendar, Footprints, Trophy, Target } from "lucide-react"
+import { X, MapPin, Calendar, Footprints, Trophy, Target, Star, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { PlayerRating } from "@/components/player-rating"
 
 type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
 
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
+
+// Compact rating badge for player cards
+function PlayerRatingBadge({ playerId }: { playerId: string }) {
+  const [rating, setRating] = useState({ average: 0, count: 0 })
+  const [isFavorite, setIsFavorite] = useState(false)
+
+  useEffect(() => {
+    setRating(dataStore.getPlayerAverageRating(playerId))
+    setIsFavorite(dataStore.getVisitorFavoritePlayer() === playerId)
+  }, [playerId])
+
+  if (rating.count === 0 && !isFavorite) return null
+
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      {rating.count > 0 && (
+        <span className="flex items-center gap-1 text-[10px] text-yellow-500">
+          <Star className="w-3 h-3 fill-yellow-400" />
+          {rating.average.toFixed(1)}
+        </span>
+      )}
+      {isFavorite && (
+        <Heart className="w-3 h-3 fill-red-500 text-red-500" />
+      )}
+    </div>
+  )
+}
 
 // Player photos mapping (fallback for players without uploaded photos)
 const playerPhotos: Record<number, string> = {
@@ -142,6 +170,8 @@ export function Squad() {
                     {player.assists}
                   </span>
                 </div>
+                {/* Compact Rating Display */}
+                <PlayerRatingBadge playerId={player.id} />
               </Link>
             )
           })}
@@ -256,17 +286,28 @@ export function Squad() {
               )}
             </div>
 
-            <div className="flex gap-3">
-              <p className="flex-1 text-sm leading-relaxed text-foreground/80">
-                {selectedPlayer.bio}
-              </p>
-              <Link
-                href={`/player/${selectedPlayer.num}`}
-                className="px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition whitespace-nowrap h-fit"
-              >
-                {isBn ? "বিস্তারিত" : "View"}
-              </Link>
+            <p className="text-sm leading-relaxed text-foreground/80 mb-4">
+              {selectedPlayer.bio}
+            </p>
+
+            {/* Player Rating in Modal */}
+            <div className="p-4 bg-secondary/30 rounded-xl mb-4">
+              <h4 className={`text-xs uppercase tracking-wider font-semibold text-foreground/60 mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "রেটিং ও ভোট" : "Rate & Vote"}
+              </h4>
+              <PlayerRating 
+                playerId={selectedPlayer.id} 
+                playerName={selectedPlayer.fullName}
+                size="md"
+              />
             </div>
+
+            <Link
+              href={`/player/${selectedPlayer.num}`}
+              className="block w-full text-center px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition"
+            >
+              {isBn ? "বিস্তারিত দেখুন" : "View Full Profile"}
+            </Link>
           </div>
         </div>
       )}

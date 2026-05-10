@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Match, useDataStore } from "@/lib/data-store"
+import { MatchPrediction } from "@/components/match-prediction"
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
@@ -156,8 +157,19 @@ export function Matches() {
               </div>
 
               {selectedMatch.status === "upcoming" ? (
-                <div className={`text-center text-foreground/70 py-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
+                <div className="space-y-6">
+                  <div className={`text-center text-foreground/70 py-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
+                  </div>
+                  
+                  {/* Match Prediction for Upcoming Matches */}
+                  <div className="p-4 rounded-xl bg-secondary/30">
+                    <MatchPrediction
+                      matchId={selectedMatch.id}
+                      homeTeam={selectedMatch.home}
+                      awayTeam={selectedMatch.away}
+                    />
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-6">

@@ -320,6 +320,36 @@ export interface ContactMessage {
   createdAt: string
 }
 
+// Rating and voting types
+export interface PlayerRating {
+  playerId: string
+  visitorId: string
+  rating: number // 1-5 stars
+  timestamp: string
+}
+
+export interface PlayerVote {
+  playerId: string
+  visitorId: string
+  voteType: "motm" | "favorite" // Man of the Match or Favorite Player
+  matchId?: string // For MOTM votes
+  timestamp: string
+}
+
+export interface MatchVote {
+  matchId: string
+  visitorId: string
+  prediction: "home" | "draw" | "away"
+  timestamp: string
+}
+
+export interface NewsReaction {
+  newsId: string
+  visitorId: string
+  reaction: "like" | "love" | "wow" | "sad"
+  timestamp: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -331,7 +361,12 @@ const STORAGE_KEYS = {
   settings: "titanforce_settings",
   activityLog: "titanforce_activity_log",
   adminUsers: "titanforce_admin_users",
-  contacts: "titanforce_contacts"
+  contacts: "titanforce_contacts",
+  playerRatings: "titanforce_player_ratings",
+  playerVotes: "titanforce_player_votes",
+  matchVotes: "titanforce_match_votes",
+  newsReactions: "titanforce_news_reactions",
+  visitorId: "titanforce_visitor_id"
 }
 
 // Helper functions
@@ -667,6 +702,174 @@ export const dataStore = {
       upcomingMatches: dataStore.getMatches().filter(m => m.status === "upcoming").length,
       publishedNews: dataStore.getNews().filter(n => n.status === "published").length
     }
+  },
+
+  // Visitor ID (for tracking ratings/votes without login)
+  getVisitorId: (): string => {
+    if (typeof window === "undefined") return ""
+    let visitorId = localStorage.getItem(STORAGE_KEYS.visitorId)
+    if (!visitorId) {
+      visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      localStorage.setItem(STORAGE_KEYS.visitorId, visitorId)
+    }
+    return visitorId
+  },
+
+  // Player Ratings
+  getPlayerRatings: (): PlayerRating[] => getFromStorage(STORAGE_KEYS.playerRatings, []),
+  setPlayerRatings: (ratings: PlayerRating[]) => setToStorage(STORAGE_KEYS.playerRatings, ratings),
+  ratePlayer: (playerId: string, rating: number) => {
+    const visitorId = dataStore.getVisitorId()
+    const ratings = dataStore.getPlayerRatings()
+    const existingIndex = ratings.findIndex(r => r.playerId === playerId && r.visitorId === visitorId)
+    
+    const newRating: PlayerRating = {
+      playerId,
+      visitorId,
+      rating,
+      timestamp: new Date().toISOString()
+    }
+    
+    if (existingIndex !== -1) {
+      ratings[existingIndex] = newRating
+    } else {
+      ratings.push(newRating)
+    }
+    
+    dataStore.setPlayerRatings(ratings)
+    return newRating
+  },
+  getPlayerAverageRating: (playerId: string): { average: number; count: number } => {
+    const ratings = dataStore.getPlayerRatings().filter(r => r.playerId === playerId)
+    if (ratings.length === 0) return { average: 0, count: 0 }
+    const sum = ratings.reduce((acc, r) => acc + r.rating, 0)
+    return { average: sum / ratings.length, count: ratings.length }
+  },
+  getVisitorPlayerRating: (playerId: string): number | null => {
+    const visitorId = dataStore.getVisitorId()
+    const rating = dataStore.getPlayerRatings().find(r => r.playerId === playerId && r.visitorId === visitorId)
+    return rating ? rating.rating : null
+  },
+
+  // Player Votes (Favorite Player)
+  getPlayerVotes: (): PlayerVote[] => getFromStorage(STORAGE_KEYS.playerVotes, []),
+  setPlayerVotes: (votes: PlayerVote[]) => setToStorage(STORAGE_KEYS.playerVotes, votes),
+  voteForPlayer: (playerId: string, voteType: "motm" | "favorite", matchId?: string) => {
+    const visitorId = dataStore.getVisitorId()
+    const votes = dataStore.getPlayerVotes()
+    
+    // For favorite, only one vote per visitor. For MOTM, one per match.
+    const existingIndex = voteType === "favorite"
+      ? votes.findIndex(v => v.visitorId === visitorId && v.voteType === "favorite")
+      : votes.findIndex(v => v.visitorId === visitorId && v.voteType === "motm" && v.matchId === matchId)
+    
+    const newVote: PlayerVote = {
+      playerId,
+      visitorId,
+      voteType,
+      matchId,
+      timestamp: new Date().toISOString()
+    }
+    
+    if (existingIndex !== -1) {
+      votes[existingIndex] = newVote
+    } else {
+      votes.push(newVote)
+    }
+    
+    dataStore.setPlayerVotes(votes)
+    return newVote
+  },
+  getPlayerVoteCount: (playerId: string, voteType: "motm" | "favorite"): number => {
+    return dataStore.getPlayerVotes().filter(v => v.playerId === playerId && v.voteType === voteType).length
+  },
+  getVisitorFavoritePlayer: (): string | null => {
+    const visitorId = dataStore.getVisitorId()
+    const vote = dataStore.getPlayerVotes().find(v => v.visitorId === visitorId && v.voteType === "favorite")
+    return vote ? vote.playerId : null
+  },
+
+  // Match Votes (Predictions)
+  getMatchVotes: (): MatchVote[] => getFromStorage(STORAGE_KEYS.matchVotes, []),
+  setMatchVotes: (votes: MatchVote[]) => setToStorage(STORAGE_KEYS.matchVotes, votes),
+  voteForMatch: (matchId: string, prediction: "home" | "draw" | "away") => {
+    const visitorId = dataStore.getVisitorId()
+    const votes = dataStore.getMatchVotes()
+    const existingIndex = votes.findIndex(v => v.matchId === matchId && v.visitorId === visitorId)
+    
+    const newVote: MatchVote = {
+      matchId,
+      visitorId,
+      prediction,
+      timestamp: new Date().toISOString()
+    }
+    
+    if (existingIndex !== -1) {
+      votes[existingIndex] = newVote
+    } else {
+      votes.push(newVote)
+    }
+    
+    dataStore.setMatchVotes(votes)
+    return newVote
+  },
+  getMatchVoteCounts: (matchId: string): { home: number; draw: number; away: number } => {
+    const votes = dataStore.getMatchVotes().filter(v => v.matchId === matchId)
+    return {
+      home: votes.filter(v => v.prediction === "home").length,
+      draw: votes.filter(v => v.prediction === "draw").length,
+      away: votes.filter(v => v.prediction === "away").length
+    }
+  },
+  getVisitorMatchVote: (matchId: string): "home" | "draw" | "away" | null => {
+    const visitorId = dataStore.getVisitorId()
+    const vote = dataStore.getMatchVotes().find(v => v.matchId === matchId && v.visitorId === visitorId)
+    return vote ? vote.prediction : null
+  },
+
+  // News Reactions
+  getNewsReactions: (): NewsReaction[] => getFromStorage(STORAGE_KEYS.newsReactions, []),
+  setNewsReactions: (reactions: NewsReaction[]) => setToStorage(STORAGE_KEYS.newsReactions, reactions),
+  reactToNews: (newsId: string, reaction: "like" | "love" | "wow" | "sad") => {
+    const visitorId = dataStore.getVisitorId()
+    const reactions = dataStore.getNewsReactions()
+    const existingIndex = reactions.findIndex(r => r.newsId === newsId && r.visitorId === visitorId)
+    
+    const newReaction: NewsReaction = {
+      newsId,
+      visitorId,
+      reaction,
+      timestamp: new Date().toISOString()
+    }
+    
+    if (existingIndex !== -1) {
+      // Toggle off if same reaction
+      if (reactions[existingIndex].reaction === reaction) {
+        reactions.splice(existingIndex, 1)
+        dataStore.setNewsReactions(reactions)
+        return null
+      }
+      reactions[existingIndex] = newReaction
+    } else {
+      reactions.push(newReaction)
+    }
+    
+    dataStore.setNewsReactions(reactions)
+    return newReaction
+  },
+  getNewsReactionCounts: (newsId: string): { like: number; love: number; wow: number; sad: number } => {
+    const reactions = dataStore.getNewsReactions().filter(r => r.newsId === newsId)
+    return {
+      like: reactions.filter(r => r.reaction === "like").length,
+      love: reactions.filter(r => r.reaction === "love").length,
+      wow: reactions.filter(r => r.reaction === "wow").length,
+      sad: reactions.filter(r => r.reaction === "sad").length
+    }
+  },
+  getVisitorNewsReaction: (newsId: string): "like" | "love" | "wow" | "sad" | null => {
+    const visitorId = dataStore.getVisitorId()
+    const reaction = dataStore.getNewsReactions().find(r => r.newsId === newsId && r.visitorId === visitorId)
+    return reaction ? reaction.reaction : null
   }
 }
 

@@ -3,47 +3,51 @@
 import { useState, useEffect, useRef } from "react"
 import { ThumbsUp, Trophy, Star, Users, ChevronDown, ChevronUp } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { dataStore } from "@/lib/data-store"
 
 interface Player {
-  id: number
+  id: string
   name: string
   number: number
   position: string
   votes: number
 }
 
-interface MatchVote {
-  matchId: string
-  homeTeam: string
-  awayTeam: string
-  date: string
-  players: Player[]
-  motmVotes: Record<number, number>
-  hasVoted: boolean
-}
-
-const initialPlayers: Player[] = [
-  { id: 1, name: "Shuronjit", number: 1, position: "GK", votes: 0 },
-  { id: 2, name: "Srijon", number: 3, position: "DEF", votes: 0 },
-  { id: 3, name: "Akash", number: 4, position: "DEF", votes: 0 },
-  { id: 4, name: "Sujon", number: 6, position: "MID", votes: 0 },
-  { id: 5, name: "Shuvo", number: 7, position: "FWD", votes: 0 },
-  { id: 6, name: "Sojib", number: 8, position: "MID", votes: 0 },
-  { id: 7, name: "Sajon", number: 9, position: "FWD", votes: 0 },
-  { id: 8, name: "Kourov", number: 11, position: "FWD", votes: 0 },
-  { id: 9, name: "Shekhor", number: 17, position: "DEF", votes: 0 },
-]
+const MATCH_ID = "latest_match" // For demo purposes
 
 export function MatchVoting() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null)
+  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null)
   const [hasVoted, setHasVoted] = useState(false)
-  const [players, setPlayers] = useState(initialPlayers)
+  const [players, setPlayers] = useState<Player[]>([])
   const [showResults, setShowResults] = useState(false)
   const [matchRating, setMatchRating] = useState<number>(0)
+
+  // Load players from data store
+  useEffect(() => {
+    const loadedPlayers = dataStore.getPlayers()
+    const playersWithVotes = loadedPlayers.map(p => ({
+      id: p.id,
+      name: p.name,
+      number: p.num,
+      position: p.cat,
+      votes: dataStore.getPlayerVoteCount(p.id, "motm")
+    }))
+    setPlayers(playersWithVotes)
+    
+    // Check if user already voted
+    const existingVotes = dataStore.getPlayerVotes()
+    const visitorId = dataStore.getVisitorId()
+    const userVote = existingVotes.find(v => v.visitorId === visitorId && v.voteType === "motm" && v.matchId === MATCH_ID)
+    if (userVote) {
+      setHasVoted(true)
+      setShowResults(true)
+      setSelectedPlayer(userVote.playerId)
+    }
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,6 +63,10 @@ export function MatchVoting() {
   const handleVote = () => {
     if (selectedPlayer === null) return
 
+    // Save vote to data store
+    dataStore.voteForPlayer(selectedPlayer, "motm", MATCH_ID)
+    
+    // Update local state
     setPlayers(prev =>
       prev.map(p =>
         p.id === selectedPlayer ? { ...p, votes: p.votes + 1 } : p

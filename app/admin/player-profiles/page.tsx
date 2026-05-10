@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Search, Edit, Eye, X, Save, User, Mail, Phone, MapPin, Calendar, Award } from "lucide-react"
+import { Search, Edit, Eye, X, Save, User, Mail, Phone, MapPin, Calendar, Award, Trash2, Plus } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
 interface PlayerProfile {
@@ -92,6 +92,8 @@ export default function AdminPlayerProfiles() {
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "approved" | "rejected">("all")
   const [editingPlayer, setEditingPlayer] = useState<PlayerProfile | null>(null)
   const [viewingPlayer, setViewingPlayer] = useState<PlayerProfile | null>(null)
+  const [isAdding, setIsAdding] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -203,6 +205,46 @@ export default function AdminPlayerProfiles() {
     savePlayerProfiles(updatedProfiles)
   }
 
+  const handleAddPlayer = () => {
+    setIsAdding(true)
+    resetForm()
+  }
+
+  const handleSaveNewPlayer = () => {
+    const newPlayer: PlayerProfile = {
+      id: Date.now().toString(),
+      name: formData.name,
+      email: formData.email,
+      role: "player",
+      status: formData.status,
+      joinedAt: new Date().toISOString().split("T")[0],
+      playerProfile: {
+        phone: formData.phone,
+        age: formData.age,
+        position: formData.position,
+        jersey: formData.jersey,
+        height: formData.height,
+        weight: formData.weight,
+        foot: formData.foot,
+        address: formData.address,
+        experience: formData.experience,
+        photoUrl: formData.photoUrl
+      }
+    }
+    const updatedProfiles = [...players, newPlayer]
+    setPlayers(updatedProfiles)
+    savePlayerProfiles(updatedProfiles)
+    setIsAdding(false)
+    resetForm()
+  }
+
+  const handleDeletePlayer = (playerId: string) => {
+    const updatedProfiles = players.filter(p => p.id !== playerId)
+    setPlayers(updatedProfiles)
+    savePlayerProfiles(updatedProfiles)
+    setDeleteConfirm(null)
+  }
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -269,11 +311,20 @@ export default function AdminPlayerProfiles() {
             {isBn ? "সমস্ত নিবন্ধিত খেলোয়াড়ের প্রোফাইল পরিচালনা করুন" : "Manage all registered player profiles"}
           </p>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-bold text-primary">{players.length}</div>
-          <div className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "মোট খেলোয়াড়" : "Total Players"}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <div className="text-3xl font-bold text-primary">{players.length}</div>
+            <div className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "মোট খেলোয়াড়" : "Total Players"}
+            </div>
           </div>
+          <button
+            onClick={handleAddPlayer}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          >
+            <Plus className="w-4 h-4" />
+            {isBn ? "নতুন খেলোয়াড়" : "Add Player"}
+          </button>
         </div>
       </div>
 
@@ -308,6 +359,251 @@ export default function AdminPlayerProfiles() {
           ))}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-xl border-2 border-red-500 p-6 max-w-md w-full">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className={`font-[var(--font-display)] text-xl tracking-wider mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "খেলোয়াড় মুছুন?" : "Delete Player?"}
+              </h3>
+              <p className={`text-foreground/60 mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না।" : "This action cannot be undone."}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className={`flex-1 px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "বাতিল" : "Cancel"}
+                </button>
+                <button
+                  onClick={() => handleDeletePlayer(deleteConfirm)}
+                  className={`flex-1 px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "মুছুন" : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Player Modal */}
+      {isAdding && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-xl border-2 border-primary p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className={`font-[var(--font-display)] text-xl tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {isBn ? "নতুন খেলোয়াড় যোগ করুন" : "Add New Player"}
+              </h3>
+              <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-secondary/20 rounded">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Photo */}
+              <div>
+                <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "ছবি" : "Photo"}
+                </label>
+                <PhotoUpload
+                  currentPhoto={formData.photoUrl}
+                  currentFilePath=""
+                  onPhotoUpload={(data) => setFormData(prev => ({ ...prev, photoUrl: data.signedUrl }))}
+                  onPhotoDelete={() => setFormData(prev => ({ ...prev, photoUrl: "" }))}
+                />
+              </div>
+
+              {/* Basic Info */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "নাম" : "Name"} *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ইমেইল" : "Email"} *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "অবস্থা" : "Status"}
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as PlayerProfile["status"] }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  >
+                    <option value="approved">{isBn ? "অনুমোদিত" : "Approved"}</option>
+                    <option value="pending">{isBn ? "অপেক্ষমাণ" : "Pending"}</option>
+                    <option value="rejected">{isBn ? "প-ত্যাখ্যাত" : "Rejected"}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ফোন" : "Phone"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "বয়স" : "Age"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Player Info */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "অবস্থান" : "Position"}
+                  </label>
+                  <select
+                    value={formData.position}
+                    onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  >
+                    <option value="">{isBn ? "অবস্থান নির্বাচন করুন" : "Select position"}</option>
+                    <option value="goalkeeper">{isBn ? "গোলকিপার" : "Goalkeeper"}</option>
+                    <option value="defender">{isBn ? "ডিফেন্ডার" : "Defender"}</option>
+                    <option value="midfielder">{isBn ? "মিডফিল্ডার" : "Midfielder"}</option>
+                    <option value="forward">{isBn ? "ফরোয়ার্ড" : "Forward"}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "জার্সি নম্বর" : "Jersey Number"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.jersey}
+                    onChange={(e) => setFormData(prev => ({ ...prev, jersey: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "প্রধান পা" : "Preferred Foot"}
+                  </label>
+                  <select
+                    value={formData.foot}
+                    onChange={(e) => setFormData(prev => ({ ...prev, foot: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  >
+                    <option value="">{isBn ? "পা নির্বাচন করুন" : "Select foot"}</option>
+                    <option value="left">{isBn ? "বাম" : "Left"}</option>
+                    <option value="right">{isBn ? "ডান" : "Right"}</option>
+                    <option value="both">{isBn ? "উভয়" : "Both"}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Physical Info */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "উচ্চতা (সেমি)" : "Height (cm)"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.height}
+                    onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "ওজন (কেজি)" : "Weight (kg)"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.weight}
+                    onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "অভিজ্ঞতা (বছর)" : "Experience (years)"}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.experience}
+                    onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "ঠিকানা" : "Address"}
+                </label>
+                <textarea
+                  value={formData.address}
+                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                  rows={2}
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4">
+                <button
+                  onClick={handleSaveNewPlayer}
+                  disabled={!formData.name || !formData.email}
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  <Plus className="w-4 h-4" />
+                  {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
+                </button>
+                <button
+                  onClick={() => setIsAdding(false)}
+                  className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "বাতিল" : "Cancel"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editingPlayer && (
@@ -379,7 +675,7 @@ export default function AdminPlayerProfiles() {
                 </div>
                 <div>
                   <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ফোন" : "Phone"}
+                    {isBn ? "��োন" : "Phone"}
                   </label>
                   <input
                     type="text"
@@ -649,6 +945,13 @@ export default function AdminPlayerProfiles() {
                     title={isBn ? "সম্পাদনা" : "Edit"}
                   >
                     <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => setDeleteConfirm(player.id)}
+                    className="p-2 rounded hover:bg-red-500/20 transition text-red-500"
+                    title={isBn ? "মুছুন" : "Delete"}
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
