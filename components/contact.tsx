@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, MapPin, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, useDataStore } from "@/lib/data-store"
 
@@ -108,58 +108,6 @@ export function Contact() {
               : "Have questions? We're here to help. Fill out the form below and we'll get back to you soon."
             }
           </p>
-        </div>
-
-        {/* Contact Information Cards - Horizontal */}
-        <div
-          className={`grid md:grid-cols-3 gap-6 mb-12 transition-all duration-700 delay-100 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
-          {/* Email Card */}
-          <a
-            href={`mailto:${settings.contactEmail}`}
-            className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card hover:border-primary/50 hover:bg-primary/5 transition-all group"
-          >
-            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-              <Mail className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "ইমেল করুন" : "Email Us"}
-              </p>
-              <p className="text-foreground font-semibold">{settings.contactEmail}</p>
-            </div>
-          </a>
-
-          {/* Phone Card */}
-          <a
-            href={`tel:${settings.contactPhone}`}
-            className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card hover:border-primary/50 hover:bg-primary/5 transition-all group"
-          >
-            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-              <Phone className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "কল করুন" : "Call Us"}
-              </p>
-              <p className="text-foreground font-semibold">{settings.contactPhone}</p>
-            </div>
-          </a>
-
-          {/* Address Card */}
-          <div className="flex items-center gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-sm border-2 border-card">
-            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <MapPin className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "আমাদের অবস্থান" : "Visit Us"}
-              </p>
-              <p className="text-foreground font-semibold">{settings.address}</p>
-            </div>
-          </div>
         </div>
 
         {/* Form Section */}
