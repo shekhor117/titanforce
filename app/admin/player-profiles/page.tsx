@@ -24,6 +24,9 @@ interface PlayerProfile {
     address?: string
     experience?: string
     photoUrl?: string
+    dateOfBirth?: string
+    joinDate?: string
+    seasonYear?: string
   }
 }
 
@@ -108,7 +111,10 @@ export default function AdminPlayerProfiles() {
     foot: "",
     address: "",
     experience: "",
-    photoUrl: ""
+    photoUrl: "",
+    dateOfBirth: "",
+    joinDate: "",
+    seasonYear: "2024-2025"
   })
 
   useEffect(() => {
@@ -130,7 +136,10 @@ export default function AdminPlayerProfiles() {
       foot: player.playerProfile?.foot || "",
       address: player.playerProfile?.address || "",
       experience: player.playerProfile?.experience || "",
-      photoUrl: player.playerProfile?.photoUrl || ""
+      photoUrl: player.playerProfile?.photoUrl || "",
+      dateOfBirth: player.playerProfile?.dateOfBirth || "",
+      joinDate: player.playerProfile?.joinDate || "",
+      seasonYear: player.playerProfile?.seasonYear || "2024-2025"
     })
   }
 
@@ -154,7 +163,10 @@ export default function AdminPlayerProfiles() {
             foot: formData.foot,
             address: formData.address,
             experience: formData.experience,
-            photoUrl: formData.photoUrl
+            photoUrl: formData.photoUrl,
+            dateOfBirth: formData.dateOfBirth,
+            joinDate: formData.joinDate,
+            seasonYear: formData.seasonYear
           }
         }
       }
@@ -572,6 +584,32 @@ export default function AdminPlayerProfiles() {
                 </div>
               </div>
 
+              {/* Date Info */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "জন্মতারিখ" : "Date of Birth"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "যোগ দেওয়ার তারিখ" : "Join Date"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.joinDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
               {/* Address */}
               <div>
                 <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -593,7 +631,7 @@ export default function AdminPlayerProfiles() {
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   <Plus className="w-4 h-4" />
-                  {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
+                  {isBn ? "খেল���য়াড় যোগ করুন" : "Add Player"}
                 </button>
                 <button
                   onClick={() => setIsAdding(false)}
@@ -703,7 +741,7 @@ export default function AdminPlayerProfiles() {
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "অবস্থান" : "Position"}
+                    {isBn ? "অবস্���ান" : "Position"}
                   </label>
                   <select
                     value={formData.position}
@@ -778,6 +816,44 @@ export default function AdminPlayerProfiles() {
                     value={formData.experience}
                     onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
                     className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Date Info */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "জন্মতারিখ" : "Date of Birth"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "যোগ দেওয়ার তারিখ" : "Join Date"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.joinDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "সিজন বছর" : "Season Year"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.seasonYear}
+                    onChange={(e) => setFormData(prev => ({ ...prev, seasonYear: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    placeholder="2024-2025"
                   />
                 </div>
               </div>

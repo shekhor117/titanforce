@@ -5,7 +5,7 @@ import { dataStore, useDataStore } from "@/lib/data-store"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
-  TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell
+  TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
@@ -130,6 +130,49 @@ export default function AdminDashboard() {
       description: isBn ? "ব্যাকআপ, এক্সপোর্ট এবং ইম্পোর্ট" : "Backup, export and import data",
       href: "/admin/system", 
       icon: <Settings className="w-5 h-5" /> 
+    },
+  ]
+
+  const advancedTools = [
+    { 
+      label: isBn ? "বৈশিষ্ট্য পরিচালনা" : "Feature Management", 
+      description: isBn ? "প্ল্যাটফর্ম বৈশিষ্ট্যগুলি সক্ষম/নিষ্ক্রিয় করুন" : "Enable or disable platform features",
+      href: "/admin/features", 
+      icon: <Zap className="w-5 h-5" />,
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-500/10"
+    },
+    { 
+      label: isBn ? "বিশ্লেষণ ড্যাশবোর্ড" : "Analytics Dashboard", 
+      description: isBn ? "বিস্তারিত পারফরম্যান্স মেট্রিক্স দেখুন" : "View detailed performance metrics",
+      href: "/admin/analytics", 
+      icon: <BarChart3 className="w-5 h-5" />,
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10"
+    },
+    { 
+      label: isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management", 
+      description: isBn ? "সমস্ত ব্যবহারকারী অ্যাকাউন্ট পরিচালনা করুন" : "Manage all user accounts",
+      href: "/admin/users", 
+      icon: <Users className="w-5 h-5" />,
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10"
+    },
+    { 
+      label: isBn ? "সিস্টেম সেটিংস" : "System Settings", 
+      description: isBn ? "উন্নত সিস্টেম কনফিগারেশন" : "Advanced system configuration",
+      href: "/admin/system", 
+      icon: <Settings className="w-5 h-5" />,
+      color: "text-green-400",
+      bgColor: "bg-green-500/10"
+    },
+    { 
+      label: isBn ? "সেটিংস এবং কনফিগ" : "Settings & Config", 
+      description: isBn ? "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন" : "Configure application settings",
+      href: "/admin/settings", 
+      icon: <Settings className="w-5 h-5" />,
+      color: "text-pink-400",
+      bgColor: "bg-pink-500/10"
     },
   ]
 
@@ -300,6 +343,42 @@ export default function AdminDashboard() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Advanced Tools Section */}
+      <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Zap className="w-6 h-6 text-primary" />
+          <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "উন্নত সরঞ্জাম" : "Advanced Tools"}
+          </h2>
+        </div>
+        <p className={`text-foreground/60 text-sm mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগারেশন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {advancedTools.map((tool) => (
+            <Link
+              key={tool.label}
+              href={tool.href}
+              className={`group p-4 rounded-lg border-2 border-secondary ${tool.bgColor} hover:border-primary hover:scale-105 transition-all`}
+            >
+              <div className={`${tool.color} mb-3 p-2 rounded-lg bg-secondary/30 inline-block group-hover:bg-primary/20 transition`}>
+                {tool.icon}
+              </div>
+              <h3 className={`font-semibold text-foreground text-sm mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {tool.label}
+              </h3>
+              <p className={`text-xs text-foreground/60 line-clamp-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {tool.description}
+              </p>
+              <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition">
+                {isBn ? "অ্যাক্সেস করুন" : "Access"}
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 

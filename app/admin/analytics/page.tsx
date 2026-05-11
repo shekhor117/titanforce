@@ -2,10 +2,31 @@
 
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, useDataStore } from "@/lib/data-store"
+import { useState } from "react"
 import { 
   BarChart3, TrendingUp, Users, Trophy, Newspaper, Image, 
-  Handshake, Mail, Activity, Calendar, Clock, ArrowUp, ArrowDown
+  Handshake, Mail, Activity, Calendar, Clock, ArrowUp, ArrowDown, 
+  Heart, Zap, Save, RefreshCw, Edit
 } from "lucide-react"
+
+interface TrainingSession {
+  date: string
+  fitness: number
+  stamina: number
+  speed: number
+  strength: number
+  technique: number
+  intensity: number
+}
+
+interface PlayerAnalytics {
+  playerId: number
+  playerName: string
+  sessions: TrainingSession[]
+  avgFitness: number
+  avgIntensity: number
+  peakPerformance: number
+}
 
 export default function AdminAnalyticsPage() {
   const { language } = useLanguage()
@@ -20,6 +41,29 @@ export default function AdminAnalyticsPage() {
   const media = useDataStore(dataStore.getMedia, "media")
   const contacts = useDataStore(dataStore.getContacts, "contacts")
   const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
+
+  // Player Analytics State
+  const [playerAnalytics, setPlayerAnalytics] = useState<PlayerAnalytics[]>([
+    {
+      playerId: 1,
+      playerName: "Shuronjit",
+      sessions: [
+        { date: "Mon", fitness: 75, stamina: 70, speed: 80, strength: 72, technique: 78, intensity: 85 },
+        { date: "Tue", fitness: 78, stamina: 73, speed: 82, strength: 74, technique: 79, intensity: 90 },
+        { date: "Wed", fitness: 80, stamina: 76, speed: 81, strength: 76, technique: 82, intensity: 75 },
+        { date: "Thu", fitness: 82, stamina: 79, speed: 83, strength: 78, technique: 83, intensity: 88 },
+        { date: "Fri", fitness: 85, stamina: 82, speed: 85, strength: 80, technique: 85, intensity: 92 },
+        { date: "Sat", fitness: 83, stamina: 80, speed: 84, strength: 79, technique: 84, intensity: 70 },
+        { date: "Sun", fitness: 80, stamina: 78, speed: 82, strength: 77, technique: 82, intensity: 50 },
+      ],
+      avgFitness: 80,
+      avgIntensity: 79,
+      peakPerformance: 85,
+    },
+  ])
+
+  const [selectedPlayerAnalytics, setSelectedPlayerAnalytics] = useState<PlayerAnalytics | null>(playerAnalytics[0])
+  const [hasChanges, setHasChanges] = useState(false)
 
   // Calculate statistics
   const playerStats = {
@@ -87,6 +131,49 @@ export default function AdminAnalyticsPage() {
   const winRate = matchStats.completed > 0 
     ? Math.round((matchStats.wins / matchStats.completed) * 100) 
     : 0
+
+  // Analytics Functions
+  const handleUpdateSession = (sessionIndex: number, field: keyof TrainingSession, value: number | string) => {
+    if (!selectedPlayerAnalytics) return
+    const updated = [...playerAnalytics]
+    const playerIdx = updated.findIndex(p => p.playerId === selectedPlayerAnalytics.playerId)
+    if (playerIdx >= 0) {
+      const newValue = typeof value === 'string' ? value : value
+      updated[playerIdx].sessions[sessionIndex] = {
+        ...updated[playerIdx].sessions[sessionIndex],
+        [field]: newValue,
+      } as TrainingSession
+      setPlayerAnalytics(updated)
+      setSelectedPlayerAnalytics(updated[playerIdx])
+      setHasChanges(true)
+    }
+  }
+
+  const calculateAverages = () => {
+    if (!selectedPlayerAnalytics) return
+    const updated = [...playerAnalytics]
+    const playerIdx = updated.findIndex(p => p.playerId === selectedPlayerAnalytics.playerId)
+    if (playerIdx >= 0) {
+      const sessions = updated[playerIdx].sessions
+      const avgFitness = Math.round(sessions.reduce((a, b) => a + b.fitness, 0) / sessions.length)
+      const avgIntensity = Math.round(sessions.reduce((a, b) => a + b.intensity, 0) / sessions.length)
+      const peakPerformance = Math.max(...sessions.map(d => d.fitness))
+      
+      updated[playerIdx].avgFitness = avgFitness
+      updated[playerIdx].avgIntensity = avgIntensity
+      updated[playerIdx].peakPerformance = peakPerformance
+      
+      setPlayerAnalytics(updated)
+      setSelectedPlayerAnalytics(updated[playerIdx])
+      setHasChanges(true)
+    }
+  }
+
+  const handleSaveAnalytics = () => {
+    localStorage.setItem("playerAnalytics", JSON.stringify(playerAnalytics))
+    setHasChanges(false)
+    alert(isBn ? "বিশ্লেষণ সফলভাবে সংরক্ষিত হয়েছে!" : "Analytics saved successfully!")
+  }
 
   return (
     <div className="space-y-6">
@@ -374,58 +461,133 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      {/* Activity Overview */}
-      <div className="rounded-xl border-2 border-secondary bg-card p-6">
+      {/* Player Training Analytics Editor */}
+      <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Activity className="w-6 h-6 text-primary" />
+            <Heart className="w-6 h-6 text-primary" />
             <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "কার্যকলাপ সংক্ষিপ্তসার" : "Activity Summary"}
+              {isBn ? "খেলোয়াড় প্রশিক্ষণ বিশ্লেষণ" : "Player Training Analytics"}
             </h2>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/20 text-primary">
-            <Clock className="w-4 h-4" />
-            <span className="text-sm font-semibold">{todayActivity} {isBn ? "আজকের কার্যকলাপ" : "today"}</span>
-          </div>
+          <button
+            onClick={handleSaveAnalytics}
+            disabled={!hasChanges}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Save className="w-4 h-4" />
+            {hasChanges ? (isBn ? "পরিবর্তন সংরক্ষণ করুন" : "Save Changes") : (isBn ? "কোন পরিবর্তন নেই" : "No Changes")}
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="text-center p-3 rounded-lg bg-green-500/10 border border-green-500/30">
-            <div className="text-xl font-bold text-green-400">
-              {activityLog.filter(l => l.action === "create").length}
+        <div className="grid lg:grid-cols-4 gap-6">
+          {/* Player List */}
+          <div className="rounded-lg border-2 border-secondary bg-card p-4">
+            <h3 className={`text-sm font-semibold mb-3 text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "খেলোয়াড়রা" : "Players"}
+            </h3>
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {playerAnalytics.map((player) => (
+                <button
+                  key={player.playerId}
+                  onClick={() => setSelectedPlayerAnalytics(player)}
+                  className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                    selectedPlayerAnalytics?.playerId === player.playerId
+                      ? "border-primary bg-primary/10"
+                      : "border-secondary hover:border-primary/50"
+                  }`}
+                >
+                  <div className="font-semibold text-foreground text-sm">{player.playerName}</div>
+                  <div className="text-xs text-foreground/60">ID: {player.playerId}</div>
+                </button>
+              ))}
             </div>
-            <div className="text-xs text-foreground/60">{isBn ? "তৈরি" : "Created"}</div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-            <div className="text-xl font-bold text-blue-400">
-              {activityLog.filter(l => l.action === "update").length}
+
+          {/* Analytics Editor */}
+          {selectedPlayerAnalytics && (
+            <div className="lg:col-span-3 rounded-lg border-2 border-secondary bg-card p-4 space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3 rounded-lg bg-secondary/20 border-2 border-secondary">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Heart className="w-4 h-4 text-primary" />
+                    <span className="text-xs text-foreground/60">{isBn ? "গড় ফিটনেস" : "Avg Fitness"}</span>
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{selectedPlayerAnalytics.avgFitness}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20 border-2 border-secondary">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Activity className="w-4 h-4 text-green-400" />
+                    <span className="text-xs text-foreground/60">{isBn ? "গড় তীব্রতা" : "Avg Intensity"}</span>
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{selectedPlayerAnalytics.avgIntensity}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20 border-2 border-secondary">
+                  <div className="flex items-center gap-2 mb-1">
+                    <TrendingUp className="w-4 h-4 text-blue-400" />
+                    <span className="text-xs text-foreground/60">{isBn ? "শীর্ষ পারফরম্যান্স" : "Peak"}</span>
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{selectedPlayerAnalytics.peakPerformance}%</div>
+                </div>
+              </div>
+
+              {/* Session Data Editor */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className={`text-sm font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "সাপ্তাহিক প্রশিক্ষণ সেশন" : "Weekly Training Sessions"}
+                  </h3>
+                  <button
+                    onClick={calculateAverages}
+                    className="px-3 py-1 text-xs bg-primary/20 text-primary rounded hover:bg-primary/30 transition"
+                  >
+                    {isBn ? "গণনা করুন" : "Calculate Avg"}
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-[320px] overflow-y-auto">
+                  {selectedPlayerAnalytics.sessions.map((session, idx) => (
+                    <div key={idx} className="p-3 rounded-lg border-2 border-secondary bg-secondary/5">
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <label className="text-foreground/60 block mb-1">{isBn ? "দিন" : "Day"}</label>
+                          <input
+                            type="text"
+                            value={session.date}
+                            onChange={(e) => handleUpdateSession(idx, "date", e.target.value)}
+                            className="w-full px-2 py-1 bg-background border-2 border-secondary rounded text-xs"
+                            placeholder="Mon"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-foreground/60 block mb-1">{isBn ? "ফিটনেস" : "Fitness"}</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={session.fitness}
+                            onChange={(e) => handleUpdateSession(idx, "fitness", parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 bg-background border-2 border-secondary rounded text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-foreground/60 block mb-1">{isBn ? "তীব্রতা" : "Intensity"}</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={session.intensity}
+                            onChange={(e) => handleUpdateSession(idx, "intensity", parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 bg-background border-2 border-secondary rounded text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="text-xs text-foreground/60">{isBn ? "আপডেট" : "Updated"}</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-red-500/10 border border-red-500/30">
-            <div className="text-xl font-bold text-red-400">
-              {activityLog.filter(l => l.action === "delete").length}
-            </div>
-            <div className="text-xs text-foreground/60">{isBn ? "মুছে ফেলা" : "Deleted"}</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
-            <div className="text-xl font-bold text-purple-400">
-              {activityLog.filter(l => l.action === "login").length}
-            </div>
-            <div className="text-xs text-foreground/60">{isBn ? "লগইন" : "Logins"}</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-            <div className="text-xl font-bold text-yellow-400">
-              {activityLog.filter(l => l.action === "export").length}
-            </div>
-            <div className="text-xs text-foreground/60">{isBn ? "এক্সপোর্ট" : "Exports"}</div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-            <div className="text-xl font-bold text-cyan-400">
-              {activityLog.filter(l => l.action === "import").length}
-            </div>
-            <div className="text-xs text-foreground/60">{isBn ? "ইম্পোর্ট" : "Imports"}</div>
-          </div>
+          )}
         </div>
       </div>
     </div>

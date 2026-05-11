@@ -19,6 +19,10 @@ export interface Player {
   bio: string
   photo?: string
   status: "active" | "injured" | "suspended"
+  // Personal Dates
+  dateOfBirth?: string
+  joinDate?: string
+  seasonYear?: string
   // Extended Stats
   appearances?: number
   minutes?: number

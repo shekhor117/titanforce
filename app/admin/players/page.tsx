@@ -33,6 +33,10 @@ export default function AdminPlayers() {
     bio: "",
     photo: { signedUrl: "", filePath: "" },
     status: "active" as Player["status"],
+    // Personal Dates
+    dateOfBirth: "",
+    joinDate: "",
+    seasonYear: "2024-2025",
     // Extended Stats
     appearances: "0",
     minutes: "0",
@@ -91,6 +95,10 @@ export default function AdminPlayers() {
       bio: player.bio,
       photo: { signedUrl: player.photo || "", filePath: "" },
       status: player.status,
+      // Personal Dates
+      dateOfBirth: player.dateOfBirth || "",
+      joinDate: player.joinDate || "",
+      seasonYear: player.seasonYear || "2024-2025",
       // Extended Stats
       appearances: player.appearances?.toString() || "0",
       minutes: player.minutes?.toString() || "0",
@@ -155,6 +163,10 @@ export default function AdminPlayers() {
       bio: formData.bio,
       photo: formData.photo.signedUrl || undefined,
       status: formData.status,
+      // Personal Dates
+      dateOfBirth: formData.dateOfBirth || undefined,
+      joinDate: formData.joinDate || undefined,
+      seasonYear: formData.seasonYear || "2024-2025",
       // Extended Stats
       appearances: parseInt(formData.appearances) || 0,
       minutes: parseInt(formData.minutes) || 0,
@@ -203,7 +215,7 @@ export default function AdminPlayers() {
       name: "", fullName: "", email: "", num: "", pos: "", cat: "", 
       age: "", hometown: "", foot: "Right", goals: "0", assists: "0", 
       cleanSheets: "0", bio: "", photo: { signedUrl: "", filePath: "" },
-      status: "active",
+      status: "active", dateOfBirth: "", joinDate: "", seasonYear: "2024-2025",
       appearances: "0", minutes: "0", passAccuracy: "0", chancesCreated: "0",
       premierMatches: "0", cupMatches: "0", yellowCards: "0", redCards: "0",
       motmAwards: "0", averageRating: "0",
@@ -348,7 +360,7 @@ export default function AdminPlayers() {
             <div className="grid md:grid-cols-3 gap-4">
               <input
                 type="text"
-                placeholder={isBn ? "পজিশন (যেমন: CB / RB)" : "Position (e.g. CB / RB)"}
+                placeholder={isBn ? "পজিশ�� (যেমন: CB / RB)" : "Position (e.g. CB / RB)"}
                 value={formData.pos}
                 onChange={(e) => setFormData((prev) => ({ ...prev, pos: e.target.value }))}
                 className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
@@ -362,7 +374,7 @@ export default function AdminPlayers() {
                 <option value="GK">{isBn ? "গোলরক্ষক (GK)" : "Goalkeeper (GK)"}</option>
                 <option value="DEF">{isBn ? "ডিফেন্ডার (DEF)" : "Defender (DEF)"}</option>
                 <option value="MID">{isBn ? "মিডফিল্ডার (MID)" : "Midfielder (MID)"}</option>
-                <option value="FWD">{isBn ? "ফরওয়ার্ড (FWD)" : "Forward (FWD)"}</option>
+                <option value="FWD">{isBn ? "ফরওয��ার্ড (FWD)" : "Forward (FWD)"}</option>
               </select>
               <input
                 type="number"
@@ -423,6 +435,29 @@ export default function AdminPlayers() {
                   className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
                 />
               )}
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              <input
+                type="date"
+                placeholder={isBn ? "জন্মতারিখ" : "Date of Birth"}
+                value={formData.dateOfBirth}
+                onChange={(e) => setFormData((prev) => ({ ...prev, dateOfBirth: e.target.value }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              />
+              <input
+                type="date"
+                placeholder={isBn ? "যোগ দেওয়ার তারিখ" : "Join Date"}
+                value={formData.joinDate}
+                onChange={(e) => setFormData((prev) => ({ ...prev, joinDate: e.target.value }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              />
+              <input
+                type="text"
+                placeholder={isBn ? "সিজন বছর" : "Season Year"}
+                value={formData.seasonYear}
+                onChange={(e) => setFormData((prev) => ({ ...prev, seasonYear: e.target.value }))}
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+              />
             </div>
             <textarea
               placeholder={isBn ? "জীবনী" : "Bio"}
