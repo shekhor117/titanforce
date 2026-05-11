@@ -271,21 +271,21 @@ export default function PlayerProfile() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/20" />
 
         <div className="relative z-10 max-w-7xl mx-auto h-full px-3 sm:px-4 md:px-6 flex flex-col justify-end pb-4 sm:pb-6 md:pb-10 lg:pb-14">
-          <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full">
+          <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {playerPhotos[player.num] ? (
-              <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card overflow-hidden flex-shrink-0">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card overflow-hidden flex-shrink-0">
                 <Image
                   src={playerPhotos[player.num]}
                   alt={player.fullName}
-                  width={224}
-                  height={224}
+                  width={208}
+                  height={208}
                   className="w-full h-full object-cover object-top"
                   priority
                 />
               </div>
             ) : (
-              <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center flex-shrink-0">
-                <span className="font-[var(--font-display)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center flex-shrink-0">
+                <span className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-primary">
                   #{player.num}
                 </span>
               </div>
@@ -319,29 +319,6 @@ export default function PlayerProfile() {
           </div>
         </div>
       </section>
-
-      {/* FULL IMAGE GALLERY SECTION */}
-      {playerPhotos[player.num] && (
-        <section className="w-full bg-black/50 border-b border-secondary py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6">
-          <div className="max-w-7xl mx-auto">
-            <h2 className={`text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 md:mb-8 text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "খেলোয়াড়ের প্রোফাইল" : "Player Profile"}
-            </h2>
-            <div className="relative w-full h-64 sm:h-80 md:h-[500px] lg:h-[600px] rounded-2xl sm:rounded-3xl overflow-hidden border-2 sm:border-4 border-primary shadow-2xl">
-              <Image
-                src={playerPhotos[player.num]}
-                alt={player.fullName}
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 85vw"
-                priority
-              />
-              {/* Gradient overlay for better contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* QUICK STATS */}
       <section className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
