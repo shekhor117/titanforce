@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
-import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { Player } from "@/lib/data-store"
+import { usePlayersRealtime } from "@/lib/use-data-store"
+import { dataService } from "@/lib/data-service"
 import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
@@ -17,6 +19,8 @@ export default function AdminPlayers() {
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [filter, setFilter] = useState<"all" | "GK" | "DEF" | "MID" | "FWD">("all")
   const [searchTerm, setSearchTerm] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     fullName: "",
@@ -61,7 +65,7 @@ export default function AdminPlayers() {
   })
   const [newTrophy, setNewTrophy] = useState({ name: "", year: "" })
   
-  const players = useDataStore(dataStore.getPlayers, "players")
+  const players = usePlayersRealtime()
 
   const handlePhotoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, photo: data }))
@@ -136,7 +140,7 @@ export default function AdminPlayers() {
     }
   }, [searchParams, players])
 
-  const handleSavePlayer = () => {
+  const handleSavePlayer = async () => {
     // Only admin can save players
     if (admin?.role !== "admin") {
       alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সংরক্ষণ করতে পারে" : "Only admins can save players")
@@ -148,55 +152,58 @@ export default function AdminPlayers() {
       return
     }
 
-    const playerData: Omit<Player, "id"> = {
-      num: parseInt(formData.num),
-      name: formData.name,
-      fullName: formData.fullName || formData.name,
-      pos: formData.pos,
-      cat: formData.cat as Player["cat"],
-      age: parseInt(formData.age) || 18,
-      hometown: formData.hometown,
-      foot: formData.foot,
-      goals: parseInt(formData.goals) || 0,
-      assists: parseInt(formData.assists) || 0,
-      cleanSheets: formData.cat === "GK" ? parseInt(formData.cleanSheets) || 0 : undefined,
-      bio: formData.bio,
-      photo: formData.photo.signedUrl || undefined,
-      status: formData.status,
-      // Personal Dates
-      dateOfBirth: formData.dateOfBirth || undefined,
-      joinDate: formData.joinDate || undefined,
-      seasonYear: formData.seasonYear || "2024-2025",
-      // Extended Stats
-      appearances: parseInt(formData.appearances) || 0,
-      minutes: parseInt(formData.minutes) || 0,
-      passAccuracy: parseInt(formData.passAccuracy) || 0,
-      chancesCreated: parseInt(formData.chancesCreated) || 0,
-      // Season Stats
-      premierMatches: parseInt(formData.premierMatches) || 0,
-      cupMatches: parseInt(formData.cupMatches) || 0,
-      yellowCards: parseInt(formData.yellowCards) || 0,
-      redCards: parseInt(formData.redCards) || 0,
-      motmAwards: parseInt(formData.motmAwards) || 0,
-      averageRating: parseFloat(formData.averageRating) || 0,
-      // Player Attributes
-      pace: parseInt(formData.pace) || 70,
-      shooting: parseInt(formData.shooting) || 70,
-      passing: parseInt(formData.passing) || 70,
-      dribbling: parseInt(formData.dribbling) || 70,
-      defending: parseInt(formData.defending) || 70,
-      physical: parseInt(formData.physical) || 70,
-      // Trophies
-      trophies: formData.trophies,
-    }
+    setIsSaving(true)
+    try {
+      const playerData = {
+        num: parseInt(formData.num),
+        name: formData.name,
+        full_name: formData.fullName || formData.name,
+        pos: formData.pos,
+        cat: formData.cat as Player["cat"],
+        age: parseInt(formData.age) || 18,
+        hometown: formData.hometown,
+        foot: formData.foot,
+        goals: parseInt(formData.goals) || 0,
+        assists: parseInt(formData.assists) || 0,
+        clean_sheets: formData.cat === "GK" ? parseInt(formData.cleanSheets) || 0 : undefined,
+        bio: formData.bio,
+        photo_url: formData.photo.signedUrl || undefined,
+        status: formData.status,
+        date_of_birth: formData.dateOfBirth || undefined,
+        join_date: formData.joinDate || undefined,
+        season_year: formData.seasonYear || "2024-2025",
+        appearances: parseInt(formData.appearances) || 0,
+        minutes: parseInt(formData.minutes) || 0,
+        pass_accuracy: parseInt(formData.passAccuracy) || 0,
+        chances_created: parseInt(formData.chancesCreated) || 0,
+        premier_matches: parseInt(formData.premierMatches) || 0,
+        cup_matches: parseInt(formData.cupMatches) || 0,
+        yellow_cards: parseInt(formData.yellowCards) || 0,
+        red_cards: parseInt(formData.redCards) || 0,
+        motm_awards: parseInt(formData.motmAwards) || 0,
+        average_rating: parseFloat(formData.averageRating) || 0,
+        pace: parseInt(formData.pace) || 70,
+        shooting: parseInt(formData.shooting) || 70,
+        passing: parseInt(formData.passing) || 70,
+        dribbling: parseInt(formData.dribbling) || 70,
+        defending: parseInt(formData.defending) || 70,
+        physical: parseInt(formData.physical) || 70,
+        trophies: formData.trophies,
+      }
 
-    if (editingPlayer) {
-      dataStore.updatePlayer(editingPlayer.id, playerData)
-    } else {
-      dataStore.addPlayer(playerData)
+      if (editingPlayer) {
+        await dataService.updatePlayer(editingPlayer.id, playerData)
+      } else {
+        await dataService.addPlayer(playerData)
+      }
+      
+      resetForm()
+    } catch (error) {
+      console.error("Error saving player:", error)
+      alert(isBn ? "খেলোয়াড় সংরক্ষণ করতে ব্যর্থ" : "Failed to save player")
+    } finally {
+      setIsSaving(false)
     }
-    
-    resetForm()
   }
 
   const handleDeletePlayer = async (playerId: string) => {
@@ -205,6 +212,19 @@ export default function AdminPlayers() {
       alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় মুছতে পারে" : "Only admins can delete players")
       return
     }
+
+    if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
+    
+    setIsDeleting(true)
+    try {
+      await dataService.deletePlayer(playerId)
+    } catch (error) {
+      console.error("Error deleting player:", error)
+      alert(isBn ? "খেলোয়াড় মুছতে ব্যর্থ" : "Failed to delete player")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
     dataStore.deletePlayer(playerId)
@@ -716,14 +736,16 @@ export default function AdminPlayers() {
             <div className="flex gap-2 pt-4">
               <button
                 onClick={handleSavePlayer}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                disabled={isSaving}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 <Save className="w-4 h-4" />
-                {editingPlayer ? (isBn ? "আপডেট করুন" : "Update") : (isBn ? "সংরক্ষণ করুন" : "Save")}
+                {isSaving ? (isBn ? "সংরক্ষণ করছে..." : "Saving...") : (editingPlayer ? (isBn ? "আপডেট করুন" : "Update") : (isBn ? "সংরক্ষণ করুন" : "Save"))}
               </button>
               <button
                 onClick={resetForm}
-                className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                disabled={isSaving}
+                className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {isBn ? "বাতিল" : "Cancel"}
               </button>
@@ -775,7 +797,7 @@ export default function AdminPlayers() {
                 </button>
                 <button
                   onClick={() => handleDeletePlayer(player.id)}
-                  disabled={admin?.role !== "admin"}
+                  disabled={admin?.role !== "admin" || isDeleting}
                   className="p-2 rounded hover:bg-red-500/20 transition text-red-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                   title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন মুছতে পারে" : "Only admins can delete") : (isBn ? "মুছুন" : "Delete")}
                 >
