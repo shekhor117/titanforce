@@ -6,6 +6,7 @@ import Image from "next/image"
 import { ArrowLeft, Edit } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { PlayerRating } from "@/components/player-rating"
+import { TrainingChart } from "@/components/training-chart"
 import { useEffect, useState } from "react"
 import { useAdmin } from "@/lib/admin-context"
 
@@ -518,6 +519,9 @@ export default function PlayerProfile() {
           </div>
         </div>
       </section>
+
+      {/* Player Analytics */}
+      <TrainingChart />
     </div>
   )
 }
