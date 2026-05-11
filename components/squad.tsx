@@ -90,29 +90,29 @@ export function Squad() {
   }
 
   return (
-    <section id="squad" ref={sectionRef} className="py-16 px-4">
+    <section id="squad" ref={sectionRef} className="py-12 sm:py-16 px-3 sm:px-4">
       <div className="max-w-6xl mx-auto">
         <div
-          className={`text-center mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`text-center mb-8 sm:mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
-          <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.squad.subtitle}
           </p>
-          <h2 className={`text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`text-3xl sm:text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.squad.title}
           </h2>
         </div>
 
         <div
-          className={`flex flex-wrap justify-center gap-2 mb-10 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          className={`flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-10 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
           {filters.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${activeFilter === filter
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${activeFilter === filter
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-card bg-transparent text-foreground hover:border-primary/50"
                 } ${isBn && filter === "all" ? "font-[var(--font-bengali)]" : ""}`}
@@ -122,50 +122,51 @@ export function Squad() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
           {filteredPlayers.map((player, index) => {
             const photo = getPlayerPhoto(player)
             return (
               <Link
                 key={player.id}
                 href={`/player/${player.num}`}
-                className={`card-glow rounded-xl p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                className={`card-glow rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
                 style={{ transitionDelay: `${index * 50}ms` }}
               >
                 {photo ? (
-                  <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-secondary/30">
+                  <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30">
                     <Image
                       src={photo}
                       alt={player.fullName}
                       fill
                       className="object-cover object-top"
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
                     />
-                    <div className="absolute top-2 left-2 font-[var(--font-display)] text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 font-[var(--font-display)] text-lg sm:text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                       {player.num}
                     </div>
                   </div>
                 ) : (
-                  <div className="font-[var(--font-display)] text-4xl text-primary">{player.num}</div>
+                  <div className="font-[var(--font-display)] text-3xl sm:text-4xl text-primary">{player.num}</div>
                 )}
-                <h3 className="font-[var(--font-display)] text-xl tracking-wider mt-2 text-foreground">
+                <h3 className="font-[var(--font-display)] text-lg sm:text-xl tracking-wider mt-1 sm:mt-2 text-foreground truncate">
                   {player.name.toUpperCase()}
                 </h3>
-                <p className="text-xs uppercase tracking-wider mt-1 text-foreground/60">
+                <p className="text-xs uppercase tracking-wider mt-0.5 sm:mt-1 text-foreground/60 truncate">
                   {player.pos}
                 </p>
-                <div className="flex items-center gap-2 mt-3">
-                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-secondary text-primary">
+                <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-[10px] flex-wrap">
+                  <span className="px-2 py-0.5 font-bold uppercase tracking-wider rounded bg-secondary text-primary flex-shrink-0">
                     {player.cat}
                   </span>
-                  <span className={`text-[10px] text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
+                  <span className={`text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
                 </div>
-                <div className="flex items-center gap-3 mt-2 text-[10px] text-foreground/60">
-                  <span className="flex items-center gap-1">
+                <div className="flex items-center gap-2 mt-1.5 sm:mt-2 text-[10px] text-foreground/60 flex-wrap">
+                  <span className="flex items-center gap-1 flex-shrink-0">
                     <Target className="w-3 h-3" />
                     {player.goals}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 flex-shrink-0">
                     <Trophy className="w-3 h-3" />
                     {player.assists}
                   </span>
