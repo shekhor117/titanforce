@@ -24,6 +24,8 @@ interface PlayerProfile {
     address?: string
     experience?: string
     photoUrl?: string
+    dateOfBirth?: string
+    joinDate?: string
   }
 }
 
@@ -108,7 +110,9 @@ export default function AdminPlayerProfiles() {
     foot: "",
     address: "",
     experience: "",
-    photoUrl: ""
+    photoUrl: "",
+    dateOfBirth: "",
+    joinDate: ""
   })
 
   useEffect(() => {
@@ -572,6 +576,32 @@ export default function AdminPlayerProfiles() {
                 </div>
               </div>
 
+              {/* Date Info */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "জন্মতারিখ" : "Date of Birth"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "যোগ দেওয়ার তারিখ" : "Join Date"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.joinDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
               {/* Address */}
               <div>
                 <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -593,7 +623,7 @@ export default function AdminPlayerProfiles() {
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   <Plus className="w-4 h-4" />
-                  {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
+                  {isBn ? "খেল���য়াড় যোগ করুন" : "Add Player"}
                 </button>
                 <button
                   onClick={() => setIsAdding(false)}
@@ -703,7 +733,7 @@ export default function AdminPlayerProfiles() {
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "অবস্থান" : "Position"}
+                    {isBn ? "অবস্���ান" : "Position"}
                   </label>
                   <select
                     value={formData.position}
@@ -777,6 +807,32 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.experience}
                     onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Date Info */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "জন্মতারিখ" : "Date of Birth"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "যোগ দেওয়ার তারিখ" : "Join Date"}
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.joinDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
                     className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
                   />
                 </div>
