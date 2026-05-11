@@ -23,7 +23,7 @@ export default function LoaderWrapper({
 
       const timer = setTimeout(() => {
         setShowLoader(false)
-      }, 1600)
+      }, 2200)
 
       return () => clearTimeout(timer)
     }
@@ -42,63 +42,117 @@ export default function LoaderWrapper({
             key="loader"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center"
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
           >
-            {/* Logo/Text */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-center"
-            >
-              <motion.h1
-                className="text-5xl md:text-7xl font-bold text-white tracking-[0.3em]"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              >
-                TITAN
-              </motion.h1>
-              
+            {/* Background gradient effect */}
+            <div className="absolute inset-0 opacity-30">
+              <div className="absolute top-0 left-1/2 w-96 h-96 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+            </div>
+
+            {/* Content */}
+            <div className="relative z-10 text-center">
+              {/* Logo Animation */}
               <motion.div
-                className="w-16 h-0.5 bg-red-600 mx-auto my-3"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-              />
-              
-              <motion.p
-                className="text-red-600 text-sm md:text-base tracking-[0.2em] uppercase"
+                initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  delay: 0.1
+                }}
+              >
+                <motion.h1
+                  className="text-7xl md:text-8xl font-bold text-white tracking-[0.3em] leading-none"
+                  style={{ textShadow: "0 0 40px rgba(220, 38, 38, 0.3)" }}
+                >
+                  TITAN
+                </motion.h1>
+              </motion.div>
+
+              {/* Divider Line */}
+              <motion.div
+                className="flex items-center justify-center gap-4 my-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.5 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <motion.div
+                  className="w-12 h-0.5 bg-gradient-to-r from-transparent to-red-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+                  origin="left"
+                />
+                <motion.div
+                  className="w-2 h-2 bg-red-600 rounded-full"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                />
+                <motion.div
+                  className="w-12 h-0.5 bg-gradient-to-l from-transparent to-red-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+                  origin="right"
+                />
+              </motion.div>
+
+              {/* Subtitle */}
+              <motion.p
+                className="text-red-600 text-xs md:text-sm tracking-[0.25em] uppercase font-semibold"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
               >
                 Force Football Club
               </motion.p>
-            </motion.div>
 
-            {/* Loading dots */}
+              {/* Tagline */}
+              <motion.p
+                className="text-foreground/40 text-xs md:text-sm tracking-[0.15em] uppercase mt-3 font-light"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              >
+                Pride · Passion · Power
+              </motion.p>
+            </div>
+
+            {/* Loading Progress Dots */}
             <motion.div
-              className="flex gap-1.5 mt-8"
+              className="flex gap-2 mt-12 relative z-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: 1.0 }}
             >
               {[0, 1, 2].map((i) => (
-                <motion.span
+                <motion.div
                   key={i}
-                  className="w-2 h-2 bg-red-600 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  className="w-2.5 h-2.5 bg-red-600 rounded-full"
+                  animate={{ 
+                    scale: [1, 1.3, 1],
+                    opacity: [0.4, 1, 0.4]
+                  }}
                   transition={{
-                    duration: 0.8,
+                    duration: 1.2,
                     repeat: Infinity,
-                    delay: i * 0.15,
+                    delay: i * 0.2,
                     ease: "easeInOut",
                   }}
                 />
               ))}
             </motion.div>
+
+            {/* Progress Bar */}
+            <motion.div
+              className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-600 to-red-500"
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2, ease: "easeInOut" }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -107,3 +161,4 @@ export default function LoaderWrapper({
     </>
   )
 }
+

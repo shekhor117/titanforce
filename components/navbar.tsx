@@ -24,25 +24,26 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b-2 border-primary backdrop-blur-md bg-background/80">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="#home" className="flex items-center gap-2">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
+        <Link href="#home" className="flex items-center gap-1 sm:gap-2 min-w-0">
           <Image
             src="/logo.png"
             alt="Titan Force FC Logo"
             width={50}
             height={50}
-            className="object-contain"
+            className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-2xl tracking-wider text-primary">
-            TITAN FORCE
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider text-primary truncate">
+            TITAN
           </h1>
         </Link>
 
         <button
-          className="md:hidden p-2 text-foreground"
+          className="md:hidden p-2 text-foreground hover:bg-secondary rounded transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -95,58 +96,60 @@ export function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide">
+        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`text-foreground hover:text-primary transition-colors ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`text-foreground hover:text-primary transition-colors py-2 px-2 rounded ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <div className="w-full flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-1"
-              aria-label="Toggle language"
-            >
-              <Globe className="w-4 h-4" />
-              <span className="text-xs font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
-            </button>
-          </div>
+          <div className="border-t border-secondary pt-3 mt-2 flex flex-col gap-3">
+            <div className="w-full flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                onClick={() => setLanguage(language === "en" ? "bn" : "en")}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-1 text-xs"
+                aria-label="Toggle language"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
+              </button>
+            </div>
 
-          {user ? (
-            <>
+            {user ? (
+              <>
+                <Link
+                  href={`/dashboard/${user.role}`}
+                  className={`px-4 py-2.5 rounded-full border-2 border-primary text-primary text-center text-xs font-bold transition hover:bg-primary/10 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {user.name}
+                </Link>
+                <button
+                  onClick={() => {
+                    logout()
+                    setMobileMenuOpen(false)
+                  }}
+                  className={`px-4 py-2.5 flex items-center justify-center gap-2 border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition rounded text-xs font-bold ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  <LogOut className="w-4 h-4" />
+                  {language === "bn" ? "লগআউট" : "Logout"}
+                </button>
+              </>
+            ) : (
               <Link
-                href={`/dashboard/${user.role}`}
-                className={`px-4 py-2 rounded-full border-2 border-primary text-primary text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                href="/login"
+                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {user.name}
+                {language === "bn" ? "লগইন" : "Login"}
               </Link>
-              <button
-                onClick={() => {
-                  logout()
-                  setMobileMenuOpen(false)
-                }}
-                className={`px-4 py-2 flex items-center justify-center gap-2 border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                <LogOut className="w-4 h-4" />
-                {language === "bn" ? "লগআউট" : "Logout"}
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {language === "bn" ? "লগইন" : "Login"}
-            </Link>
-          )}
+            )}
+          </div>
         </div>
       )}
     </nav>

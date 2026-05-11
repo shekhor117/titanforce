@@ -46,38 +46,39 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {topScorers.length > 0 ? (
           topScorers.map((player, index) => (
             <div
               key={player.id}
-              className="rounded-lg border-2 border-secondary/50 bg-gradient-to-br from-secondary/20 to-secondary/5 p-4 hover:border-primary/50 transition overflow-hidden relative"
+              className="rounded-lg border-2 border-secondary/50 bg-gradient-to-br from-secondary/20 to-secondary/5 p-3 sm:p-4 hover:border-primary/50 transition overflow-hidden relative"
             >
               {/* Rank Badge */}
-              <div className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 border border-primary/50">
-                <span className="text-sm font-bold text-primary">#{index + 1}</span>
+              <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex items-center justify-center w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-primary/20 border border-primary/50">
+                <span className="text-xs sm:text-sm font-bold text-primary">#{index + 1}</span>
               </div>
 
               {/* Player Photo */}
               {player.photo && (
-                <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-secondary/50 flex items-center justify-center">
+                <div className="relative w-full h-32 sm:h-40 mb-2 sm:mb-3 rounded-lg overflow-hidden bg-secondary/50 flex items-center justify-center flex-shrink-0">
                   <Image
                     src={player.photo}
                     alt={player.name}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
               )}
 
               {/* Player Info */}
-              <div className="mb-3">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-foreground truncate">{player.name}</h4>
+              <div className="mb-2 sm:mb-3">
+                <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-foreground text-sm sm:text-base truncate">{player.name}</h4>
                     <p className="text-xs text-foreground/60">#{player.num}</p>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded border font-semibold ${getPositionColor(player.cat)}`}>
+                  <span className={`text-xs px-2 py-1 rounded border font-semibold flex-shrink-0 ${getPositionColor(player.cat)}`}>
                     {player.cat}
                   </span>
                 </div>
