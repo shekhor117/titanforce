@@ -6,6 +6,7 @@ import Image from "next/image"
 import { ArrowLeft, Edit } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { PlayerRating } from "@/components/player-rating"
+import { JerseyShowcase } from "@/components/jersey-showcase"
 import { useEffect, useState } from "react"
 import { useAdmin } from "@/lib/admin-context"
 
@@ -355,6 +356,23 @@ export default function PlayerProfile() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* JERSEY SHOWCASE */}
+      <section className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-12 md:py-16 border-b border-secondary">
+        <div className="mb-6 sm:mb-8 md:mb-10">
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-center text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
+            {isBn ? "জার্সি ডিসপ্লে" : "Jersey Showcase"}
+          </h2>
+          <p className={`text-center text-foreground/60 text-sm sm:text-base ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "আপনার ব্যক্তিগত জার্সি দেখুন" : "View your personalized jersey"}
+          </p>
+        </div>
+        <JerseyShowcase
+          playerName={player.fullName}
+          playerNumber={player.num}
+          clubName="TITAN FORCE"
+        />
       </section>
 
       {/* QUICK STATS */}
