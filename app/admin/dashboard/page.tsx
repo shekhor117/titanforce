@@ -6,7 +6,7 @@ import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
-  Heart, Target, AlertCircle, Layers, BarChart4, Frown
+  Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
@@ -233,16 +233,19 @@ export default function AdminDashboard() {
   }
 
   // Get action color
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [editingPlayer, setEditingPlayer] = useState(false)
+
   const getActionColor = (action: string) => {
-    switch (action) {
-      case "create": return "bg-green-500/20 text-green-400"
-      case "update": return "bg-blue-500/20 text-blue-400"
-      case "delete": return "bg-red-500/20 text-red-400"
-      case "login": return "bg-purple-500/20 text-purple-400"
-      case "export": return "bg-yellow-500/20 text-yellow-400"
-      case "import": return "bg-cyan-500/20 text-cyan-400"
-      default: return "bg-gray-500/20 text-gray-400"
+    const colors: { [key: string]: string } = {
+      create: "bg-green-500/30 text-green-300",
+      update: "bg-blue-500/30 text-blue-300",
+      delete: "bg-red-500/30 text-red-300",
+      login: "bg-cyan-500/30 text-cyan-300",
+      export: "bg-yellow-500/30 text-yellow-300",
+      import: "bg-purple-500/30 text-purple-300",
     }
+    return colors[action] || "bg-secondary text-foreground/60"
   }
 
   return (
@@ -384,6 +387,133 @@ export default function AdminDashboard() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Quick Player Edit Section */}
+      <div className="rounded-xl border-2 border-blue-500/30 bg-blue-500/5 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Users className="w-6 h-6 text-blue-400" />
+            <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "খেলোয়াড় দ্রুত সম্পাদনা" : "Quick Player Edit"}
+            </h2>
+          </div>
+          <Link 
+            href="/admin/players"
+            className="text-sm text-blue-400 hover:text-blue-300 transition flex items-center gap-1"
+          >
+            {isBn ? "সব দেখুন" : "View all"} <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Players List */}
+          <div className="md:col-span-1 rounded-lg border-2 border-secondary bg-card p-4">
+            <h3 className={`text-sm font-semibold mb-3 text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "দল" : "Squad"}
+            </h3>
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {players.slice(0, 10).map((player) => (
+                <button
+                  key={player.id}
+                  onClick={() => setSelectedPlayer(player)}
+                  className={`w-full text-left p-2 rounded-lg border-2 transition ${
+                    selectedPlayer?.id === player.id
+                      ? "border-blue-400 bg-blue-500/10"
+                      : "border-secondary hover:border-blue-400/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold w-6 h-6 bg-primary/20 rounded flex items-center justify-center text-xs">
+                      {player.num}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-foreground truncate">{player.name}</div>
+                      <div className="text-xs text-foreground/60">{player.pos}</div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+              {players.length > 10 && (
+                <Link 
+                  href="/admin/players"
+                  className="w-full text-center text-xs text-primary hover:underline py-2"
+                >
+                  {isBn ? "আরও দেখুন" : "View more"}
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Player Details */}
+          {selectedPlayer ? (
+            <div className="md:col-span-2 rounded-lg border-2 border-secondary bg-card p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className={`text-lg font-bold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {selectedPlayer.fullName}
+                </h3>
+                <Link
+                  href={`/admin/players`}
+                  className="flex items-center gap-1 px-3 py-1 bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 transition text-sm"
+                >
+                  <Edit className="w-4 h-4" />
+                  {isBn ? "সম্পাদনা করুন" : "Edit"}
+                </Link>
+              </div>
+
+              {/* Quick Stats Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "অবস্থান" : "Position"}</div>
+                  <div className="text-sm font-semibold text-foreground">{selectedPlayer.pos}</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "বয়স" : "Age"}</div>
+                  <div className="text-sm font-semibold text-foreground">{selectedPlayer.age}</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "লক্ষ্য" : "Goals"}</div>
+                  <div className="text-sm font-semibold text-green-400">{selectedPlayer.goals}</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "সহায়তা" : "Assists"}</div>
+                  <div className="text-sm font-semibold text-blue-400">{selectedPlayer.assists}</div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "অবস্থা" : "Status"}</div>
+                  <div className={`text-sm font-semibold ${
+                    selectedPlayer.status === "active" ? "text-green-400" :
+                    selectedPlayer.status === "injured" ? "text-yellow-400" :
+                    "text-red-400"
+                  }`}>
+                    {selectedPlayer.status.charAt(0).toUpperCase() + selectedPlayer.status.slice(1)}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60">{isBn ? "সিজন" : "Season"}</div>
+                  <div className="text-sm font-semibold text-foreground">{selectedPlayer.seasonYear || "2024-2025"}</div>
+                </div>
+              </div>
+
+              {/* Bio */}
+              {selectedPlayer.bio && (
+                <div className="p-3 rounded-lg bg-secondary/20">
+                  <div className="text-xs text-foreground/60 mb-1">{isBn ? "জীবনী" : "Bio"}</div>
+                  <p className="text-sm text-foreground line-clamp-3">{selectedPlayer.bio}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="md:col-span-2 rounded-lg border-2 border-secondary bg-card p-8 flex items-center justify-center">
+              <div className="text-center">
+                <Users className="w-12 h-12 mx-auto mb-3 text-foreground/30" />
+                <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "একজন খেলোয়াড় নির্বাচন করুন" : "Select a player to view details"}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
