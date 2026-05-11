@@ -201,7 +201,7 @@ export default function PlayerProfile() {
   ]
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
@@ -224,16 +224,34 @@ export default function PlayerProfile() {
           from { transform: scale(1); }
           to { transform: scale(1.1); }
         }
+
+        /* Hide scrollbar while maintaining scrollability */
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: rgba(220, 38, 38, 0.3);
+          border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(220, 38, 38, 0.5);
+        }
       `}</style>
 
       {/* Back Button */}
       <div className="bg-secondary/20 border-b border-secondary">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 transition"
+            className="flex items-center gap-2 text-primary hover:text-primary/80 transition text-sm sm:text-base"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
             <span className={isBn ? "font-[var(--font-bengali)]" : ""}>
               {isBn ? "পিছনে" : "Back"}
             </span>
@@ -242,7 +260,7 @@ export default function PlayerProfile() {
       </div>
 
       {/* HERO */}
-      <section className="relative h-[400px] md:h-[500px] overflow-hidden border-b border-secondary">
+      <section className="relative h-56 sm:h-80 md:h-[400px] lg:h-[500px] overflow-hidden border-b border-secondary">
         <div
           className="absolute inset-0 w-full h-full object-cover opacity-20 zoom"
           style={{
@@ -252,44 +270,45 @@ export default function PlayerProfile() {
 
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/20" />
 
-        <div className="relative z-10 max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-10 md:pb-14">
-          <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
+        <div className="relative z-10 max-w-7xl mx-auto h-full px-3 sm:px-4 md:px-6 flex flex-col justify-end pb-4 sm:pb-6 md:pb-10 lg:pb-14">
+          <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {playerPhotos[player.num] ? (
-              <div className="w-40 h-40 md:w-52 md:h-52 rounded-3xl border-4 border-primary shadow-2xl card overflow-hidden">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card overflow-hidden flex-shrink-0">
                 <Image
                   src={playerPhotos[player.num]}
                   alt={player.fullName}
                   width={208}
                   height={208}
                   className="w-full h-full object-cover object-top"
+                  priority
                 />
               </div>
             ) : (
-              <div className="w-40 h-40 md:w-52 md:h-52 rounded-3xl border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center">
-                <span className="font-[var(--font-display)] text-6xl md:text-7xl text-primary">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center flex-shrink-0">
+                <span className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-primary">
                   #{player.num}
                 </span>
               </div>
             )}
 
-            <div className="flex-1">
-              <p className="uppercase tracking-[0.3em] text-white/60 text-sm mb-2">
+            <div className="flex-1 min-w-0">
+              <p className="uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/60 text-xs sm:text-sm mb-1 sm:mb-2">
                 Titan Force FC
               </p>
 
-              <h1 className="font-[var(--font-display)] text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-none text-white">
+              <h1 className="font-[var(--font-display)] text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black uppercase leading-tight sm:leading-none text-white break-words">
                 {player.fullName.split(" ")[0]}
               </h1>
 
-              <div className={`flex flex-wrap items-center gap-4 mt-4 text-base md:text-lg text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                <span className="text-primary font-bold">#{player.num}</span>
-                <span>{player.pos}</span>
-                <span>Bangladesh</span>
-                <span>{player.foot} Footed</span>
+              <div className={`flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mt-2 sm:mt-3 md:mt-4 text-xs sm:text-sm md:text-base text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <span className="text-primary font-bold flex-shrink-0">#{player.num}</span>
+                <span className="truncate">{player.pos}</span>
+                <span className="flex-shrink-0">Bangladesh</span>
+                <span className="truncate">{player.foot} Footed</span>
               </div>
               
               {/* Player Rating - Viewers can rate */}
-              <div className="mt-6">
+              <div className="mt-3 sm:mt-4 md:mt-6">
                 <PlayerRating 
                   playerId={player.num.toString()} 
                   playerName={player.fullName}
@@ -302,16 +321,16 @@ export default function PlayerProfile() {
       </section>
 
       {/* QUICK STATS */}
-      <section className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <section className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
         {stats.map((item, index) => (
           <div
             key={index}
-            className="card bg-secondary/20 border border-secondary rounded-2xl p-6 shadow-lg"
+            className="card bg-secondary/20 border border-secondary rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg"
           >
-            <p className={`text-xs uppercase tracking-widest text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {item.title}
             </p>
-            <h2 className="font-[var(--font-display)] text-4xl text-primary mt-3">
+            <h2 className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-primary mt-2 sm:mt-3">
               {item.value}
             </h2>
           </div>
@@ -319,15 +338,15 @@ export default function PlayerProfile() {
       </section>
 
       {/* MAIN CONTENT */}
-      <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
-        <div className="space-y-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 pb-12 sm:pb-16 md:pb-20">
+        <div className="space-y-4 sm:space-y-6 md:space-y-8">
           {/* Player Details */}
-          <div className="card bg-secondary/20 border border-secondary rounded-3xl p-8">
-            <h2 className={`text-2xl font-bold mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+            <h2 className={`text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "খেলোয়াড়ের বিবরণ" : "Player Details"}
             </h2>
 
-            <div className={`space-y-4 text-foreground/80 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <div className={`space-y-3 sm:space-y-4 text-sm sm:text-base text-foreground/80 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {[
                 ["Full Name", player.fullName],
                 ["Position", player.pos],
@@ -338,26 +357,33 @@ export default function PlayerProfile() {
                 ["Club", "Titan Force FC"],
                 ["Status", "Active"],
               ].map(([label, value], index) => (
-                <div key={index} className="flex justify-between border-b border-secondary/30 pb-3">
-                  <span className="text-foreground/60">{label}</span>
-                  <span className="text-foreground font-semibold">{value}</span>
+                <div key={index} className="flex justify-between border-b border-secondary/30 pb-2 sm:pb-3">
+                  <span className="text-foreground/60 flex-shrink-0">{label}</span>
+                  <span className="text-foreground font-semibold text-right ml-2">{value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Season Stats */}
-          <div className="card bg-secondary/20 border border-secondary rounded-3xl p-8">
-            <h2 className={`text-2xl font-bold mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+            <h2 className={`text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "মৌসুমী পরিসংখ্যান" : "Season Stats"}
             </h2>
 
-            <div className="space-y-5">
-              {seasonStats.map((item, index) => (
+            <div className={`space-y-3 sm:space-y-4 text-sm sm:text-base ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {[
+                ["Goals", player.goals],
+                ["Assists", player.assists],
+                ["Appearances", player.cleanSheets],
+                ["Clean Sheets", player.cleanSheets],
+                ["Minutes Played", "1,250"],
+                ["Pass Accuracy", "92%"],
+              ].map(([title, value], index) => (
                 <div key={index}>
-                  <div className="flex justify-between mb-2 text-sm">
-                    <span className="text-foreground/70">{item.label}</span>
-                    <span className="font-bold text-foreground">{item.value}</span>
+                  <div className="flex justify-between mb-1.5 sm:mb-2">
+                    <span className="text-foreground/60 text-xs sm:text-sm">{title}</span>
+                    <span className="font-bold text-primary text-xs sm:text-sm">{value}</span>
                   </div>
                   <div className="w-full h-2 bg-secondary/50 rounded-full overflow-hidden">
                     <div className="w-4/5 h-full bg-primary rounded-full" />
@@ -368,24 +394,24 @@ export default function PlayerProfile() {
           </div>
         </div>
 
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6 md:space-y-8">
           {/* Biography */}
-          <div className="card bg-secondary/20 border border-secondary rounded-3xl p-8">
-            <h2 className={`text-3xl font-bold mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+            <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 md:mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "জীবনী" : "Biography"}
             </h2>
-            <p className={`text-foreground/80 leading-8 text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-foreground/80 leading-relaxed sm:leading-7 md:leading-8 text-sm sm:text-base md:text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {player.bio}
             </p>
           </div>
 
           {/* Player Attributes */}
-          <div className="card bg-secondary/20 border border-secondary rounded-3xl p-8">
-            <h2 className={`text-3xl font-bold mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+            <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "খেলোয়াড়ের বৈশিষ্ট্য" : "Player Attributes"}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {[
                 ["Pace", "84%"],
                 ["Shooting", "81%"],
@@ -395,11 +421,11 @@ export default function PlayerProfile() {
                 ["Physical", "76%"],
               ].map(([skill, value], index) => (
                 <div key={index}>
-                  <div className="flex justify-between mb-2 text-sm">
+                  <div className="flex justify-between mb-1.5 sm:mb-2 text-xs sm:text-sm">
                     <span>{skill}</span>
                     <span>{value}</span>
                   </div>
-                  <div className="w-full h-3 bg-secondary/50 rounded-full">
+                  <div className="w-full h-2 sm:h-3 bg-secondary/50 rounded-full">
                     <div
                       className="h-full bg-primary rounded-full transition-all"
                       style={{ width: value }}
@@ -411,22 +437,22 @@ export default function PlayerProfile() {
           </div>
 
           {/* Trophies */}
-          <div className="card bg-secondary/20 border border-secondary rounded-3xl p-8">
-            <h2 className={`text-3xl font-bold mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+            <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "ট্রফি" : "Trophies"}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
               {trophies.map((trophy, i) => (
                 <div
                   key={i}
-                  className="card bg-secondary/30 border border-secondary rounded-2xl p-6 text-center"
+                  className="card bg-secondary/30 border border-secondary rounded-lg sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center"
                 >
-                  <div className="text-4xl mb-3">🏆</div>
-                  <h3 className={`font-bold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  <div className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3">🏆</div>
+                  <h3 className={`font-bold text-xs sm:text-sm md:text-base ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                     {trophy.name}
                   </h3>
-                  <p className="text-foreground/50 mt-2">{trophy.year}</p>
+                  <p className="text-foreground/50 mt-1 sm:mt-2 text-xs sm:text-sm">{trophy.year}</p>
                 </div>
               ))}
             </div>
