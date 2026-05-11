@@ -15,26 +15,6 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
-// Helper functions for cookie-based storage (more reliable than localStorage in some environments)
-function setCookie(name: string, value: string, days: number = 7) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString()
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`
-}
-
-function getCookie(name: string): string | null {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`)
-  if (parts.length === 2) {
-    const cookieValue = parts.pop()?.split(';').shift()
-    return cookieValue ? decodeURIComponent(cookieValue) : null
-  }
-  return null
-}
-
-function deleteCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-}
-
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<AuthUser | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -46,35 +26,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     let isMounted = true
     
     const initializeAuth = async () => {
-      // Check cookie first, then localStorage as fallback
-      let stored = getCookie("titanforce_admin")
-      if (!stored) {
-        stored = localStorage.getItem("titanforce_admin")
-      }
-      
+      // Fast path: Check localStorage first (instant)
+      const stored = localStorage.getItem("titanforce_admin")
       if (stored && isMounted) {
         try {
           const userData = JSON.parse(stored)
           setAdmin(userData)
-          // Ensure both storage methods have the data
-          setCookie("titanforce_admin", stored)
-          localStorage.setItem("titanforce_admin", stored)
+          setIsInitialized(true)
+          return
         } catch {
-          deleteCookie("titanforce_admin")
           localStorage.removeItem("titanforce_admin")
         }
       }
       
+      // Mark as initialized immediately (don't wait for Supabase)
+      if (isMounted) setIsInitialized(true)
+      
+      // Background: Verify with Supabase if available
       try {
         const supabase = createClient()
         
         if (!supabase) {
-          // No Supabase - already handled storage above
-          if (isMounted) setIsInitialized(true)
           return
         }
 
-        // Get current user from Supabase session
         const { data } = await supabase.auth.getSession()
         if (data.session?.user && isMounted) {
           const user: AuthUser = {
@@ -85,14 +60,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             emailVerified: data.session.user.email_confirmed_at ? true : false,
           }
           setAdmin(user)
-          const userJson = JSON.stringify(user)
-          setCookie("titanforce_admin", userJson)
-          localStorage.setItem("titanforce_admin", userJson)
+          localStorage.setItem("titanforce_admin", JSON.stringify(user))
         }
       } catch (err) {
-        console.error("Error initializing auth:", err)
-      } finally {
-        if (isMounted) setIsInitialized(true)
+        console.error("Error verifying auth:", err)
       }
     }
 
@@ -126,6 +97,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         setAdmin(demoUser)
         localStorage.setItem("titanforce_admin", JSON.stringify(demoUser))
+        setIsLoading(false)
         return
       }
 
@@ -140,12 +112,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       setAdmin(user)
       localStorage.setItem("titanforce_admin", JSON.stringify(user))
+      setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)
-      throw err
-    } finally {
       setIsLoading(false)
+      throw err
     }
   }
 

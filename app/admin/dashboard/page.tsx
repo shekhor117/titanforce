@@ -8,6 +8,12 @@ import {
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell
 } from "lucide-react"
 import { useState, useEffect } from "react"
+import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
+import { TopPlayersCards } from "@/components/top-players-cards"
+import { PlayerComparisonTable } from "@/components/player-comparison-table"
+import { PlayerAttributesRadar } from "@/components/player-attributes-radar"
+import { PlayerAchievements } from "@/components/player-achievements"
+import { PlayerUpdatesActivity } from "@/components/player-updates-activity"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
@@ -295,6 +301,34 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Player Data Integration Section */}
+      <div className="space-y-6 border-t-2 border-secondary pt-8">
+        <div className="flex items-center gap-3">
+          <Trophy className="w-6 h-6 text-primary" />
+          <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "খেলোয়াড় বিশ্লেষণ" : "Player Analytics"}
+          </h2>
+        </div>
+
+        {/* Player Stats Dashboard */}
+        <PlayerStatsDashboard players={players} />
+
+        {/* Top Players Cards */}
+        <TopPlayersCards players={players} limit={6} />
+
+        {/* Player Comparison Table */}
+        <PlayerComparisonTable players={players} />
+
+        {/* Player Attributes */}
+        <PlayerAttributesRadar players={players} limit={4} />
+
+        {/* Player Achievements */}
+        <PlayerAchievements players={players} />
+
+        {/* Recent Player Updates */}
+        <PlayerUpdatesActivity players={players} />
       </div>
 
       {/* System Overview */}

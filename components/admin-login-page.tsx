@@ -22,9 +22,9 @@ export function AdminLoginPage() {
 
   useEffect(() => {
     if (isInitialized && admin) {
-      window.location.href = "/admin/dashboard"
+      router.push("/admin/dashboard")
     }
-  }, [admin, isInitialized])
+  }, [admin, isInitialized, router])
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,7 +43,7 @@ export function AdminLoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
-      window.location.href = "/admin/dashboard"
+      router.push("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
       setLocalError(message)
