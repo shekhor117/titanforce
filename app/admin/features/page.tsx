@@ -225,11 +225,7 @@ export default function AdminFeaturesPage() {
           </div>
         </div>
       </div>
-            {isBn ? "অসংরক্ষিত পরিবর্তন" : "Unsaved Changes"}
-          </div>
-        </div>
-      </div>
-      </div>
+    </div>
     </FeatureProtectedRoute>
   )
 }
