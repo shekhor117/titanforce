@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { dataStore, useDataStore, ActivityLog } from "@/lib/data-store"
 import { 
   Download, Upload, RefreshCw, Trash2, Database, HardDrive, 
@@ -172,7 +173,8 @@ export default function AdminSystemPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <FeatureProtectedRoute featureName="System Settings" category="tools">
+      <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -405,6 +407,7 @@ export default function AdminSystemPage() {
           {isBn ? "সমস্ত ডেটা রিসেট করুন" : "Reset All Data to Defaults"}
         </button>
       </div>
-    </div>
+      </div>
+    </FeatureProtectedRoute>
   )
 }

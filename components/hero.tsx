@@ -93,23 +93,23 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               />
             </div>
           </div>
-          <div className="animate-fade-up">
-            <p className={`text-sm uppercase tracking-[0.3em] mb-4 font-semibold text-primary animate-fadeIn ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <div className="animate-smoothFadeUp">
+            <p className={`text-sm uppercase tracking-[0.3em] mb-4 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.subtitle}
             </p>
           </div>
           <h2 className={`text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            <span className="block text-white overflow-hidden whitespace-nowrap border-r-4 border-white animate-typingWelcome mx-auto w-fit">
+            <span className="block text-white overflow-hidden animate-smoothFadeUp">
               {t.hero.welcome}
             </span>
-            <span className="block text-primary mt-2 overflow-hidden whitespace-nowrap border-r-4 border-primary animate-typingTitan mx-auto w-fit">
+            <span className="block text-primary mt-2 animate-smoothFadeUp animation-delay-200">
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-6 text-lg text-foreground/70 max-w-xl mx-auto animate-fade-up animation-delay-200 animate-fadeIn delay-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-6 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
-          <div className="mt-8 flex justify-center gap-4 animate-fade-up animation-delay-300 animate-fadeIn delay-500">
+          <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
             <TransitionLink
               href="/team-squad"
               className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
@@ -152,7 +152,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           @keyframes smoothFadeUp {
             0% {
               opacity: 0;
-              transform: translateY(40px);
+              transform: translateY(30px);
             }
 
             100% {
@@ -200,8 +200,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           @keyframes logoIntro {
             0% {
               opacity: 0;
-              transform: scale(0.3) rotate(-15deg);
-              filter: blur(10px);
+              transform: scale(0.5) rotate(-15deg);
+              filter: blur(8px);
             }
 
             100% {
@@ -226,32 +226,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               opacity: 1;
               transform: scale(1) rotate(0deg);
               filter: blur(0px);
-            }
-          }
-
-          @keyframes typingWelcome {
-            from {
-              width: 0;
-            }
-
-            to {
-              width: 100%;
-            }
-          }
-
-          @keyframes typingTitan {
-            from {
-              width: 0;
-            }
-
-            to {
-              width: 100%;
-            }
-          }
-
-          @keyframes blink {
-            50% {
-              border-color: transparent;
             }
           }
 
@@ -323,15 +297,15 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           }
 
           .animate-smoothFadeUp {
-            animation: smoothFadeUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: smoothFadeUp 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
           }
 
           .animate-smoothScale {
-            animation: smoothScale 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: smoothScale 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
           }
 
           .animate-buttonSlideIn {
-            animation: buttonSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: buttonSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
           }
 
           .delay-300 {
@@ -342,22 +316,16 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             animation-delay: 0.5s;
           }
 
-          .animate-typingWelcome {
-            width: 0;
-            animation:
-              typingWelcome 2.5s steps(20, end) forwards,
-              blink 0.8s infinite;
+          .animation-delay-100 {
+            animation-delay: 0.1s;
           }
 
-          .animate-typingTitan {
-            width: 0;
-            animation:
-              typingTitan 2.5s steps(20, end) 2.2s forwards,
-              blink 0.8s infinite;
+          .animation-delay-200 {
+            animation-delay: 0.2s;
           }
 
           .transition-smooth {
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           }
         `}</style>
       </section>

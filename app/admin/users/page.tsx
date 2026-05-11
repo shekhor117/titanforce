@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { dataStore, AdminUser, useDataStore } from "@/lib/data-store"
 import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock } from "lucide-react"
 
@@ -99,7 +100,8 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <FeatureProtectedRoute featureName="User Management" category="tools">
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -349,6 +351,7 @@ export default function AdminUsersPage() {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </FeatureProtectedRoute>
   )
 }

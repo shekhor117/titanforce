@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { Search, Edit, Eye, X, Save, User, Mail, Phone, MapPin, Calendar, Award, Trash2, Plus } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
@@ -299,8 +300,9 @@ export default function AdminPlayerProfiles() {
     return labels[position]?.[isBn ? "bn" : "en"] || position
   }
 
-  return (
-    <div className="space-y-6">
+    return (
+      <FeatureProtectedRoute featureName="Player Profiles" category="team">
+        <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -848,7 +850,7 @@ export default function AdminPlayerProfiles() {
               {viewingPlayer.playerProfile?.position && (
                 <div className="flex items-center gap-3">
                   <Award className="w-4 h-4 text-primary" />
-                  <span className="text-foreground/60">{isBn ? "অবস্থান:" : "Position:"}</span>
+                  <span className="text-foreground/60">{isBn ? "অব��্থান:" : "Position:"}</span>
                   <span className="text-foreground">{getPositionLabel(viewingPlayer.playerProfile.position)}</span>
                 </div>
               )}
@@ -984,6 +986,7 @@ export default function AdminPlayerProfiles() {
           </div>
         ))}
       </div>
-    </div>
-  )
-}
+        </div>
+      </FeatureProtectedRoute>
+    )
+  }

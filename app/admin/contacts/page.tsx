@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { dataStore, ContactMessage, useDataStore } from "@/lib/data-store"
 import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone, Plus, X, Save, CheckCircle } from "lucide-react"
 
@@ -103,7 +104,8 @@ export default function AdminContactsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <FeatureProtectedRoute featureName="Contacts Management" category="team">
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -351,6 +353,7 @@ export default function AdminContactsPage() {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </FeatureProtectedRoute>
   )
 }
