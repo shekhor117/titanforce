@@ -21,6 +21,7 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const userRole = profile?.role || user?.role
   
   const [formData, setFormData] = useState({
     name: "",
@@ -59,10 +60,40 @@ export default function ProfilePage() {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      // Save to localStorage for demo purposes
-      localStorage.setItem("profileData", JSON.stringify(formData))
+      const { createClient } = await import("@/lib/supabase/client")
+      const supabase = createClient()
+      
+      // Update profile in Supabase
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name: formData.name,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user?.id)
+      
+      if (error) throw error
+
+      // If player, also update player-specific data
+      if (userRole === "player") {
+        await supabase
+          .from("players")
+          .update({
+            phone: formData.phone,
+            address: formData.address,
+            position: formData.position,
+            jersey_number: formData.jersey,
+            experience: formData.experience,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", user?.id)
+      }
+
       setSuccessMessage(isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!")
       setIsEditing(false)
+      if (refreshProfile) {
+        await refreshProfile()
+      }
       setTimeout(() => {
         setSuccessMessage("")
       }, 3000)
@@ -180,7 +211,6 @@ export default function ProfilePage() {
   }
 
   const statusBadge = getStatusBadge(profile?.status)
-  const userRole = profile?.role || user.role
 
   return (
     <div className="min-h-screen bg-background">
@@ -329,7 +359,7 @@ export default function ProfilePage() {
               {user.playerProfile.experience && (
                 <div className="bg-card rounded-xl border border-border p-4 text-center">
                   <p className="text-2xl font-bold text-foreground font-[family-name:var(--font-display)]">{user.playerProfile.experience}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isBn ? "অভিজ্ঞতা" : "Experience"}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isBn ? "��ভিজ্ঞতা" : "Experience"}</p>
                 </div>
               )}
             </motion.div>

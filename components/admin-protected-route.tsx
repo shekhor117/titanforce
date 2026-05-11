@@ -15,7 +15,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     }
   }, [admin, isInitialized, isRedirecting])
 
-  // If we have admin data (from localStorage), render immediately
+  // If we have admin data, render immediately
   if (admin) {
     return <>{children}</>
   }

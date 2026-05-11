@@ -17,7 +17,7 @@ interface AuthPageProps {
 export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
-  const { login, signup } = useAuth()
+  const { login } = useAuth()
   const { language } = useLanguage()
   const isBn = language === 'bn'
   
@@ -49,12 +49,6 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         await login(email, password, selectedRole)
         router.push('/profile')
       } else {
-        if (!supabase) {
-          await signup(fullName, email, password, selectedRole)
-          router.push('/profile')
-          return
-        }
-
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -63,11 +57,12 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
               full_name: fullName,
               role: selectedRole,
             },
-            emailRedirectTo: `${window.location.origin}/auth/callback?role=${selectedRole}`,
+            emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+              `${window.location.origin}/auth/callback?role=${selectedRole}`,
           },
         })
         if (error) throw error
-        router.push('/?signup=check-email')
+        router.push('/auth/sign-up-success')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : (isBn ? 'প্রমাণীকরণ ব্যর্থ হয়েছে' : 'Authentication failed'))
@@ -82,22 +77,11 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       if (provider === 'apple') setIsAppleLoading(true)
       setError(null)
 
-      if (!supabase) {
-        const demoUser = {
-          id: Math.random().toString(36).substr(2, 9),
-          name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
-          email: `demo@${provider}.com`,
-          role: selectedRole,
-        }
-        localStorage.setItem("titanforce_user", JSON.stringify(demoUser))
-        router.push('/profile')
-        return
-      }
-
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback${view === 'signup' ? `?role=${selectedRole}` : ''}`,
+          redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+            `${window.location.origin}/auth/callback${view === 'signup' ? `?role=${selectedRole}` : ''}`,
         },
       })
 
@@ -330,15 +314,9 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isFacebookLoading ? (isBn ? 'অপেক���ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
+              {isFacebookLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
             </span>
           </button>
-        </div>
-
-        {/* Demo Mode Info */}
-        <div className="w-full p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
-          <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
-          <p>{isBn ? "যেকোনো ইমেল এবং পাসওয়ার্ড ব্যবহার করুন" : "Use any email and password to test"}</p>
         </div>
 
         {/* Footer */}

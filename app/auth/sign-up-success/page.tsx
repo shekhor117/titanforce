@@ -24,7 +24,7 @@ export default function SignUpSuccessPage() {
           </p>
 
           <Button asChild className="w-full">
-            <Link href="/auth/login">Back to Login</Link>
+            <Link href="/login">Back to Login</Link>
           </Button>
         </CardContent>
       </Card>
