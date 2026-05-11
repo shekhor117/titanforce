@@ -26,6 +26,7 @@ interface PlayerProfile {
     photoUrl?: string
     dateOfBirth?: string
     joinDate?: string
+    seasonYear?: string
   }
 }
 
@@ -112,7 +113,8 @@ export default function AdminPlayerProfiles() {
     experience: "",
     photoUrl: "",
     dateOfBirth: "",
-    joinDate: ""
+    joinDate: "",
+    seasonYear: "2024-2025"
   })
 
   useEffect(() => {
@@ -134,7 +136,10 @@ export default function AdminPlayerProfiles() {
       foot: player.playerProfile?.foot || "",
       address: player.playerProfile?.address || "",
       experience: player.playerProfile?.experience || "",
-      photoUrl: player.playerProfile?.photoUrl || ""
+      photoUrl: player.playerProfile?.photoUrl || "",
+      dateOfBirth: player.playerProfile?.dateOfBirth || "",
+      joinDate: player.playerProfile?.joinDate || "",
+      seasonYear: player.playerProfile?.seasonYear || "2024-2025"
     })
   }
 
@@ -158,7 +163,10 @@ export default function AdminPlayerProfiles() {
             foot: formData.foot,
             address: formData.address,
             experience: formData.experience,
-            photoUrl: formData.photoUrl
+            photoUrl: formData.photoUrl,
+            dateOfBirth: formData.dateOfBirth,
+            joinDate: formData.joinDate,
+            seasonYear: formData.seasonYear
           }
         }
       }
@@ -813,7 +821,7 @@ export default function AdminPlayerProfiles() {
               </div>
 
               {/* Date Info */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                     {isBn ? "জন্মতারিখ" : "Date of Birth"}
@@ -834,6 +842,18 @@ export default function AdminPlayerProfiles() {
                     value={formData.joinDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
                     className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "সিজন বছর" : "Season Year"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.seasonYear}
+                    onChange={(e) => setFormData(prev => ({ ...prev, seasonYear: e.target.value }))}
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    placeholder="2024-2025"
                   />
                 </div>
               </div>

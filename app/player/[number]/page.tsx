@@ -41,6 +41,7 @@ const players = [
     dateOfBirth: "2008-06-15",
     joinDate: "2023-03-20",
     bio: "A commanding presence in goal with excellent reflexes and shot-stopping ability. The last line of defense for Titan Force.",
+    seasonYear: "2024-2025",
   },
   {
     num: 3,
@@ -56,6 +57,7 @@ const players = [
     dateOfBirth: "2005-08-10",
     joinDate: "2022-05-15",
     bio: "Versatile defender who can play both center-back and right-back. Known for his pace and recovery runs.",
+    seasonYear: "2024-2025",
   },
   {
     num: 4,
@@ -71,6 +73,7 @@ const players = [
     dateOfBirth: "2008-11-22",
     joinDate: "2023-01-10",
     bio: "Strong left-footed defender with excellent aerial ability. A rock at the back for the team.",
+    seasonYear: "2024-2025",
   },
   {
     num: 5,
@@ -86,6 +89,7 @@ const players = [
     dateOfBirth: "2006-02-14",
     joinDate: "2022-08-20",
     bio: "The defensive anchor who can drop back or push forward. Great at breaking up opposition attacks.",
+    seasonYear: "2024-2025",
   },
   {
     num: 6,
@@ -101,6 +105,7 @@ const players = [
     dateOfBirth: "2005-12-05",
     joinDate: "2022-07-10",
     bio: "Creative playmaker with excellent vision and passing range. The engine of Titan Force's attack.",
+    seasonYear: "2024-2025",
   },
   {
     num: 7,
@@ -116,6 +121,7 @@ const players = [
     dateOfBirth: "2006-09-18",
     joinDate: "2023-02-28",
     bio: "Explosive winger with pace to burn. Can play on either flank and loves to cut inside to shoot.",
+    seasonYear: "2024-2025",
   },
   {
     num: 8,
@@ -131,6 +137,7 @@ const players = [
     dateOfBirth: "2005-11-30",
     joinDate: "2022-06-15",
     bio: "Box-to-box midfielder who covers every blade of grass. Combines work rate with technical quality.",
+    seasonYear: "2024-2025",
   },
   {
     num: 9,
@@ -146,6 +153,7 @@ const players = [
     dateOfBirth: "2008-07-08",
     joinDate: "2023-04-12",
     bio: "Clinical striker with a natural instinct for goal. The team's top scorer and focal point of the attack.",
+    seasonYear: "2024-2025",
   },
   {
     num: 11,
@@ -161,6 +169,7 @@ const players = [
     dateOfBirth: "2007-03-25",
     joinDate: "2022-09-01",
     bio: "Tricky left winger who can also play as a second striker. Dangerous in one-on-one situations.",
+    seasonYear: "2024-2025",
   },
   {
     num: 17,
@@ -176,6 +185,7 @@ const players = [
     dateOfBirth: "2005-10-12",
     joinDate: "2022-04-20",
     bio: "Versatile player who can slot into defense or midfield. A true utility player with leadership qualities.",
+    seasonYear: "2024-2025",
   },
 ]
 
@@ -411,6 +421,7 @@ export default function PlayerProfile() {
                 ["Age", player.age.toString()],
                 ["Date of Birth", player.dateOfBirth ? new Date(player.dateOfBirth).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
                 ["Join Date", player.joinDate ? new Date(player.joinDate).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
+                ["Season", player.seasonYear || "2024-2025"],
                 ["Jersey Number", player.num.toString()],
                 ["Hometown", player.hometown],
                 ["Preferred Foot", player.foot],

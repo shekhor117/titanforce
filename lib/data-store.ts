@@ -22,6 +22,7 @@ export interface Player {
   // Personal Dates
   dateOfBirth?: string
   joinDate?: string
+  seasonYear?: string
   // Extended Stats
   appearances?: number
   minutes?: number
