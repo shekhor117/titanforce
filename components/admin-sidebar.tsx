@@ -8,28 +8,36 @@ import { LogOut, Menu } from "lucide-react"
 import { useState } from "react"
 
 export function AdminSidebar() {
-  const { logout, isLoading } = useAdmin()
+  const { logout, isLoading, admin } = useAdmin()
   const { language } = useLanguage()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const isBn = language === "bn"
+  const isAdmin = admin?.role === "admin"
 
-  const menuItems = [
-    { href: "/admin/dashboard", label: isBn ? "ড্যাশবোর্ড" : "Dashboard", icon: "📊" },
-    { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈" },
-    { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽" },
-    { href: "/admin/player-profiles", label: isBn ? "খেলোয়াড় প্রোফাইল" : "Player Profiles", icon: "🎽" },
-    { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆" },
-    { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥" },
-    { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝" },
-    { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢" },
-    { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸" },
-    { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤" },
-    { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️" },
-    { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️" },
-    { href: "/admin/system", label: isBn ? "সিস্টেম" : "System", icon: "💾" },
-    { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧" },
+  // All menu items
+  const allMenuItems = [
+    { href: "/admin/dashboard", label: isBn ? "ড্যাশবোর্ড" : "Dashboard", icon: "📊", restricted: false },
+    { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽", restricted: false },
+    { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆", restricted: true, category: "team" },
+    { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥", restricted: false },
+    { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝", restricted: true, category: "team" },
+    { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢", restricted: true, category: "team" },
+    { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸", restricted: true, category: "tools" },
+    { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️", restricted: true, category: "team" },
+    { href: "/admin/player-profiles", label: isBn ? "খেলোয়াড় প্রোফাইল" : "Player Profiles", icon: "🎽", restricted: true, category: "team" },
+    { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤", restricted: true, category: "tools" },
+    { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈", restricted: true, category: "tools" },
+    { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧", restricted: true, category: "tools" },
+    { href: "/admin/system", label: isBn ? "সিস্টেম" : "System", icon: "💾", restricted: true, category: "tools" },
+    { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️", restricted: true, category: "tools" },
   ]
+
+  // Filter menu items based on admin role
+  const menuItems = allMenuItems.filter(item => {
+    if (!item.restricted) return true
+    return isAdmin
+  })
 
   const handleLogout = async () => {
     try {

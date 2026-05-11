@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { ToggleLeft, ToggleRight, Save, RefreshCw } from "lucide-react"
 
 interface Feature {
@@ -55,7 +56,8 @@ export default function AdminFeaturesPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <FeatureProtectedRoute featureName="Feature Management" category="tools">
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -150,6 +152,7 @@ export default function AdminFeaturesPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </FeatureProtectedRoute>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { dataStore, Partner, useDataStore } from "@/lib/data-store"
 import { Plus, Edit, Trash2, ExternalLink, X, Save, Search } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
@@ -114,8 +115,9 @@ export default function AdminPartners() {
     )
   }
 
-  return (
-    <div className="space-y-6">
+    return (
+      <FeatureProtectedRoute featureName="Partner Management" category="team">
+        <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
@@ -331,6 +333,7 @@ export default function AdminPartners() {
           </p>
         </div>
       )}
-    </div>
-  )
-}
+        </div>
+      </FeatureProtectedRoute>
+    )
+  }
