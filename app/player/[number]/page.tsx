@@ -3,9 +3,11 @@
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Edit } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { PlayerRating } from "@/components/player-rating"
+import { useEffect, useState } from "react"
+import { useAdmin } from "@/lib/admin-context"
 
 // Player photos mapping
 const playerPhotos: Record<number, string> = {
@@ -162,6 +164,22 @@ export default function PlayerProfile() {
   const playerNum = parseInt(params.number as string)
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const [mounted, setMounted] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    // Check for admin using try-catch since hook may not be in context
+    try {
+      const adminData = localStorage.getItem("titanforce_admin")
+      if (adminData) {
+        const admin = JSON.parse(adminData)
+        setIsAdmin(admin.role === "admin")
+      }
+    } catch {
+      // Silent fail if not admin
+    }
+  }, [])
 
   const player = players.find((p) => p.num === playerNum)
 
@@ -244,9 +262,9 @@ export default function PlayerProfile() {
         }
       `}</style>
 
-      {/* Back Button */}
+      {/* Back Button & Admin Edit */}
       <div className="bg-secondary/20 border-b border-secondary">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 text-primary hover:text-primary/80 transition text-sm sm:text-base"
@@ -256,6 +274,16 @@ export default function PlayerProfile() {
               {isBn ? "পিছনে" : "Back"}
             </span>
           </button>
+          
+          {isAdmin && (
+            <Link
+              href={`/admin/players?edit=${player.num}`}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded bg-primary/20 text-primary hover:bg-primary/30 transition text-xs sm:text-sm font-semibold"
+            >
+              <Edit className="w-4 h-4" />
+              <span>{isBn ? "সম্পাদনা করুন" : "Edit Player"}</span>
+            </Link>
+          )}
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
@@ -9,6 +10,7 @@ import { PhotoUpload } from "@/components/photo-upload"
 export default function AdminPlayers() {
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const searchParams = useSearchParams()
   const [showForm, setShowForm] = useState(false)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [filter, setFilter] = useState<"all" | "GK" | "DEF" | "MID" | "FWD">("all")
@@ -63,6 +65,61 @@ export default function AdminPlayers() {
     setFormData((prev) => ({ ...prev, photo: { signedUrl: "", filePath: "" } }))
   }
 
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player)
+    setFormData({
+      name: player.name,
+      fullName: player.fullName,
+      email: "",
+      num: player.num.toString(),
+      pos: player.pos,
+      cat: player.cat,
+      age: player.age.toString(),
+      hometown: player.hometown,
+      foot: player.foot,
+      goals: player.goals.toString(),
+      assists: player.assists.toString(),
+      cleanSheets: player.cleanSheets?.toString() || "0",
+      bio: player.bio,
+      photo: { signedUrl: player.photo || "", filePath: "" },
+      status: player.status,
+      // Extended Stats
+      appearances: player.appearances?.toString() || "0",
+      minutes: player.minutes?.toString() || "0",
+      passAccuracy: player.passAccuracy?.toString() || "0",
+      chancesCreated: player.chancesCreated?.toString() || "0",
+      // Season Stats
+      premierMatches: player.premierMatches?.toString() || "0",
+      cupMatches: player.cupMatches?.toString() || "0",
+      yellowCards: player.yellowCards?.toString() || "0",
+      redCards: player.redCards?.toString() || "0",
+      motmAwards: player.motmAwards?.toString() || "0",
+      averageRating: player.averageRating?.toString() || "0",
+      // Player Attributes
+      pace: player.pace?.toString() || "70",
+      shooting: player.shooting?.toString() || "70",
+      passing: player.passing?.toString() || "70",
+      dribbling: player.dribbling?.toString() || "70",
+      defending: player.defending?.toString() || "70",
+      physical: player.physical?.toString() || "70",
+      // Trophies
+      trophies: player.trophies || [],
+    })
+    setShowForm(true)
+  }
+
+  // Handle URL parameters to auto-edit a player
+  useEffect(() => {
+    const editParam = searchParams.get("edit")
+    if (editParam) {
+      const playerNum = parseInt(editParam)
+      const playerToEdit = players.find((p) => p.num === playerNum)
+      if (playerToEdit) {
+        handleEditPlayer(playerToEdit)
+      }
+    }
+  }, [searchParams, players])
+
   const handleSavePlayer = () => {
     if (!formData.name || !formData.num || !formData.cat) {
       alert(isBn ? "নাম, নম্বর এবং ক্যাটাগরি প্রয়োজন" : "Name, number and category are required")
@@ -114,49 +171,6 @@ export default function AdminPlayers() {
     }
     
     resetForm()
-  }
-
-  const handleEditPlayer = (player: Player) => {
-    setEditingPlayer(player)
-    setFormData({
-      name: player.name,
-      fullName: player.fullName,
-      email: "",
-      num: player.num.toString(),
-      pos: player.pos,
-      cat: player.cat,
-      age: player.age.toString(),
-      hometown: player.hometown,
-      foot: player.foot,
-      goals: player.goals.toString(),
-      assists: player.assists.toString(),
-      cleanSheets: player.cleanSheets?.toString() || "0",
-      bio: player.bio,
-      photo: { signedUrl: player.photo || "", filePath: "" },
-      status: player.status,
-      // Extended Stats
-      appearances: player.appearances?.toString() || "0",
-      minutes: player.minutes?.toString() || "0",
-      passAccuracy: player.passAccuracy?.toString() || "0",
-      chancesCreated: player.chancesCreated?.toString() || "0",
-      // Season Stats
-      premierMatches: player.premierMatches?.toString() || "0",
-      cupMatches: player.cupMatches?.toString() || "0",
-      yellowCards: player.yellowCards?.toString() || "0",
-      redCards: player.redCards?.toString() || "0",
-      motmAwards: player.motmAwards?.toString() || "0",
-      averageRating: player.averageRating?.toString() || "0",
-      // Player Attributes
-      pace: player.pace?.toString() || "70",
-      shooting: player.shooting?.toString() || "70",
-      passing: player.passing?.toString() || "70",
-      dribbling: player.dribbling?.toString() || "70",
-      defending: player.defending?.toString() || "70",
-      physical: player.physical?.toString() || "70",
-      // Trophies
-      trophies: player.trophies || [],
-    })
-    setShowForm(true)
   }
 
   const handleDeletePlayer = async (playerId: string) => {
