@@ -19,12 +19,19 @@ export function AdminLoginPage() {
   const isBn = language === "bn"
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [shouldAutoRedirect, setShouldAutoRedirect] = useState(true)
 
   useEffect(() => {
-    if (isInitialized && admin) {
+    // Only auto-redirect if we have a valid admin and this is not a logout scenario
+    if (isInitialized && admin && shouldAutoRedirect) {
       router.push("/admin/dashboard")
     }
-  }, [admin, isInitialized, router])
+  }, [admin, isInitialized, shouldAutoRedirect, router])
+
+  // Disable auto-redirect when user submits login form
+  const handleFormFocus = () => {
+    setShouldAutoRedirect(false)
+  }
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -91,7 +98,7 @@ export function AdminLoginPage() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-4">
             <div>
               <label className="text-xs uppercase tracking-wider font-semibold text-muted-foreground block mb-2">
                 {isBn ? "ইমেল" : "Email"}
