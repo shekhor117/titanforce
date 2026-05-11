@@ -82,23 +82,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const supabase = createClient()
       
       if (!supabase) {
-        // Demo mode: accept any email with password length >= 6
-        if (password.length < 6) {
-          throw new Error("Password must be at least 6 characters")
-        }
-
-        const demoUser: AuthUser = {
-          id: `demo-admin-${Date.now()}`,
-          email: email,
-          name: email.split("@")[0] || "Admin",
-          role: "admin",
-          emailVerified: true,
-        }
-
-        setAdmin(demoUser)
-        localStorage.setItem("titanforce_admin", JSON.stringify(demoUser))
-        setIsLoading(false)
-        return
+        throw new Error("Authentication service not configured. Please check your Supabase setup.")
       }
 
       // Use Supabase authentication
@@ -107,7 +91,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
         await signOut()
-        throw new Error("User account does not have admin access")
+        throw new Error("Your account does not have admin access")
       }
 
       setAdmin(user)
