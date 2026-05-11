@@ -260,47 +260,56 @@ export default function PlayerProfile() {
       </div>
 
       {/* HERO */}
-      <section className="relative h-56 sm:h-80 md:h-[400px] lg:h-[500px] overflow-hidden border-b border-secondary">
+      <section className="relative bg-gradient-to-b from-secondary/30 to-black/20 border-b border-secondary">
         <div
-          className="absolute inset-0 w-full h-full object-cover opacity-20 zoom"
+          className="absolute inset-0 w-full h-full opacity-30 zoom"
           style={{
             background: "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
-        <div className="relative z-10 max-w-7xl mx-auto h-full px-3 sm:px-4 md:px-6 flex flex-col justify-end pb-4 sm:pb-6 md:pb-10 lg:pb-14">
-          <div className="flex flex-col md:flex-row md:items-end gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
+          {/* Image Section - Full Width on Mobile */}
+          <div className="flex flex-col md:flex-row md:items-end gap-0 md:gap-6 lg:gap-8">
+            {/* Image Container - Spans full width on mobile */}
             {playerPhotos[player.num] ? (
-              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card overflow-hidden flex-shrink-0">
-                <Image
-                  src={playerPhotos[player.num]}
-                  alt={player.fullName}
-                  width={208}
-                  height={208}
-                  className="w-full h-full object-cover object-top"
-                  priority
-                />
+              <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
+                <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 sm:border-4 md:border-4 border-primary shadow-2xl card overflow-hidden">
+                  <div className="relative aspect-square">
+                    <Image
+                      src={playerPhotos[player.num]}
+                      alt={player.fullName}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 60vw, 40vw"
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center flex-shrink-0">
-                <span className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-primary">
-                  #{player.num}
-                </span>
+              <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
+                <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 sm:border-4 md:border-4 border-primary shadow-2xl card bg-secondary/30 flex items-center justify-center aspect-square">
+                  <span className="font-[var(--font-display)] text-7xl sm:text-8xl md:text-9xl text-primary">
+                    #{player.num}
+                  </span>
+                </div>
               </div>
             )}
 
-            <div className="flex-1 min-w-0">
+            {/* Text Content */}
+            <div className="flex-1 pb-6 sm:pb-8 md:pb-10 px-0 md:px-0">
               <p className="uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/60 text-xs sm:text-sm mb-1 sm:mb-2">
                 Titan Force FC
               </p>
 
-              <h1 className="font-[var(--font-display)] text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black uppercase leading-tight sm:leading-none text-white break-words">
+              <h1 className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-tight text-white mb-3 sm:mb-4">
                 {player.fullName.split(" ")[0]}
               </h1>
 
-              <div className={`flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mt-2 sm:mt-3 md:mt-4 text-xs sm:text-sm md:text-base text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              <div className={`flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-5 md:mb-6 text-xs sm:text-sm text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 <span className="text-primary font-bold flex-shrink-0">#{player.num}</span>
                 <span className="truncate">{player.pos}</span>
                 <span className="flex-shrink-0">Bangladesh</span>
