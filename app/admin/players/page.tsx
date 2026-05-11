@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
+import { useAdmin } from "@/lib/admin-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
@@ -10,6 +11,7 @@ import { PhotoUpload } from "@/components/photo-upload"
 export default function AdminPlayers() {
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const { admin } = useAdmin()
   const searchParams = useSearchParams()
   const [showForm, setShowForm] = useState(false)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
@@ -66,6 +68,12 @@ export default function AdminPlayers() {
   }
 
   const handleEditPlayer = (player: Player) => {
+    // Only admin can edit players
+    if (admin?.role !== "admin") {
+      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সম্পাদনা করতে পারে" : "Only admins can edit players")
+      return
+    }
+
     setEditingPlayer(player)
     setFormData({
       name: player.name,
@@ -121,6 +129,12 @@ export default function AdminPlayers() {
   }, [searchParams, players])
 
   const handleSavePlayer = () => {
+    // Only admin can save players
+    if (admin?.role !== "admin") {
+      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সংরক্ষণ করতে পারে" : "Only admins can save players")
+      return
+    }
+
     if (!formData.name || !formData.num || !formData.cat) {
       alert(isBn ? "নাম, নম্বর এবং ক্যাটাগরি প্রয়োজন" : "Name, number and category are required")
       return
@@ -174,6 +188,12 @@ export default function AdminPlayers() {
   }
 
   const handleDeletePlayer = async (playerId: string) => {
+    // Only admin can delete players
+    if (admin?.role !== "admin") {
+      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় মুছতে পারে" : "Only admins can delete players")
+      return
+    }
+
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
     dataStore.deletePlayer(playerId)
   }
@@ -238,7 +258,9 @@ export default function AdminPlayers() {
             resetForm()
             setShowForm(!showForm)
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          disabled={admin?.role !== "admin"}
+          className={`flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় যোগ করতে পারে" : "Only admins can add players") : ""}
         >
           <Plus className="w-4 h-4" />
           {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
@@ -710,15 +732,17 @@ export default function AdminPlayers() {
               <div className="flex items-center gap-1">
                 <button 
                   onClick={() => handleEditPlayer(player)}
-                  className="p-2 rounded hover:bg-primary/20 transition text-primary"
-                  title={isBn ? "সম্পাদনা করুন" : "Edit"}
+                  disabled={admin?.role !== "admin"}
+                  className="p-2 rounded hover:bg-primary/20 transition text-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                  title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন সম্পাদনা করতে পারে" : "Only admins can edit") : (isBn ? "সম্পাদনা করুন" : "Edit")}
                 >
                   <Edit className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDeletePlayer(player.id)}
-                  className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
-                  title={isBn ? "মুছুন" : "Delete"}
+                  disabled={admin?.role !== "admin"}
+                  className="p-2 rounded hover:bg-red-500/20 transition text-red-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                  title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন মুছতে পারে" : "Only admins can delete") : (isBn ? "মুছুন" : "Delete")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
