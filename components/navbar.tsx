@@ -35,7 +35,7 @@ export function Navbar() {
             priority
           />
           <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider text-primary truncate">
-            TITAN
+            TITAN FORCE
           </h1>
         </Link>
 
