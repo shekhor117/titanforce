@@ -14,9 +14,6 @@ export async function signUpWithEmail(
   name: string
 ): Promise<{ user: AuthUser; requiresVerification: boolean }> {
   const supabase = createClient()
-  if (!supabase) {
-    throw new Error("Supabase client not initialized")
-  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -25,6 +22,8 @@ export async function signUpWithEmail(
       data: {
         full_name: name,
       },
+      emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+        `${window.location.origin}/auth/callback`,
     },
   })
 
@@ -53,9 +52,6 @@ export async function signInWithEmail(
   password: string
 ): Promise<AuthUser> {
   const supabase = createClient()
-  if (!supabase) {
-    throw new Error("Supabase client not initialized")
-  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -84,9 +80,6 @@ export async function signInWithEmail(
 
 export async function signOut(): Promise<void> {
   const supabase = createClient()
-  if (!supabase) {
-    throw new Error("Supabase client not initialized")
-  }
 
   const { error } = await supabase.auth.signOut()
   if (error) {
@@ -96,9 +89,6 @@ export async function signOut(): Promise<void> {
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
   const supabase = createClient()
-  if (!supabase) {
-    return null
-  }
 
   const { data } = await supabase.auth.getUser()
   if (!data.user) {
@@ -118,9 +108,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
 export async function sendPasswordReset(email: string): Promise<void> {
   const supabase = createClient()
-  if (!supabase) {
-    throw new Error("Supabase client not initialized")
-  }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/admin/auth/reset-password`,

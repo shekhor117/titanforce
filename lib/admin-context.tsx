@@ -21,49 +21,34 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
 
+  const supabase = createClient()
+
   // Check if admin is logged in on mount
   useEffect(() => {
     let isMounted = true
     
     const initializeAuth = async () => {
-      // Fast path: Check localStorage first (instant)
-      const stored = localStorage.getItem("titanforce_admin")
-      if (stored && isMounted) {
-        try {
-          const userData = JSON.parse(stored)
-          setAdmin(userData)
-          setIsInitialized(true)
-          return
-        } catch {
-          localStorage.removeItem("titanforce_admin")
-        }
-      }
-      
-      // Mark as initialized immediately (don't wait for Supabase)
-      if (isMounted) setIsInitialized(true)
-      
-      // Background: Verify with Supabase if available
       try {
-        const supabase = createClient()
-        
-        if (!supabase) {
-          return
-        }
-
         const { data } = await supabase.auth.getSession()
         if (data.session?.user && isMounted) {
-          const user: AuthUser = {
-            id: data.session.user.id,
-            email: data.session.user.email || "",
-            name: data.session.user.user_metadata?.full_name || "User",
-            role: (data.session.user.user_metadata?.role as "admin" | "moderator") || "user",
-            emailVerified: data.session.user.email_confirmed_at ? true : false,
+          const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
+          
+          // Only set admin if user has admin/moderator role
+          if (userRole === "admin" || userRole === "moderator") {
+            const user: AuthUser = {
+              id: data.session.user.id,
+              email: data.session.user.email || "",
+              name: data.session.user.user_metadata?.full_name || "User",
+              role: userRole,
+              emailVerified: data.session.user.email_confirmed_at ? true : false,
+            }
+            setAdmin(user)
           }
-          setAdmin(user)
-          localStorage.setItem("titanforce_admin", JSON.stringify(user))
         }
       } catch (err) {
         console.error("Error verifying auth:", err)
+      } finally {
+        if (isMounted) setIsInitialized(true)
       }
     }
 
@@ -72,6 +57,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return () => {
       isMounted = false
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const login = async (email: string, password: string) => {
@@ -79,12 +65,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      const supabase = createClient()
-      
-      if (!supabase) {
-        throw new Error("Authentication service not configured. Please check your Supabase setup.")
-      }
-
       // Use Supabase authentication
       const user = await signInWithEmail(email, password)
       
@@ -95,7 +75,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       }
 
       setAdmin(user)
-      localStorage.setItem("titanforce_admin", JSON.stringify(user))
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
@@ -108,12 +87,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     setIsLoading(true)
     try {
-      const supabase = createClient()
-      if (supabase) {
-        await signOut()
-      }
+      await signOut()
       setAdmin(null)
-      localStorage.removeItem("titanforce_admin")
       setError(null)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Logout failed"
