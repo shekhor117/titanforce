@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { ToggleLeft, ToggleRight, Save, RefreshCw } from "lucide-react"
+import { ToggleLeft, ToggleRight, Save, RefreshCw, Download, Upload, AlertCircle } from "lucide-react"
 
 interface Feature {
   id: string
@@ -49,6 +49,41 @@ export default function AdminFeaturesPage() {
     setHasChanges(true)
   }
 
+  const handleExport = () => {
+    const dataStr = JSON.stringify(features, null, 2)
+    const dataBlob = new Blob([dataStr], { type: "application/json" })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `titanforce_features_${new Date().toISOString().split("T")[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target?.result as string)
+        if (Array.isArray(imported) && imported.length > 0) {
+          setFeatures(imported)
+          setHasChanges(true)
+          alert(isBn ? "বৈশিষ্ট্য সফলভাবে আমদানি করা হয়েছে!" : "Features imported successfully!")
+        } else {
+          alert(isBn ? "অবৈধ ফাইল ফরম্যাট" : "Invalid file format")
+        }
+      } catch (error) {
+        alert(isBn ? "ফাইল পার্স ত্রুটি" : "File parse error")
+      }
+    }
+    reader.readAsText(file)
+  }
+
   const categories = [
     { key: "tools", label: isBn ? "সরঞ্জাম" : "Tools", icon: "🔧" },
     { key: "analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📊" },
@@ -76,6 +111,23 @@ export default function AdminFeaturesPage() {
             <RefreshCw className="w-4 h-4" />
             {isBn ? "রিসেট" : "Reset"}
           </button>
+          <button
+            onClick={handleExport}
+            className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          >
+            <Download className="w-4 h-4" />
+            {isBn ? "রপ্তানি" : "Export"}
+          </button>
+          <label className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition cursor-pointer ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <Upload className="w-4 h-4" />
+            {isBn ? "আমদানি" : "Import"}
+            <input 
+              type="file" 
+              accept=".json" 
+              onChange={handleImport}
+              className="hidden"
+            />
+          </label>
           <button
             onClick={handleSave}
             disabled={!hasChanges}
@@ -124,7 +176,7 @@ export default function AdminFeaturesPage() {
       ))}
 
       {/* Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="rounded-lg border-2 border-secondary bg-card p-4 text-center">
           <div className="text-2xl font-bold text-primary">{features.length}</div>
           <div className={`text-xs text-foreground/60 uppercase ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -148,6 +200,31 @@ export default function AdminFeaturesPage() {
             {hasChanges ? (isBn ? "হ্যাঁ" : "Yes") : (isBn ? "না" : "No")}
           </div>
           <div className={`text-xs text-foreground/60 uppercase ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "পরিবর্তন" : "Changes"}
+          </div>
+        </div>
+        <div className="rounded-lg border-2 border-secondary bg-card p-4 text-center">
+          <div className="text-2xl font-bold text-blue-400">{Math.round((features.filter(f => f.enabled).length / features.length) * 100)}%</div>
+          <div className={`text-xs text-foreground/60 uppercase ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "সক্রিয়তা" : "Active"}
+          </div>
+        </div>
+      </div>
+
+      {/* Help Section */}
+      <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-4">
+        <div className="flex gap-3">
+          <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className={`font-semibold text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "সহায়তা এবং টিপস" : "Help & Tips"}
+            </h3>
+            <p className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "বৈশিষ্ট্য টগেল করুন প্রতিটি বিভাগে, পরিবর্তন সংরক্ষণ করুন, এবং আপনার কনফিগারেশন এক্সপোর্ট করুন ব্যাকআপের জন্য।" : "Toggle features in each category, save your changes, and export your configuration for backup."}
+            </p>
+          </div>
+        </div>
+      </div>
             {isBn ? "অসংরক্ষিত পরিবর্তন" : "Unsaved Changes"}
           </div>
         </div>
