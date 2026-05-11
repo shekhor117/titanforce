@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Player } from "@/lib/data-store"
-import { usePlayersRealtime } from "@/lib/use-data-store"
-import { dataService } from "@/lib/data-service"
+import { usePlayers } from "@/lib/use-data-store"
+import { getDataService } from "@/lib/data-service"
 import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
@@ -65,7 +65,7 @@ export default function AdminPlayers() {
   })
   const [newTrophy, setNewTrophy] = useState({ name: "", year: "" })
   
-  const players = usePlayersRealtime()
+  const players = usePlayers()
 
   const handlePhotoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, photo: data }))
@@ -192,9 +192,9 @@ export default function AdminPlayers() {
       }
 
       if (editingPlayer) {
-        await dataService.updatePlayer(editingPlayer.id, playerData)
+        await getDataService().updatePlayer(editingPlayer.id, playerData)
       } else {
-        await dataService.addPlayer(playerData)
+        await getDataService().addPlayer(playerData)
       }
       
       resetForm()
@@ -217,17 +217,13 @@ export default function AdminPlayers() {
     
     setIsDeleting(true)
     try {
-      await dataService.deletePlayer(playerId)
+      await getDataService().deletePlayer(playerId)
     } catch (error) {
       console.error("Error deleting player:", error)
       alert(isBn ? "খেলোয়াড় মুছতে ব্যর্থ" : "Failed to delete player")
     } finally {
       setIsDeleting(false)
     }
-  }
-
-    if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
-    dataStore.deletePlayer(playerId)
   }
 
   const resetForm = () => {
@@ -791,7 +787,7 @@ export default function AdminPlayers() {
                   onClick={() => handleEditPlayer(player)}
                   disabled={admin?.role !== "admin"}
                   className="p-2 rounded hover:bg-primary/20 transition text-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                  title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন সম্পাদনা করতে পারে" : "Only admins can edit") : (isBn ? "সম্পাদনা করুন" : "Edit")}
+                  title={admin?.role !== "admin" ? (isBn ? "শুধুমাত্র অ্যাডমিন সম্পাদনা করতে পারে" : "Only admins can edit") : (isBn ? "সম্পাদন�� করুন" : "Edit")}
                 >
                   <Edit className="w-4 h-4" />
                 </button>
