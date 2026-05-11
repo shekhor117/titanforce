@@ -5,7 +5,8 @@ import { dataStore, useDataStore } from "@/lib/data-store"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
-  TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap
+  TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
+  Heart, Target, AlertCircle, Layers, BarChart4, Frown
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
@@ -135,11 +136,51 @@ export default function AdminDashboard() {
 
   const advancedTools = [
     { 
+      label: isBn ? "প্রশিক্ষণ বিশ্লেষণ" : "Training Analytics", 
+      description: isBn ? "খেলোয়াড় প্রশিক্ষণ পারফরম্যান্স সম্পাদনা করুন" : "Edit player training performance data",
+      href: "/admin/analytics", 
+      icon: <Activity className="w-5 h-5" />,
+      color: "text-red-400",
+      bgColor: "bg-red-500/10"
+    },
+    { 
+      label: isBn ? "ম্যাচ অফ দ্য ম্যাচ" : "Man of the Match", 
+      description: isBn ? "ম্যাচ রেটিং এবং ভোটিং পরিচালনা করুন" : "Manage match ratings and voting",
+      href: "/admin/motm", 
+      icon: <Trophy className="w-5 h-5" />,
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-500/10"
+    },
+    { 
+      label: isBn ? "লাইনআপ বিল্ডার" : "Lineup Builder", 
+      description: isBn ? "দল গঠন এবং ট্যাকটিক্স সেট করুন" : "Build team formations and tactics",
+      href: "/admin/lineup", 
+      icon: <Layers className="w-5 h-5" />,
+      color: "text-green-400",
+      bgColor: "bg-green-500/10"
+    },
+    { 
+      label: isBn ? "খেলোয়াড় র‍্যাঙ্কিং" : "Player Rankings", 
+      description: isBn ? "খেলোয়াড় র‍্যাঙ্কিং এবং রেটিং সম্পাদনা করুন" : "Edit player rankings and ratings",
+      href: "/admin/rankings", 
+      icon: <BarChart4 className="w-5 h-5" />,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10"
+    },
+    { 
+      label: isBn ? "আঘাত ট্র্যাকিং" : "Injury Tracking", 
+      description: isBn ? "খেলোয়াড় আঘাত এবং পুনরুদ্ধার পরিচালনা করুন" : "Manage player injuries and recovery",
+      href: "/admin/injuries", 
+      icon: <Heart className="w-5 h-5" />,
+      color: "text-pink-400",
+      bgColor: "bg-pink-500/10"
+    },
+    { 
       label: isBn ? "বৈশিষ্ট্য পরিচালনা" : "Feature Management", 
       description: isBn ? "প্ল্যাটফর্ম বৈশিষ্ট্যগুলি সক্ষম/নিষ্ক্রিয় করুন" : "Enable or disable platform features",
       href: "/admin/features", 
       icon: <Zap className="w-5 h-5" />,
-      color: "text-yellow-400",
+      color: "text-yellow-300",
       bgColor: "bg-yellow-500/10"
     },
     { 
@@ -163,7 +204,7 @@ export default function AdminDashboard() {
       description: isBn ? "উন্নত সিস্টেম কনফিগারেশন" : "Advanced system configuration",
       href: "/admin/system", 
       icon: <Settings className="w-5 h-5" />,
-      color: "text-green-400",
+      color: "text-green-300",
       bgColor: "bg-green-500/10"
     },
     { 
@@ -357,7 +398,7 @@ export default function AdminDashboard() {
         <p className={`text-foreground/60 text-sm mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
           {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগারেশন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {advancedTools.map((tool) => (
             <Link
               key={tool.label}
