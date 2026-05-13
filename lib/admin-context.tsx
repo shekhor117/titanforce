@@ -45,9 +45,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             setAdmin(user)
           }
         }
+        if (isMounted) setIsInitialized(true)
       } catch (err) {
-        console.error("Error verifying auth:", err)
-      } finally {
+        console.error("[v0] Error verifying auth:", err)
         if (isMounted) setIsInitialized(true)
       }
     }
@@ -57,8 +57,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     return () => {
       isMounted = false
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [supabase])
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
