@@ -117,7 +117,7 @@ CREATE POLICY "Service role can insert partners" ON partners
   FOR INSERT WITH CHECK (true);
 
 -- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_profiles_status ON profiles(status);
+-- Only create indexes on columns that exist
 CREATE INDEX IF NOT EXISTS idx_players_status ON players(status);
 CREATE INDEX IF NOT EXISTS idx_partners_status ON partners(status);
 
