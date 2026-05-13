@@ -205,7 +205,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-4 text-base bg-transparent border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+            className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
           />
 
           <div className="relative">
