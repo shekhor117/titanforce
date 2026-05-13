@@ -189,14 +189,6 @@ export function AdminLoginPage() {
               </Link>
             </p>
           </div>
-
-          {/* Demo Mode Info */}
-          <div className="mt-6 p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
-            <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
-            <p>{isBn ? "যেকোনো ই���েল এবং পাসওয়ার্ড ব্যবহার করুন (ন্যূনতম ৬ অক্ষর)" : "Use any email and password (minimum 6 characters)"}</p>
-          </div>
-
-          {/* User Login Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               {isBn ? "ব্যবহারকারী লগইন খুঁজছেন?" : "Looking for user login?"}{" "}
