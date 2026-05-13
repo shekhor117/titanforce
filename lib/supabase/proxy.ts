@@ -38,8 +38,13 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Protected routes - redirect to login if not authenticated
+  // But allow access to /admin/login and /admin/signup without authentication
+  const isAdminLogin = request.nextUrl.pathname === '/admin/login' || 
+                       request.nextUrl.pathname === '/admin/signup' ||
+                       request.nextUrl.pathname.startsWith('/(admin-auth)/')
+  
   const protectedPaths = ['/dashboard', '/profile', '/admin']
-  const isProtectedPath = protectedPaths.some(path => 
+  const isProtectedPath = !isAdminLogin && protectedPaths.some(path => 
     request.nextUrl.pathname.startsWith(path)
   )
 
