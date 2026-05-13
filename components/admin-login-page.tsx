@@ -180,6 +180,16 @@ export function AdminLoginPage() {
             </p>
           </div>
 
+          {/* User Login Link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              {isBn ? "ব্যবহারকারী লগইন খুঁজছেন?" : "Looking for user login?"}{" "}
+              <Link href="/login" className="text-primary hover:underline font-medium">
+                {isBn ? "এখানে ক্লিক করুন" : "Click here"}
+              </Link>
+            </p>
+          </div>
+
           {/* Demo Mode Info */}
           <div className="mt-6 p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
             <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
