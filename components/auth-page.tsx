@@ -47,6 +47,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
 
       if (view === 'login') {
         await login(email, password, selectedRole)
+        // Don't reset isLoading - let the redirect happen
         router.push('/profile')
       } else {
         const { error } = await supabase.auth.signUp({
@@ -62,6 +63,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           },
         })
         if (error) throw error
+        // Don't reset isLoading - let the redirect happen
         router.push('/auth/sign-up-success')
       }
     } catch (err) {
@@ -189,7 +191,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
           {view === 'signup' && (
             <input
               type="text"
-              placeholder={isBn ? "পুরো নাম" : "Full Name"}
+              placeholder={isBn ? "পুর��� নাম" : "Full Name"}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required={view === 'signup'}
@@ -203,7 +205,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+            className="w-full p-4 text-base bg-transparent border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
           />
 
           <div className="relative">
@@ -322,7 +324,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
         {/* Footer */}
         <div className="text-center pt-2">
           <p className="text-sm text-muted-foreground">
-            {isBn ? "লগইন করতে সমস্যা হচ্ছে?" : "Having trouble logging in?"}{' '}
+            {isBn ? "লগইন করতে সমস্যা হ��্ছে?" : "Having trouble logging in?"}{' '}
             <a href="/contact" className="font-bold text-foreground hover:underline">
               {isBn ? "সাহায্য নিন" : "Get Help"}
             </a>
