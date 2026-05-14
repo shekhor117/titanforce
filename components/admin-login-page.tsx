@@ -179,10 +179,8 @@ export function AdminLoginPage() {
               </Link>
             </p>
           </div>
-              </Link>
             </p>
           </div>
-        </div>
       </motion.div>
     </div>
   )
