@@ -152,17 +152,18 @@ export function usePlayers() {
     const loadPlayers = async () => {
       try {
         setLoading(true)
+        console.log("[v0] usePlayers: Starting to load players")
         const data = await service.getPlayers()
         if (isMounted) {
+          console.log("[v0] usePlayers: Loaded", data.length, "players", data)
           setPlayers(data)
           setError(null)
-          console.log("[v0] usePlayers: Loaded", data.length, "players")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
+          console.error("[v0] usePlayers: Load error:", error.message, "Full error:", err)
           setError(error)
-          console.error("[v0] usePlayers: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
