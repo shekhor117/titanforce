@@ -189,6 +189,9 @@ export function usePlayers() {
     }
   }, [])
 
+  return { players, loading, error, service }
+}
+
 export function useMatches() {
   const service = getDataService()
   const [matches, setMatches] = useState<Match[]>([])
