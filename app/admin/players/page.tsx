@@ -299,7 +299,9 @@ export default function AdminPlayers() {
       {error && (
         <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200">
           <p className="font-semibold">{isBn ? "ত্রুটি" : "Error"}</p>
-          <p className="text-sm mt-1">{error.message}</p>
+          <p className="text-sm mt-1">
+            {error instanceof Error ? error.message : String(error)}
+          </p>
         </div>
       )}
 

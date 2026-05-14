@@ -100,12 +100,17 @@ export class DataService {
 
   // Players
   async getPlayers(): Promise<Player[]> {
+    console.log("[v0] DataService: Fetching players from Supabase")
     const { data, error } = await this.supabase
       .from('players')
       .select('*')
       .order('num', { ascending: true })
 
-    if (error) throw error
+    if (error) {
+      console.error("[v0] DataService: getPlayers error:", error)
+      throw error
+    }
+    console.log("[v0] DataService: Got", data?.length || 0, "players")
     return data || []
   }
 
