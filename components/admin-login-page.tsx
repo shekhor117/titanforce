@@ -179,21 +179,6 @@ export function AdminLoginPage() {
               </Link>
             </p>
           </div>
-
-          {/* User Login Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              {isBn ? "ব্যবহারকারী লগইন খুঁজছেন?" : "Looking for user login?"}{" "}
-              <Link href="/login" className="text-primary hover:underline font-medium">
-                {isBn ? "এখানে ক্লিক করুন" : "Click here"}
-              </Link>
-            </p>
-          </div>
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              {isBn ? "ব্যবহারকারী লগইন খুঁজছেন?" : "Looking for user login?"}{" "}
-              <Link href="/login" className="text-primary hover:underline font-medium">
-                {isBn ? "এখানে ক্লিক করুন" : "Click here"}
               </Link>
             </p>
           </div>
