@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   description: 'Pride · Passion · Power - Official website of Titan Force FC, a passionate football club from Mulikandi, Sylhet. গর্ব · আবেগ · শক্তি',
 }
 
+export const dynamic = "force-dynamic"
+
 export default function RootLayout({
   children,
 }: Readonly<{
