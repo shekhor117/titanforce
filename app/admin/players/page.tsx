@@ -65,7 +65,7 @@ export default function AdminPlayers() {
   })
   const [newTrophy, setNewTrophy] = useState({ name: "", year: "" })
   
-  const players = usePlayers()
+  const { players, loading, error } = usePlayers()
 
   const handlePhotoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, photo: data }))
@@ -294,6 +294,21 @@ export default function AdminPlayers() {
           {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
         </button>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200">
+          <p className="font-semibold">{isBn ? "ত্রুটি" : "Error"}</p>
+          <p className="text-sm mt-1">{error.message}</p>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="p-4 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-200 text-center">
+          {isBn ? "খেলোয়াড় লোড করা হচ্ছে..." : "Loading players..."}
+        </div>
+      )}
 
       {/* Search & Filter */}
       <div className="flex gap-4 flex-wrap">

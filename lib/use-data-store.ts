@@ -22,6 +22,7 @@ export function useDataStore() {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
+    let isMounted = true
     const loadData = async () => {
       try {
         setLoading(true)
@@ -33,36 +34,98 @@ export function useDataStore() {
           service.getMediaItems(),
         ])
 
-        setPlayers(playersData)
-        setMatches(matchesData)
-        setPartners(partnersData)
-        setNewsItems(newsData)
-        setMediaItems(mediaData)
-        setError(null)
+        if (isMounted) {
+          setPlayers(playersData)
+          setMatches(matchesData)
+          setPartners(partnersData)
+          setNewsItems(newsData)
+          setMediaItems(mediaData)
+          setError(null)
+          console.log("[v0] Loaded initial data:", { players: playersData.length, matches: matchesData.length })
+        }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(String(err)))
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+          console.error("[v0] Error loading data:", error.message)
+        }
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
 
     loadData()
 
     // Subscribe to real-time updates
-    const unsubscribePlayers = service.subscribeToPlayers(setPlayers, setError)
-    const unsubscribeMatches = service.subscribeToMatches(setMatches, setError)
-    const unsubscribePartners = service.subscribeToPartners(setPartners, setError)
-    const unsubscribeNews = service.subscribeToNewsItems(setNewsItems, setError)
-    const unsubscribeMedia = service.subscribeToMediaItems(setMediaItems, setError)
+    const unsubscribePlayers = service.subscribeToPlayers((data) => {
+      if (isMounted) {
+        console.log("[v0] Players updated via real-time:", data.length)
+        setPlayers(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] Players subscription error:", err.message)
+        setError(err)
+      }
+    })
+    
+    const unsubscribeMatches = service.subscribeToMatches((data) => {
+      if (isMounted) {
+        console.log("[v0] Matches updated via real-time:", data.length)
+        setMatches(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] Matches subscription error:", err.message)
+        setError(err)
+      }
+    })
+    
+    const unsubscribePartners = service.subscribeToPartners((data) => {
+      if (isMounted) {
+        console.log("[v0] Partners updated via real-time:", data.length)
+        setPartners(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] Partners subscription error:", err.message)
+        setError(err)
+      }
+    })
+    
+    const unsubscribeNews = service.subscribeToNewsItems((data) => {
+      if (isMounted) {
+        console.log("[v0] News updated via real-time:", data.length)
+        setNewsItems(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] News subscription error:", err.message)
+        setError(err)
+      }
+    })
+    
+    const unsubscribeMedia = service.subscribeToMediaItems((data) => {
+      if (isMounted) {
+        console.log("[v0] Media updated via real-time:", data.length)
+        setMediaItems(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] Media subscription error:", err.message)
+        setError(err)
+      }
+    })
 
     return () => {
+      isMounted = false
       unsubscribePlayers()
       unsubscribeMatches()
       unsubscribePartners()
       unsubscribeNews()
       unsubscribeMedia()
     }
-  }, [service])
+  }, [])
 
   return {
     players,
@@ -84,24 +147,46 @@ export function usePlayers() {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
+    let isMounted = true
+
     const loadPlayers = async () => {
       try {
         setLoading(true)
         const data = await service.getPlayers()
-        setPlayers(data)
-        setError(null)
+        if (isMounted) {
+          setPlayers(data)
+          setError(null)
+          console.log("[v0] usePlayers: Loaded", data.length, "players")
+        }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(String(err)))
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+          console.error("[v0] usePlayers: Load error:", error.message)
+        }
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
 
     loadPlayers()
 
-    const unsubscribe = service.subscribeToPlayers(setPlayers, setError)
+    const unsubscribe = service.subscribeToPlayers((data) => {
+      if (isMounted) {
+        console.log("[v0] usePlayers: Real-time update -", data.length, "players")
+        setPlayers(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] usePlayers: Subscription error:", err.message)
+        setError(err)
+      }
+    })
 
-    return () => unsubscribe()
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
   }, [service])
 
   return { players, loading, error, service }

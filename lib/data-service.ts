@@ -153,8 +153,9 @@ export class DataService {
   }
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {
+    console.log("[v0] DataService: Subscribing to players changes")
     const channel = this.supabase
-      .channel('players-changes')
+      .channel(`players-changes-${Date.now()}`)
       .on(
         'postgres_changes',
         {
@@ -162,20 +163,31 @@ export class DataService {
           schema: 'public',
           table: 'players',
         },
-        async () => {
+        async (payload) => {
+          console.log("[v0] DataService: Players change event received:", payload.eventType)
           try {
             const players = await this.getPlayers()
             callback(players)
           } catch (error) {
+            console.error("[v0] DataService: Error fetching updated players:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
       )
-      .subscribe()
+      .on('subscribe', () => {
+        console.log("[v0] DataService: Players subscription active")
+      })
+      .on('unsubscribe', () => {
+        console.log("[v0] DataService: Players subscription closed")
+      })
+      .subscribe((status) => {
+        console.log("[v0] DataService: Players subscription status:", status)
+      })
 
     this.subscriptions.set('players', channel)
 
     return () => {
+      console.log("[v0] DataService: Unsubscribing from players")
       this.supabase.removeChannel(channel)
       this.subscriptions.delete('players')
     }
