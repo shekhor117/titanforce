@@ -12,7 +12,7 @@ type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
 
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
 
-// Compact rating badge for player cards
+  // Compact rating badge for player cards
 function PlayerRatingBadge({ playerId }: { playerId: string }) {
   const [rating, setRating] = useState({ average: 0, count: 0 })
   const [isFavorite, setIsFavorite] = useState(false)
@@ -39,30 +39,17 @@ function PlayerRatingBadge({ playerId }: { playerId: string }) {
   )
 }
 
-// Player photos mapping (fallback for players without uploaded photos)
-const playerPhotos: Record<number, string> = {
-  1: "/players/player-1.png",
-  3: "/players/player-3.png",
-  4: "/players/player-4.png",
-  5: "/players/player-5.png",
-  6: "/players/player-6.png",
-  7: "/players/player-7.png",
-  8: "/players/player-8.png",
-  9: "/players/player-9.png",
-  11: "/players/player-11.png",
-  17: "/players/player-17.png",
-}
-
 export function Squad() {
-  const [activeFilter, setActiveFilter] = useState<Position>("all")
-  const [isVisible, setIsVisible] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [selectedPosition, setSelectedPosition] = useState<Position>("all")
+  const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
   // Get players from data store
-  const players = useDataStore(dataStore.getPlayers, "players")
+  const allPlayers = useDataStore(dataStore.getPlayers, "players")
+  const players = Array.isArray(allPlayers) ? allPlayers : []
   const activePlayers = players.filter(p => p.status === "active")
 
   useEffect(() => {

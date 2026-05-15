@@ -13,7 +13,7 @@ export function About() {
   // Get settings and players from data store
   const settings = useDataStore(dataStore.getSettings, "settings")
   const players = useDataStore(dataStore.getPlayers, "players")
-  const activePlayers = players.filter(p => p.status === "active")
+  const activePlayers = Array.isArray(players) ? players.filter(p => p.status === "active") : []
 
   const stats = [
     { value: `${activePlayers.length}+`, label: t.about.players },

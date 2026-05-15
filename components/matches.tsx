@@ -14,7 +14,8 @@ export function Matches() {
   const isBn = language === "bn"
 
   // Get matches from data store
-  const matches = useDataStore(dataStore.getMatches, "matches")
+  const allMatches = useDataStore(dataStore.getMatches, "matches")
+  const matches = Array.isArray(allMatches) ? allMatches : []
 
   useEffect(() => {
     const observer = new IntersectionObserver(
