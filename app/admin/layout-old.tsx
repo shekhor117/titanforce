@@ -9,8 +9,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   
   // List of paths that don't need admin protection
-  const publicPaths = ["/admin-login", "/admin/signup", "/admin/forgot-password", "/admin/reset-password"]
-  const isPublicPage = publicPaths.some(path => pathname === path || pathname?.startsWith(path + "/"))
+  const publicPaths = ["/admin/login", "/admin/signup", "/admin/forgot-password", "/admin/reset-password"]
+  const isPublicPage = publicPaths.some(path => pathname?.startsWith(path))
 
   // If it's a public admin page, render without protection or sidebar
   if (isPublicPage) {

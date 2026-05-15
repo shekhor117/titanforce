@@ -2,18 +2,26 @@
 
 import { useEffect, useState } from "react"
 import { useAdmin } from "@/lib/admin-context"
+import { useRouter, usePathname } from "next/navigation"
 
 export function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   const { admin, isInitialized } = useAdmin()
+  const router = useRouter()
+  const pathname = usePathname()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   useEffect(() => {
-    // Only redirect if fully initialized and no admin
-    if (isInitialized && !admin && !isRedirecting) {
+    // Check if we're on a public admin page
+    const isPublicPage = pathname?.includes("/admin-login") || 
+                         pathname?.includes("/admin/signup") || 
+                         pathname?.includes("/admin/forgot-password")
+
+    // Only redirect if fully initialized, no admin, not already redirecting, and not on a public page
+    if (isInitialized && !admin && !isRedirecting && !isPublicPage) {
       setIsRedirecting(true)
-      window.location.href = "/admin/login"
+      router.push("/admin-login")
     }
-  }, [admin, isInitialized, isRedirecting])
+  }, [admin, isInitialized, isRedirecting, router, pathname])
 
   // If we have admin data, render immediately
   if (admin) {
