@@ -6,6 +6,7 @@ import Image from "next/image"
 import { X, MapPin, Calendar, Footprints, Trophy, Target, Star, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { useRealtimeData } from "@/lib/use-realtime-data"
 import { PlayerRating } from "@/components/player-rating"
 
 type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
@@ -47,8 +48,13 @@ export function Squad() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get players from data store
-  const allPlayers = useDataStore(dataStore.getPlayers, "players")
+  // Get players from Supabase with real-time sync
+  const { data: realtimePlayers, loading } = useRealtimeData<Player>({
+    tableName: 'players',
+  })
+
+  // Fallback to data store if real-time not available
+  const allPlayers = realtimePlayers && realtimePlayers.length > 0 ? realtimePlayers : useDataStore(dataStore.getPlayers, "players")
   const players = Array.isArray(allPlayers) ? allPlayers : []
   const activePlayers = players.filter(p => p.status?.toLowerCase() === "active")
 
