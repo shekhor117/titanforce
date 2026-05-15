@@ -76,7 +76,13 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
               }
             }
           )
-          .subscribe()
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              console.log(`[v0] Real-time subscription established for ${options.tableName}`)
+            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              console.warn(`[v0] Real-time subscription failed for ${options.tableName} (${status}). Falling back to polling.`)
+            }
+          })
 
         if (isMounted) {
           setLoading(false)
@@ -87,8 +93,13 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
           setError(error)
           setLoading(false)
         }
-        options.onError?.(error)
-        console.error(`[v0] Error initializing ${options.tableName}:`, error)
+        // Check if error is about realtime not being available - if so, just warn and continue
+        if (error.message?.includes('postgres_changes') || error.message?.includes('realtime')) {
+          console.warn(`[v0] Real-time not available for ${options.tableName}, using cached data:`, error.message)
+        } else {
+          options.onError?.(error)
+          console.error(`[v0] Error initializing ${options.tableName}:`, error)
+        }
       }
     }
 
