@@ -8,34 +8,35 @@ export interface Player {
   id: string
   num: number
   name: string
-  fullName: string
-  pos: string
-  cat: "GK" | "DEF" | "MID" | "FWD"
+  full_name: string
+  position: string
+  category: "GK" | "DEF" | "MID" | "FWD"
   age: number
   hometown: string
   foot: "Left" | "Right" | "Both"
   goals: number
   assists: number
-  cleanSheets?: number
+  clean_sheets?: number
   bio: string
-  photo?: string
-  status: "active" | "injured" | "suspended"
+  image_url?: string
+  email?: string
+  status: "active" | "injured" | "suspended" | "recovering" | "recovered"
   // Personal Dates
-  dateOfBirth?: string
-  joinDate?: string
-  seasonYear?: string
+  date_of_birth?: string
+  join_date?: string
+  season_year?: string
   // Extended Stats
   appearances?: number
-  minutes?: number
-  passAccuracy?: number
-  chancesCreated?: number
+  minutes_played?: number
+  pass_accuracy?: number
+  chances_created?: number
   // Season Stats
-  premierMatches?: number
-  cupMatches?: number
-  yellowCards?: number
-  redCards?: number
-  motmAwards?: number
-  averageRating?: number
+  premier_matches?: number
+  cup_matches?: number
+  yellow_cards?: number
+  red_cards?: number
+  man_of_the_match?: number
+  average_rating?: number
   // Player Attributes (0-100)
   pace?: number
   shooting?: number
@@ -43,7 +44,24 @@ export interface Player {
   dribbling?: number
   defending?: number
   physical?: number
-  // Trophies
+  // Legacy camelCase names for backward compatibility
+  fullName?: string
+  pos?: string
+  cat?: "GK" | "DEF" | "MID" | "FWD"
+  cleanSheets?: number
+  photo?: string
+  dateOfBirth?: string
+  joinDate?: string
+  seasonYear?: string
+  minutes?: number
+  passAccuracy?: number
+  chancesCreated?: number
+  premierMatches?: number
+  cupMatches?: number
+  yellowCards?: number
+  redCards?: number
+  motmAwards?: number
+  averageRating?: number
   trophies?: { name: string; year: string }[]
 }
 

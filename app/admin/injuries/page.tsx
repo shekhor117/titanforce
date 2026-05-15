@@ -148,17 +148,26 @@ export default function AdminInjuriesPage() {
     recovered: injuries.filter(i => i.status === "recovered").length
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "আঘাত ট্র্যাকিং" : "Injury Tracking"}
-        </h1>
-        <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "খেলোয়াড় আঘাত এবং পুনরুদ্ধার পরিচালনা করুন" : "Manage player injuries and recovery"}
-        </p>
-      </div>
+    const playerList = Array.isArray(players) ? players : []
+    const selectedPlayer = playerList.find((p: any) => p.id === formData.playerId)
+
+    return (
+      <div className="space-y-4">
+        <div>
+          <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "খেলোয়াড়" : "Player"}
+          </label>
+          <select
+            value={formData.playerId}
+            onChange={(e) => setFormData({ ...formData, playerId: e.target.value })}
+            className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent"
+          >
+            <option value="">{isBn ? "খেলোয়াড় নির্বাচন করুন" : "Select player"}</option>
+            {playerList.map((p: any) => (
+              <option key={p.id} value={p.id}>{p.name} (#{p.num})</option>
+            ))}
+          </select>
+        </div>
 
       {/* Status Overview */}
       <div className="grid md:grid-cols-3 gap-4">

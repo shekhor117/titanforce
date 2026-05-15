@@ -26,6 +26,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   // Check if admin is logged in on mount
   useEffect(() => {
     let isMounted = true
+    let subscription: any = null
     
     const initializeAuth = async () => {
       try {
@@ -49,7 +50,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         }
 
         // Set up auth state change listener
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
             if (!isMounted) return
             
@@ -75,22 +76,21 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           }
         )
 
+        subscription = authSubscription
         if (isMounted) setIsInitialized(true)
-
-        return () => {
-          subscription?.unsubscribe()
-        }
       } catch (err) {
         console.error("[v0] Error verifying auth:", err)
         if (isMounted) setIsInitialized(true)
       }
     }
 
-    const unsubscribe = initializeAuth() as any
+    initializeAuth()
     
     return () => {
       isMounted = false
-      unsubscribe?.()
+      if (subscription) {
+        subscription.unsubscribe()
+      }
     }
   }, [supabase])
 
