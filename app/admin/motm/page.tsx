@@ -11,20 +11,23 @@ export default function AdminMotmPage() {
   const isBn = language === "bn"
   const { admin } = useAdmin()
 
-  const players = useDataStore(dataStore.getPlayers, "players")
-  const matches = useDataStore(dataStore.getMatches, "matches")
+  const playersData = useDataStore(dataStore.getPlayers, "players")
+  const matchesData = useDataStore(dataStore.getMatches, "matches")
+  
+  const players = Array.isArray(playersData) ? playersData : []
+  const matches = Array.isArray(matchesData) ? matchesData : []
 
-  const [selectedMatch, setSelectedMatch] = useState(matches[0] || null)
-  const [selectedPlayer, setSelectedPlayer] = useState(null)
+  const [selectedMatch, setSelectedMatch] = useState(matches.length > 0 ? matches[0] : null)
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null)
   const [matchRating, setMatchRating] = useState(0)
   const [hasChanges, setHasChanges] = useState(false)
 
-  const handlePlayerSelect = (player) => {
+  const handlePlayerSelect = (player: any) => {
     setSelectedPlayer(player)
     setHasChanges(true)
   }
 
-  const handleRatingChange = (rating) => {
+  const handleRatingChange = (rating: number) => {
     setMatchRating(rating)
     setHasChanges(true)
   }

@@ -29,7 +29,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
+        // First check for existing session
         const { data } = await supabase.auth.getSession()
+        
         if (data.session?.user && isMounted) {
           const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
           
@@ -45,17 +47,50 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             setAdmin(user)
           }
         }
+
+        // Set up auth state change listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (_event, session) => {
+            if (!isMounted) return
+            
+            if (session?.user) {
+              const userRole = (session.user.user_metadata?.role as "admin" | "moderator") || "user"
+              
+              if (userRole === "admin" || userRole === "moderator") {
+                const user: AuthUser = {
+                  id: session.user.id,
+                  email: session.user.email || "",
+                  name: session.user.user_metadata?.full_name || "User",
+                  role: userRole,
+                  emailVerified: session.user.email_confirmed_at ? true : false,
+                }
+                setAdmin(user)
+              } else {
+                // User lost admin role
+                setAdmin(null)
+              }
+            } else {
+              setAdmin(null)
+            }
+          }
+        )
+
         if (isMounted) setIsInitialized(true)
+
+        return () => {
+          subscription?.unsubscribe()
+        }
       } catch (err) {
         console.error("[v0] Error verifying auth:", err)
         if (isMounted) setIsInitialized(true)
       }
     }
 
-    initializeAuth()
+    const unsubscribe = initializeAuth() as any
     
     return () => {
       isMounted = false
+      unsubscribe?.()
     }
   }, [supabase])
 

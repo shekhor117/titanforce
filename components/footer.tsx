@@ -11,13 +11,18 @@ export function Footer() {
   
   // Get settings from data store
   const settings = useDataStore(dataStore.getSettings, "settings")
-
-  const socialLinks = [
+  const siteName = settings?.siteName || "Titan Force"
+  const tagline = settings?.tagline || "Pride · Passion · Power"
+  const contactEmail = settings?.contactEmail || "contact@titanforce.com"
+  const contactPhone = settings?.contactPhone || "+880"
+  const address = settings?.address || "Mulikandi, Sylhet"
+  
+  const socialLinks = settings && settings.socialLinks ? [
     { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
     { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
     { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
     { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
-  ].filter(link => link.href && link.href !== "#")
+  ].filter(link => link.href && link.href !== "#") : []
 
   return (
     <footer className="border-t-2 border-primary py-12 px-4 bg-black/50">
@@ -27,24 +32,24 @@ export function Footer() {
           <div className="flex justify-center mb-4">
             <Image
               src="/logo.png"
-              alt={`${settings.siteName} Logo`}
+              alt={`${siteName} Logo`}
               width={60}
               height={60}
               className="object-contain"
             />
           </div>
           <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
-            {settings.siteName.toUpperCase()}
+            {siteName.toUpperCase()}
           </p>
           <p className="text-sm text-foreground/60 text-center mb-8">
-            {settings.tagline}
+            {tagline}
           </p>
 
           {/* Contact Information Cards */}
           <div className="w-full grid md:grid-cols-3 gap-4 mb-8">
             {/* Email Card */}
             <a
-              href={`mailto:${settings.contactEmail}`}
+              href={`mailto:${contactEmail}`}
               className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
@@ -54,13 +59,13 @@ export function Footer() {
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "ইমেল করুন" : "Email Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{settings.contactEmail}</p>
+                <p className="text-foreground font-semibold text-sm">{contactEmail}</p>
               </div>
             </a>
 
             {/* Phone Card */}
             <a
-              href={`tel:${settings.contactPhone}`}
+              href={`tel:${contactPhone}`}
               className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
@@ -70,7 +75,7 @@ export function Footer() {
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "কল করুন" : "Call Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{settings.contactPhone}</p>
+                <p className="text-foreground font-semibold text-sm">{contactPhone}</p>
               </div>
             </a>
 
@@ -83,7 +88,7 @@ export function Footer() {
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "আমাদের অবস্থান" : "Visit Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{settings.address}</p>
+                <p className="text-foreground font-semibold text-sm">{address}</p>
               </div>
             </div>
           </div>

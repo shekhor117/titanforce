@@ -67,65 +67,65 @@ export default function AdminAnalyticsPage() {
 
   // Calculate statistics
   const playerStats = {
-    total: players.length,
-    active: players.filter(p => p.status === "active").length,
-    injured: players.filter(p => p.status === "injured").length,
-    suspended: players.filter(p => p.status === "suspended").length,
-    goalkeepers: players.filter(p => p.cat === "GK").length,
-    defenders: players.filter(p => p.cat === "DEF").length,
-    midfielders: players.filter(p => p.cat === "MID").length,
-    forwards: players.filter(p => p.cat === "FWD").length,
-    totalGoals: players.reduce((sum, p) => sum + p.goals, 0),
-    totalAssists: players.reduce((sum, p) => sum + p.assists, 0),
+    total: Array.isArray(players) ? players.length : 0,
+    active: Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active").length : 0,
+    injured: Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "injured").length : 0,
+    suspended: Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "suspended").length : 0,
+    goalkeepers: Array.isArray(players) ? players.filter(p => p.category === "GK").length : 0,
+    defenders: Array.isArray(players) ? players.filter(p => p.category === "DEF").length : 0,
+    midfielders: Array.isArray(players) ? players.filter(p => p.category === "MID").length : 0,
+    forwards: Array.isArray(players) ? players.filter(p => p.category === "FWD").length : 0,
+    totalGoals: Array.isArray(players) ? players.reduce((sum, p) => sum + (p.goals || 0), 0) : 0,
+    totalAssists: Array.isArray(players) ? players.reduce((sum, p) => sum + (p.assists || 0), 0) : 0,
   }
 
   const matchStats = {
-    total: matches.length,
-    upcoming: matches.filter(m => m.status === "upcoming").length,
-    completed: matches.filter(m => m.status === "completed").length,
-    live: matches.filter(m => m.status === "live").length,
-    wins: matches.filter(m => m.result === "W").length,
-    losses: matches.filter(m => m.result === "L").length,
-    draws: matches.filter(m => m.result === "D").length,
+    total: Array.isArray(matches) ? matches.length : 0,
+    upcoming: Array.isArray(matches) ? matches.filter(m => m.status?.toLowerCase() === "upcoming").length : 0,
+    completed: Array.isArray(matches) ? matches.filter(m => m.status?.toLowerCase() === "completed").length : 0,
+    live: Array.isArray(matches) ? matches.filter(m => m.status?.toLowerCase() === "live").length : 0,
+    wins: Array.isArray(matches) ? matches.filter(m => m.result === "W").length : 0,
+    losses: Array.isArray(matches) ? matches.filter(m => m.result === "L").length : 0,
+    draws: Array.isArray(matches) ? matches.filter(m => m.result === "D").length : 0,
   }
 
   const fanStats = {
-    total: fans.length,
-    regular: fans.filter(f => f.membershipType === "regular").length,
-    premium: fans.filter(f => f.membershipType === "premium").length,
-    vip: fans.filter(f => f.membershipType === "vip").length,
-    active: fans.filter(f => f.status === "active").length,
+    total: Array.isArray(fans) ? fans.length : 0,
+    regular: Array.isArray(fans) ? fans.filter(f => f.membershipType === "regular").length : 0,
+    premium: Array.isArray(fans) ? fans.filter(f => f.membershipType === "premium").length : 0,
+    vip: Array.isArray(fans) ? fans.filter(f => f.membershipType === "vip").length : 0,
+    active: Array.isArray(fans) ? fans.filter(f => f.status?.toLowerCase() === "active").length : 0,
   }
 
   const partnerStats = {
-    total: partners.length,
-    active: partners.filter(p => p.status === "active").length,
-    title: partners.filter(p => p.type === "title").length,
-    main: partners.filter(p => p.type === "main").length,
-    official: partners.filter(p => p.type === "official").length,
-    media: partners.filter(p => p.type === "media").length,
+    total: Array.isArray(partners) ? partners.length : 0,
+    active: Array.isArray(partners) ? partners.filter(p => p.status?.toLowerCase() === "active").length : 0,
+    title: Array.isArray(partners) ? partners.filter(p => p.type === "title").length : 0,
+    main: Array.isArray(partners) ? partners.filter(p => p.type === "main").length : 0,
+    official: Array.isArray(partners) ? partners.filter(p => p.type === "official").length : 0,
+    media: Array.isArray(partners) ? partners.filter(p => p.type === "media").length : 0,
   }
 
   const newsStats = {
-    total: news.length,
-    published: news.filter(n => n.status === "published").length,
-    draft: news.filter(n => n.status === "draft").length,
-    featured: news.filter(n => n.featured).length,
+    total: Array.isArray(news) ? news.length : 0,
+    published: Array.isArray(news) ? news.filter(n => n.status === "published").length : 0,
+    draft: Array.isArray(news) ? news.filter(n => n.status === "draft").length : 0,
+    featured: Array.isArray(news) ? news.filter(n => n.featured).length : 0,
   }
 
   const contactStats = {
-    total: contacts.length,
-    unread: contacts.filter(c => c.status === "unread").length,
-    read: contacts.filter(c => c.status === "read").length,
-    replied: contacts.filter(c => c.status === "replied").length,
+    total: Array.isArray(contacts) ? contacts.length : 0,
+    unread: Array.isArray(contacts) ? contacts.filter(c => c.status === "unread").length : 0,
+    read: Array.isArray(contacts) ? contacts.filter(c => c.status === "read").length : 0,
+    replied: Array.isArray(contacts) ? contacts.filter(c => c.status === "replied").length : 0,
   }
 
   // Recent activity stats
-  const recentActivity = activityLog.slice(0, 10)
-  const todayActivity = activityLog.filter(log => {
+  const recentActivity = Array.isArray(activityLog) ? activityLog.slice(0, 10) : []
+  const todayActivity = Array.isArray(activityLog) ? activityLog.filter(log => {
     const today = new Date().toDateString()
     return new Date(log.timestamp).toDateString() === today
-  }).length
+  }).length : 0
 
   // Win rate calculation
   const winRate = matchStats.completed > 0 

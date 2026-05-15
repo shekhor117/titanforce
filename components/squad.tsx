@@ -12,7 +12,7 @@ type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
 
 const filters: Position[] = ["all", "GK", "DEF", "MID", "FWD"]
 
-// Compact rating badge for player cards
+  // Compact rating badge for player cards
 function PlayerRatingBadge({ playerId }: { playerId: string }) {
   const [rating, setRating] = useState({ average: 0, count: 0 })
   const [isFavorite, setIsFavorite] = useState(false)
@@ -39,31 +39,18 @@ function PlayerRatingBadge({ playerId }: { playerId: string }) {
   )
 }
 
-// Player photos mapping (fallback for players without uploaded photos)
-const playerPhotos: Record<number, string> = {
-  1: "/players/player-1.png",
-  3: "/players/player-3.png",
-  4: "/players/player-4.png",
-  5: "/players/player-5.png",
-  6: "/players/player-6.png",
-  7: "/players/player-7.png",
-  8: "/players/player-8.png",
-  9: "/players/player-9.png",
-  11: "/players/player-11.png",
-  17: "/players/player-17.png",
-}
-
 export function Squad() {
-  const [activeFilter, setActiveFilter] = useState<Position>("all")
-  const [isVisible, setIsVisible] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [selectedPosition, setSelectedPosition] = useState<Position>("all")
+  const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get players from data store
-  const players = useDataStore(dataStore.getPlayers, "players")
-  const activePlayers = players.filter(p => p.status === "active")
+  // Get players from data store (safe default)
+  const fallbackPlayers = useDataStore(dataStore.getPlayers, "players")
+  const players = Array.isArray(fallbackPlayers) ? fallbackPlayers : []
+  const activePlayers = players.filter(p => p.status?.toLowerCase() === "active")
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -83,10 +70,10 @@ export function Squad() {
   }, [])
 
   const filteredPlayers =
-    activeFilter === "all" ? activePlayers : activePlayers.filter((p) => p.cat === activeFilter)
+    selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.category === selectedPosition)
 
   const getPlayerPhoto = (player: Player) => {
-    return player.photo || playerPhotos[player.num] || null
+    return player.image_url || null
   }
 
   return (
@@ -111,8 +98,8 @@ export function Squad() {
           {filters.map((filter) => (
             <button
               key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${activeFilter === filter
+              onClick={() => setSelectedPosition(filter)}
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${selectedPosition === filter
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-card bg-transparent text-foreground hover:border-primary/50"
                 } ${isBn && filter === "all" ? "font-[var(--font-bengali)]" : ""}`}
@@ -137,7 +124,7 @@ export function Squad() {
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30">
                     <Image
                       src={photo}
-                      alt={player.fullName}
+                      alt={player.full_name}
                       fill
                       className="object-cover object-top"
                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
@@ -153,11 +140,11 @@ export function Squad() {
                   {player.name.toUpperCase()}
                 </h3>
                 <p className="text-xs uppercase tracking-wider mt-0.5 sm:mt-1 text-foreground/60 truncate">
-                  {player.pos}
+                  {player.position}
                 </p>
                 <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-[10px] flex-wrap">
                   <span className="px-2 py-0.5 font-bold uppercase tracking-wider rounded bg-secondary text-primary flex-shrink-0">
-                    {player.cat}
+                    {player.category}
                   </span>
                   <span className={`text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
                 </div>
@@ -210,7 +197,7 @@ export function Squad() {
                 {getPlayerPhoto(selectedPlayer) ? (
                   <Image
                     src={getPlayerPhoto(selectedPlayer)!}
-                    alt={selectedPlayer.fullName}
+                    alt={selectedPlayer.full_name}
                     width={80}
                     height={80}
                     className="object-cover"
@@ -223,13 +210,13 @@ export function Squad() {
               </div>
               <div>
                 <h3 className="font-[var(--font-display)] text-2xl md:text-3xl tracking-wider text-foreground">
-                  {selectedPlayer.fullName.toUpperCase()}
+                  {selectedPlayer.full_name.toUpperCase()}
                 </h3>
                 <p className="text-sm uppercase tracking-wider text-primary mt-1">
-                  {selectedPlayer.pos}
+                  {selectedPlayer.position}
                 </p>
                 <span className="inline-block mt-2 px-3 py-1 text-xs font-bold uppercase tracking-wider rounded bg-secondary text-primary">
-                  {selectedPlayer.cat}
+                  {selectedPlayer.category}
                 </span>
               </div>
             </div>

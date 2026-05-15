@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { getDataService } from "@/lib/data-service"
 
 // Types
 export interface Player {
@@ -416,63 +417,158 @@ function setToStorage<T>(key: string, value: T): void {
   }
 }
 
-// Data Store API
+// Data Store API - Now backed by Supabase via data-service.ts
 export const dataStore = {
-  // Players
-  getPlayers: (): Player[] => getFromStorage(STORAGE_KEYS.players, defaultPlayers),
-  setPlayers: (players: Player[]) => setToStorage(STORAGE_KEYS.players, players),
-  addPlayer: (player: Omit<Player, "id">) => {
-    const players = dataStore.getPlayers()
-    const newPlayer = { ...player, id: Date.now().toString() }
-    dataStore.setPlayers([...players, newPlayer])
-    dataStore.addActivityLog({ action: "create", entity: "player", entityId: newPlayer.id, description: `Added player ${player.name}` })
-    return newPlayer
-  },
-  updatePlayer: (id: string, updates: Partial<Player>) => {
-    const players = dataStore.getPlayers()
-    const index = players.findIndex(p => p.id === id)
-    if (index !== -1) {
-      const oldName = players[index].name
-      players[index] = { ...players[index], ...updates }
-      dataStore.setPlayers(players)
-      dataStore.addActivityLog({ action: "update", entity: "player", entityId: id, description: `Updated player ${oldName}` })
+  // Players - Supabase backed
+  getPlayers: async (): Promise<Player[]> => {
+    try {
+      const service = getDataService()
+      const data = await service.getPlayers()
+      // Map Supabase schema to app schema
+      return data.map(p => ({
+        id: p.id,
+        num: p.num || 0,
+        name: p.full_name?.split(' ')[0] || p.name || '',
+        fullName: p.full_name || p.name || '',
+        pos: p.pos || '',
+        cat: p.cat as "GK" | "DEF" | "MID" | "FWD",
+        age: p.age || 0,
+        hometown: p.hometown || '',
+        foot: (p.foot as "Left" | "Right" | "Both") || "Right",
+        goals: p.goals || 0,
+        assists: p.assists || 0,
+        cleanSheets: p.clean_sheets,
+        bio: p.bio || '',
+        photo: p.photo_url,
+        status: (p.status as "active" | "injured" | "suspended") || "active",
+        dateOfBirth: p.date_of_birth,
+        joinDate: p.join_date,
+        seasonYear: p.season_year,
+        appearances: p.appearances,
+        minutes: p.minutes,
+        passAccuracy: p.pass_accuracy,
+        chancesCreated: p.chances_created,
+        premierMatches: p.premier_matches,
+        cupMatches: p.cup_matches,
+        yellowCards: p.yellow_cards,
+        redCards: p.red_cards,
+        motmAwards: p.motm_awards,
+        averageRating: p.average_rating,
+        pace: p.pace,
+        shooting: p.shooting,
+        passing: p.passing,
+        dribbling: p.dribbling,
+        defending: p.defending,
+        physical: p.physical,
+      })) 
+    } catch (err) {
+      console.error("[v0] dataStore.getPlayers error:", err)
+      return []
     }
   },
-  deletePlayer: (id: string) => {
-    const players = dataStore.getPlayers()
-    const player = players.find(p => p.id === id)
-    dataStore.setPlayers(players.filter(p => p.id !== id))
-    if (player) {
-      dataStore.addActivityLog({ action: "delete", entity: "player", entityId: id, description: `Deleted player ${player.name}` })
-    }
+  setPlayers: (players: Player[]) => {
+    // Note: This is handled via dataService operations
+    console.log("[v0] Players updated via Supabase")
+  },
+  addPlayer: async (player: Omit<Player, "id">) => {
+    const service = getDataService()
+    return await service.addPlayer({
+      num: player.num,
+      name: player.name,
+      full_name: player.fullName,
+      pos: player.pos,
+      cat: player.cat,
+      age: player.age,
+      hometown: player.hometown,
+      foot: player.foot,
+      goals: player.goals,
+      assists: player.assists,
+      bio: player.bio,
+      photo_url: player.photo,
+      status: player.status,
+      date_of_birth: player.dateOfBirth,
+      join_date: player.joinDate,
+      season_year: player.seasonYear,
+    })
+  },
+  updatePlayer: async (id: string, updates: Partial<Player>) => {
+    const service = getDataService()
+    return await service.updatePlayer(id, {
+      full_name: updates.fullName,
+      num: updates.num,
+      pos: updates.pos,
+      cat: updates.cat,
+      age: updates.age,
+      hometown: updates.hometown,
+      foot: updates.foot,
+      goals: updates.goals,
+      assists: updates.assists,
+      bio: updates.bio,
+      photo_url: updates.photo,
+      status: updates.status,
+    })
+  },
+  deletePlayer: async (id: string) => {
+    const service = getDataService()
+    return await service.deletePlayer(id)
   },
 
-  // Matches
-  getMatches: (): Match[] => getFromStorage(STORAGE_KEYS.matches, defaultMatches),
-  setMatches: (matches: Match[]) => setToStorage(STORAGE_KEYS.matches, matches),
-  addMatch: (match: Omit<Match, "id">) => {
-    const matches = dataStore.getMatches()
-    const newMatch = { ...match, id: Date.now().toString() }
-    dataStore.setMatches([...matches, newMatch])
-    dataStore.addActivityLog({ action: "create", entity: "match", entityId: newMatch.id, description: `Added match ${match.home} vs ${match.away}` })
-    return newMatch
-  },
-  updateMatch: (id: string, updates: Partial<Match>) => {
-    const matches = dataStore.getMatches()
-    const index = matches.findIndex(m => m.id === id)
-    if (index !== -1) {
-      matches[index] = { ...matches[index], ...updates }
-      dataStore.setMatches(matches)
-      dataStore.addActivityLog({ action: "update", entity: "match", entityId: id, description: `Updated match ${matches[index].home} vs ${matches[index].away}` })
+  // Matches - Supabase backed
+  getMatches: async (): Promise<Match[]> => {
+    try {
+      const service = getDataService()
+      const data = await service.getMatches()
+      return data.map(m => ({
+        id: m.id,
+        home: m.home_team || 'Titan Force',
+        away: m.away_team || 'TBD',
+        homeScore: m.home_score,
+        awayScore: m.away_score,
+        date: m.date || '',
+        time: m.time || '',
+        venue: m.venue || '',
+        status: (m.status as "upcoming" | "live" | "completed") || "upcoming",
+        result: (m.result as "W" | "L" | "D"),
+      }))
+    } catch (err) {
+      console.error("[v0] dataStore.getMatches error:", err)
+      return []
     }
   },
-  deleteMatch: (id: string) => {
-    const matches = dataStore.getMatches()
-    const match = matches.find(m => m.id === id)
-    dataStore.setMatches(matches.filter(m => m.id !== id))
-    if (match) {
-      dataStore.addActivityLog({ action: "delete", entity: "match", entityId: id, description: `Deleted match ${match.home} vs ${match.away}` })
-    }
+  setMatches: (matches: Match[]) => {
+    console.log("[v0] Matches updated via Supabase")
+  },
+  addMatch: async (match: Omit<Match, "id">) => {
+    const service = getDataService()
+    return await service.addMatch({
+      home_team: match.home,
+      away_team: match.away,
+      home_score: match.homeScore,
+      away_score: match.awayScore,
+      date: match.date,
+      time: match.time,
+      venue: match.venue,
+      status: match.status,
+      result: match.result,
+    })
+  },
+  updateMatch: async (id: string, updates: Partial<Match>) => {
+    const service = getDataService()
+    return await service.updateMatch(id, {
+      home_team: updates.home,
+      away_team: updates.away,
+      home_score: updates.homeScore,
+      away_score: updates.awayScore,
+      date: updates.date,
+      time: updates.time,
+      venue: updates.venue,
+      status: updates.status,
+      result: updates.result,
+    })
+  },
+  deleteMatch: async (id: string) => {
+    const service = getDataService()
+    return await service.deleteMatch(id)
   },
 
   // Partners
@@ -898,21 +994,65 @@ export const dataStore = {
   }
 }
 
-// Hook for subscribing to data changes
+// Hook for subscribing to data changes - Updated for Supabase async getters
 export function useDataStore<T>(
-  getter: () => T,
+  getter: (() => T) | (() => Promise<T>),
   key: string
 ): T {
-  const [data, setData] = useState<T>(getter)
+  const [data, setData] = useState<T>((getter as () => T)() || [])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Initial load
-    setData(getter())
+    const loadData = async () => {
+      try {
+        const result = await Promise.resolve((getter as any)())
+        setData(result)
+      } catch (err) {
+        console.error(`[v0] Error loading ${key}:`, err)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    // Listen for changes
+    loadData()
+
+    // Setup real-time subscription via data-service
+    const setupSubscription = async () => {
+      const service = getDataService()
+      if (key === 'players') {
+        service.subscribeToPlayers((data) => {
+          setData(data as any)
+        }, (err) => {
+          console.error('[v0] Players subscription error:', err)
+        })
+      } else if (key === 'matches') {
+        service.subscribeToMatches((data) => {
+          setData(data as any)
+        }, (err) => {
+          console.error('[v0] Matches subscription error:', err)
+        })
+      } else if (key === 'partners') {
+        service.subscribeToPartners((data) => {
+          setData(data as any)
+        }, (err) => {
+          console.error('[v0] Partners subscription error:', err)
+        })
+      } else if (key === 'news') {
+        service.subscribeToNewsItems((data) => {
+          setData(data as any)
+        }, (err) => {
+          console.error('[v0] News subscription error:', err)
+        })
+      }
+    }
+
+    setupSubscription()
+
+    // Listen for changes from other tabs (backward compatible)
     const handleUpdate = (event: CustomEvent) => {
       if (event.detail.key === key || event.detail.key === `titanforce_${key}`) {
-        setData(getter())
+        loadData()
       }
     }
 
@@ -921,7 +1061,7 @@ export function useDataStore<T>(
     // Also listen for storage events from other tabs
     const handleStorage = (event: StorageEvent) => {
       if (event.key?.includes("titanforce_")) {
-        setData(getter())
+        loadData()
       }
     }
     window.addEventListener("storage", handleStorage)

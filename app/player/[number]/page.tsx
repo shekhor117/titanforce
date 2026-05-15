@@ -9,198 +9,27 @@ import { PlayerRating } from "@/components/player-rating"
 import { TrainingChart } from "@/components/training-chart"
 import { useEffect, useState } from "react"
 import { useAdmin } from "@/lib/admin-context"
+import { getDataService } from "@/lib/data-service"
+import type { Player } from "@/lib/data-service"
 
-// Player photos mapping
-const playerPhotos: Record<number, string> = {
-  1: "/players/player-1.png",
-  3: "/players/player-3.png",
-  4: "/players/player-4.png",
-  5: "/players/player-5.png",
-  6: "/players/player-6.png",
-  7: "/players/player-7.png",
-  8: "/players/player-8.png",
-  9: "/players/player-9.png",
-  11: "/players/player-11.png",
-  17: "/players/player-17.png",
-}
+// Player data from Supabase - no longer using hardcoded data
 
-// Player data from squad
-const players = [
-  {
-    num: 1,
-    name: "Shuronjit",
-    fullName: "Shuronjit Biswas",
-    pos: "Goalkeeper",
-    cat: "GK",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    cleanSheets: 0,
-    dateOfBirth: "2008-06-15",
-    joinDate: "2023-03-20",
-    bio: "A commanding presence in goal with excellent reflexes and shot-stopping ability. The last line of defense for Titan Force.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 3,
-    name: "Srijon",
-    fullName: "Srijon Roy",
-    pos: "CB / RB",
-    cat: "DEF",
-    age: 21,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2005-08-10",
-    joinDate: "2022-05-15",
-    bio: "Versatile defender who can play both center-back and right-back. Known for his pace and recovery runs.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 4,
-    name: "Akash",
-    fullName: "Akash Roy",
-    pos: "CB / LB",
-    cat: "DEF",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2008-11-22",
-    joinDate: "2023-01-10",
-    bio: "Strong left-footed defender with excellent aerial ability. A rock at the back for the team.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 5,
-    name: "Akash",
-    fullName: "Akash Roy",
-    pos: "CB / CDM",
-    cat: "DEF",
-    age: 19,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Both",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2006-02-14",
-    joinDate: "2022-08-20",
-    bio: "The defensive anchor who can drop back or push forward. Great at breaking up opposition attacks.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 6,
-    name: "Sujon",
-    fullName: "Sujon Roy",
-    pos: "CAM",
-    cat: "MID",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2005-12-05",
-    joinDate: "2022-07-10",
-    bio: "Creative playmaker with excellent vision and passing range. The engine of Titan Force's attack.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 7,
-    name: "Shuvo",
-    fullName: "Shuvo Roy",
-    pos: "LW / RW / CAM",
-    cat: "FWD",
-    age: 19,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2006-09-18",
-    joinDate: "2023-02-28",
-    bio: "Explosive winger with pace to burn. Can play on either flank and loves to cut inside to shoot.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 8,
-    name: "Sojib",
-    fullName: "Sojib Roy",
-    pos: "CM / CAM",
-    cat: "MID",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2005-11-30",
-    joinDate: "2022-06-15",
-    bio: "Box-to-box midfielder who covers every blade of grass. Combines work rate with technical quality.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 9,
-    name: "Sajon",
-    fullName: "Sajon Biswas",
-    pos: "ST / CF",
-    cat: "FWD",
-    age: 17,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2008-07-08",
-    joinDate: "2023-04-12",
-    bio: "Clinical striker with a natural instinct for goal. The team's top scorer and focal point of the attack.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 11,
-    name: "Kourov",
-    fullName: "Kourov Chakroborty",
-    pos: "LW / ST",
-    cat: "FWD",
-    age: 18,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2007-03-25",
-    joinDate: "2022-09-01",
-    bio: "Tricky left winger who can also play as a second striker. Dangerous in one-on-one situations.",
-    seasonYear: "2024-2025",
-  },
-  {
-    num: 17,
-    name: "Shekhor",
-    fullName: "Shekhor Mohan Roy",
-    pos: "CB / CM / CDM",
-    cat: "DEF",
-    age: 20,
-    hometown: "Mulikandi, Sylhet",
-    foot: "Right",
-    goals: 0,
-    assists: 0,
-    dateOfBirth: "2005-10-12",
-    joinDate: "2022-04-20",
-    bio: "Versatile player who can slot into defense or midfield. A true utility player with leadership qualities.",
-    seasonYear: "2024-2025",
-  },
-]
 
 export default function PlayerProfile() {
   const params = useParams()
   const router = useRouter()
-  const playerNum = parseInt(params.number as string)
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [mounted, setMounted] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [player, setPlayer] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  const playerNum = parseInt(params.number as string)
 
   useEffect(() => {
     setMounted(true)
-    // Check for admin using try-catch since hook may not be in context
+    // Check for admin
     try {
       const adminData = localStorage.getItem("titanforce_admin")
       if (adminData) {
@@ -212,15 +41,43 @@ export default function PlayerProfile() {
     }
   }, [])
 
-  const player = players.find((p) => p.num === playerNum)
+  useEffect(() => {
+    const fetchPlayer = async () => {
+      if (!mounted) return
+      try {
+        setLoading(true)
+        const service = getDataService()
+        const players = await service.getPlayers()
+        const foundPlayer = players.find(p => p.num === playerNum)
+        setPlayer(foundPlayer)
+      } catch (err) {
+        console.error("[v0] Error fetching player:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlayer()
+  }, [playerNum, mounted])
+
+  if (!mounted || loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!player) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Player Not Found</h1>
-          <Link href="/players" className="text-primary hover:text-primary/80">
-            Go Back to Squad
+          <h1 className="text-3xl font-bold text-foreground mb-4">{isBn ? "খেলোয়াড় পাওয়া যায়নি" : "Player Not Found"}</h1>
+          <Link href="/team-squad" className="text-primary hover:text-primary/80">
+            {isBn ? "দলে ফিরে যান" : "Go Back to Squad"}
           </Link>
         </div>
       </div>
@@ -228,21 +85,21 @@ export default function PlayerProfile() {
   }
 
   const stats = [
-    { title: "Appearances", value: "0" },
-    { title: "Goals", value: player.goals.toString() },
-    { title: "Assists", value: player.assists.toString() },
-    { title: "Minutes", value: "0" },
-    { title: "Pass Accuracy", value: "92%" },
-    { title: "Chances Created", value: "0" },
+    { title: "Appearances", value: (player.appearances || 0).toString() },
+    { title: "Goals", value: (player.goals || 0).toString() },
+    { title: "Assists", value: (player.assists || 0).toString() },
+    { title: "Minutes", value: (player.minutes_played || 0).toString() },
+    { title: "Pass Accuracy", value: `${player.pass_accuracy || 0}%` },
+    { title: "Chances Created", value: (player.chances_created || 0).toString() },
   ]
 
   const seasonStats = [
-    { label: "Premier Matches", value: "0" },
-    { label: "Cup Matches", value: "0" },
-    { label: "Yellow Cards", value: "0" },
-    { label: "Red Cards", value: "0" },
-    { label: "Man of the Match", value: "0" },
-    { label: "Average Rating", value: "0" },
+    { label: "Premier Matches", value: (player.premier_matches || 0).toString() },
+    { label: "Cup Matches", value: (player.cup_matches || 0).toString() },
+    { label: "Yellow Cards", value: (player.yellow_cards || 0).toString() },
+    { label: "Red Cards", value: (player.red_cards || 0).toString() },
+    { label: "Man of the Match", value: (player.man_of_the_match || 0).toString() },
+    { label: "Average Rating", value: (player.average_rating || 0).toFixed(1) },
   ]
 
   const trophies = [
@@ -333,13 +190,13 @@ export default function PlayerProfile() {
           {/* Image Section - Full Width on Mobile */}
           <div className="flex flex-col md:flex-row md:items-end gap-0 md:gap-6 lg:gap-8">
             {/* Image Container - Spans full width on mobile */}
-            {playerPhotos[player.num] ? (
+            {player.image_url ? (
               <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
                 <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 sm:border-4 md:border-4 border-primary shadow-2xl card overflow-hidden">
                   <div className="relative aspect-square">
                     <Image
-                      src={playerPhotos[player.num]}
-                      alt={player.fullName}
+                      src={player.image_url}
+                      alt={player.full_name}
                       fill
                       className="object-cover object-top"
                       sizes="(max-width: 640px) 85vw, (max-width: 1024px) 60vw, 40vw"
@@ -365,12 +222,12 @@ export default function PlayerProfile() {
               </p>
 
               <h1 className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-tight text-white mb-3 sm:mb-4">
-                {player.fullName.split(" ")[0]}
+                {player.full_name.split(" ")[0]}
               </h1>
 
               <div className={`flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-5 md:mb-6 text-xs sm:text-sm text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 <span className="text-primary font-bold flex-shrink-0">#{player.num}</span>
-                <span className="truncate">{player.pos}</span>
+                <span className="truncate">{player.position}</span>
                 <span className="flex-shrink-0">Bangladesh</span>
                 <span className="truncate">{player.foot} Footed</span>
               </div>
@@ -379,7 +236,7 @@ export default function PlayerProfile() {
               <div className="mt-3 sm:mt-4 md:mt-6">
                 <PlayerRating 
                   playerId={player.num.toString()} 
-                  playerName={player.fullName}
+                  playerName={player.full_name}
                   size="lg"
                 />
               </div>
@@ -416,17 +273,17 @@ export default function PlayerProfile() {
 
             <div className={`space-y-3 sm:space-y-4 text-sm sm:text-base text-foreground/80 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {[
-                ["Full Name", player.fullName],
-                ["Position", player.pos],
-                ["Age", player.age.toString()],
-                ["Date of Birth", player.dateOfBirth ? new Date(player.dateOfBirth).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
-                ["Join Date", player.joinDate ? new Date(player.joinDate).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
-                ["Season", player.seasonYear || "2024-2025"],
+                ["Full Name", player.full_name],
+                ["Position", player.position],
+                ["Age", player.age?.toString() || "N/A"],
+                ["Date of Birth", player.date_of_birth ? new Date(player.date_of_birth).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
+                ["Join Date", player.join_date ? new Date(player.join_date).toLocaleDateString(isBn ? "bn-BD" : "en-US") : "N/A"],
+                ["Season", player.season_year || "2024-2025"],
                 ["Jersey Number", player.num.toString()],
-                ["Hometown", player.hometown],
-                ["Preferred Foot", player.foot],
+                ["Hometown", player.hometown || "N/A"],
+                ["Preferred Foot", player.foot || "N/A"],
                 ["Club", "Titan Force FC"],
-                ["Status", "Active"],
+                ["Status", (player.status?.charAt(0).toUpperCase() + player.status?.slice(1).toLowerCase()) || "Active"],
               ].map(([label, value], index) => (
                 <div key={index} className="flex justify-between border-b border-secondary/30 pb-2 sm:pb-3">
                   <span className="text-foreground/60 flex-shrink-0">{label}</span>
@@ -472,7 +329,7 @@ export default function PlayerProfile() {
               {isBn ? "জীবনী" : "Biography"}
             </h2>
             <p className={`text-foreground/80 leading-relaxed sm:leading-7 md:leading-8 text-sm sm:text-base md:text-lg ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {player.bio}
+              {player.bio || "No biography available for this player."}
             </p>
           </div>
 
@@ -484,12 +341,12 @@ export default function PlayerProfile() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {[
-                ["Pace", "84%"],
-                ["Shooting", "81%"],
-                ["Passing", "92%"],
-                ["Dribbling", "89%"],
-                ["Defending", "64%"],
-                ["Physical", "76%"],
+                ["Pace", `${player.pace || 0}%`],
+                ["Shooting", `${player.shooting || 0}%`],
+                ["Passing", `${player.passing || 0}%`],
+                ["Dribbling", `${player.dribbling || 0}%`],
+                ["Defending", `${player.defending || 0}%`],
+                ["Physical", `${player.physical || 0}%`],
               ].map(([skill, value], index) => (
                 <div key={index}>
                   <div className="flex justify-between mb-1.5 sm:mb-2 text-xs sm:text-sm">

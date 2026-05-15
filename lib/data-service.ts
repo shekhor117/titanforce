@@ -9,16 +9,38 @@ export interface Player {
   num: number
   name: string
   full_name: string
-  pos: string
-  cat: 'GK' | 'DEF' | 'MID' | 'FWD'
+  position: string
+  category: 'GK' | 'DEF' | 'MID' | 'FWD'
   age?: number
   hometown?: string
   foot?: 'Left' | 'Right' | 'Both'
   goals: number
   assists: number
-  photo_url?: string
-  status: 'active' | 'injured' | 'suspended'
+  image_url?: string
+  status: 'active' | 'Active' | 'injured' | 'suspended'
   bio?: string
+  clean_sheets?: number
+  appearances?: number
+  minutes_played?: number
+  pass_accuracy?: number
+  chances_created?: number
+  premier_matches?: number
+  cup_matches?: number
+  yellow_cards?: number
+  red_cards?: number
+  man_of_the_match?: number
+  average_rating?: number
+  pace?: number
+  shooting?: number
+  passing?: number
+  dribbling?: number
+  defending?: number
+  physical?: number
+  date_of_birth?: string
+  join_date?: string
+  season_year?: string
+  club?: string
+  nationality?: string
   created_at: string
   updated_at: string
 }

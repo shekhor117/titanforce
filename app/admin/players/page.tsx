@@ -5,8 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Player } from "@/lib/data-store"
-import { usePlayers } from "@/lib/use-data-store"
-import { getDataService } from "@/lib/data-service"
+import { useAdminData } from "@/lib/use-admin-data"
 import { Plus, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, Search, Trophy, TrendingUp, Activity, Target } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
@@ -23,36 +22,36 @@ export default function AdminPlayers() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
-    fullName: "",
+    full_name: "",
     email: "",
     num: "",
-    pos: "",
-    cat: "" as Player["cat"] | "",
+    position: "",
+    category: "" as Player["category"] | "",
     age: "",
     hometown: "",
     foot: "Right" as Player["foot"],
     goals: "0",
     assists: "0",
-    cleanSheets: "0",
+    clean_sheets: "0",
     bio: "",
-    photo: { signedUrl: "", filePath: "" },
+    image_url: "",
     status: "active" as Player["status"],
     // Personal Dates
-    dateOfBirth: "",
-    joinDate: "",
-    seasonYear: "2024-2025",
+    date_of_birth: "",
+    join_date: "",
+    season_year: "2024-2025",
     // Extended Stats
     appearances: "0",
-    minutes: "0",
-    passAccuracy: "0",
-    chancesCreated: "0",
+    minutes_played: "0",
+    pass_accuracy: "0",
+    chances_created: "0",
     // Season Stats
-    premierMatches: "0",
-    cupMatches: "0",
-    yellowCards: "0",
-    redCards: "0",
-    motmAwards: "0",
-    averageRating: "0",
+    premier_matches: "0",
+    cup_matches: "0",
+    yellow_cards: "0",
+    red_cards: "0",
+    man_of_the_match: "0",
+    average_rating: "0",
     // Player Attributes
     pace: "70",
     shooting: "70",
@@ -60,12 +59,10 @@ export default function AdminPlayers() {
     dribbling: "70",
     defending: "70",
     physical: "70",
-    // Trophies
-    trophies: [] as { name: string; year: string }[],
   })
-  const [newTrophy, setNewTrophy] = useState({ name: "", year: "" })
   
-  const { players, loading, error } = usePlayers()
+  // Use real-time admin data hook
+  const { data: players, loading, error, updateRecord, deleteRecord } = useAdminData<Player>('players')
 
   const handlePhotoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, photo: data }))

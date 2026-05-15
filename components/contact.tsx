@@ -21,13 +21,13 @@ export function Contact() {
 
   // Get settings from data store
   const settings = useDataStore(dataStore.getSettings, "settings")
-
-  const socialLinks = [
+  
+  const socialLinks = settings && settings.socialLinks ? [
     { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
     { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
     { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
     { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
-  ].filter(link => link.href && link.href !== "#")
+  ].filter(link => link.href && link.href !== "#") : []
 
   useEffect(() => {
     const observer = new IntersectionObserver(
