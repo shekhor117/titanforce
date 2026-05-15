@@ -7,6 +7,7 @@ import { AdminProvider } from '@/lib/admin-context'
 import { TransitionProvider } from '@/lib/transition-context'
 import { ThemeProvider } from '@/lib/theme-context'
 import { PageTransition } from '@/components/page-transition'
+import { ErrorBoundary } from '@/components/error-boundary'
 import LoaderWrapper from '@/components/loader-wrapper'
 import './globals.css'
 
@@ -49,9 +50,11 @@ export default function RootLayout({
             <AdminProvider>
               <AuthProvider>
                 <LanguageProvider>
-                  <LoaderWrapper>
-                    {children}
-                  </LoaderWrapper>
+                  <ErrorBoundary>
+                    <LoaderWrapper>
+                      {children}
+                    </LoaderWrapper>
+                  </ErrorBoundary>
                 </LanguageProvider>
               </AuthProvider>
             </AdminProvider>
