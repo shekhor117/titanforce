@@ -50,7 +50,7 @@ export function Squad() {
   // Get players from data store
   const allPlayers = useDataStore(dataStore.getPlayers, "players")
   const players = Array.isArray(allPlayers) ? allPlayers : []
-  const activePlayers = players.filter(p => p.status === "active")
+  const activePlayers = players.filter(p => p.status?.toLowerCase() === "active")
 
   useEffect(() => {
     const observer = new IntersectionObserver(
