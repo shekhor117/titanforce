@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 

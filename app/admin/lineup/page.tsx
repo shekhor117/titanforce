@@ -11,29 +11,29 @@ export default function AdminLineupPage() {
   const isBn = language === "bn"
   const { admin } = useAdmin()
 
-  const players = useDataStore(dataStore.getPlayers, "players")
+  const players = Array.isArray(useDataStore(dataStore.getPlayers, "players")) ? useDataStore(dataStore.getPlayers, "players") : []
 
   const formations = ["4-3-3", "4-4-2", "3-5-2", "4-2-3-1", "5-3-2", "3-4-3"]
   const [selectedFormation, setSelectedFormation] = useState(formations[0])
-  const [lineupPlayers, setLineupPlayers] = useState([])
-  const [availablePlayers, setAvailablePlayers] = useState(players)
+  const [lineupPlayers, setLineupPlayers] = useState<any[]>([])
+  const [availablePlayers, setAvailablePlayers] = useState<any[]>(players)
   const [hasChanges, setHasChanges] = useState(false)
 
-  const handleAddPlayer = (player) => {
+  const handleAddPlayer = (player: any) => {
     if (lineupPlayers.length < 11) {
       setLineupPlayers([...lineupPlayers, player])
-      setAvailablePlayers(availablePlayers.filter(p => p.id !== player.id))
+      setAvailablePlayers(availablePlayers.filter((p: any) => p.id !== player.id))
       setHasChanges(true)
     }
   }
 
-  const handleRemovePlayer = (player) => {
-    setLineupPlayers(lineupPlayers.filter(p => p.id !== player.id))
+  const handleRemovePlayer = (player: any) => {
+    setLineupPlayers(lineupPlayers.filter((p: any) => p.id !== player.id))
     setAvailablePlayers([...availablePlayers, player])
     setHasChanges(true)
   }
 
-  const handleFormationChange = (formation) => {
+  const handleFormationChange = (formation: string) => {
     setSelectedFormation(formation)
     setHasChanges(true)
   }
@@ -49,7 +49,7 @@ export default function AdminLineupPage() {
 
   const handleReset = () => {
     setLineupPlayers([])
-    setAvailablePlayers(players)
+    setAvailablePlayers(Array.isArray(players) ? players : [])
     setSelectedFormation(formations[0])
     setHasChanges(false)
   }

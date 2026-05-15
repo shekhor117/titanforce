@@ -24,7 +24,8 @@ export default function AdminMatches() {
     result: "" as Match["result"] | "",
   })
   
-  const matches = useDataStore(dataStore.getMatches, "matches")
+  const matchesData = useDataStore(dataStore.getMatches, "matches")
+  const matches = Array.isArray(matchesData) ? matchesData : []
 
   const handleSaveMatch = () => {
     if (!formData.away || !formData.date || !formData.venue) {
