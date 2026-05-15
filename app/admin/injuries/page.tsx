@@ -78,7 +78,8 @@ export default function AdminInjuriesPage() {
       return
     }
 
-    const selectedPlayer = players.find(p => p.id === formData.playerId)
+    const playerList = Array.isArray(players) ? players : []
+    const selectedPlayer = playerList.find((p: any) => p.id === formData.playerId)
     if (!selectedPlayer) {
       alert(isBn ? "খেলোয়াড় নির্বাচন করুন" : "Select a player")
       return

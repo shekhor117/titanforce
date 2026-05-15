@@ -20,84 +20,98 @@ export default function AdminDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   
-  // Subscribe to data store changes
-  const players = useDataStore(dataStore.getPlayers, "players")
-  const matches = useDataStore(dataStore.getMatches, "matches")
-  const fans = useDataStore(dataStore.getFans, "fans")
-  const partners = useDataStore(dataStore.getPartners, "partners")
-  const news = useDataStore(dataStore.getNews, "news")
-  const media = useDataStore(dataStore.getMedia, "media")
-  const contacts = useDataStore(dataStore.getContacts, "contacts")
-  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
+  // Subscribe to data store changes (these are synchronous)
+  const players = useDataStore(dataStore.getPlayers, "players") as any
+  const matches = useDataStore(dataStore.getMatches, "matches") as any
+  const fans = useDataStore(dataStore.getFans, "fans") as any
+  const partners = useDataStore(dataStore.getPartners, "partners") as any
+  const news = useDataStore(dataStore.getNews, "news") as any
+  const media = useDataStore(dataStore.getMedia, "media") as any
+  const contacts = useDataStore(dataStore.getContacts, "contacts") as any
+  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog") as any
+
+  // Ensure arrays
+  const playerList = Array.isArray(players) ? players : []
+  const matchList = Array.isArray(matches) ? matches : []
+  const fanList = Array.isArray(fans) ? fans : []
+  const partnerList = Array.isArray(partners) ? partners : []
+  const newsList = Array.isArray(news) ? news : []
+  const mediaList = Array.isArray(media) ? media : []
+  const contactList = Array.isArray(contacts) ? contacts : []
+  const activityList = Array.isArray(activityLog) ? activityLog : []
 
   // Calculate stats
   const stats = [
     { 
       label: isBn ? "খেলোয়াড়" : "Players", 
-      value: players.length.toString(), 
+      value: playerList.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/players",
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/30",
-      subtext: `${players.filter(p => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
+      subtext: `${playerList.filter((p: any) => p.status?.toLowerCase() === "active").length} ${isBn ? "সক্রিয়" : "active"}`
     },
     { 
       label: isBn ? "ম্যাচ" : "Matches", 
-      value: matches.length.toString(), 
+      value: matchList.length.toString(), 
       icon: <Trophy className="w-6 h-6" />, 
       href: "/admin/matches",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10",
       borderColor: "border-yellow-500/30",
-      subtext: `${matches.filter(m => m.status === "upcoming").length} ${isBn ? "আসন্ন" : "upcoming"}`
+      subtext: `${matchList.filter((m: any) => m.status === "upcoming").length} ${isBn ? "আসন্ন" : "upcoming"}`
     },
     { 
       label: isBn ? "অনুরাগী" : "Fans", 
-      value: fans.length.toString(), 
+      value: fanList.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/fans",
       color: "text-green-400",
       bgColor: "bg-green-500/10",
       borderColor: "border-green-500/30",
-      subtext: `${fans.filter(f => f.membershipType === "vip").length} VIP`
+      subtext: `${fanList.filter((f: any) => f.membershipType === "vip").length} VIP`
     },
     { 
       label: isBn ? "অংশীদার" : "Partners", 
-      value: partners.length.toString(), 
+      value: partnerList.length.toString(), 
       icon: <Handshake className="w-6 h-6" />, 
       href: "/admin/partners",
       color: "text-purple-400",
       bgColor: "bg-purple-500/10",
       borderColor: "border-purple-500/30",
-      subtext: `${partners.filter(p => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
+      subtext: `${partnerList.filter((p: any) => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
     },
   ]
 
   const additionalStats = [
     {
       label: isBn ? "সংবাদ" : "News",
-      value: news.length.toString(),
+      value: newsList.length.toString(),
       icon: <Newspaper className="w-5 h-5" />,
       href: "/admin/news",
       color: "text-orange-400",
-      subtext: `${news.filter(n => n.status === "published").length} ${isBn ? "প্রকাশিত" : "published"}`
+      subtext: `${newsList.filter((n: any) => n.status === "published").length} ${isBn ? "প্রকাশিত" : "published"}`
     },
     {
       label: isBn ? "মিডিয়া" : "Media",
-      value: media.length.toString(),
-      icon: <Image className="w-5 h-5" />,
+      value: mediaList.length.toString(),
+      icon: <Image className="w-6 h-6" />,
       href: "/admin/media",
       color: "text-pink-400",
-      subtext: `${media.filter(m => m.type === "photo").length} ${isBn ? "ছবি" : "photos"}`
+      bgColor: "bg-pink-500/10",
+      borderColor: "border-pink-500/30",
+      subtext: `${mediaList.filter((m: any) => m.type === "photo").length} ${isBn ? "ছবি" : "photos"}`
     },
     {
-      label: isBn ? "বার্তা" : "Messages",
-      value: contacts.length.toString(),
-      icon: <Mail className="w-5 h-5" />,
+      label: isBn ? "যোগাযোগ" : "Contact",
+      value: contactList.length.toString(),
+      icon: <Mail className="w-6 h-6" />,
       href: "/admin/contacts",
-      color: "text-cyan-400",
-      subtext: `${contacts.filter(c => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
+      color: "text-red-400",
+      bgColor: "bg-red-500/10",
+      borderColor: "border-red-500/30",
+      subtext: `${contactList.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
     },
   ]
 
@@ -261,16 +275,10 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {contacts.filter(c => c.status === "unread").length > 0 && (
-            <Link 
-              href="/admin/contacts"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="text-sm font-semibold">
-                {contacts.filter(c => c.status === "unread").length} {isBn ? "নতুন বার্তা" : "new messages"}
-              </span>
-            </Link>
+          {contactList.filter((c: any) => c.status === "unread").length > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">
+              {contactList.filter((c: any) => c.status === "unread").length}
+            </div>
           )}
         </div>
       </div>
@@ -363,8 +371,8 @@ export default function AdminDashboard() {
             </Link>
           </div>
           <div className="space-y-3 max-h-[350px] overflow-y-auto">
-            {activityLog.length > 0 ? (
-              activityLog.slice(0, 8).map((log) => (
+            {activityList.length > 0 ? (
+              activityList.slice(0, 8).map((log: any) => (
                 <div key={log.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/20">
                   <div className={`px-2 py-1 rounded text-xs font-semibold uppercase ${getActionColor(log.action)}`}>
                     {log.action}
@@ -414,7 +422,7 @@ export default function AdminDashboard() {
               {isBn ? "দল" : "Squad"}
             </h3>
             <div className="space-y-2 max-h-[400px] overflow-y-auto">
-              {players.slice(0, 10).map((player) => (
+              {playerList.slice(0, 10).map((player: any) => (
                 <button
                   key={player.id}
                   onClick={() => setSelectedPlayer(player)}
@@ -435,7 +443,7 @@ export default function AdminDashboard() {
                   </div>
                 </button>
               ))}
-              {players.length > 10 && (
+              {playerList.length > 10 && (
                 <Link 
                   href="/admin/players"
                   className="w-full text-center text-xs text-primary hover:underline py-2"
@@ -591,41 +599,73 @@ export default function AdminDashboard() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-primary">{players.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "খেলোয়াড়" : "Players"}
-            </div>
+            <div className="text-2xl font-bold text-primary">{playerList.length}</div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-yellow-400">{matches.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "ম্যাচ" : "Matches"}
-            </div>
+          <div className="flex-1 flex flex-col items-start">
+            <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "মোট খেলোয়াড়" : "Total Players"}
+            </p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-green-400">{fans.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "অনুরাগী" : "Fans"}
-            </div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-purple-400">{partners.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "অংশীদার" : "Partners"}
-            </div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-orange-400">{news.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "সংবাদ" : "News"}
-            </div>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-pink-400">{media.length}</div>
-            <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "মিডিয়া" : "Media"}
-            </div>
-          </div>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+        <div className="flex items-start justify-between">
+          <Trophy className="w-6 h-6 text-yellow-400 group-hover:scale-110 transition-transform" />
+          <div className="text-2xl font-bold text-yellow-400">{matchList.length}</div>
+        </div>
+        <div className="flex-1 flex flex-col items-start">
+          <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "মোট ম্যাচ" : "Total Matches"}
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+        <div className="flex items-start justify-between">
+          <Users className="w-6 h-6 text-green-400 group-hover:scale-110 transition-transform" />
+          <div className="text-2xl font-bold text-green-400">{fanList.length}</div>
+        </div>
+        <div className="flex-1 flex flex-col items-start">
+          <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "মোট অনুরাগী" : "Total Fans"}
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+        <div className="flex items-start justify-between">
+          <Handshake className="w-6 h-6 text-purple-400 group-hover:scale-110 transition-transform" />
+          <div className="text-2xl font-bold text-purple-400">{partnerList.length}</div>
+        </div>
+        <div className="flex-1 flex flex-col items-start">
+          <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "মোট অংশীদার" : "Total Partners"}
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+        <div className="flex items-start justify-between">
+          <Newspaper className="w-6 h-6 text-orange-400 group-hover:scale-110 transition-transform" />
+          <div className="text-2xl font-bold text-orange-400">{newsList.length}</div>
+        </div>
+        <div className="flex-1 flex flex-col items-start">
+          <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "মোট সংবাদ" : "Total News"}
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+        <div className="flex items-start justify-between">
+          <Image className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
+          <div className="text-2xl font-bold text-pink-400">{mediaList.length}</div>
+        </div>
+        <div className="flex-1 flex flex-col items-start">
+          <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "মোট মিডিয়া" : "Total Media"}
+          </p>
         </div>
       </div>
     </div>
