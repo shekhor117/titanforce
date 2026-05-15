@@ -15,6 +15,14 @@ export function Footer() {
   const tagline = settings?.tagline || "Pride · Passion · Power"
   const contactEmail = settings?.contactEmail || "contact@titanforce.com"
   const contactPhone = settings?.contactPhone || "+880"
+  const address = settings?.address || "Mulikandi, Sylhet"
+  
+  const socialLinks = settings && settings.socialLinks ? [
+    { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
+    { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
+    { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
+    { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
+  ].filter(link => link.href && link.href !== "#") : []
 
   return (
     <footer className="border-t-2 border-primary py-12 px-4 bg-black/50">
@@ -67,7 +75,7 @@ export function Footer() {
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "কল করুন" : "Call Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{settings.contactPhone}</p>
+                <p className="text-foreground font-semibold text-sm">{contactPhone}</p>
               </div>
             </a>
 
@@ -80,7 +88,7 @@ export function Footer() {
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "আমাদের অবস্থান" : "Visit Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{settings.address}</p>
+                <p className="text-foreground font-semibold text-sm">{address}</p>
               </div>
             </div>
           </div>

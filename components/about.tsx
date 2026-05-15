@@ -14,6 +14,8 @@ export function About() {
   const settings = useDataStore(dataStore.getSettings, "settings")
   const players = useDataStore(dataStore.getPlayers, "players")
   const activePlayers = Array.isArray(players) ? players.filter(p => p.status === "active") : []
+  const aboutTitle = settings?.aboutTitle || t.about.title
+  const aboutDescription = settings?.aboutDescription || t.about.description
 
   const stats = [
     { value: `${activePlayers.length}+`, label: t.about.players },
@@ -48,10 +50,10 @@ export function About() {
           {t.about.location}
         </p>
         <h2 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-          {settings.aboutTitle || t.about.title}
+          {aboutTitle}
         </h2>
         <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {settings.aboutDescription || t.about.description}
+          {aboutDescription}
         </p>
         <div className="grid grid-cols-3 gap-6 mt-12 max-w-lg mx-auto">
           {stats.map((stat) => (
