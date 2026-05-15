@@ -19,17 +19,22 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const supabase = createClient()
-
-  // Initial data fetch
+  // Initial data fetch and subscription setup
   useEffect(() => {
-    const fetchData = async () => {
+    let isMounted = true
+    let channel: RealtimeChannel | null = null
+
+    const initializeRealtime = async () => {
       try {
+        const supabase = createClient()
         setLoading(true)
+
+        // Initial data fetch
         let query = supabase.from(options.tableName).select('*')
 
         if (options.filter) {
-          query = query.eq(options.filter.split('=')[0], options.filter.split('=')[1])
+          const [filterKey, filterValue] = options.filter.split('=')
+          query = query.eq(filterKey, filterValue)
         }
 
         const { data: result, error: fetchError } = await query
@@ -38,54 +43,65 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
           throw fetchError
         }
 
-        setData(result as T[])
-        setError(null)
+        if (isMounted) {
+          setData((result as T[]) || [])
+          setError(null)
+        }
+
+        // Set up real-time subscription
+        channel = supabase
+          .channel(`${options.tableName}_changes`)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: options.tableName,
+            },
+            (payload) => {
+              console.log(`[v0] Real-time update for ${options.tableName}:`, payload)
+
+              if (!isMounted) return
+
+              if (payload.eventType === 'INSERT') {
+                setData((prev) => [...prev, payload.new as T])
+              } else if (payload.eventType === 'UPDATE') {
+                setData((prev) =>
+                  prev.map((item) =>
+                    item.id === (payload.new as T).id ? (payload.new as T) : item
+                  )
+                )
+              } else if (payload.eventType === 'DELETE') {
+                setData((prev) => prev.filter((item) => item.id !== (payload.old as T).id))
+              }
+            }
+          )
+          .subscribe()
+
+        if (isMounted) {
+          setLoading(false)
+        }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Unknown error')
-        setError(error)
+        if (isMounted) {
+          setError(error)
+          setLoading(false)
+        }
         options.onError?.(error)
-        console.error(`[v0] Error fetching ${options.tableName}:`, error)
-      } finally {
-        setLoading(false)
+        console.error(`[v0] Error initializing ${options.tableName}:`, error)
       }
     }
 
-    fetchData()
-  }, [options.tableName, options.filter])
-
-  // Real-time subscription
-  useEffect(() => {
-    const channel: RealtimeChannel = supabase
-      .channel(`${options.tableName}_changes`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: options.tableName,
-        },
-        (payload) => {
-          console.log(`[v0] Real-time update for ${options.tableName}:`, payload)
-
-          if (payload.eventType === 'INSERT') {
-            setData((prev) => [...prev, payload.new as T])
-          } else if (payload.eventType === 'UPDATE') {
-            setData((prev) =>
-              prev.map((item) =>
-                item.id === (payload.new as T).id ? (payload.new as T) : item
-              )
-            )
-          } else if (payload.eventType === 'DELETE') {
-            setData((prev) => prev.filter((item) => item.id !== (payload.old as T).id))
-          }
-        }
-      )
-      .subscribe()
+    initializeRealtime()
 
     return () => {
-      supabase.removeChannel(channel)
+      isMounted = false
+      if (channel) {
+        const supabase = createClient()
+        supabase.removeChannel(channel)
+      }
     }
-  }, [options.tableName])
+  }, [options.tableName, options.filter, options])
 
   return { data, loading, error }
 }
