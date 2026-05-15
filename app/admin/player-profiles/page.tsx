@@ -272,7 +272,10 @@ export default function AdminPlayerProfiles() {
       foot: "",
       address: "",
       experience: "",
-      photoUrl: ""
+      photoUrl: "",
+      dateOfBirth: "",
+      joinDate: "",
+      seasonYear: "2024-2025"
     })
   }
 
