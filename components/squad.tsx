@@ -70,10 +70,10 @@ export function Squad() {
   }, [])
 
   const filteredPlayers =
-    selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.cat === selectedPosition)
+    selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.category === selectedPosition)
 
   const getPlayerPhoto = (player: Player) => {
-    return player.photo || null
+    return player.image_url || null
   }
 
   return (
@@ -124,7 +124,7 @@ export function Squad() {
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30">
                     <Image
                       src={photo}
-                      alt={player.fullName}
+                      alt={player.full_name}
                       fill
                       className="object-cover object-top"
                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
@@ -140,11 +140,11 @@ export function Squad() {
                   {player.name.toUpperCase()}
                 </h3>
                 <p className="text-xs uppercase tracking-wider mt-0.5 sm:mt-1 text-foreground/60 truncate">
-                  {player.pos}
+                  {player.position}
                 </p>
                 <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-[10px] flex-wrap">
                   <span className="px-2 py-0.5 font-bold uppercase tracking-wider rounded bg-secondary text-primary flex-shrink-0">
-                    {player.cat}
+                    {player.category}
                   </span>
                   <span className={`text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
                 </div>
@@ -197,7 +197,7 @@ export function Squad() {
                 {getPlayerPhoto(selectedPlayer) ? (
                   <Image
                     src={getPlayerPhoto(selectedPlayer)!}
-                    alt={selectedPlayer.fullName}
+                    alt={selectedPlayer.full_name}
                     width={80}
                     height={80}
                     className="object-cover"
@@ -210,13 +210,13 @@ export function Squad() {
               </div>
               <div>
                 <h3 className="font-[var(--font-display)] text-2xl md:text-3xl tracking-wider text-foreground">
-                  {selectedPlayer.fullName.toUpperCase()}
+                  {selectedPlayer.full_name.toUpperCase()}
                 </h3>
                 <p className="text-sm uppercase tracking-wider text-primary mt-1">
-                  {selectedPlayer.pos}
+                  {selectedPlayer.position}
                 </p>
                 <span className="inline-block mt-2 px-3 py-1 text-xs font-bold uppercase tracking-wider rounded bg-secondary text-primary">
-                  {selectedPlayer.cat}
+                  {selectedPlayer.category}
                 </span>
               </div>
             </div>
