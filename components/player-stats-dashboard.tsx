@@ -16,10 +16,10 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
   const totalGoals = players.reduce((sum, p) => sum + (p.goals || 0), 0)
   const totalAssists = players.reduce((sum, p) => sum + (p.assists || 0), 0)
   const totalAppearances = players.reduce((sum, p) => sum + (p.appearances || 0), 0)
-  const totalMinutes = players.reduce((sum, p) => sum + (p.minutes || 0), 0)
+  const totalMinutes = players.reduce((sum, p) => sum + ((p.minutes_played || p.minutes) || 0), 0)
   const avgRating =
     players.length > 0
-      ? (players.reduce((sum, p) => sum + (p.averageRating || 0), 0) / players.length).toFixed(2)
+      ? (players.reduce((sum, p) => sum + ((p.average_rating || p.averageRating) || 0), 0) / players.length).toFixed(2)
       : "0"
 
   const injuredPlayers = players.filter((p) => p.status === "injured").length

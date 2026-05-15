@@ -14,9 +14,9 @@ type SortKey =
   | "goals"
   | "assists"
   | "appearances"
-  | "minutes"
-  | "passAccuracy"
-  | "averageRating"
+  | "minutes_played"
+  | "pass_accuracy"
+  | "average_rating"
 
 export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
   const { language } = useLanguage()
@@ -54,17 +54,17 @@ export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
         aVal = a.appearances || 0
         bVal = b.appearances || 0
         break
-      case "minutes":
-        aVal = a.minutes || 0
-        bVal = b.minutes || 0
+      case "minutes_played":
+        aVal = (a.minutes_played || a.minutes) || 0
+        bVal = (b.minutes_played || b.minutes) || 0
         break
-      case "passAccuracy":
-        aVal = a.passAccuracy || 0
-        bVal = b.passAccuracy || 0
+      case "pass_accuracy":
+        aVal = (a.pass_accuracy || a.passAccuracy) || 0
+        bVal = (b.pass_accuracy || b.passAccuracy) || 0
         break
-      case "averageRating":
-        aVal = a.averageRating || 0
-        bVal = b.averageRating || 0
+      case "average_rating":
+        aVal = (a.average_rating || a.averageRating) || 0
+        bVal = (b.average_rating || b.averageRating) || 0
         break
     }
 

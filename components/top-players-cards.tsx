@@ -35,6 +35,8 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
     }
   }
 
+  const getCategory = (p: Player) => p.category || p.cat || "MID"
+
   return (
     <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -59,10 +61,10 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
               </div>
 
               {/* Player Photo */}
-              {player.photo && (
+              {(player.image_url || player.photo) && (
                 <div className="relative w-full h-32 sm:h-40 mb-2 sm:mb-3 rounded-lg overflow-hidden bg-secondary/50 flex items-center justify-center flex-shrink-0">
                   <Image
-                    src={player.photo}
+                    src={player.image_url || player.photo || ""}
                     alt={player.name}
                     fill
                     className="object-cover"
@@ -78,8 +80,8 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
                     <h4 className="font-semibold text-foreground text-sm sm:text-base truncate">{player.name}</h4>
                     <p className="text-xs text-foreground/60">#{player.num}</p>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded border font-semibold flex-shrink-0 ${getPositionColor(player.cat)}`}>
-                    {player.cat}
+                  <span className={`text-xs px-2 py-1 rounded border font-semibold flex-shrink-0 ${getPositionColor(getCategory(player))}`}>
+                    {getCategory(player)}
                   </span>
                 </div>
               </div>
@@ -106,7 +108,7 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <Award className="w-3 h-3 text-purple-400" />
                   </div>
-                  <div className="text-sm font-bold text-purple-400">{player.averageRating?.toFixed(1) || "0"}</div>
+                  <div className="text-sm font-bold text-purple-400">{((player.average_rating || player.averageRating) || 0).toFixed?.(1) || "0"}</div>
                   <div className="text-xs text-foreground/50">{isBn ? "রেটিং" : "Rating"}</div>
                 </div>
               </div>
@@ -119,11 +121,11 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
                 </div>
                 <div className="flex justify-between">
                   <span>{isBn ? "মিনিট" : "Minutes"}:</span>
-                  <span className="font-semibold">{player.minutes || 0}</span>
+                  <span className="font-semibold">{(player.minutes_played || player.minutes) || 0}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{isBn ? "পাস নির্ভুলতা" : "Pass Accuracy"}:</span>
-                  <span className="font-semibold">{player.passAccuracy || 0}%</span>
+                  <span className="font-semibold">{(player.pass_accuracy || player.passAccuracy) || 0}%</span>
                 </div>
               </div>
 
