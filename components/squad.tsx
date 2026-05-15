@@ -70,10 +70,10 @@ export function Squad() {
   }, [])
 
   const filteredPlayers =
-    activeFilter === "all" ? activePlayers : activePlayers.filter((p) => p.cat === activeFilter)
+    selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.cat === selectedPosition)
 
   const getPlayerPhoto = (player: Player) => {
-    return player.photo || playerPhotos[player.num] || null
+    return player.photo || null
   }
 
   return (
@@ -98,8 +98,8 @@ export function Squad() {
           {filters.map((filter) => (
             <button
               key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${activeFilter === filter
+              onClick={() => setSelectedPosition(filter)}
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${selectedPosition === filter
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-card bg-transparent text-foreground hover:border-primary/50"
                 } ${isBn && filter === "all" ? "font-[var(--font-bengali)]" : ""}`}
