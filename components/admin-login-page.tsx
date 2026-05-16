@@ -47,15 +47,11 @@ export function AdminLoginPage() {
       return
     }
 
-    console.log("[v0] Form submitted - email:", email)
     setIsSubmitting(true)
     try {
-      console.log("[v0] Calling login function...")
       await login(email, password)
-      console.log("[v0] Login successful, redirecting...")
       router.push("/admin/dashboard")
     } catch (err) {
-      console.log("[v0] Login threw error:", err)
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
       setLocalError(message)
       setIsSubmitting(false)
