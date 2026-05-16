@@ -20,17 +20,8 @@ CREATE POLICY player_profiles_delete_own ON public.player_profiles
 -- ============================================================================
 -- matches table
 -- ============================================================================
-DROP POLICY IF EXISTS matches_insert_auth ON public.matches;
-CREATE POLICY matches_insert_auth ON public.matches
-  FOR INSERT WITH CHECK (created_by = (select auth.uid()));
-
-DROP POLICY IF EXISTS matches_update_own ON public.matches;
-CREATE POLICY matches_update_own ON public.matches
-  FOR UPDATE USING (created_by = (select auth.uid()));
-
-DROP POLICY IF EXISTS matches_delete_own ON public.matches;
-CREATE POLICY matches_delete_own ON public.matches
-  FOR DELETE USING (created_by = (select auth.uid()));
+-- Matches are admin-managed, so we skip user-specific RLS policies
+-- The matches table will use table-level RLS or admin policies instead
 
 -- ============================================================================
 -- profiles table
