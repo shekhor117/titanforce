@@ -21,7 +21,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true)
     const savedTheme = localStorage.getItem("titanforce_theme") as Theme | null
     const initialTheme = savedTheme || "dark"
-    console.log("[v0] Initializing theme. Saved:", savedTheme, "Using:", initialTheme)
     setThemeState(initialTheme)
     
     if (initialTheme === "light") {
@@ -36,7 +35,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const setTheme = (newTheme: Theme) => {
-    console.log("[v0] Setting theme to:", newTheme)
     setThemeState(newTheme)
     localStorage.setItem("titanforce_theme", newTheme)
     
@@ -49,7 +47,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.remove("light")
       setIsDark(true)
     }
-    console.log("[v0] Theme set. isDark:", newTheme === "dark", "Classes:", document.documentElement.className)
   }
 
   if (!mounted) return <>{children}</>
