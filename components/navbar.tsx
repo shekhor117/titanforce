@@ -1,18 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, X, Globe } from "lucide-react"
+import { Menu, X, Globe, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
+import { useCart } from "@/lib/cart-context"
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
+  const { items } = useCart()
 
   const navLinks = [
     { href: "#home", label: t.nav.home },
@@ -22,6 +24,8 @@ export function Navbar() {
     { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
     { href: "#contact", label: t.nav.contact },
   ]
+
+  const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
     <nav className="sticky top-0 z-50 border-b-2 border-primary backdrop-blur-md bg-background/80">
@@ -59,6 +63,22 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          
+          <div className="h-6 w-px bg-primary/20" />
+          
+          <Link
+            href="/shop"
+            className="flex items-center gap-2 px-4 py-2 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative group"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
+          
           <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
@@ -94,6 +114,21 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          
+          <Link
+            href="/shop"
+            className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
+          
           <div className="border-t border-secondary pt-3 mt-2 flex flex-col gap-3">
             <div className="w-full flex items-center gap-2">
               <ThemeToggle />
