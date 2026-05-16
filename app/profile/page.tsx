@@ -3,97 +3,118 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { useRouter } from "next/navigation"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowLeft, User, Mail, Calendar, Shield, LogOut, Settings, Camera, Upload, CheckCircle, Loader2, ChevronRight, Phone, MapPin, Activity } from "lucide-react"
+import Link from "next/link"
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Settings,
+  Save,
+  X,
+  CheckCircle,
+  LogOut,
+  Loader2,
+  Edit,
+} from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { mockGetUserById, mockUpdateUserProfile } from "@/lib/mock-auth"
 
 export default function ProfilePage() {
-  const { user, profile, isLoading, logout, refreshProfile } = useAuth()
+  const { user, isLoading, logout } = useAuth()
   const { language } = useLanguage()
   const router = useRouter()
   const isBn = language === "bn"
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadSuccess, setUploadSuccess] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const userRole = profile?.role || user?.role
-  
+  const [mockUserData, setMockUserData] = useState<any>(null)
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
+    bio: "",
+    website: "",
+    dateOfBirth: "",
     position: "",
     jersey: "",
     experience: "",
+    foot: "",
+    height: "",
+    weight: "",
   })
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login")
     }
-    // Initialize form data
+
     if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.playerProfile?.phone || "",
-        address: user.playerProfile?.address || "",
-        position: user.playerProfile?.position || "",
-        jersey: user.playerProfile?.jersey || "",
-        experience: user.playerProfile?.experience || "",
-      })
+      const mockUser = mockGetUserById(user.id)
+      if (mockUser) {
+        setMockUserData(mockUser)
+        setFormData({
+          name: mockUser.name || "",
+          email: mockUser.email || "",
+          phone: mockUser.phone || "",
+          address: mockUser.address || "",
+          bio: mockUser.bio || "",
+          website: mockUser.website || "",
+          dateOfBirth: mockUser.dateOfBirth || "",
+          position: mockUser.position || "",
+          jersey: mockUser.jersey || "",
+          experience: mockUser.experience || "",
+          foot: mockUser.foot || "",
+          height: mockUser.height || "",
+          weight: mockUser.weight || "",
+        })
+      }
     }
   }, [user, isLoading, router])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) return
+
     setIsSubmitting(true)
     try {
-      const { createClient } = await import("@/lib/supabase/client")
-      const supabase = createClient()
-      
-      // Update profile in Supabase
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          name: formData.name,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user?.id)
-      
-      if (error) throw error
+      mockUpdateUserProfile(user.id, {
+        name: formData.name,
+        phone: formData.phone,
+        address: formData.address,
+        bio: formData.bio,
+        website: formData.website,
+        dateOfBirth: formData.dateOfBirth,
+        position: formData.position,
+        jersey: formData.jersey,
+        experience: formData.experience,
+        foot: formData.foot,
+        height: formData.height,
+        weight: formData.weight,
+      })
 
-      // If player, also update player-specific data
-      if (userRole === "player") {
-        await supabase
-          .from("players")
-          .update({
-            phone: formData.phone,
-            address: formData.address,
-            position: formData.position,
-            jersey_number: formData.jersey,
-            experience: formData.experience,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", user?.id)
+      const updatedUser = mockGetUserById(user.id)
+      if (updatedUser) {
+        setMockUserData(updatedUser)
       }
 
-      setSuccessMessage(isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!")
+      setSuccessMessage(
+        isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!"
+      )
       setIsEditing(false)
-      if (refreshProfile) {
-        await refreshProfile()
-      }
+
       setTimeout(() => {
         setSuccessMessage("")
       }, 3000)
@@ -101,38 +122,6 @@ export default function ProfilePage() {
       console.error("Error updating profile:", error)
     } finally {
       setIsSubmitting(false)
-    }
-  }
-
-  const handlePhotoClick = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // Create preview
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      setPreviewUrl(e.target?.result as string)
-    }
-    reader.readAsDataURL(file)
-
-    // Simulate upload (in production, this would upload to storage)
-    setIsUploading(true)
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      setUploadSuccess(true)
-      setTimeout(() => setUploadSuccess(false), 2000)
-      // Refresh profile after upload
-      if (refreshProfile) {
-        await refreshProfile()
-      }
-    } catch (error) {
-      console.error("Upload failed:", error)
-    } finally {
-      setIsUploading(false)
     }
   }
 
@@ -150,13 +139,8 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className={`text-muted-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "লোড হচ্ছে..." : "Loading..."}
-          </p>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     )
   }
@@ -166,271 +150,143 @@ export default function ProfilePage() {
   }
 
   const userInitials = user.name
-    ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "U"
-
-  const displayAvatar = previewUrl || user.avatar || profile?.avatar_url
-
-  const getRoleBadgeColor = (role: string | null | undefined) => {
-    switch (role) {
-      case "player":
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30"
-      case "partner":
-        return "bg-purple-500/20 text-purple-400 border-purple-500/30"
-      case "fan":
-        return "bg-green-500/20 text-green-400 border-green-500/30"
-      default:
-        return "bg-primary/20 text-primary border-primary/30"
-    }
-  }
-
-  const getRoleIcon = (role: string | null | undefined) => {
-    switch (role) {
-      case "player":
-        return <Activity className="w-3 h-3" />
-      case "partner":
-        return <Shield className="w-3 h-3" />
-      case "fan":
-        return <User className="w-3 h-3" />
-      default:
-        return <User className="w-3 h-3" />
-    }
-  }
-
-  const getStatusBadge = (status: string | undefined) => {
-    switch (status) {
-      case "approved":
-        return { color: "bg-green-500/20 text-green-400 border border-green-500/30", label: isBn ? "অনুমোদিত" : "Approved", icon: <CheckCircle className="w-3 h-3" /> }
-      case "pending":
-        return { color: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30", label: isBn ? "অপেক্ষমান" : "Pending", icon: <Loader2 className="w-3 h-3 animate-spin" /> }
-      case "rejected":
-        return { color: "bg-red-500/20 text-red-400 border border-red-500/30", label: isBn ? "প্রত্যাখ্যাত" : "Rejected", icon: null }
-      default:
-        return { color: "bg-muted text-muted-foreground", label: isBn ? "অজানা" : "Unknown", icon: null }
-    }
-  }
-
-  const statusBadge = getStatusBadge(profile?.status)
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hidden file input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-      />
-
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button
-            onClick={() => {
-              window.location.href = "/"
-            }}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">{isBn ? "ফিরে যান" : "Back"}</span>
-          </button>
-          
-          <h1 className={`text-lg font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "প্রোফাইল" : "MY PROFILE"}
-          </h1>
-          
-          <button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="flex items-center gap-2 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
+      <div className="border-b border-secondary bg-background/50 backdrop-blur-sm sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>{isBn ? "ফিরে যান" : "Back"}</span>
+            </Link>
+            <h1 className="text-2xl font-bold text-foreground">
+              {isBn ? "আমার প্রোফাইল" : "My Profile"}
+            </h1>
+            <Link
+              href="/settings"
+              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
-      </header>
+      </div>
 
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-green-500/10 border border-green-500/50 rounded-lg flex items-center gap-3 text-green-400"
+          >
+            <CheckCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{successMessage}</span>
+          </motion.div>
+        )}
+
+        {/* Profile Header Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="space-y-6"
+          className="bg-secondary rounded-lg p-8 mb-8"
         >
-          {/* Profile Header Card */}
-          <div className="bg-card rounded-2xl border border-border overflow-hidden">
-            {/* Banner with gradient */}
-            <div className="h-28 bg-gradient-to-br from-primary/30 via-primary/15 to-transparent relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('/logo.png')] bg-center bg-no-repeat bg-contain opacity-5" />
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-card to-transparent" />
-            </div>
-            
-            {/* Avatar & Basic Info */}
-            <div className="px-6 pb-6 relative">
-              {/* Avatar */}
-              <div className="relative -mt-16 mb-4 flex justify-center sm:justify-start">
-                <div className="relative group">
-                  <Avatar className="w-28 h-28 border-4 border-card shadow-xl">
-                    <AvatarImage 
-                      src={displayAvatar} 
-                      alt={user.name}
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-primary/20 to-primary/10 text-primary">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  {/* Upload Button Overlay */}
-                  <button 
-                    onClick={handlePhotoClick}
-                    disabled={isUploading}
-                    className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    {isUploading ? (
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    ) : uploadSuccess ? (
-                      <CheckCircle className="w-6 h-6 text-green-400" />
-                    ) : (
-                      <Camera className="w-6 h-6 text-white" />
-                    )}
-                  </button>
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            <Avatar className="w-32 h-32 border-4 border-primary flex-shrink-0">
+              <AvatarImage src={mockUserData?.avatar} />
+              <AvatarFallback className="text-2xl font-bold bg-primary text-foreground">
+                {userInitials}
+              </AvatarFallback>
+            </Avatar>
 
-                  {/* Camera Badge */}
-                  <button 
-                    onClick={handlePhotoClick}
-                    disabled={isUploading}
-                    className="absolute bottom-1 right-1 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg border-2 border-card disabled:opacity-50"
-                  >
-                    {isUploading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Camera className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Name & Role */}
-              <div className="flex flex-col items-center sm:items-start gap-3">
-                <div className="text-center sm:text-left">
-                  <h2 className={`text-2xl font-bold text-foreground font-[family-name:var(--font-display)] tracking-wide ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {user.name}
+            <div className="flex-1">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">
+                    {formData.name}
                   </h2>
-                  <p className="text-muted-foreground text-sm mt-0.5">{user.email}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium border border-primary/30">
+                      {user.role || "user"}
+                    </div>
+                    {formData.position && (
+                      <div className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium border border-blue-500/30">
+                        {formData.position}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold capitalize border ${getRoleBadgeColor(userRole)}`}>
-                    {getRoleIcon(userRole)}
-                    {userRole || "User"}
-                  </span>
-                  {profile?.status && (
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${statusBadge.color}`}>
-                      {statusBadge.icon}
-                      {statusBadge.label}
-                    </span>
-                  )}
-                </div>
+                {!isEditing && (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" />
+                    {isBn ? "সম্পাদনা" : "Edit"}
+                  </button>
+                )}
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="flex items-center gap-2 text-foreground/60">
+                  <Mail className="w-4 h-4 text-primary" />
+                  {formData.email}
+                </div>
+                {formData.phone && (
+                  <div className="flex items-center gap-2 text-foreground/60">
+                    <Phone className="w-4 h-4 text-primary" />
+                    {formData.phone}
+                  </div>
+                )}
+                {formData.address && (
+                  <div className="flex items-center gap-2 text-foreground/60">
+                    <MapPin className="w-4 h-4 text-primary" />
+                    {formData.address}
+                  </div>
+                )}
+              </div>
+
+              {formData.bio && (
+                <p className="mt-4 text-foreground/80">{formData.bio}</p>
+              )}
             </div>
           </div>
+        </motion.div>
 
-          {/* Quick Stats (for players) */}
-          {userRole === "player" && user.playerProfile && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="grid grid-cols-3 gap-3"
-            >
-              {user.playerProfile.position && (
-                <div className="bg-card rounded-xl border border-border p-4 text-center">
-                  <p className="text-2xl font-bold text-primary font-[family-name:var(--font-display)]">{user.playerProfile.position}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isBn ? "পজিশন" : "Position"}</p>
-                </div>
-              )}
-              {user.playerProfile.jersey && (
-                <div className="bg-card rounded-xl border border-border p-4 text-center">
-                  <p className="text-2xl font-bold text-foreground font-[family-name:var(--font-display)]">#{user.playerProfile.jersey}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isBn ? "জার্সি" : "Jersey"}</p>
-                </div>
-              )}
-              {user.playerProfile.experience && (
-                <div className="bg-card rounded-xl border border-border p-4 text-center">
-                  <p className="text-2xl font-bold text-foreground font-[family-name:var(--font-display)]">{user.playerProfile.experience}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isBn ? "��ভিজ্ঞতা" : "Experience"}</p>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Success Message */}
-          {successMessage && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-4 rounded-xl bg-green-500/20 border border-green-500 text-green-400"
-            >
-              {successMessage}
-            </motion.div>
-          )}
-
-          {/* Details Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+        {/* Edit Form */}
+        {isEditing && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="bg-card rounded-2xl border border-border p-5"
+            className="bg-secondary rounded-lg p-8 mb-8"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className={`text-xs font-semibold text-muted-foreground uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isEditing ? (isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile") : (isBn ? "অ্যাকাউন্ট তথ্য" : "Account Information")}
-              </h3>
-              {!isEditing && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-xs font-semibold text-primary hover:text-primary/80 transition"
-                >
-                  {isBn ? "সম্পাদনা" : "Edit"}
-                </button>
-              )}
-            </div>
-            
-            {isEditing ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name */}
+            <h3 className="text-xl font-bold text-foreground mb-6">
+              {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Your Profile"}
+            </h3>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "নাম" : "Name"}
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "নাম" : "Full Name"}
                   </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
-                {/* Email */}
                 <div>
-                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইমেইল" : "Email"}
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    disabled
-                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground disabled:opacity-60 focus:outline-none transition"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     {isBn ? "ফোন" : "Phone"}
                   </label>
                   <input
@@ -438,14 +294,13 @@ export default function ProfilePage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder={isBn ? "আপনার ফোন নম্বর" : "Your phone number"}
-                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                    placeholder="+880 171 1234567"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
-                {/* Address */}
                 <div>
-                  <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     {isBn ? "ঠিকানা" : "Address"}
                   </label>
                   <input
@@ -453,262 +308,232 @@ export default function ProfilePage() {
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    placeholder={isBn ? "আপনার ঠিকানা" : "Your address"}
-                    className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
+                    placeholder="City, Country"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
                   />
                 </div>
 
-                {/* Player-specific fields */}
-                {userRole === "player" && (
-                  <>
-                    <div>
-                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "পজিশন" : "Position"}
-                      </label>
-                      <input
-                        type="text"
-                        name="position"
-                        value={formData.position}
-                        onChange={handleInputChange}
-                        placeholder={isBn ? "আপনার পজিশন" : "Your position"}
-                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "জার্সি নম্বর" : "Jersey Number"}
-                      </label>
-                      <input
-                        type="text"
-                        name="jersey"
-                        value={formData.jersey}
-                        onChange={handleInputChange}
-                        placeholder={isBn ? "জার্সি নম্বর" : "Jersey number"}
-                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className={`text-xs font-semibold text-muted-foreground block mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "অভিজ্ঞতা" : "Experience"}
-                      </label>
-                      <input
-                        type="text"
-                        name="experience"
-                        value={formData.experience}
-                        onChange={handleInputChange}
-                        placeholder={isBn ? "অভিজ্ঞতা" : "Years of experience"}
-                        className="w-full p-3 rounded-lg bg-muted/30 border border-border text-foreground focus:outline-none focus:border-primary transition"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold transition disabled:opacity-50"
-                  >
-                    {isSubmitting ? (isBn ? "সংরক্ষণ করা হচ্ছে..." : "Saving...") : (isBn ? "সংরক্ষণ" : "Save")}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="flex-1 px-4 py-2 border border-border text-foreground hover:bg-muted/50 rounded-lg font-semibold transition"
-                  >
-                    {isBn ? "বাতিল" : "Cancel"}
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "ওয়েবসাইট" : "Website"}
+                  </label>
+                  <input
+                    type="url"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
                 </div>
-              </form>
-            ) : (
-              <div className="space-y-3">
-              {/* Email */}
-              <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5 text-primary" />
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "জন্মতারিখ" : "Date of Birth"}
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইমেইল" : "Email Address"}
-                  </p>
-                  <p className="text-foreground font-medium truncate">{user.email}</p>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "অবস্থান" : "Position"}
+                  </label>
+                  <input
+                    type="text"
+                    name="position"
+                    value={formData.position}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Forward"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "জার্সি" : "Jersey Number"}
+                  </label>
+                  <input
+                    type="text"
+                    name="jersey"
+                    value={formData.jersey}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 7"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "অভিজ্ঞতা" : "Experience"}
+                  </label>
+                  <input
+                    type="text"
+                    name="experience"
+                    value={formData.experience}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 5+ years"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "উচ্চতা" : "Height"}
+                  </label>
+                  <input
+                    type="text"
+                    name="height"
+                    value={formData.height}
+                    onChange={handleInputChange}
+                    placeholder={'5\'10"'}
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "ওজন" : "Weight"}
+                  </label>
+                  <input
+                    type="text"
+                    name="weight"
+                    value={formData.weight}
+                    onChange={handleInputChange}
+                    placeholder="75kg"
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {isBn ? "পা" : "Preferred Foot"}
+                  </label>
+                  <select
+                    name="foot"
+                    value={formData.foot}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  >
+                    <option value="">Select</option>
+                    <option value="Right">Right</option>
+                    <option value="Left">Left</option>
+                    <option value="Both">Both</option>
+                  </select>
                 </div>
               </div>
 
-              {/* Phone (if available) */}
-              {user.playerProfile?.phone && (
-                <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn ? "ফোন" : "Phone Number"}
-                    </p>
-                    <p className="text-foreground font-medium">{user.playerProfile.phone}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Address (if available) */}
-              {user.playerProfile?.address && (
-                <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn ? "ঠিকানা" : "Address"}
-                    </p>
-                    <p className="text-foreground font-medium">{user.playerProfile.address}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* User ID */}
-              <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ইউজার আইডি" : "User ID"}
-                  </p>
-                  <p className="text-foreground font-medium font-mono text-sm truncate">{user.id}</p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  {isBn ? "বায়ো" : "Bio"}
+                </label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                />
               </div>
 
-              {/* Member Since */}
-              {profile?.created_at && (
-                <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs text-muted-foreground mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn ? "সদস্যপদ শুরু" : "Member Since"}
-                    </p>
-                    <p className="text-foreground font-medium">
-                      {new Date(profile.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
-                    </p>
-                  </div>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {isBn ? "সংরক্ষণ করছে..." : "Saving..."}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {isBn ? "সংরক্ষণ করুন" : "Save Changes"}
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-6 py-2 bg-secondary text-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors flex items-center gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  {isBn ? "বাতিল" : "Cancel"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+
+        {/* Profile Details */}
+        {!isEditing && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-secondary rounded-lg p-8 mb-8"
+          >
+            <h3 className="text-xl font-bold text-foreground mb-6">
+              {isBn ? "বিস্তারিত তথ্য" : "Detailed Information"}
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {formData.experience && (
+                <div className="p-4 bg-background rounded-lg">
+                  <p className="text-sm text-foreground/60 mb-1">{isBn ? "অভিজ্ঞতা" : "Experience"}</p>
+                  <p className="text-lg font-semibold text-foreground">{formData.experience}</p>
+                </div>
+              )}
+              {formData.height && (
+                <div className="p-4 bg-background rounded-lg">
+                  <p className="text-sm text-foreground/60 mb-1">{isBn ? "উচ্চতা" : "Height"}</p>
+                  <p className="text-lg font-semibold text-foreground">{formData.height}</p>
+                </div>
+              )}
+              {formData.weight && (
+                <div className="p-4 bg-background rounded-lg">
+                  <p className="text-sm text-foreground/60 mb-1">{isBn ? "ওজন" : "Weight"}</p>
+                  <p className="text-lg font-semibold text-foreground">{formData.weight}</p>
+                </div>
+              )}
+              {formData.foot && (
+                <div className="p-4 bg-background rounded-lg">
+                  <p className="text-sm text-foreground/60 mb-1">{isBn ? "পা" : "Preferred Foot"}</p>
+                  <p className="text-lg font-semibold text-foreground">{formData.foot}</p>
                 </div>
               )}
             </div>
-            )}
           </motion.div>
+        )}
 
-          {/* Actions */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-3"
+        {/* Logout Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="flex items-center gap-2 px-6 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors border border-red-500/30 disabled:opacity-50"
           >
-            {/* Edit Profile (Players) */}
-            {userRole === "player" && (
-              <button
-                onClick={() => router.push("/dashboard/player/profile")}
-                className="w-full flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:bg-muted/50 hover:border-primary/30 transition-all group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Settings className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <span className={`font-medium text-foreground block ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn ? "প্রোফাইল সম্পাদনা" : "Edit Player Profile"}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {isBn ? "আপনার তথ্য আপডেট করুন" : "Update your information"}
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </button>
+            {isLoggingOut ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {isBn ? "লগ আউট হচ্ছে..." : "Logging out..."}
+              </>
+            ) : (
+              <>
+                <LogOut className="w-4 h-4" />
+                {isBn ? "লগ আউট করুন" : "Logout"}
+              </>
             )}
-
-            {/* Dashboard */}
-            <button
-              onClick={() => {
-                if (userRole === "player") router.push("/dashboard/player")
-                else if (userRole === "partner") router.push("/dashboard/partner")
-                else router.push("/dashboard/fan")
-              }}
-              className="w-full flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:bg-muted/50 hover:border-primary/30 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <Activity className="w-5 h-5 text-primary" />
-                </div>
-                <div className="text-left">
-                  <span className={`font-medium text-foreground block ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "ড্যাশবোর্ড" : "Go to Dashboard"}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {isBn ? "আপনার কার্যকলাপ দেখুন" : "View your activity"}
-                  </span>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-            </button>
-
-            {/* Upload Photo Button */}
-            <button
-              onClick={handlePhotoClick}
-              disabled={isUploading}
-              className="w-full flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:bg-muted/50 hover:border-primary/30 transition-all group disabled:opacity-50"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  {isUploading ? (
-                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  ) : (
-                    <Upload className="w-5 h-5 text-primary" />
-                  )}
-                </div>
-                <div className="text-left">
-                  <span className={`font-medium text-foreground block ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isUploading ? (isBn ? "আপলোড হচ্ছে..." : "Uploading...") : (isBn ? "ছবি পরিবর্তন করুন" : "Change Profile Photo")}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {isBn ? "JPG, PNG সমর্থিত" : "JPG, PNG supported"}
-                  </span>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-            </button>
-
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="w-full flex items-center justify-between p-4 rounded-xl bg-destructive/10 border border-destructive/20 hover:bg-destructive/20 transition-all disabled:opacity-50 group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center group-hover:bg-destructive/30 transition-colors">
-                  <LogOut className="w-5 h-5 text-destructive" />
-                </div>
-                <div className="text-left">
-                  <span className={`font-medium text-destructive block ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isLoggingOut ? (isBn ? "লগআউট হচ্ছে..." : "Logging out...") : (isBn ? "লগআউট" : "Log Out")}
-                  </span>
-                  <span className="text-xs text-destructive/70">
-                    {isBn ? "আপনার অ্যাকাউন্ট থেকে বের হন" : "Sign out of your account"}
-                  </span>
-                </div>
-              </div>
-            </button>
-          </motion.div>
-        </motion.div>
-      </main>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
