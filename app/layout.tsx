@@ -32,6 +32,10 @@ const notoSansBengali = Noto_Sans_Bengali({
 export const metadata: Metadata = {
   title: 'Titan Force FC | Mulikandi Football Club | টাইটান ফোর্স এফসি',
   description: 'Pride · Passion · Power - Official website of Titan Force FC, a passionate football club from Mulikandi, Sylhet. গর্ব · আবেগ · শক্তি',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.png',
+  },
 }
 
 export const dynamic = "force-dynamic"
