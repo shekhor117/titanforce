@@ -123,17 +123,24 @@ export class DataService {
   // Players
   async getPlayers(): Promise<Player[]> {
     console.log("[v0] DataService: Fetching players from Supabase")
-    const { data, error } = await this.supabase
-      .from('players')
-      .select('*')
-      .order('num', { ascending: true })
+    try {
+      const { data, error } = await this.supabase
+        .from('players')
+        .select('*')
+        .order('num', { ascending: true })
 
-    if (error) {
-      console.error("[v0] DataService: getPlayers error:", error)
-      throw error
+      if (error) {
+        console.error("[v0] DataService: getPlayers error:", error)
+        // Log the error but don't throw - return empty array for graceful degradation
+        console.error("[v0] DataService: Returning empty players array due to error")
+        return []
+      }
+      console.log("[v0] DataService: Got", data?.length || 0, "players")
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService: getPlayers exception:", error)
+      return []
     }
-    console.log("[v0] DataService: Got", data?.length || 0, "players")
-    return data || []
   }
 
   async getPlayer(id: string): Promise<Player | null> {
@@ -238,13 +245,24 @@ export class DataService {
 
   // Matches
   async getMatches(): Promise<Match[]> {
-    const { data, error } = await this.supabase
-      .from('matches')
-      .select('*')
-      .order('date', { ascending: false })
+    console.log("[v0] DataService: Fetching matches from Supabase")
+    try {
+      const { data, error } = await this.supabase
+        .from('matches')
+        .select('*')
+        .order('date', { ascending: false })
 
-    if (error) throw error
-    return data || []
+      if (error) {
+        console.error("[v0] DataService: getMatches error:", error)
+        console.error("[v0] DataService: Returning empty matches array due to error")
+        return []
+      }
+      console.log("[v0] DataService: Got", data?.length || 0, "matches")
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService: getMatches exception:", error)
+      return []
+    }
   }
 
   async createMatch(match: Omit<Match, 'id' | 'created_at' | 'updated_at'>): Promise<Match> {
@@ -328,13 +346,24 @@ export class DataService {
 
   // Partners
   async getPartners(): Promise<Partner[]> {
-    const { data, error } = await this.supabase
-      .from('partners')
-      .select('*')
-      .order('name', { ascending: true })
+    console.log("[v0] DataService: Fetching partners from Supabase")
+    try {
+      const { data, error } = await this.supabase
+        .from('partners')
+        .select('*')
+        .order('name', { ascending: true })
 
-    if (error) throw error
-    return data || []
+      if (error) {
+        console.error("[v0] DataService: getPartners error:", error)
+        console.error("[v0] DataService: Returning empty partners array due to error")
+        return []
+      }
+      console.log("[v0] DataService: Got", data?.length || 0, "partners")
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService: getPartners exception:", error)
+      return []
+    }
   }
 
   async createPartner(partner: Omit<Partner, 'id' | 'created_at' | 'updated_at'>): Promise<Partner> {
@@ -418,16 +447,27 @@ export class DataService {
 
   // News Items
   async getNewsItems(includeUnpublished = false): Promise<NewsItem[]> {
-    let query = this.supabase.from('news_items').select('*')
+    console.log("[v0] DataService: Fetching news items from Supabase")
+    try {
+      let query = this.supabase.from('news_items').select('*')
 
-    if (!includeUnpublished) {
-      query = query.eq('status', 'published')
+      if (!includeUnpublished) {
+        query = query.eq('status', 'published')
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false })
+
+      if (error) {
+        console.error("[v0] DataService: getNewsItems error:", error)
+        console.error("[v0] DataService: Returning empty news items array due to error")
+        return []
+      }
+      console.log("[v0] DataService: Got", data?.length || 0, "news items")
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService: getNewsItems exception:", error)
+      return []
     }
-
-    const { data, error } = await query.order('created_at', { ascending: false })
-
-    if (error) throw error
-    return data || []
   }
 
   async createNewsItem(item: Omit<NewsItem, 'id' | 'created_at' | 'updated_at'>): Promise<NewsItem> {

@@ -21,19 +21,26 @@ export function FeatureProtectedRoute({
   const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const [isRedirecting, setIsRedirecting] = useState(false)
+  const [hasAccess, setHasAccess] = useState(false)
+  const [showAccessDenied, setShowAccessDenied] = useState(false)
 
-  const isAdmin = admin?.role === "admin"
+  // Check if user has admin or moderator access
+  const isAuthorized = admin?.role === "admin" || admin?.role === "moderator"
 
   useEffect(() => {
-    // Only redirect if fully initialized and user is not admin
-    if (isInitialized && !isAdmin && !isRedirecting) {
-      setIsRedirecting(true)
-      setTimeout(() => {
-        router.push("/admin/dashboard")
-      }, 1000)
+    if (!isInitialized) return
+
+    if (isAuthorized) {
+      setHasAccess(true)
+    } else {
+      setShowAccessDenied(true)
+      // Redirect to login after 3 seconds if not authorized
+      const timer = setTimeout(() => {
+        router.push("/admin-login")
+      }, 3000)
+      return () => clearTimeout(timer)
     }
-  }, [admin, isInitialized, isRedirecting, router, isAdmin])
+  }, [admin, isInitialized, isAuthorized, router])
 
   // Show loading state while initializing
   if (!isInitialized) {
@@ -47,13 +54,13 @@ export function FeatureProtectedRoute({
     )
   }
 
-  // If user is admin, render content
-  if (isAdmin) {
+  // If user is authorized, render content
+  if (hasAccess) {
     return <>{children}</>
   }
 
-  // If initialized but not admin, show access denied message
-  if (isInitialized && !isAdmin) {
+  // If initialized but not authorized, show access denied message
+  if (showAccessDenied) {
     const categoryLabel = category === "tools" ? (isBn ? "উন্নত সরঞ্জাম" : "Advanced Tools") : (isBn ? "দলের বৈশিষ্ট্য" : "Team Features")
     
     return (
@@ -77,16 +84,16 @@ export function FeatureProtectedRoute({
           </p>
 
           <p className={`text-sm text-foreground/50 mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "আপনি শীঘ্রই ড্যাশবোর্ডে পুনঃনির্দেশিত হবেন..." : "You will be redirected to the dashboard..."}
+            {isBn ? "আপনি শীঘ্রই লগইন পৃষ্ঠায় পুনঃনির্দেশিত হবেন..." : "You will be redirected to the login page..."}
           </p>
 
           <button
-            onClick={() => router.push("/admin/dashboard")}
+            onClick={() => router.push("/admin-login")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className={`text-sm font-semibold uppercase ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "ড্যাশবোর্ডে ফিরুন" : "Return to Dashboard"}
+              {isBn ? "লগইনে ফিরুন" : "Return to Login"}
             </span>
           </button>
         </div>

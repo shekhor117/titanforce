@@ -28,25 +28,38 @@ export function MatchVoting() {
 
   // Load players from data store
   useEffect(() => {
-    const loadedPlayers = dataStore.getPlayers()
-    const playersWithVotes = loadedPlayers.map(p => ({
-      id: p.id,
-      name: p.name,
-      number: p.num,
-      position: p.cat,
-      votes: dataStore.getPlayerVoteCount(p.id, "motm")
-    }))
-    setPlayers(playersWithVotes)
-    
-    // Check if user already voted
-    const existingVotes = dataStore.getPlayerVotes()
-    const visitorId = dataStore.getVisitorId()
-    const userVote = existingVotes.find(v => v.visitorId === visitorId && v.voteType === "motm" && v.matchId === MATCH_ID)
-    if (userVote) {
-      setHasVoted(true)
-      setShowResults(true)
-      setSelectedPlayer(userVote.playerId)
+    const loadPlayers = async () => {
+      try {
+        const loadedPlayers = await Promise.resolve(dataStore.getPlayers())
+        const safePlayersArray = (loadedPlayers ?? []).filter(p => p !== null && p !== undefined)
+        
+        const playersWithVotes = (safePlayersArray ?? []).map(p => ({
+          id: p.id,
+          name: p.name,
+          number: p.num ?? p.number ?? 0,
+          position: p.cat ?? p.position ?? "",
+          votes: dataStore.getPlayerVoteCount(p.id, "motm") ?? 0
+        }))
+        setPlayers(playersWithVotes)
+        
+        // Check if user already voted
+        const existingVotes = dataStore.getPlayerVotes() ?? []
+        const visitorId = dataStore.getVisitorId()
+        const userVote = (existingVotes ?? []).find(v => 
+          v?.visitorId === visitorId && v?.voteType === "motm" && v?.matchId === MATCH_ID
+        )
+        if (userVote) {
+          setHasVoted(true)
+          setShowResults(true)
+          setSelectedPlayer(userVote.playerId)
+        }
+      } catch (error) {
+        console.error("[v0] Error loading players for voting:", error)
+        setPlayers([])
+      }
     }
+    
+    loadPlayers()
   }, [])
 
   useEffect(() => {

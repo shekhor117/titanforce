@@ -12,19 +12,22 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
   const { language } = useLanguage()
   const isBn = language === "bn"
 
-  // Calculate aggregate stats
-  const totalGoals = players.reduce((sum, p) => sum + (p.goals || 0), 0)
-  const totalAssists = players.reduce((sum, p) => sum + (p.assists || 0), 0)
-  const totalAppearances = players.reduce((sum, p) => sum + (p.appearances || 0), 0)
-  const totalMinutes = players.reduce((sum, p) => sum + ((p.minutes_played || p.minutes) || 0), 0)
+  // Ensure players is always an array
+  const safePlayersArray = (players ?? []).filter((p) => p !== null && p !== undefined)
+
+  // Calculate aggregate stats with null-safety
+  const totalGoals = (safePlayersArray ?? []).reduce((sum, p) => sum + (p?.goals ?? 0), 0)
+  const totalAssists = (safePlayersArray ?? []).reduce((sum, p) => sum + (p?.assists ?? 0), 0)
+  const totalAppearances = (safePlayersArray ?? []).reduce((sum, p) => sum + (p?.appearances ?? 0), 0)
+  const totalMinutes = (safePlayersArray ?? []).reduce((sum, p) => sum + ((p?.minutes_played ?? p?.minutes) ?? 0), 0)
   const avgRating =
-    players.length > 0
-      ? (players.reduce((sum, p) => sum + ((p.average_rating || p.averageRating) || 0), 0) / players.length).toFixed(2)
+    (safePlayersArray ?? []).length > 0
+      ? ((safePlayersArray ?? []).reduce((sum, p) => sum + ((p?.average_rating ?? p?.averageRating) ?? 0), 0) / (safePlayersArray ?? []).length).toFixed(2)
       : "0"
 
-  const injuredPlayers = players.filter((p) => p.status === "injured").length
-  const suspendedPlayers = players.filter((p) => p.status === "suspended").length
-  const activePlayers = players.filter((p) => p.status === "active").length
+  const injuredPlayers = (safePlayersArray ?? []).filter((p) => p?.status === "injured").length
+  const suspendedPlayers = (safePlayersArray ?? []).filter((p) => p?.status === "suspended").length
+  const activePlayers = (safePlayersArray ?? []).filter((p) => p?.status === "active").length
 
   const stats = [
     {

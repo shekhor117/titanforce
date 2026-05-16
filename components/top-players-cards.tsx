@@ -14,10 +14,13 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
   const { language } = useLanguage()
   const isBn = language === "bn"
 
+  // Ensure players is always an array with no null values
+  const safePlayersArray = (players ?? []).filter((p) => p !== null && p !== undefined)
+
   // Sort by goals (top scorers)
-  const topScorers = [...players]
-    .filter((p) => p.status === "active")
-    .sort((a, b) => (b.goals || 0) - (a.goals || 0))
+  const topScorers = (safePlayersArray ?? [])
+    .filter((p) => p?.status === "active")
+    .sort((a, b) => ((b?.goals ?? 0) - (a?.goals ?? 0)))
     .slice(0, limit)
 
   const getPositionColor = (cat: string) => {
