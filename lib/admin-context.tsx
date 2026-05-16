@@ -103,23 +103,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [supabase])
 
   const login = async (email: string, password: string) => {
+    console.log("[v0] AdminProvider.login() called with email:", email)
     setIsLoading(true)
     setError(null)
 
     try {
+      console.log("[v0] Calling signInWithEmail...")
       // Use Supabase authentication
       const user = await signInWithEmail(email, password)
       
+      console.log("[v0] User logged in, role:", user.role)
+      
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
+        console.log("[v0] User role is not admin/moderator, signing out")
         await signOut()
         throw new Error("Your account does not have admin access")
       }
 
+      console.log("[v0] Admin login successful")
       setAdmin(user)
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
+      console.log("[v0] Login error:", message)
       setError(message)
       setIsLoading(false)
       throw err
