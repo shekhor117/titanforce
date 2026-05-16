@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
 import { signInWithEmail, signOut, AuthUser } from "@/lib/auth-utils"
-import { createClient } from "@/lib/supabase/client"
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
 
 interface AdminContextType {
   admin: AuthUser | null
@@ -11,6 +11,7 @@ interface AdminContextType {
   isLoading: boolean
   error: string | null
   isInitialized: boolean
+  isConfigured: boolean
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
@@ -20,6 +21,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [isConfigured] = useState(() => isSupabaseConfigured())
 
   const supabase = createClient()
 
@@ -27,6 +29,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true
     let subscription: any = null
+    
+    // If Supabase is not configured, mark as initialized and return
+    if (!supabase) {
+      setIsInitialized(true)
+      return
+    }
     
     const initializeAuth = async () => {
       try {
@@ -133,7 +141,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AdminContext.Provider value={{ admin, login, logout, isLoading, error, isInitialized }}>
+    <AdminContext.Provider value={{ admin, login, logout, isLoading, error, isInitialized, isConfigured }}>
       {children}
     </AdminContext.Provider>
   )

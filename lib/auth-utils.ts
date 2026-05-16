@@ -14,6 +14,10 @@ export async function signUpWithEmail(
   name: string
 ): Promise<{ user: AuthUser; requiresVerification: boolean }> {
   const supabase = createClient()
+  
+  if (!supabase) {
+    throw new Error("Authentication is not configured")
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -52,6 +56,10 @@ export async function signInWithEmail(
   password: string
 ): Promise<AuthUser> {
   const supabase = createClient()
+  
+  if (!supabase) {
+    throw new Error("Authentication is not configured")
+  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -80,6 +88,10 @@ export async function signInWithEmail(
 
 export async function signOut(): Promise<void> {
   const supabase = createClient()
+  
+  if (!supabase) {
+    return
+  }
 
   const { error } = await supabase.auth.signOut()
   if (error) {
@@ -89,6 +101,10 @@ export async function signOut(): Promise<void> {
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
   const supabase = createClient()
+  
+  if (!supabase) {
+    return null
+  }
 
   const { data } = await supabase.auth.getUser()
   if (!data.user) {
@@ -108,6 +124,10 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
 export async function sendPasswordReset(email: string): Promise<void> {
   const supabase = createClient()
+  
+  if (!supabase) {
+    throw new Error("Authentication is not configured")
+  }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/admin/auth/reset-password`,

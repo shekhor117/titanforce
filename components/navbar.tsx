@@ -1,17 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, X, Globe, LogOut } from "lucide-react"
+import { Menu, X, Globe } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { language, setLanguage, t } = useLanguage()
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
 
   const navLinks = [
     { href: "#home", label: t.nav.home },
@@ -69,21 +70,7 @@ export function Navbar() {
           </button>
 
           {user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href={`/dashboard/${user.role}`}
-                className={`px-4 py-2 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                {user.name}
-              </Link>
-              <button
-                onClick={logout}
-                className="p-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition"
-                title="Logout"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
+            <UserProfileDropdown />
           ) : (
             <Link
               href="/login"
@@ -121,25 +108,7 @@ export function Navbar() {
             </div>
 
             {user ? (
-              <>
-                <Link
-                  href={`/dashboard/${user.role}`}
-                  className={`px-4 py-2.5 rounded-full border-2 border-primary text-primary text-center text-xs font-bold transition hover:bg-primary/10 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {user.name}
-                </Link>
-                <button
-                  onClick={() => {
-                    logout()
-                    setMobileMenuOpen(false)
-                  }}
-                  className={`px-4 py-2.5 flex items-center justify-center gap-2 border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground transition rounded text-xs font-bold ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  <LogOut className="w-4 h-4" />
-                  {language === "bn" ? "লগআউট" : "Logout"}
-                </button>
-              </>
+              <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
             ) : (
               <Link
                 href="/login"

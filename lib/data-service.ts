@@ -1,7 +1,7 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
-import type { RealtimeChannel } from '@supabase/supabase-js'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
+import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 
 // Types
 export interface Player {
@@ -111,18 +111,40 @@ export interface Fan {
   updated_at: string
 }
 
+export interface ContactMessage {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+  status: 'unread' | 'read' | 'replied'
+  created_at: string
+  updated_at: string
+}
+
 // Callback types
 type DataCallback<T> = (data: T[]) => void
 type ErrorCallback = (error: Error) => void
 
 // Data Service
 export class DataService {
-  private supabase = createClient()
+  private supabase: ReturnType<typeof createClient>
   private subscriptions: Map<string, RealtimeChannel> = new Map()
+  private isConfigured: boolean
+
+  constructor() {
+    this.supabase = createClient()
+    this.isConfigured = isSupabaseConfigured()
+  }
 
   // Players
   async getPlayers(): Promise<Player[]> {
     console.log("[v0] DataService: Fetching players from Supabase")
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, returning empty array")
+      return []
+    }
     try {
       const { data, error } = await this.supabase
         .from('players')
@@ -144,6 +166,7 @@ export class DataService {
   }
 
   async getPlayer(id: string): Promise<Player | null> {
+    if (!this.supabase) return null
     const { data, error } = await this.supabase
       .from('players')
       .select('*')
@@ -155,6 +178,7 @@ export class DataService {
   }
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at' | 'updated_at'>): Promise<Player> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('players')
       .insert([player])
@@ -166,6 +190,7 @@ export class DataService {
   }
 
   async updatePlayer(id: string, updates: Partial<Player>): Promise<Player> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('players')
       .update(updates)
@@ -178,6 +203,7 @@ export class DataService {
   }
 
   async deletePlayer(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error } = await this.supabase
       .from('players')
       .delete()
@@ -188,6 +214,11 @@ export class DataService {
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {
     console.log("[v0] DataService: Subscribing to players changes")
+    
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, skipping subscription")
+      return () => {}
+    }
     
     // Clean up any existing subscription first
     const existingChannel = this.subscriptions.get('players')
@@ -246,6 +277,10 @@ export class DataService {
   // Matches
   async getMatches(): Promise<Match[]> {
     console.log("[v0] DataService: Fetching matches from Supabase")
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, returning empty array")
+      return []
+    }
     try {
       const { data, error } = await this.supabase
         .from('matches')
@@ -266,6 +301,7 @@ export class DataService {
   }
 
   async createMatch(match: Omit<Match, 'id' | 'created_at' | 'updated_at'>): Promise<Match> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('matches')
       .insert([match])
@@ -277,6 +313,7 @@ export class DataService {
   }
 
   async updateMatch(id: string, updates: Partial<Match>): Promise<Match> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('matches')
       .update(updates)
@@ -289,6 +326,7 @@ export class DataService {
   }
 
   async deleteMatch(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error } = await this.supabase
       .from('matches')
       .delete()
@@ -299,6 +337,11 @@ export class DataService {
 
   subscribeToMatches(callback: DataCallback<Match>, onError?: ErrorCallback): () => void {
     console.log("[v0] DataService: Subscribing to matches changes")
+    
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, skipping subscription")
+      return () => {}
+    }
     
     // Clean up any existing subscription first
     const existingChannel = this.subscriptions.get('matches')
@@ -347,6 +390,10 @@ export class DataService {
   // Partners
   async getPartners(): Promise<Partner[]> {
     console.log("[v0] DataService: Fetching partners from Supabase")
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, returning empty array")
+      return []
+    }
     try {
       const { data, error } = await this.supabase
         .from('partners')
@@ -367,6 +414,7 @@ export class DataService {
   }
 
   async createPartner(partner: Omit<Partner, 'id' | 'created_at' | 'updated_at'>): Promise<Partner> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('partners')
       .insert([partner])
@@ -378,6 +426,7 @@ export class DataService {
   }
 
   async updatePartner(id: string, updates: Partial<Partner>): Promise<Partner> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('partners')
       .update(updates)
@@ -390,6 +439,7 @@ export class DataService {
   }
 
   async deletePartner(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error } = await this.supabase
       .from('partners')
       .delete()
@@ -400,6 +450,11 @@ export class DataService {
 
   subscribeToPartners(callback: DataCallback<Partner>, onError?: ErrorCallback): () => void {
     console.log("[v0] DataService: Subscribing to partners changes")
+    
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, skipping subscription")
+      return () => {}
+    }
     
     // Clean up any existing subscription first
     const existingChannel = this.subscriptions.get('partners')
@@ -448,6 +503,10 @@ export class DataService {
   // News Items
   async getNewsItems(includeUnpublished = false): Promise<NewsItem[]> {
     console.log("[v0] DataService: Fetching news items from Supabase")
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, returning empty array")
+      return []
+    }
     try {
       let query = this.supabase.from('news_items').select('*')
 
@@ -471,6 +530,7 @@ export class DataService {
   }
 
   async createNewsItem(item: Omit<NewsItem, 'id' | 'created_at' | 'updated_at'>): Promise<NewsItem> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('news_items')
       .insert([item])
@@ -482,6 +542,7 @@ export class DataService {
   }
 
   async updateNewsItem(id: string, updates: Partial<NewsItem>): Promise<NewsItem> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('news_items')
       .update(updates)
@@ -494,6 +555,7 @@ export class DataService {
   }
 
   async deleteNewsItem(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error } = await this.supabase
       .from('news_items')
       .delete()
@@ -504,6 +566,11 @@ export class DataService {
 
   subscribeToNewsItems(callback: DataCallback<NewsItem>, onError?: ErrorCallback): () => void {
     console.log("[v0] DataService: Subscribing to news changes")
+    
+    if (!this.supabase) {
+      console.log("[v0] DataService: Supabase not configured, skipping subscription")
+      return () => {}
+    }
     
     // Clean up any existing subscription first
     const existingChannel = this.subscriptions.get('news')
@@ -551,6 +618,7 @@ export class DataService {
 
   // Media Items
   async getMediaItems(): Promise<MediaItem[]> {
+    if (!this.supabase) return []
     const { data, error } = await this.supabase
       .from('media_items')
       .select('*')
@@ -561,6 +629,7 @@ export class DataService {
   }
 
   async createMediaItem(item: Omit<MediaItem, 'id' | 'created_at' | 'updated_at'>): Promise<MediaItem> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('media_items')
       .insert([item])
@@ -572,6 +641,7 @@ export class DataService {
   }
 
   async updateMediaItem(id: string, updates: Partial<MediaItem>): Promise<MediaItem> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { data, error } = await this.supabase
       .from('media_items')
       .update(updates)
@@ -584,6 +654,7 @@ export class DataService {
   }
 
   async deleteMediaItem(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error } = await this.supabase
       .from('media_items')
       .delete()
@@ -593,6 +664,7 @@ export class DataService {
   }
 
   subscribeToMediaItems(callback: DataCallback<MediaItem>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) return () => {}
     const channel = this.supabase
       .channel('media-changes')
       .on(
@@ -623,6 +695,7 @@ export class DataService {
 
   // Site Settings
   async getSiteSettings(): Promise<Record<string, any>> {
+    if (!this.supabase) return {}
     const { data, error } = await this.supabase
       .from('site_settings')
       .select('*')
@@ -637,6 +710,7 @@ export class DataService {
   }
 
   async updateSiteSetting(key: string, value: Record<string, any>): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
     const { error: deleteError } = await this.supabase
       .from('site_settings')
       .delete()
@@ -651,10 +725,93 @@ export class DataService {
     if (insertError) throw insertError
   }
 
+  // Contact Messages
+  async getContactMessages(): Promise<ContactMessage[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('[v0] DataService: Error fetching contact messages:', error)
+      return []
+    }
+  }
+
+  async createContactMessage(message: Omit<ContactMessage, 'id' | 'created_at' | 'updated_at'>): Promise<ContactMessage> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('contact_messages')
+      .insert([message])
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async updateContactMessage(id: string, updates: Partial<ContactMessage>): Promise<ContactMessage> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('contact_messages')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async deleteContactMessage(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase
+      .from('contact_messages')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  }
+
+  subscribeToContactMessages(callback: DataCallback<ContactMessage>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) return () => {}
+    
+    const existingChannel = this.subscriptions.get('contact_messages')
+    if (existingChannel) {
+      this.supabase.removeChannel(existingChannel)
+    }
+
+    const channel = this.supabase
+      .channel('contact-messages-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, async () => {
+        try {
+          const messages = await this.getContactMessages()
+          callback(messages)
+        } catch (error) {
+          onError?.(error as Error)
+        }
+      })
+      .subscribe()
+
+    this.subscriptions.set('contact_messages', channel)
+
+    return () => {
+      if (this.supabase) {
+        this.supabase.removeChannel(channel)
+      }
+      this.subscriptions.delete('contact_messages')
+    }
+  }
+
   // Cleanup
   unsubscribeAll(): void {
+    if (!this.supabase) return
     this.subscriptions.forEach((channel) => {
-      this.supabase.removeChannel(channel)
+      this.supabase!.removeChannel(channel)
     })
     this.subscriptions.clear()
   }

@@ -5,8 +5,6 @@ import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
 import { FeaturedPlayers } from "@/components/featured-players"
-import { Squad } from "@/components/squad"
-import { Matches } from "@/components/matches"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -38,8 +36,6 @@ export default function Home() {
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <About />
         <FeaturedPlayers />
-        <Squad />
-        <Matches />
         <Contact />
       </main>
       {!heroLoading && <Footer />}

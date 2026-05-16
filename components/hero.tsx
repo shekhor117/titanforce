@@ -46,17 +46,17 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 alt="Opening Logo"
                 width={160}
                 height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2s_ease] drop-shadow-[0_0_40px_rgba(59,130,246,0.9)]"
+                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(59,130,246,0.9)]"
                 priority
               />
             </div>
 
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2s_ease] font-[var(--font-display)]">
+            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2.2s_cubic-bezier(0.25,0.46,0.45,0.94)] font-[var(--font-display)]">
               TITAN FORCE
             </h1>
 
             <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 animate-[loadingBar_3s_linear_forwards]" />
+              <div className="h-full bg-red-500 animate-[loadingBar_3s_cubic-bezier(0.42,0,0.58,1)_forwards]" />
             </div>
 
             <p className="mt-4 text-zinc-400 tracking-[6px] text-sm animate-pulse">
@@ -236,6 +236,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               filter: blur(20px);
             }
 
+            50% {
+              opacity: 0.8;
+            }
+
             100% {
               opacity: 1;
               transform: scale(1) rotate(0deg);
@@ -250,6 +254,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               transform: translateY(40px);
             }
 
+            60% {
+              opacity: 0.9;
+            }
+
             100% {
               opacity: 1;
               letter-spacing: 10px;
@@ -258,12 +266,18 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           }
 
           @keyframes loadingBar {
-            from {
+            0% {
               width: 0%;
+              opacity: 0.3;
             }
 
-            to {
+            50% {
+              opacity: 1;
+            }
+
+            100% {
               width: 100%;
+              opacity: 1;
             }
           }
 

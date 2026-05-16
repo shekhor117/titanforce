@@ -51,20 +51,14 @@ export function Contact() {
     
     setIsSubmitting(true)
     try {
-      // Save to localStorage
-      const existingMessages = JSON.parse(localStorage.getItem("titanforce_messages") || "[]")
-      const newMessage = {
-        id: Math.random().toString(36).substr(2, 9),
+      // Save using dataStore (works with both localStorage fallback and Supabase when connected)
+      dataStore.addContact({
         name,
         email,
-        phone,
+        phone: phone || undefined,
         subject: isBn ? "ওয়েবসাইট থেকে বার্তা" : "Message from Website",
         message,
-        timestamp: new Date().toISOString(),
-        status: "unread",
-      }
-      existingMessages.push(newMessage)
-      localStorage.setItem("titanforce_messages", JSON.stringify(existingMessages))
+      })
       
       setShowSuccess(true)
       setName("")
