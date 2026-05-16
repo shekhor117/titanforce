@@ -68,19 +68,19 @@ CREATE POLICY match_events_insert_own ON public.match_events
 -- ============================================================================
 DROP POLICY IF EXISTS news_posts_select_own_draft ON public.news_posts;
 CREATE POLICY news_posts_select_own_draft ON public.news_posts
-  FOR SELECT USING (status = 'published' OR created_by = (select auth.uid()));
+  FOR SELECT USING (published = true OR admin_id = (select auth.uid()));
 
 DROP POLICY IF EXISTS news_posts_insert_auth ON public.news_posts;
 CREATE POLICY news_posts_insert_auth ON public.news_posts
-  FOR INSERT WITH CHECK (created_by = (select auth.uid()));
+  FOR INSERT WITH CHECK (admin_id = (select auth.uid()));
 
 DROP POLICY IF EXISTS news_posts_update_own ON public.news_posts;
 CREATE POLICY news_posts_update_own ON public.news_posts
-  FOR UPDATE USING (created_by = (select auth.uid()));
+  FOR UPDATE USING (admin_id = (select auth.uid()));
 
 DROP POLICY IF EXISTS news_posts_delete_own ON public.news_posts;
 CREATE POLICY news_posts_delete_own ON public.news_posts
-  FOR DELETE USING (created_by = (select auth.uid()));
+  FOR DELETE USING (admin_id = (select auth.uid()));
 
 -- ============================================================================
 -- news_comments table
