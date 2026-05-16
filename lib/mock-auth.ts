@@ -8,6 +8,19 @@ interface MockUser {
   name: string
   role: "admin" | "moderator" | "user"
   emailVerified: boolean
+  phone?: string
+  address?: string
+  bio?: string
+  avatar?: string
+  website?: string
+  dateOfBirth?: string
+  position?: string
+  jersey?: string
+  height?: string
+  weight?: string
+  experience?: string
+  foot?: string
+  about?: string
 }
 
 // In-memory user storage
@@ -19,6 +32,9 @@ let mockUsers: MockUser[] = [
     name: "Admin User",
     role: "admin",
     emailVerified: true,
+    phone: "+880171234567",
+    address: "Sylhet, Bangladesh",
+    bio: "System Administrator",
   },
   {
     id: "admin-2",
@@ -27,6 +43,15 @@ let mockUsers: MockUser[] = [
     name: "Shekhor Mohanray",
     role: "admin",
     emailVerified: true,
+    phone: "+880171111111",
+    address: "Mulikandi, Sylhet",
+    bio: "Founder & Club Administrator",
+    position: "Forward",
+    jersey: "7",
+    height: "5'10\"",
+    weight: "75kg",
+    experience: "10+ years",
+    foot: "Right",
   },
   {
     id: "mod-1",
@@ -35,6 +60,9 @@ let mockUsers: MockUser[] = [
     name: "Moderator User",
     role: "moderator",
     emailVerified: true,
+    phone: "+880172222222",
+    address: "Dhaka, Bangladesh",
+    bio: "Content Moderator",
   },
 ]
 
@@ -103,6 +131,38 @@ export function mockSignUpWithEmail(email: string, password: string, name: strin
 
   mockUsers.push(newUser)
   return newUser
+}
+
+export function mockUpdateUserProfile(userId: string, updates: Partial<MockUser>): MockUser {
+  const userIndex = mockUsers.findIndex((u) => u.id === userId)
+  if (userIndex === -1) {
+    throw new Error("User not found")
+  }
+
+  // Don't allow updating password or email through this method
+  const { password, email, role, id, ...safeUpdates } = updates
+  mockUsers[userIndex] = { ...mockUsers[userIndex], ...safeUpdates }
+  
+  // Update localStorage if this is the current session
+  if (typeof window !== "undefined") {
+    const userJson = localStorage.getItem("mockAuthUser")
+    if (userJson) {
+      try {
+        const currentUser = JSON.parse(userJson) as MockUser
+        if (currentUser.id === userId) {
+          localStorage.setItem("mockAuthUser", JSON.stringify(mockUsers[userIndex]))
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+  }
+
+  return mockUsers[userIndex]
+}
+
+export function mockGetUserById(userId: string): MockUser | null {
+  return mockUsers.find((u) => u.id === userId) || null
 }
 
 export function isMockAuthConfigured(): boolean {
