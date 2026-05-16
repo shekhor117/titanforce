@@ -24,6 +24,9 @@ export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>("goals")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
+  // Ensure players is always an array with no null values
+  const safePlayersArray = (players ?? []).filter((p) => p !== null && p !== undefined)
+
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc")
@@ -33,30 +36,30 @@ export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
     }
   }
 
-  const sortedPlayers = [...players].sort((a, b) => {
+  const sortedPlayers = (safePlayersArray ?? []).sort((a, b) => {
     let aVal: number | string = 0
     let bVal: number | string = 0
 
     switch (sortKey) {
       case "name":
-        aVal = a.name
-        bVal = b.name
+        aVal = a?.name ?? ""
+        bVal = b?.name ?? ""
         break
       case "goals":
-        aVal = a.goals || 0
-        bVal = b.goals || 0
+        aVal = a?.goals ?? 0
+        bVal = b?.goals ?? 0
         break
       case "assists":
-        aVal = a.assists || 0
-        bVal = b.assists || 0
+        aVal = a?.assists ?? 0
+        bVal = b?.assists ?? 0
         break
       case "appearances":
-        aVal = a.appearances || 0
-        bVal = b.appearances || 0
+        aVal = a?.appearances ?? 0
+        bVal = b?.appearances ?? 0
         break
       case "minutes_played":
-        aVal = (a.minutes_played || a.minutes) || 0
-        bVal = (b.minutes_played || b.minutes) || 0
+        aVal = (a?.minutes_played ?? a?.minutes) ?? 0
+        bVal = (b?.minutes_played ?? b?.minutes) ?? 0
         break
       case "pass_accuracy":
         aVal = (a.pass_accuracy || a.passAccuracy) || 0

@@ -1017,51 +1017,82 @@ export function useDataStore<T>(
   getter: (() => T) | (() => Promise<T>),
   key: string
 ): T {
-  const [data, setData] = useState<T>((getter as () => T)() || [])
+  // Initialize with safe default: empty array for arrays, null for objects
+  const [data, setData] = useState<T>(() => {
+    try {
+      const result = (getter as () => T)()
+      return result ?? ([] as unknown as T)
+    } catch (err) {
+      console.warn(`[v0] Initial data load for ${key} failed:`, err)
+      return ([] as unknown as T)
+    }
+  })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+
     // Initial load
     const loadData = async () => {
       try {
         const result = await Promise.resolve((getter as any)())
-        setData(result)
+        if (isMounted) {
+          setData(result ?? ([] as unknown as T))
+        }
       } catch (err) {
         console.error(`[v0] Error loading ${key}:`, err)
+        if (isMounted) {
+          setData(([] as unknown as T))
+        }
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
     loadData()
 
     // Setup real-time subscription via data-service
+    let unsubscribe: (() => void) | null = null
     const setupSubscription = async () => {
-      const service = getDataService()
-      if (key === 'players') {
-        service.subscribeToPlayers((data) => {
-          setData(data as any)
-        }, (err) => {
-          console.error('[v0] Players subscription error:', err)
-        })
-      } else if (key === 'matches') {
-        service.subscribeToMatches((data) => {
-          setData(data as any)
-        }, (err) => {
-          console.error('[v0] Matches subscription error:', err)
-        })
-      } else if (key === 'partners') {
-        service.subscribeToPartners((data) => {
-          setData(data as any)
-        }, (err) => {
-          console.error('[v0] Partners subscription error:', err)
-        })
-      } else if (key === 'news') {
-        service.subscribeToNewsItems((data) => {
-          setData(data as any)
-        }, (err) => {
-          console.error('[v0] News subscription error:', err)
-        })
+      try {
+        const service = getDataService()
+        if (key === 'players') {
+          unsubscribe = service.subscribeToPlayers((data) => {
+            if (isMounted) {
+              setData((data ?? []) as any)
+            }
+          }, (err) => {
+            console.error('[v0] Players subscription error:', err)
+          })
+        } else if (key === 'matches') {
+          unsubscribe = service.subscribeToMatches((data) => {
+            if (isMounted) {
+              setData((data ?? []) as any)
+            }
+          }, (err) => {
+            console.error('[v0] Matches subscription error:', err)
+          })
+        } else if (key === 'partners') {
+          unsubscribe = service.subscribeToPartners((data) => {
+            if (isMounted) {
+              setData((data ?? []) as any)
+            }
+          }, (err) => {
+            console.error('[v0] Partners subscription error:', err)
+          })
+        } else if (key === 'news') {
+          unsubscribe = service.subscribeToNewsItems((data) => {
+            if (isMounted) {
+              setData((data ?? []) as any)
+            }
+          }, (err) => {
+            console.error('[v0] News subscription error:', err)
+          })
+        }
+      } catch (err) {
+        console.warn('[v0] Failed to setup realtime subscription for', key, ':', err)
       }
     }
 
@@ -1069,7 +1100,7 @@ export function useDataStore<T>(
 
     // Listen for changes from other tabs (backward compatible)
     const handleUpdate = (event: CustomEvent) => {
-      if (event.detail.key === key || event.detail.key === `titanforce_${key}`) {
+      if ((event.detail?.key === key || event.detail?.key === `titanforce_${key}`) && isMounted) {
         loadData()
       }
     }
@@ -1078,17 +1109,25 @@ export function useDataStore<T>(
     
     // Also listen for storage events from other tabs
     const handleStorage = (event: StorageEvent) => {
-      if (event.key?.includes("titanforce_")) {
+      if (event.key?.includes("titanforce_") && isMounted) {
         loadData()
       }
     }
     window.addEventListener("storage", handleStorage)
 
     return () => {
+      isMounted = false
       window.removeEventListener("dataStoreUpdate", handleUpdate as EventListener)
       window.removeEventListener("storage", handleStorage)
+      if (unsubscribe) {
+        try {
+          unsubscribe()
+        } catch (err) {
+          console.warn('[v0] Error unsubscribing from', key, ':', err)
+        }
+      }
     }
   }, [getter, key])
 
-  return data
+  return data ?? ([] as unknown as T)
 }
