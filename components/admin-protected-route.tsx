@@ -9,6 +9,17 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const router = useRouter()
   const pathname = usePathname()
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [hasTimedOut, setHasTimedOut] = useState(false)
+
+  // Timeout for initialization - if it takes more than 5 seconds, assume not authenticated
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.warn("[v0] Admin auth initialization timeout")
+      setHasTimedOut(true)
+    }, 5000)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     // Check if we're on a public admin page
@@ -16,12 +27,12 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
                          pathname?.includes("/admin/signup") || 
                          pathname?.includes("/admin/forgot-password")
 
-    // Only redirect if fully initialized, no admin, not already redirecting, and not on a public page
-    if (isInitialized && !admin && !isRedirecting && !isPublicPage) {
+    // Only redirect if fully initialized or timed out, no admin, not already redirecting, and not on a public page
+    if ((isInitialized || hasTimedOut) && !admin && !isRedirecting && !isPublicPage) {
       setIsRedirecting(true)
       router.push("/admin-login")
     }
-  }, [admin, isInitialized, isRedirecting, router, pathname])
+  }, [admin, isInitialized, hasTimedOut, isRedirecting, router, pathname])
 
   // If we have admin data, render immediately
   if (admin) {
@@ -29,7 +40,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   }
 
   // Show loading state while initializing
-  if (!isInitialized) {
+  if (!isInitialized && !hasTimedOut) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -40,6 +51,6 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     )
   }
 
-  // If initialized but no admin, show nothing (redirect is happening)
+  // If initialized/timed out but no admin, show nothing (redirect is happening)
   return null
 }

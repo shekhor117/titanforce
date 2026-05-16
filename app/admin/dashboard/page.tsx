@@ -9,12 +9,6 @@ import {
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit
 } from "lucide-react"
 import { useState, useEffect } from "react"
-import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
-import { TopPlayersCards } from "@/components/top-players-cards"
-import { PlayerComparisonTable } from "@/components/player-comparison-table"
-import { PlayerAttributesRadar } from "@/components/player-attributes-radar"
-import { PlayerAchievements } from "@/components/player-achievements"
-import { PlayerUpdatesActivity } from "@/components/player-updates-activity"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
@@ -39,6 +33,9 @@ export default function AdminDashboard() {
   const mediaList = Array.isArray(media) ? media : []
   const contactList = Array.isArray(contacts) ? contacts : []
   const activityList = Array.isArray(activityLog) ? activityLog : []
+
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [editingPlayer, setEditingPlayer] = useState(false)
 
   // Calculate stats
   const stats = [
@@ -247,9 +244,6 @@ export default function AdminDashboard() {
   }
 
   // Get action color
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
-  const [editingPlayer, setEditingPlayer] = useState(false)
-
   const getActionColor = (action: string) => {
     const colors: { [key: string]: string } = {
       create: "bg-green-500/30 text-green-300",
