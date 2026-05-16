@@ -38,11 +38,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
+        console.log("[v0] Initializing admin auth...")
         // First check for existing session
-        const { data } = await supabase.auth.getSession()
+        const { data, error } = await supabase.auth.getSession()
+        
+        console.log("[v0] getSession result - hasSession:", !!data.session, "error:", error)
         
         if (data.session?.user && isMounted) {
           const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
+          console.log("[v0] Session found with role:", userRole)
           
           // Only set admin if user has admin/moderator role
           if (userRole === "admin" || userRole === "moderator") {
@@ -53,6 +57,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
               role: userRole,
               emailVerified: data.session.user.email_confirmed_at ? true : false,
             }
+            console.log("[v0] Admin user set:", user.email)
             setAdmin(user)
           }
         }
@@ -60,6 +65,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // Set up auth state change listener
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
+            console.log("[v0] Auth state changed:", _event, "hasSession:", !!session)
             if (!isMounted) return
             
             if (session?.user) {
@@ -85,6 +91,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         )
 
         subscription = authSubscription
+        console.log("[v0] Admin auth initialization complete")
         if (isMounted) setIsInitialized(true)
       } catch (err) {
         console.error("[v0] Error verifying auth:", err)
