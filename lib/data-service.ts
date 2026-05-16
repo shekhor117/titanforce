@@ -111,6 +111,18 @@ export interface Fan {
   updated_at: string
 }
 
+export interface ContactMessage {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+  status: 'unread' | 'read' | 'replied'
+  created_at: string
+  updated_at: string
+}
+
 // Callback types
 type DataCallback<T> = (data: T[]) => void
 type ErrorCallback = (error: Error) => void
@@ -711,6 +723,88 @@ export class DataService {
       .insert([{ key, value }])
 
     if (insertError) throw insertError
+  }
+
+  // Contact Messages
+  async getContactMessages(): Promise<ContactMessage[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('[v0] DataService: Error fetching contact messages:', error)
+      return []
+    }
+  }
+
+  async createContactMessage(message: Omit<ContactMessage, 'id' | 'created_at' | 'updated_at'>): Promise<ContactMessage> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('contact_messages')
+      .insert([message])
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async updateContactMessage(id: string, updates: Partial<ContactMessage>): Promise<ContactMessage> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('contact_messages')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async deleteContactMessage(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase
+      .from('contact_messages')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  }
+
+  subscribeToContactMessages(callback: DataCallback<ContactMessage>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) return () => {}
+    
+    const existingChannel = this.subscriptions.get('contact_messages')
+    if (existingChannel) {
+      this.supabase.removeChannel(existingChannel)
+    }
+
+    const channel = this.supabase
+      .channel('contact-messages-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, async () => {
+        try {
+          const messages = await this.getContactMessages()
+          callback(messages)
+        } catch (error) {
+          onError?.(error as Error)
+        }
+      })
+      .subscribe()
+
+    this.subscriptions.set('contact_messages', channel)
+
+    return () => {
+      if (this.supabase) {
+        this.supabase.removeChannel(channel)
+      }
+      this.subscriptions.delete('contact_messages')
+    }
   }
 
   // Cleanup

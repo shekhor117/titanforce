@@ -766,31 +766,89 @@ export const dataStore = {
     }
   },
 
-  // Contacts
-  getContacts: (): ContactMessage[] => getFromStorage(STORAGE_KEYS.contacts, []),
+  // Contacts - Supabase backed with localStorage fallback
+  getContacts: async (): Promise<ContactMessage[]> => {
+    try {
+      const service = getDataService()
+      const data = await service.getContactMessages()
+      if (data.length > 0) {
+        return data.map(c => ({
+          id: c.id,
+          name: c.name,
+          email: c.email,
+          phone: c.phone,
+          subject: c.subject,
+          message: c.message,
+          status: c.status,
+          createdAt: c.created_at,
+        }))
+      }
+      // Fallback to localStorage
+      return getFromStorage(STORAGE_KEYS.contacts, [])
+    } catch {
+      return getFromStorage(STORAGE_KEYS.contacts, [])
+    }
+  },
   setContacts: (contacts: ContactMessage[]) => setToStorage(STORAGE_KEYS.contacts, contacts),
-  addContact: (contact: Omit<ContactMessage, "id" | "createdAt" | "status">) => {
-    const contacts = dataStore.getContacts()
-    const newContact = { 
-      ...contact, 
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      status: "unread" as const
+  addContact: async (contact: Omit<ContactMessage, "id" | "createdAt" | "status">) => {
+    try {
+      const service = getDataService()
+      const newContact = await service.createContactMessage({
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        subject: contact.subject,
+        message: contact.message,
+        status: "unread",
+      })
+      return {
+        id: newContact.id,
+        name: newContact.name,
+        email: newContact.email,
+        phone: newContact.phone,
+        subject: newContact.subject,
+        message: newContact.message,
+        status: newContact.status,
+        createdAt: newContact.created_at,
+      }
+    } catch {
+      // Fallback to localStorage
+      const contacts = getFromStorage(STORAGE_KEYS.contacts, []) as ContactMessage[]
+      const newContact = { 
+        ...contact, 
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        status: "unread" as const
+      }
+      setToStorage(STORAGE_KEYS.contacts, [...contacts, newContact])
+      return newContact
     }
-    dataStore.setContacts([...contacts, newContact])
-    return newContact
   },
-  updateContact: (id: string, updates: Partial<ContactMessage>) => {
-    const contacts = dataStore.getContacts()
-    const index = contacts.findIndex(c => c.id === id)
-    if (index !== -1) {
-      contacts[index] = { ...contacts[index], ...updates }
-      dataStore.setContacts(contacts)
+  updateContact: async (id: string, updates: Partial<ContactMessage>) => {
+    try {
+      const service = getDataService()
+      await service.updateContactMessage(id, {
+        status: updates.status,
+      })
+    } catch {
+      // Fallback to localStorage
+      const contacts = getFromStorage(STORAGE_KEYS.contacts, []) as ContactMessage[]
+      const index = contacts.findIndex(c => c.id === id)
+      if (index !== -1) {
+        contacts[index] = { ...contacts[index], ...updates }
+        setToStorage(STORAGE_KEYS.contacts, contacts)
+      }
     }
   },
-  deleteContact: (id: string) => {
-    const contacts = dataStore.getContacts().filter(c => c.id !== id)
-    dataStore.setContacts(contacts)
+  deleteContact: async (id: string) => {
+    try {
+      const service = getDataService()
+      await service.deleteContactMessage(id)
+    } catch {
+      // Fallback to localStorage
+      const contacts = (getFromStorage(STORAGE_KEYS.contacts, []) as ContactMessage[]).filter(c => c.id !== id)
+      setToStorage(STORAGE_KEYS.contacts, contacts)
+    }
   },
 
   // Export all data
@@ -1089,6 +1147,25 @@ export function useDataStore<T>(
             }
           }, (err) => {
             console.error('[v0] News subscription error:', err)
+          })
+        } else if (key === 'contacts') {
+          unsubscribe = service.subscribeToContactMessages((data) => {
+            if (isMounted) {
+              // Map to ContactMessage format
+              const mapped = data.map(c => ({
+                id: c.id,
+                name: c.name,
+                email: c.email,
+                phone: c.phone,
+                subject: c.subject,
+                message: c.message,
+                status: c.status,
+                createdAt: c.created_at,
+              }))
+              setData((mapped ?? []) as any)
+            }
+          }, (err) => {
+            console.error('[v0] Contacts subscription error:', err)
           })
         }
       } catch (err) {
