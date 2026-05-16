@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
 
 export type UserRole = "player" | "fan" | "partner" | null
 export type UserStatus = "pending" | "approved" | "rejected"
@@ -59,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
 
   const fetchProfile = async (userId: string) => {
+    if (!supabase) return null
     const { data } = await supabase
       .from("profiles")
       .select("*")
@@ -78,6 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    // If Supabase is not configured, skip auth initialization
+    if (!supabase) {
+      setIsLoading(false)
+      return
+    }
+
     let subscription: { unsubscribe: () => void } | null = null
     let isMounted = true
 
@@ -146,6 +153,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string, role: UserRole) => {
+    if (!supabase) {
+      throw new Error("Authentication is not configured")
+    }
     setIsLoading(true)
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -175,6 +185,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signup = async (name: string, email: string, password: string, role: UserRole) => {
+    if (!supabase) {
+      throw new Error("Authentication is not configured")
+    }
     setIsLoading(true)
     try {
       const { error } = await supabase.auth.signUp({
@@ -196,12 +209,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     setUser(null)
     setProfile(null)
   }
 
   const updatePlayerProfile = async (playerProfile: PlayerProfile) => {
+    if (!supabase) {
+      throw new Error("Authentication is not configured")
+    }
     setIsLoading(true)
     try {
       if (user) {
