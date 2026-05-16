@@ -14,9 +14,9 @@ export function PlayerAchievements({ players }: PlayerAchievementsProps) {
 
   // Calculate achievements
   const totalTrophies = players.reduce((sum, p) => sum + (p.trophies?.length || 0), 0)
-  const totalMotmAwards = players.reduce((sum, p) => sum + (p.motmAwards || 0), 0)
-  const totalYellowCards = players.reduce((sum, p) => sum + (p.yellowCards || 0), 0)
-  const totalRedCards = players.reduce((sum, p) => sum + (p.redCards || 0), 0)
+  const totalMotmAwards = players.reduce((sum, p) => sum + ((p.man_of_the_match || p.motmAwards) || 0), 0)
+  const totalYellowCards = players.reduce((sum, p) => sum + ((p.yellow_cards || p.yellowCards) || 0), 0)
+  const totalRedCards = players.reduce((sum, p) => sum + ((p.red_cards || p.redCards) || 0), 0)
 
   // Get players with trophies
   const playersWithTrophies = players.filter((p) => p.trophies && p.trophies.length > 0)
