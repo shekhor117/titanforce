@@ -2,11 +2,12 @@
 
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { storeDataService } from "@/lib/store-data-service"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
-  Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit
+  Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
@@ -110,6 +111,50 @@ export default function AdminDashboard() {
       bgColor: "bg-red-500/10",
       borderColor: "border-red-500/30",
       subtext: `${contactList.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
+    },
+  ]
+
+  // Store stats
+  const storeStats = [
+    {
+      label: isBn ? "পণ্য" : "Products",
+      value: storeDataService.getProducts().length.toString(),
+      icon: <ShoppingBag className="w-6 h-6" />,
+      href: "/admin/store/products",
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10",
+      borderColor: "border-cyan-500/30",
+      subtext: `${storeDataService.getProducts().filter((p: any) => (p as any).inStock !== false).length} ${isBn ? "স্টকে" : "in stock"}`
+    },
+    {
+      label: isBn ? "অর্ডার" : "Orders",
+      value: storeDataService.getOrders().length.toString(),
+      icon: <Package className="w-6 h-6" />,
+      href: "/admin/store/orders",
+      color: "text-lime-400",
+      bgColor: "bg-lime-500/10",
+      borderColor: "border-lime-500/30",
+      subtext: `${storeDataService.getOrders().filter((o: any) => o.status === "pending").length} ${isBn ? "অপেক্ষমান" : "pending"}`
+    },
+    {
+      label: isBn ? "ইনভেন্টরি" : "Inventory",
+      value: storeDataService.calculateTotalStock().toString(),
+      icon: <Boxes className="w-6 h-6" />,
+      href: "/admin/store/inventory",
+      color: "text-indigo-400",
+      bgColor: "bg-indigo-500/10",
+      borderColor: "border-indigo-500/30",
+      subtext: `${storeDataService.getLowStockItems().length} ${isBn ? "কম স্টক" : "low stock"}`
+    },
+    {
+      label: isBn ? "বিক্রয়" : "Sales",
+      value: `৳${storeDataService.calculateTotalRevenue()}`,
+      icon: <TrendingUp className="w-6 h-6" />,
+      href: "/admin/store/analytics",
+      color: "text-emerald-400",
+      bgColor: "bg-emerald-500/10",
+      borderColor: "border-emerald-500/30",
+      subtext: `${storeDataService.getOrders().filter((o: any) => o.status === "delivered").length} ${isBn ? "সম্পন্ন" : "completed"}`
     },
   ]
 
@@ -320,6 +365,36 @@ export default function AdminDashboard() {
             <ArrowRight className="w-5 h-5 text-foreground/30" />
           </Link>
         ))}
+      </div>
+
+      {/* Store Management Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <ShoppingBag className="w-6 h-6 text-cyan-400" />
+          <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "স্টোর ম্যানেজমেন্ট" : "Store Management"}
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {storeStats.map((stat) => (
+            <Link
+              key={stat.label}
+              href={stat.href}
+              className={`rounded-xl p-6 border ${stat.borderColor} ${stat.bgColor} hover:scale-105 transition-transform cursor-pointer`}
+            >
+              <div className={`${stat.color} mb-3`}>{stat.icon}</div>
+              <div className={`text-3xl font-[var(--font-display)] ${stat.color}`}>{stat.value}</div>
+              <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {stat.label}
+              </div>
+              {stat.subtext && (
+                <div className="text-xs text-foreground/40 mt-1">
+                  {stat.subtext}
+                </div>
+              )}
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
