@@ -61,12 +61,17 @@ export async function signInWithEmail(
     throw new Error("Authentication is not configured")
   }
 
+  console.log("[v0] Attempting sign in with email:", email)
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
+  console.log("[v0] Sign in response - error:", error, "data:", data)
+
   if (error) {
+    console.log("[v0] Sign in error message:", error.message)
     throw new Error(error.message)
   }
 
@@ -76,6 +81,8 @@ export async function signInWithEmail(
 
   // Get admin role from user metadata
   const role = (data.user.user_metadata?.role as "admin" | "moderator") || "user"
+
+  console.log("[v0] Sign in successful - user role:", role)
 
   return {
     id: data.user.id,
