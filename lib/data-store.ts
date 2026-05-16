@@ -1077,13 +1077,9 @@ export function useDataStore<T>(
 ): T {
   // Initialize with safe default: empty array for arrays, null for objects
   const [data, setData] = useState<T>(() => {
-    try {
-      const result = (getter as () => T)()
-      return result ?? ([] as unknown as T)
-    } catch (err) {
-      console.warn(`[v0] Initial data load for ${key} failed:`, err)
-      return ([] as unknown as T)
-    }
+    // Don't try to call async getters synchronously in initializer
+    // Just return the safe default
+    return ([] as unknown as T)
   })
   const [loading, setLoading] = useState(true)
 
