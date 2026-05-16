@@ -181,8 +181,20 @@ export class DataService {
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {
     console.log("[v0] DataService: Subscribing to players changes")
+    
+    // Clean up any existing subscription first
+    const existingChannel = this.subscriptions.get('players')
+    if (existingChannel) {
+      console.log("[v0] DataService: Cleaning up existing players subscription")
+      try {
+        this.supabase.removeChannel(existingChannel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing old players channel:", error)
+      }
+    }
+    
     const channel = this.supabase
-      .channel(`players-changes-${Date.now()}`)
+      .channel(`players-changes-${Date.now()}-${Math.random()}`)
       .on(
         'postgres_changes',
         {
@@ -215,7 +227,11 @@ export class DataService {
 
     return () => {
       console.log("[v0] DataService: Unsubscribing from players")
-      this.supabase.removeChannel(channel)
+      try {
+        this.supabase.removeChannel(channel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing players channel:", error)
+      }
       this.subscriptions.delete('players')
     }
   }
@@ -264,8 +280,21 @@ export class DataService {
   }
 
   subscribeToMatches(callback: DataCallback<Match>, onError?: ErrorCallback): () => void {
+    console.log("[v0] DataService: Subscribing to matches changes")
+    
+    // Clean up any existing subscription first
+    const existingChannel = this.subscriptions.get('matches')
+    if (existingChannel) {
+      console.log("[v0] DataService: Cleaning up existing matches subscription")
+      try {
+        this.supabase.removeChannel(existingChannel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing old matches channel:", error)
+      }
+    }
+    
     const channel = this.supabase
-      .channel(`matches-changes-${Date.now()}`)
+      .channel(`matches-changes-${Date.now()}-${Math.random()}`)
       .on(
         'postgres_changes',
         {
@@ -287,7 +316,12 @@ export class DataService {
     this.subscriptions.set('matches', channel)
 
     return () => {
-      this.supabase.removeChannel(channel)
+      console.log("[v0] DataService: Unsubscribing from matches")
+      try {
+        this.supabase.removeChannel(channel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing matches channel:", error)
+      }
       this.subscriptions.delete('matches')
     }
   }
@@ -336,8 +370,21 @@ export class DataService {
   }
 
   subscribeToPartners(callback: DataCallback<Partner>, onError?: ErrorCallback): () => void {
+    console.log("[v0] DataService: Subscribing to partners changes")
+    
+    // Clean up any existing subscription first
+    const existingChannel = this.subscriptions.get('partners')
+    if (existingChannel) {
+      console.log("[v0] DataService: Cleaning up existing partners subscription")
+      try {
+        this.supabase.removeChannel(existingChannel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing old partners channel:", error)
+      }
+    }
+    
     const channel = this.supabase
-      .channel(`partners-changes-${Date.now()}`)
+      .channel(`partners-changes-${Date.now()}-${Math.random()}`)
       .on(
         'postgres_changes',
         {
@@ -359,7 +406,12 @@ export class DataService {
     this.subscriptions.set('partners', channel)
 
     return () => {
-      this.supabase.removeChannel(channel)
+      console.log("[v0] DataService: Unsubscribing from partners")
+      try {
+        this.supabase.removeChannel(channel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing partners channel:", error)
+      }
       this.subscriptions.delete('partners')
     }
   }
@@ -411,8 +463,21 @@ export class DataService {
   }
 
   subscribeToNewsItems(callback: DataCallback<NewsItem>, onError?: ErrorCallback): () => void {
+    console.log("[v0] DataService: Subscribing to news changes")
+    
+    // Clean up any existing subscription first
+    const existingChannel = this.subscriptions.get('news')
+    if (existingChannel) {
+      console.log("[v0] DataService: Cleaning up existing news subscription")
+      try {
+        this.supabase.removeChannel(existingChannel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing old news channel:", error)
+      }
+    }
+    
     const channel = this.supabase
-      .channel(`news-changes-${Date.now()}`)
+      .channel(`news-changes-${Date.now()}-${Math.random()}`)
       .on(
         'postgres_changes',
         {
@@ -434,7 +499,12 @@ export class DataService {
     this.subscriptions.set('news', channel)
 
     return () => {
-      this.supabase.removeChannel(channel)
+      console.log("[v0] DataService: Unsubscribing from news")
+      try {
+        this.supabase.removeChannel(channel)
+      } catch (error) {
+        console.warn("[v0] DataService: Error removing news channel:", error)
+      }
       this.subscriptions.delete('news')
     }
   }
