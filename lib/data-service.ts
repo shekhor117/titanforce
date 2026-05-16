@@ -265,7 +265,7 @@ export class DataService {
 
   subscribeToMatches(callback: DataCallback<Match>, onError?: ErrorCallback): () => void {
     const channel = this.supabase
-      .channel('matches-changes')
+      .channel(`matches-changes-${Date.now()}`)
       .on(
         'postgres_changes',
         {
@@ -337,7 +337,7 @@ export class DataService {
 
   subscribeToPartners(callback: DataCallback<Partner>, onError?: ErrorCallback): () => void {
     const channel = this.supabase
-      .channel('partners-changes')
+      .channel(`partners-changes-${Date.now()}`)
       .on(
         'postgres_changes',
         {
@@ -412,7 +412,7 @@ export class DataService {
 
   subscribeToNewsItems(callback: DataCallback<NewsItem>, onError?: ErrorCallback): () => void {
     const channel = this.supabase
-      .channel('news-changes')
+      .channel(`news-changes-${Date.now()}`)
       .on(
         'postgres_changes',
         {
