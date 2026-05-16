@@ -1,4 +1,10 @@
 import { createClient } from "@/lib/supabase/client"
+import { 
+  mockSignInWithEmail, 
+  mockSignUpWithEmail, 
+  mockSignOut,
+  isMockAuthConfigured 
+} from "@/lib/mock-auth"
 
 export interface AuthUser {
   id: string
@@ -16,7 +22,18 @@ export async function signUpWithEmail(
   const supabase = createClient()
   
   if (!supabase) {
-    throw new Error("Authentication is not configured")
+    // Use mock authentication
+    const user = mockSignUpWithEmail(email, password, name)
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        emailVerified: user.emailVerified,
+      },
+      requiresVerification: !user.emailVerified,
+    }
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -58,7 +75,15 @@ export async function signInWithEmail(
   const supabase = createClient()
   
   if (!supabase) {
-    throw new Error("Authentication is not configured")
+    // Use mock authentication
+    const user = mockSignInWithEmail(email, password)
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      emailVerified: user.emailVerified,
+    }
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -90,6 +115,8 @@ export async function signOut(): Promise<void> {
   const supabase = createClient()
   
   if (!supabase) {
+    // Use mock sign out
+    mockSignOut()
     return
   }
 
