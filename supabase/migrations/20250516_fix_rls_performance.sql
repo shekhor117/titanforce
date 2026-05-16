@@ -87,15 +87,15 @@ CREATE POLICY news_posts_delete_own ON public.news_posts
 -- ============================================================================
 DROP POLICY IF EXISTS news_comments_insert_auth ON public.news_comments;
 CREATE POLICY news_comments_insert_auth ON public.news_comments
-  FOR INSERT WITH CHECK (created_by = (select auth.uid()));
+  FOR INSERT WITH CHECK (user_id = (select auth.uid()));
 
 DROP POLICY IF EXISTS news_comments_update_own ON public.news_comments;
 CREATE POLICY news_comments_update_own ON public.news_comments
-  FOR UPDATE USING (created_by = (select auth.uid()));
+  FOR UPDATE USING (user_id = (select auth.uid()));
 
 DROP POLICY IF EXISTS news_comments_delete_own ON public.news_comments;
 CREATE POLICY news_comments_delete_own ON public.news_comments
-  FOR DELETE USING (created_by = (select auth.uid()));
+  FOR DELETE USING (user_id = (select auth.uid()));
 
 -- ============================================================================
 -- fan_accounts table
