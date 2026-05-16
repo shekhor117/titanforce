@@ -9,6 +9,7 @@ import {
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit
 } from "lucide-react"
 import { useState, useEffect } from "react"
+import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
@@ -566,21 +567,6 @@ export default function AdminDashboard() {
 
         {/* Player Stats Dashboard */}
         <PlayerStatsDashboard players={players} />
-
-        {/* Top Players Cards */}
-        <TopPlayersCards players={players} limit={6} />
-
-        {/* Player Comparison Table */}
-        <PlayerComparisonTable players={players} />
-
-        {/* Player Attributes */}
-        <PlayerAttributesRadar players={players} limit={4} />
-
-        {/* Player Achievements */}
-        <PlayerAchievements players={players} />
-
-        {/* Recent Player Updates */}
-        <PlayerUpdatesActivity players={players} />
       </div>
 
       {/* System Overview */}

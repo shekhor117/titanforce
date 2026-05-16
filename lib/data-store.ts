@@ -1111,7 +1111,19 @@ export function useDataStore<T>(
     let unsubscribe: (() => void) | null = null
     const setupSubscription = async () => {
       try {
-        const service = getDataService()
+        let service
+        try {
+          service = getDataService()
+        } catch (err) {
+          console.warn('[v0] Failed to get data service:', err)
+          return
+        }
+        
+        if (!service) {
+          console.warn('[v0] Data service is null')
+          return
+        }
+
         if (key === 'players') {
           unsubscribe = service.subscribeToPlayers((data) => {
             if (isMounted) {

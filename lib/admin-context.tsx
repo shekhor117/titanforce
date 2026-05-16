@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
 import { signInWithEmail, signOut, AuthUser } from "@/lib/auth-utils"
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
+import { mockGetSession } from "@/lib/mock-auth"
 
 interface AdminContextType {
   admin: AuthUser | null
@@ -30,16 +31,33 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     let isMounted = true
     let subscription: any = null
     
-    // If Supabase is not configured, mark as initialized and return
-    if (!supabase) {
-      setIsInitialized(true)
-      return
-    }
-    
     const initializeAuth = async () => {
       try {
         console.log("[v0] Initializing admin auth...")
-        // First check for existing session
+        
+        // If Supabase is not configured, check for mock session
+        if (!supabase) {
+          console.log("[v0] Supabase not configured, checking mock session...")
+          const mockUser = mockGetSession()
+          if (mockUser && isMounted) {
+            const userRole = mockUser.role as "admin" | "moderator"
+            if (userRole === "admin" || userRole === "moderator") {
+              const user: AuthUser = {
+                id: mockUser.id,
+                email: mockUser.email,
+                name: mockUser.name,
+                role: userRole,
+                emailVerified: mockUser.emailVerified,
+              }
+              console.log("[v0] Mock session found with role:", userRole)
+              setAdmin(user)
+            }
+          }
+          if (isMounted) setIsInitialized(true)
+          return
+        }
+        
+        // Check for existing session with Supabase
         const { data, error } = await supabase.auth.getSession()
         
         console.log("[v0] getSession result - hasSession:", !!data.session, "error:", error)
@@ -116,7 +134,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       console.log("[v0] Admin login attempt for:", email)
       
-      // Use Supabase authentication
+      // Use authentication
       const user = await signInWithEmail(email, password)
       console.log("[v0] User authenticated, role:", user.role)
       
