@@ -26,6 +26,13 @@ export function AdminSidebar() {
     { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸", restricted: true, category: "tools" },
     { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️", restricted: true, category: "team" },
     { href: "/admin/player-profiles", label: isBn ? "খেলোয়াড় প্রোফাইল" : "Player Profiles", icon: "🎽", restricted: true, category: "team" },
+    
+    // Store management
+    { href: "/admin/store/products", label: isBn ? "পণ্য" : "Products", icon: "🛍️", restricted: true, category: "store" },
+    { href: "/admin/store/orders", label: isBn ? "অর্ডার" : "Orders", icon: "📦", restricted: true, category: "store" },
+    { href: "/admin/store/inventory", label: isBn ? "ইনভেন্টরি" : "Inventory", icon: "📋", restricted: true, category: "store" },
+    { href: "/admin/store/analytics", label: isBn ? "বিক্রয় বিশ্লেষণ" : "Sales Analytics", icon: "💹", restricted: true, category: "store" },
+    
     { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤", restricted: true, category: "tools" },
     { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈", restricted: true, category: "tools" },
     { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧", restricted: true, category: "tools" },
