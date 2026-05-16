@@ -15,7 +15,7 @@ export function PlayerAttributesRadar({ players, limit = 4 }: PlayerAttributesRa
   // Get top players by rating
   const topPlayers = [...players]
     .filter((p) => p.status === "active")
-    .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+    .sort((a, b) => ((b.average_rating || b.averageRating) || 0) - ((a.average_rating || a.averageRating) || 0))
     .slice(0, limit)
 
   const attributes = [
@@ -38,7 +38,7 @@ export function PlayerAttributesRadar({ players, limit = 4 }: PlayerAttributesRa
           <div key={player.id} className="rounded-lg border border-secondary/50 bg-secondary/10 p-4">
             <div className="mb-4">
               <h4 className="font-semibold text-foreground">{player.name}</h4>
-              <p className="text-xs text-foreground/60">#{player.num} • {player.cat}</p>
+              <p className="text-xs text-foreground/60">#{player.num} • {player.category || player.cat}</p>
             </div>
 
             <div className="space-y-3">
