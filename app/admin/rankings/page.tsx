@@ -213,3 +213,6 @@ export default function AdminRankingsPage() {
           {isSaving ? (isBn ? "সংরক্ষণ করছে..." : "Saving...") : (isBn ? "সংরক্ষণ করুন" : "Save Changes")}
         </button>
       </div>
+    </div>
+  )
+}

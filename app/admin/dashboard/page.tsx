@@ -27,6 +27,10 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState<any[]>([])
   const [activityLog, setActivityLog] = useState<any[]>([])
   const [playerStats, setPlayerStats] = useState({ total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } })
+  const [galleryStats, setGalleryStats] = useState({ total: 0, featured: 0, byType: {} })
+  const [trophyStats, setTrophyStats] = useState({ total: 0, featured: 0, byCategory: {} })
+  const [storeProducts, setStoreProducts] = useState<any[]>([])
+  const [storeOrders, setStoreOrders] = useState<any[]>([])
   
   useEffect(() => {
     // Load player stats from Supabase
@@ -39,6 +43,47 @@ export default function AdminDashboard() {
       }
     }
     loadData()
+  }, [])
+  
+  useEffect(() => {
+    // Load gallery stats
+    const loadGalleryStats = async () => {
+      try {
+        const stats = await GalleryDataService.getGalleryStats()
+        setGalleryStats(stats)
+      } catch (err) {
+        console.error("[v0] Error loading gallery stats:", err)
+      }
+    }
+    loadGalleryStats()
+  }, [])
+
+  useEffect(() => {
+    // Load trophy stats
+    const loadTrophyStats = async () => {
+      try {
+        const stats = await TrophyDataService.getTrophyStats()
+        setTrophyStats(stats)
+      } catch (err) {
+        console.error("[v0] Error loading trophy stats:", err)
+      }
+    }
+    loadTrophyStats()
+  }, [])
+
+  useEffect(() => {
+    // Load store products and orders
+    const loadStoreData = async () => {
+      try {
+        const products = await StoreDataService.getProducts()
+        const orders = await StoreDataService.getOrders()
+        setStoreProducts(products)
+        setStoreOrders(orders)
+      } catch (err) {
+        console.error("[v0] Error loading store data:", err)
+      }
+    }
+    loadStoreData()
   }, [])
   
   useEffect(() => {
@@ -141,75 +186,70 @@ export default function AdminDashboard() {
     },
     {
       label: isBn ? "গ্যালারি" : "Gallery",
-      value: GalleryDataService.getGalleryStats().total.toString(),
+      value: galleryStats.total.toString(),
       icon: <Image className="w-6 h-6" />,
       href: "/admin/gallery",
       color: "text-accent",
       bgColor: "bg-accent/10",
       borderColor: "border-accent/30",
-      subtext: `${GalleryDataService.getGalleryStats().featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
+      subtext: `${galleryStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
     {
       label: isBn ? "ট্রফি" : "Trophies",
-      value: TrophyDataService.getTrophyStats().total.toString(),
+      value: trophyStats.total.toString(),
       icon: <Trophy className="w-6 h-6" />,
       href: "/admin/trophies",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10",
       borderColor: "border-yellow-500/30",
-      subtext: `${TrophyDataService.getTrophyStats().featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
+      subtext: `${trophyStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
   ]
 
-  // Store stats - wrapped in try-catch to prevent render errors
-  let storeStats = []
-  try {
-    storeStats = [
-      {
-        label: isBn ? "পণ্য" : "Products",
-        value: StoreDataService.getProducts().length.toString(),
-        icon: <ShoppingBag className="w-6 h-6" />,
-        href: "/admin/store/products",
-        color: "text-cyan-400",
-        bgColor: "bg-cyan-500/10",
-        borderColor: "border-cyan-500/30",
-        subtext: `${StoreDataService.getProducts().filter((p: any) => (p as any).inStock !== false).length} ${isBn ? "স্টকে" : "in stock"}`
-      },
-      {
-        label: isBn ? "অর��ডার" : "Orders",
-        value: StoreDataService.getOrders().length.toString(),
-        icon: <Package className="w-6 h-6" />,
-        href: "/admin/store/orders",
-        color: "text-lime-400",
-        bgColor: "bg-lime-500/10",
-        borderColor: "border-lime-500/30",
-        subtext: `${StoreDataService.getOrders().filter((o: any) => o.status === "pending").length} ${isBn ? "অপেক্ষমান" : "pending"}`
-      },
-      {
-        label: isBn ? "ইনভেন্টরি" : "Inventory",
-        value: StoreDataService.getProducts().reduce((sum: number, p: any) => sum + p.totalStock, 0).toString(),
-        icon: <Boxes className="w-6 h-6" />,
-        href: "/admin/store/inventory",
-        color: "text-indigo-400",
-        bgColor: "bg-indigo-500/10",
-        borderColor: "border-indigo-500/30",
-        subtext: `${StoreDataService.getLowStockProducts().length} ${isBn ? "কম স্টক" : "low stock"}`
-      },
-      {
-        label: isBn ? "বিক্রয়" : "Sales",
-        value: `৳${StoreDataService.getOrders().reduce((sum: any, o: any) => sum + o.total, 0)}`,
-        icon: <TrendingUp className="w-6 h-6" />,
-        href: "/admin/store/analytics",
-        color: "text-emerald-400",
-        bgColor: "bg-emerald-500/10",
-        borderColor: "border-emerald-500/30",
-        subtext: `${StoreDataService.getOrders().filter((o: any) => o.status === "delivered").length} ${isBn ? "সম্পন্ন" : "completed"}`
-      },
-    ]
-  } catch (error) {
-    console.log("[v0] Store stats error:", error)
-    storeStats = []
-  }
+  // Build store stats from state
+  const storeStats = [
+    {
+      label: isBn ? "পণ্য" : "Products",
+      value: storeProducts.length.toString(),
+      icon: <ShoppingBag className="w-6 h-6" />,
+      href: "/admin/store/products",
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10",
+      borderColor: "border-cyan-500/30",
+      subtext: `${storeProducts.filter((p: any) => (p as any).inStock !== false).length} ${isBn ? "স্টকে" : "in stock"}`
+    },
+    {
+      label: isBn ? "অর্ডার" : "Orders",
+      value: storeOrders.length.toString(),
+      icon: <Package className="w-6 h-6" />,
+      href: "/admin/store/orders",
+      color: "text-lime-400",
+      bgColor: "bg-lime-500/10",
+      borderColor: "border-lime-500/30",
+      subtext: `${storeOrders.filter((o: any) => o.status === "pending").length} ${isBn ? "অপেক্ষমান" : "pending"}`
+    },
+    {
+      label: isBn ? "ইনভেন্টরি" : "Inventory",
+      value: storeProducts.reduce((sum: number, p: any) => sum + (p.totalStock || 0), 0).toString(),
+      icon: <Boxes className="w-6 h-6" />,
+      href: "/admin/store/inventory",
+      color: "text-indigo-400",
+      bgColor: "bg-indigo-500/10",
+      borderColor: "border-indigo-500/30",
+      subtext: `${storeProducts.filter((p: any) => (p.totalStock || 0) < 10).length} ${isBn ? "কম স্টক" : "low stock"}`
+    },
+    {
+      label: isBn ? "বিক্রয়" : "Sales",
+      value: `৳${storeOrders.reduce((sum: any, o: any) => sum + (o.total || 0), 0)}`,
+      icon: <TrendingUp className="w-6 h-6" />,
+      href: "/admin/store/analytics",
+      color: "text-emerald-400",
+      bgColor: "bg-emerald-500/10",
+      borderColor: "border-emerald-500/30",
+      subtext: `${storeOrders.filter((o: any) => o.status === "delivered").length} ${isBn ? "সম্পন্ন" : "completed"}`
+    },
+  ]
+
 
   const quickActions = [
     { 
@@ -337,7 +377,7 @@ export default function AdminDashboard() {
     const days = Math.floor(diff / 86400000)
 
     if (minutes < 1) return isBn ? "এইমাত্র" : "Just now"
-    if (minutes < 60) return `${minutes} ${isBn ? "মিনিট আগে" : "min ago"}`
+    if (minutes < 60) return `${minutes} ${isBn ? "মিনিট আ��ে" : "min ago"}`
     if (hours < 24) return `${hours} ${isBn ? "ঘন্টা আগে" : "hr ago"}`
     return `${days} ${isBn ? "দিন আগে" : "days ago"}`
   }
