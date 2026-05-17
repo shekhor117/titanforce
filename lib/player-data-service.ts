@@ -50,26 +50,26 @@ class PlayerDataService {
       if (!supabase) return []
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .select('*')
-        .eq('position', 'player')
+        .eq('status', 'Active')
         .order('num', { ascending: true })
 
       if (error) throw error
 
       return (data || []).map(p => ({
-        id: p.id,
+        id: p.id?.toString() || '',
         num: p.num || 0,
-        name: p.display_name || p.full_name || '',
+        name: p.name || '',
         full_name: p.full_name || '',
-        position: p.position_name || p.position || '',
+        position: p.position || '',
         category: p.category || 'MID',
         age: p.age,
         hometown: p.hometown,
         foot: p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
-        image_url: p.avatar_url,
+        image_url: p.image_url,
         status: p.status || 'active',
         bio: p.bio,
         clean_sheets: p.clean_sheets,
@@ -285,22 +285,33 @@ class PlayerDataService {
 
   async getPlayerStats() {
     try {
-      const players = await this.getPlayers()
-      const activeCount = players.filter(p => p.status === 'active' || p.status === 'Active').length
-      const injuredCount = players.filter(p => p.status === 'injured').length
-      const suspendedCount = players.filter(p => p.status === 'suspended').length
-      
+      const supabase = createClient()
+      if (!supabase) return { total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } }
+
+      const { data, error } = await supabase
+        .from('players')
+        .select('status, category')
+
+      if (error) throw error
+
+      const players = data || []
       return {
         total: players.length,
-        active: activeCount,
-        injured: injuredCount,
-        suspended: suspendedCount,
+        active: players.filter(p => p.status === 'Active').length,
+        injured: players.filter(p => p.status === 'Injured').length,
+        suspended: players.filter(p => p.status === 'Suspended').length,
         byCategory: {
           GK: players.filter(p => p.category === 'GK').length,
           DEF: players.filter(p => p.category === 'DEF').length,
           MID: players.filter(p => p.category === 'MID').length,
           FWD: players.filter(p => p.category === 'FWD').length
         }
+      }
+    } catch (error) {
+      console.error('Error getting player stats:', error)
+      return { total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } }
+    }
+  }
       }
     } catch (error) {
       console.error('Error getting player stats:', error)
