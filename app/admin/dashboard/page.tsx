@@ -41,13 +41,6 @@ export default function AdminDashboard() {
     loadData()
   }, [])
   
-  // Safely convert to arrays
-  const playerList = Array.isArray(players) ? players : []
-  const matchList = Array.isArray(matches) ? matches : []
-  const fanList = Array.isArray(fans) ? fans : []
-  const partnerList = Array.isArray(partners) ? partners : []
-  const newsList = Array.isArray(newsItems) ? newsItems : []
-  const mediaList = Array.isArray(mediaItems) ? mediaItems : []
   useEffect(() => {
     // Import dataStore to get local storage data
     const loadLocalData = async () => {
@@ -59,7 +52,7 @@ export default function AdminDashboard() {
     loadLocalData()
   }, [])
 
-  // Ensure arrays
+  // Safely convert to arrays
   const playerList = Array.isArray(players) ? players : []
   const matchList = Array.isArray(matches) ? matches : []
   const fanList = Array.isArray(fans) ? fans : []
