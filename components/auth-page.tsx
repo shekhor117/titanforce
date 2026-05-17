@@ -3,14 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock } from 'lucide-react'
+import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 import { mockSignUp } from '@/lib/auth-utils'
 
 type Role = 'player' | 'fan' | 'partner'
-type AuthStep = 'credentials' | 'otp'
+type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
 
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
@@ -41,6 +41,27 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const [isAppleLoading, setIsAppleLoading] = useState(false)
   const [otpSentEmail, setOtpSentEmail] = useState('')
   const [otpResendTimer, setOtpResendTimer] = useState(0)
+
+  // Additional signup details
+  const [phone, setPhone] = useState('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState<'male' | 'female' | 'other' | ''>('')
+  const [location, setLocation] = useState('')
+  const [instagram, setInstagram] = useState('')
+  const [twitter, setTwitter] = useState('')
+  const [facebook, setFacebook] = useState('')
+  
+  // Role-specific fields
+  const [favoriteTeam, setFavoriteTeam] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
+  const [organizationType, setOrganizationType] = useState('')
+  const [contactPerson, setContactPerson] = useState('')
+  const [partnshipType, setPartnershipType] = useState<'sponsor' | 'media' | 'equipment' | 'other' | ''>('')
+  
+  // Preferences
+  const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false)
+  const [shareData, setShareData] = useState(false)
 
   const roles: { id: Role; label: string; labelBn: string; icon: React.ReactNode }[] = [
     { id: 'player', label: 'Player', labelBn: 'খেলোয়াড়', icon: <User className="w-4 h-4" /> },
@@ -246,6 +267,117 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
     setOtpResendTimer(0)
   }
 
+  // Signup step navigation
+  const handleNextStep = async (e?: React.FormEvent) => {
+    e?.preventDefault()
+    setError(null)
+
+    if (authStep === 'credentials') {
+      // Validate credentials
+      if (!email || !password || !fullName) {
+        setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
+        return
+      }
+      if (password.length < 8) {
+        setError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে' : 'Password must be at least 8 characters')
+        return
+      }
+      setAuthStep('details')
+    } else if (authStep === 'details') {
+      // Validate details
+      if (!dateOfBirth || !gender || !location) {
+        setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
+        return
+      }
+      
+      // Role-specific validation
+      if (selectedRole === 'fan' && !favoriteTeam) {
+        setError(isBn ? 'প্রিয় দল নির্বাচন করুন' : 'Please select your favorite team')
+        return
+      }
+      if (selectedRole === 'partner' && (!organizationName || !organizationType)) {
+        setError(isBn ? 'সংস্থার তথ্য পূরণ করুন' : 'Please fill organization details')
+        return
+      }
+      
+      setAuthStep('preferences')
+    }
+  }
+
+  const handlePreviousStep = () => {
+    if (authStep === 'preferences') {
+      setAuthStep('details')
+    } else if (authStep === 'details') {
+      setAuthStep('credentials')
+    }
+    setError(null)
+  }
+
+  const handleCompleteSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!agreeToTerms) {
+      setError(isBn ? 'শর্তাবলী গ্রহণ করুন' : 'Please accept terms and conditions')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // Create account with full details
+      const signupData = {
+        email,
+        password,
+        fullName,
+        phone,
+        dateOfBirth,
+        gender,
+        location,
+        instagram,
+        twitter,
+        facebook,
+        favoriteTeam: selectedRole === 'fan' ? favoriteTeam : undefined,
+        organizationName: selectedRole === 'partner' ? organizationName : undefined,
+        organizationType: selectedRole === 'partner' ? organizationType : undefined,
+        partnshipType: selectedRole === 'partner' ? partnshipType : undefined,
+        subscribeNewsletter,
+        shareData,
+        role: selectedRole,
+      }
+
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: signupData,
+            emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+              `${window.location.origin}/auth/callback?role=${selectedRole}`,
+          },
+        })
+        if (error) throw error
+      } catch (supabaseErr) {
+        console.log("[v0] Supabase signup failed, attempting mock signup...")
+        await mockSignUp(email, password, fullName, selectedRole)
+      }
+
+      // Proceed to OTP verification if enabled
+      if (enableOTP) {
+        await sendOTPEmail(email)
+        setAuthStep('otp')
+        setIsLoading(false)
+        return
+      }
+
+      router.push('/auth/sign-up-success')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (isBn ? 'সাইন আপ ব্যর্থ' : 'Sign up failed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
@@ -341,7 +473,21 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         )}
 
         {/* Form */}
-        <form onSubmit={handleEmailAuth} className="w-full space-y-4">
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          if (view === 'login') {
+            handleEmailAuth(e)
+          } else {
+            // Signup flow
+            if (authStep === 'credentials' || authStep === 'details') {
+              handleNextStep(e)
+            } else if (authStep === 'preferences') {
+              handleCompleteSignup(e)
+            } else {
+              handleEmailAuth(e)
+            }
+          }
+        }} className="w-full space-y-4">
           {authStep === 'otp' ? (
             <>
               {/* OTP Input Section */}
@@ -390,6 +536,204 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                 </div>
               </div>
             </>
+          ) : view === 'signup' && authStep === 'details' ? (
+            <>
+              {/* Details Step */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value as any)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  >
+                    <option value="">{isBn ? 'লিঙ্গ' : 'Gender'}</option>
+                    <option value="male">{isBn ? 'পুরুষ' : 'Male'}</option>
+                    <option value="female">{isBn ? 'নারী' : 'Female'}</option>
+                    <option value="other">{isBn ? 'অন্যান্য' : 'Other'}</option>
+                  </select>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder={isBn ? "শহর/অবস্থান" : "City/Location"}
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                />
+
+                <input
+                  type="tel"
+                  placeholder={isBn ? "ফোন নম্বর (ঐচ্ছিক)" : "Phone Number (Optional)"}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                />
+
+                {/* Role-specific fields */}
+                {selectedRole === 'fan' && (
+                  <input
+                    type="text"
+                    placeholder={isBn ? "প্রিয় দল" : "Favorite Team"}
+                    value={favoriteTeam}
+                    onChange={(e) => setFavoriteTeam(e.target.value)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                )}
+
+                {selectedRole === 'partner' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder={isBn ? "সংস্থার নাম" : "Organization Name"}
+                      value={organizationName}
+                      onChange={(e) => setOrganizationName(e.target.value)}
+                      required
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    />
+                    <select
+                      value={organizationType}
+                      onChange={(e) => setOrganizationType(e.target.value)}
+                      required
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    >
+                      <option value="">{isBn ? 'ব্যবসার ধরন' : 'Business Type'}</option>
+                      <option value="sports">{isBn ? 'ক্রীড়া' : 'Sports'}</option>
+                      <option value="media">{isBn ? 'মিডিয়া' : 'Media'}</option>
+                      <option value="equipment">{isBn ? 'সরঞ্জাম' : 'Equipment'}</option>
+                      <option value="other">{isBn ? 'অন্যান্য' : 'Other'}</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder={isBn ? "যোগাযোগ ব্যক্তি" : "Contact Person"}
+                      value={contactPerson}
+                      onChange={(e) => setContactPerson(e.target.value)}
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    />
+                  </>
+                )}
+              </div>
+
+              {/* Navigation buttons for details step */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পিছনে' : 'Back'}
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পরবর্তী' : 'Next'}
+                </button>
+              </div>
+            </>
+          ) : view === 'signup' && authStep === 'preferences' ? (
+            <>
+              {/* Preferences Step */}
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-foreground">{isBn ? 'সোশ্যাল মিডিয়া (ঐচ্ছিক)' : 'Social Media (Optional)'}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Instagram className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Instagram"
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Twitter className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Twitter/X"
+                        value={twitter}
+                        onChange={(e) => setTwitter(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Facebook className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Facebook"
+                        value={facebook}
+                        onChange={(e) => setFacebook(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Preferences checkboxes */}
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={subscribeNewsletter}
+                      onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">{isBn ? 'আমাদের নিউজলেটার এবং আপডেট সাবস্ক্রাইব করুন' : 'Subscribe to newsletter and updates'}</span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={shareData}
+                      onChange={(e) => setShareData(e.target.checked)}
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">{isBn ? 'আমাকে ব্যক্তিগতকৃত অভিজ্ঞতার জন্য ডেটা শেয়ার করতে দিন' : 'Share my data for personalized experience'}</span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreeToTerms}
+                      onChange={(e) => setAgreeToTerms(e.target.checked)}
+                      required
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">
+                      {isBn ? 'আমি শর্তাবলী এবং গোপনীয়তা নীতি গ্রহণ করি' : 'I agree to the terms and privacy policy'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Navigation buttons for preferences step */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পিছনে' : 'Back'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={!agreeToTerms || isLoading}
+                  className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                >
+                  {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account'}
+                </button>
+              </div>
+            </>
           ) : (
             <>
               {/* Credentials Input Section */}
@@ -434,7 +778,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
@@ -442,7 +786,11 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...')
               : view === 'login'
                 ? (isBn ? 'লগইন করুন' : 'Continue')
-                : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
+                : authStep === 'credentials'
+                  ? (isBn ? 'পরবর্তী' : 'Next')
+                  : authStep === 'details'
+                    ? (isBn ? 'পরবর্তী' : 'Next')
+                    : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
           </button>
 
           {view === 'login' && (
@@ -454,6 +802,24 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               >
                 {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
               </button>
+            </div>
+          )}
+
+          {/* Show step indicator for signup */}
+          {view === 'signup' && authStep !== 'otp' && (
+            <div className="flex justify-center gap-2 py-4">
+              {(['credentials', 'details', 'preferences'] as const).map((step) => (
+                <div
+                  key={step}
+                  className={`h-1 rounded-full transition-all ${
+                    authStep === step
+                      ? 'w-8 bg-primary'
+                      : ['credentials', 'details', 'preferences'].indexOf(step) < ['credentials', 'details', 'preferences'].indexOf(authStep)
+                        ? 'w-3 bg-primary/50'
+                        : 'w-3 bg-border'
+                  }`}
+                />
+              ))}
             </div>
           )}
             </>

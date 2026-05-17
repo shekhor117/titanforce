@@ -43,17 +43,6 @@ export default function AdminSystemPage() {
   const news = dataStore.getNews()
   const media = dataStore.getMedia()
   const users = dataStore.getAdminUsers()
-  
-  const stats = {
-    players: players.length,
-    matches: matches.length,
-    fans: fans.length,
-    partners: partners.length,
-    news: news.length,
-    media: media.length,
-    users: users.length,
-    contacts: 0, // Contacts is async, so default to 0
-  }
 
   // Export data
   const handleExport = () => {
