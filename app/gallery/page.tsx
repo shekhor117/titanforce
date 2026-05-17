@@ -14,6 +14,63 @@ const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = 
   { value: 'news', label: 'News', labelBn: 'খবর' }
 ]
 
+const SAMPLE_ITEMS: GalleryItem[] = [
+  {
+    id: '1',
+    title: 'Champions League Victory',
+    description: 'Historic win against rivals in the final match',
+    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
+    type: 'match',
+    isFeatured: true,
+    createdAt: new Date('2024-05-15')
+  },
+  {
+    id: '2',
+    title: 'Team Celebration',
+    description: 'Players celebrating after winning the trophy',
+    imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
+    type: 'team-events',
+    isFeatured: true,
+    createdAt: new Date('2024-05-14')
+  },
+  {
+    id: '3',
+    title: 'Training Session',
+    description: 'Intense tactical training with the coaching staff',
+    imageUrl: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
+    type: 'training',
+    isFeatured: true,
+    createdAt: new Date('2024-05-13')
+  },
+  {
+    id: '4',
+    title: 'Official Jersey Launch',
+    description: 'New season merchandise collection unveiled',
+    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
+    type: 'merchandise',
+    isFeatured: true,
+    createdAt: new Date('2024-05-12')
+  },
+  {
+    id: '5',
+    title: 'Match Highlights',
+    description: 'Best moments from today\'s match',
+    imageUrl: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&h=600&fit=crop',
+    type: 'match',
+    isFeatured: false,
+    createdAt: new Date('2024-05-11')
+  },
+  {
+    id: '6',
+    title: 'News Update',
+    description: 'Latest news from the club',
+    imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9e55?w=800&h=600&fit=crop',
+    type: 'news',
+    isFeatured: false,
+    createdAt: new Date('2024-05-10')
+  }
+]
+
 export default function GalleryPage() {
   const router = useRouter()
   const { language } = useLanguage()
@@ -28,7 +85,7 @@ export default function GalleryPage() {
   useEffect(() => {
     const loadItems = async () => {
       const allItems = await GalleryDataService.getGalleryItems()
-      setItems(allItems)
+      setItems(allItems && allItems.length > 0 ? allItems : SAMPLE_ITEMS)
     }
     loadItems()
   }, [])
