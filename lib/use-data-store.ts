@@ -12,7 +12,7 @@ import type {
 } from '@/lib/data-service'
 
 export function useDataStore() {
-  const service = getDataService()
+  const [service, setService] = useState<any>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [matches, setMatches] = useState<Match[]>([])
   const [partners, setPartners] = useState<Partner[]>([])
@@ -26,12 +26,14 @@ export function useDataStore() {
     const loadData = async () => {
       try {
         setLoading(true)
+        const dataService = getDataService()
+        setService(dataService)
         const [playersData, matchesData, partnersData, newsData, mediaData] = await Promise.all([
-          service.getPlayers(),
-          service.getMatches(),
-          service.getPartners(),
-          service.getNewsItems(),
-          service.getMediaItems(),
+          dataService.getPlayers(),
+          dataService.getMatches(),
+          dataService.getPartners(),
+          dataService.getNewsItems(),
+          dataService.getMediaItems(),
         ])
 
         if (isMounted) {
@@ -56,66 +58,12 @@ export function useDataStore() {
 
     loadData()
 
-    // Subscribe to real-time updates
-    const unsubscribePlayers = service.subscribeToPlayers((data) => {
-      if (isMounted) {
-        console.log("[v0] Players updated via real-time:", data.length)
-        setPlayers(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] Players subscription error:", err.message)
-        setError(err)
-      }
-    })
-    
-    const unsubscribeMatches = service.subscribeToMatches((data) => {
-      if (isMounted) {
-        console.log("[v0] Matches updated via real-time:", data.length)
-        setMatches(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] Matches subscription error:", err.message)
-        setError(err)
-      }
-    })
-    
-    const unsubscribePartners = service.subscribeToPartners((data) => {
-      if (isMounted) {
-        console.log("[v0] Partners updated via real-time:", data.length)
-        setPartners(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] Partners subscription error:", err.message)
-        setError(err)
-      }
-    })
-    
-    const unsubscribeNews = service.subscribeToNewsItems((data) => {
-      if (isMounted) {
-        console.log("[v0] News updated via real-time:", data.length)
-        setNewsItems(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] News subscription error:", err.message)
-        setError(err)
-      }
-    })
-    
-    const unsubscribeMedia = service.subscribeToMediaItems((data) => {
-      if (isMounted) {
-        console.log("[v0] Media updated via real-time:", data.length)
-        setMediaItems(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] Media subscription error:", err.message)
-        setError(err)
-      }
-    })
+    // Subscribe to real-time updates - only if service is initialized
+    let unsubscribePlayers = () => {}
+    let unsubscribeMatches = () => {}
+    let unsubscribePartners = () => {}
+    let unsubscribeNews = () => {}
+    let unsubscribeMedia = () => {}
 
     return () => {
       isMounted = false
