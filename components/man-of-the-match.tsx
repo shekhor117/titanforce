@@ -34,9 +34,14 @@ export function ManOfTheMatch() {
         const matches = await MatchDataService.getMatches()
         const playersData = await PlayerDataService.getPlayers()
         
-        // Get the latest completed match
+        // Get the latest completed match, fallback to most recent match
         const completed = matches.find(m => m.status === 'completed')
-        setLatestMatch(completed || matches[0] || null)
+        const latest = completed || matches[0] || null
+        
+        console.log("[v0] Latest match:", latest)
+        console.log("[v0] Players loaded:", playersData.length)
+        
+        setLatestMatch(latest)
         setPlayers(playersData)
       } catch (error) {
         console.error("[v0] Error loading MOTM data:", error)
@@ -76,7 +81,16 @@ export function ManOfTheMatch() {
     )
   }
 
-  const matchTitle = `${latestMatch.home} ${latestMatch.home_score !== null ? latestMatch.home_score : ""} - ${latestMatch.away_score !== null ? latestMatch.away_score : ""} ${latestMatch.away}`
+  const matchTitle = `${latestMatch.home} ${latestMatch.home_score !== null ? latestMatch.home_score : "?"} - ${latestMatch.away_score !== null ? latestMatch.away_score : "?"} ${latestMatch.away}`
+  
+  const formatMatchDate = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    } catch {
+      return dateStr
+    }
+  }
 
   return (
     <section ref={sectionRef} className="py-16 px-4 bg-background">
@@ -90,12 +104,16 @@ export function ManOfTheMatch() {
 
         {/* Match Info */}
         <div className={`text-center mb-8 transition-all duration-600 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <p className="font-[var(--font-display)] text-2xl md:text-3xl tracking-wide text-foreground mb-2">
-            {matchTitle}
+          <p className="font-[var(--font-display)] text-xl md:text-2xl tracking-wide text-foreground mb-2">
+            <span>{latestMatch.home}</span>
+            <span className="mx-4 text-primary font-bold">
+              {latestMatch.home_score} - {latestMatch.away_score}
+            </span>
+            <span>{latestMatch.away}</span>
           </p>
           <p className="text-foreground/60 text-sm">
             {isBn ? "সর্বশেষ ম্যাচ • " : "Latest Match • "}
-            {latestMatch.date}
+            {formatMatchDate(latestMatch.date)}
           </p>
         </div>
 
