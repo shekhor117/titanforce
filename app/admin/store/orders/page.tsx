@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Eye, CheckCircle, Truck, Package, AlertCircle, Search } from "lucide-react"
+import { Eye, CheckCircle, Truck, Package, AlertCircle, Search, Edit, Save, X, Phone, Mail, MapPin } from "lucide-react"
 import StoreDataService, { Order } from "@/lib/store-data-service"
 
 export default function StoreOrdersPage() {
@@ -17,6 +17,14 @@ export default function StoreOrdersPage() {
   const [filterStatus, setFilterStatus] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [editingOrderId, setEditingOrderId] = useState<string | null>(null)
+  const [editFormData, setEditFormData] = useState({
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
+    shippingAddress: "",
+    notes: "",
+  })
 
   const statusLabels: Record<string, { bn: string; en: string; color: string }> = {
     pending: { bn: "অপেক্ষমাণ", en: "Pending", color: "bg-yellow-500/20 text-yellow-400" },
@@ -50,6 +58,48 @@ export default function StoreOrdersPage() {
     if (selectedOrder && selectedOrder.id === orderId) {
       setSelectedOrder(StoreDataService.getOrderById(orderId))
     }
+  }
+
+  const handleEditOrder = (order: Order) => {
+    setEditingOrderId(order.id)
+    setEditFormData({
+      customerName: order.customer.name,
+      customerEmail: order.customer.email,
+      customerPhone: order.customer.phone,
+      shippingAddress: order.customer.address,
+      notes: order.notes || "",
+    })
+  }
+
+  const handleSaveEdit = (orderId: string) => {
+    // Update order with edited data
+    const updatedOrder = {
+      ...selectedOrder,
+      customer: {
+        ...selectedOrder!.customer,
+        name: editFormData.customerName,
+        email: editFormData.customerEmail,
+        phone: editFormData.customerPhone,
+        address: editFormData.shippingAddress,
+      },
+      notes: editFormData.notes,
+    }
+    
+    StoreDataService.updateOrder(orderId, updatedOrder)
+    loadOrders()
+    setSelectedOrder(updatedOrder as Order)
+    setEditingOrderId(null)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingOrderId(null)
+    setEditFormData({
+      customerName: "",
+      customerEmail: "",
+      customerPhone: "",
+      shippingAddress: "",
+      notes: "",
+    })
   }
 
   return (
@@ -156,56 +206,143 @@ export default function StoreOrdersPage() {
                   </div>
 
                   <div className="bg-background/50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-foreground">{isBn ? "অর্ডার বিবরণ" : "Order Details"}</h4>
+                      {editingOrderId !== selectedOrder?.id && (
+                        <button
+                          onClick={() => handleEditOrder(selectedOrder!)}
+                          className="flex items-center gap-2 px-3 py-1 text-sm font-semibold rounded bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+                        >
+                          <Edit className="w-4 h-4" />
+                          {isBn ? "সম্পাদনা" : "Edit"}
+                        </button>
+                      )}
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <p className="text-xs text-foreground/60 mb-1">{isBn ? "গ্রাহক" : "Customer"}</p>
-                        <p className="text-sm font-semibold text-foreground">{order.customer.name}</p>
-                        <p className="text-xs text-foreground/60">{order.customer.email}</p>
-                        <p className="text-xs text-foreground/60">{order.customer.phone}</p>
+                        <p className="text-xs text-foreground/60 mb-2 flex items-center gap-1">
+                          <Mail className="w-3 h-3" /> {isBn ? "গ্রাহক" : "Customer"}
+                        </p>
+                        {editingOrderId === selectedOrder?.id ? (
+                          <input
+                            type="text"
+                            value={editFormData.customerName}
+                            onChange={(e) => setEditFormData({ ...editFormData, customerName: e.target.value })}
+                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-sm text-foreground mb-2"
+                          />
+                        ) : (
+                          <p className="text-sm font-semibold text-foreground">{order.customer.name}</p>
+                        )}
+                        
+                        {editingOrderId === selectedOrder?.id ? (
+                          <input
+                            type="email"
+                            value={editFormData.customerEmail}
+                            onChange={(e) => setEditFormData({ ...editFormData, customerEmail: e.target.value })}
+                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground mb-2"
+                          />
+                        ) : (
+                          <p className="text-xs text-foreground/60">{order.customer.email}</p>
+                        )}
+                        
+                        {editingOrderId === selectedOrder?.id ? (
+                          <input
+                            type="tel"
+                            value={editFormData.customerPhone}
+                            onChange={(e) => setEditFormData({ ...editFormData, customerPhone: e.target.value })}
+                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground"
+                          />
+                        ) : (
+                          <p className="text-xs text-foreground/60">{order.customer.phone}</p>
+                        )}
                       </div>
                       <div>
-                        <p className="text-xs text-foreground/60 mb-1">{isBn ? "প্রেরণ ঠিকানা" : "Shipping Address"}</p>
-                        <p className="text-xs text-foreground/80">{order.customer.address}</p>
+                        <p className="text-xs text-foreground/60 mb-2 flex items-center gap-1">
+                          <MapPin className="w-3 h-3" /> {isBn ? "প্রেরণ ঠিকানা" : "Shipping Address"}
+                        </p>
+                        {editingOrderId === selectedOrder?.id ? (
+                          <textarea
+                            value={editFormData.shippingAddress}
+                            onChange={(e) => setEditFormData({ ...editFormData, shippingAddress: e.target.value })}
+                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground h-16"
+                          />
+                        ) : (
+                          <p className="text-xs text-foreground/80">{order.customer.address}</p>
+                        )}
                         <p className="text-xs text-foreground/60 mt-2">{isBn ? "তারিখ:" : "Date:"} {order.createdAt}</p>
                       </div>
                     </div>
 
-                    <div className="border-t border-primary/20 pt-4 mb-4">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-foreground/60">{isBn ? "সাবটোটাল" : "Subtotal"}:</span>
-                        <span className="text-foreground">৳{order.subtotal.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-foreground/60">{isBn ? "কর" : "Tax"}:</span>
-                        <span className="text-foreground">৳{order.tax.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-foreground/60">{isBn ? "শিপিং" : "Shipping"}:</span>
-                        <span className="text-foreground">৳{order.shipping}</span>
-                      </div>
-                      <div className="border-t border-primary/20 pt-2 flex justify-between font-bold">
-                        <span className="text-foreground">{isBn ? "মোট" : "Total"}:</span>
-                        <span className="text-primary">৳{order.total.toLocaleString()}</span>
-                      </div>
+                    <div>
+                      <p className="text-xs text-foreground/60 mb-2">{isBn ? "নোটস" : "Notes"}</p>
+                      {editingOrderId === selectedOrder?.id ? (
+                        <textarea
+                          value={editFormData.notes}
+                          onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
+                          placeholder={isBn ? "অর্ডার সম্পর্কে নোট যোগ করুন..." : "Add notes about this order..."}
+                          className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground h-12"
+                        />
+                      ) : (
+                        <p className="text-xs text-foreground/80">{selectedOrder?.notes || (isBn ? "কোনো নোট নেই" : "No notes")}</p>
+                      )}
                     </div>
 
-                    <div>
-                      <p className="text-xs text-foreground/60 mb-2">{isBn ? "স্ট্যাটাস আপডেট" : "Update Status"}</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {Object.entries(statusLabels).map(([status]) => (
-                          <button
-                            key={status}
-                            onClick={() => handleStatusChange(order.id, status as Order["status"])}
-                            className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
-                              order.status === status
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary border border-primary/20 text-foreground hover:bg-primary/10"
-                            }`}
-                          >
-                            {isBn ? statusLabels[status]?.bn : statusLabels[status]?.en}
-                          </button>
-                        ))}
+                    {editingOrderId === selectedOrder?.id && (
+                      <div className="flex gap-2 mt-4">
+                        <button
+                          onClick={() => handleSaveEdit(selectedOrder!.id)}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold rounded bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-colors"
+                        >
+                          <Save className="w-4 h-4" />
+                          {isBn ? "সংরক্ষণ করুন" : "Save"}
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold rounded bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                          {isBn ? "বাতিল" : "Cancel"}
+                        </button>
                       </div>
+                    )}
+                  </div>
+
+                  <div className="border-t border-primary/20 pt-4 mt-4 mb-4">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-foreground/60">{isBn ? "সাবটোটাল" : "Subtotal"}:</span>
+                      <span className="text-foreground">৳{order.subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-foreground/60">{isBn ? "কর" : "Tax"}:</span>
+                      <span className="text-foreground">৳{order.tax.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-foreground/60">{isBn ? "শিপিং" : "Shipping"}:</span>
+                      <span className="text-foreground">৳{order.shipping}</span>
+                    </div>
+                    <div className="border-t border-primary/20 pt-2 flex justify-between font-bold">
+                      <span className="text-foreground">{isBn ? "মোট" : "Total"}:</span>
+                      <span className="text-primary">৳{order.total.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-foreground/60 mb-2">{isBn ? "স্ট্যাটাস আপডেট" : "Update Status"}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {Object.entries(statusLabels).map(([status]) => (
+                        <button
+                          key={status}
+                          onClick={() => handleStatusChange(order.id, status as Order["status"])}
+                          className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
+                            order.status === status
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary border border-primary/20 text-foreground hover:bg-primary/10"
+                          }`}
+                        >
+                          {isBn ? statusLabels[status]?.bn : statusLabels[status]?.en}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </motion.div>

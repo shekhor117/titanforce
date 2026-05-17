@@ -3,29 +3,32 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Save, Globe, Palette, Bell, Shield, RefreshCw } from "lucide-react"
-import { dataStore, SiteSettings, useDataStore } from "@/lib/data-store"
+import { dataStore, SiteSettings } from "@/lib/data-store"
 
 export default function AdminSettingsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   
-  // Get settings from data store
-  const storedSettings = useDataStore(dataStore.getSettings, "settings")
-  
-  const [settings, setSettings] = useState<SiteSettings>(storedSettings)
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
   const [hasChanges, setHasChanges] = useState(false)
   const [activeTab, setActiveTab] = useState("general")
+  const [isClient, setIsClient] = useState(false)
 
+  // Initialize settings from localStorage on client side only
   useEffect(() => {
+    setIsClient(true)
+    const storedSettings = dataStore.getSettings()
     setSettings(storedSettings)
-  }, [storedSettings])
+  }, [])
 
   const handleChange = (key: keyof SiteSettings, value: string) => {
+    if (!settings) return
     setSettings({ ...settings, [key]: value })
     setHasChanges(true)
   }
 
   const handleSocialChange = (key: keyof SiteSettings["socialLinks"], value: string) => {
+    if (!settings) return
     setSettings({ 
       ...settings, 
       socialLinks: { ...settings.socialLinks, [key]: value } 
@@ -34,6 +37,7 @@ export default function AdminSettingsPage() {
   }
 
   const handleSave = () => {
+    if (!settings) return
     dataStore.setSettings(settings)
     setHasChanges(false)
     alert(isBn ? "সেটিংস সংরক্ষিত!" : "Settings saved!")
@@ -42,7 +46,22 @@ export default function AdminSettingsPage() {
   const handleResetToDefaults = () => {
     if (!confirm(isBn ? "সমস্ত ডেটা রিসেট করতে চান? এটি পূর্বাবস্থায় ফেরানো যাবে না।" : "Reset all data? This cannot be undone.")) return
     dataStore.resetToDefaults()
+    const defaultSettings = dataStore.getSettings()
+    setSettings(defaultSettings)
+    setHasChanges(false)
     alert(isBn ? "সমস্ত ডেটা রিসেট হয়েছে!" : "All data has been reset!")
+  }
+
+  // Show loading state while client is not ready
+  if (!isClient || !settings) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
+          <p className="mt-4 text-foreground/60">Loading settings...</p>
+        </div>
+      </div>
+    )
   }
 
   const tabs = [

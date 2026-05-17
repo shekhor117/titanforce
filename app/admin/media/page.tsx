@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Upload, X, Trash2 } from "lucide-react"
 import Image from "next/image"
-import { dataStore, MediaItem, useDataStore } from "@/lib/data-store"
+import { dataStore, MediaItem } from "@/lib/data-store"
 
 export default function AdminMedia() {
   const { language } = useLanguage()
@@ -13,9 +13,14 @@ export default function AdminMedia() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
   const [filter, setFilter] = useState<"all" | "photo" | "video">("all")
+  const [mediaFiles, setMediaFiles] = useState<MediaItem[]>([])
+  const [isClient, setIsClient] = useState(false)
 
-  // Get media from data store
-  const mediaFiles = useDataStore(dataStore.getMedia, "media")
+  useEffect(() => {
+    setIsClient(true)
+    const media = dataStore.getMedia()
+    setMediaFiles(Array.isArray(media) ? media : [])
+  }, [])
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])

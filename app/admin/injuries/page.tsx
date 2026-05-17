@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Heart, Save, RefreshCw, Plus, X, AlertCircle } from "lucide-react"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { dataStore } from "@/lib/data-store"
 
 interface Injury {
   id: string
@@ -21,8 +21,14 @@ export default function AdminInjuriesPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const { admin } = useAdmin()
+  const [players, setPlayers] = useState<any[]>([])
+  const [isClient, setIsClient] = useState(false)
 
-  const players = useDataStore(dataStore.getPlayers, "players")
+  useEffect(() => {
+    setIsClient(true)
+    const playersData = dataStore.getPlayers()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+  }, [])
 
   const [injuries, setInjuries] = useState<Injury[]>([
     {

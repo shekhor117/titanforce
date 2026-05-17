@@ -28,7 +28,7 @@ export function ForgotPasswordPage() {
     try {
       // Placeholder - would send password reset email
       setMessage(isBn ? "পাসওয়ার্ড রিসেট লিঙ্ক পাঠানো হয়েছে" : "Password reset link sent to your email")
-      setTimeout(() => router.push("/admin-login"), 2000)
+      setTimeout(() => router.push("/admin/login"), 2000)
     } catch (error) {
       setMessage(isBn ? "ত্রুটি ঘটেছে" : "An error occurred")
     } finally {
@@ -91,7 +91,7 @@ export function ForgotPasswordPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             {isBn ? "মনে আছে?" : "Remember your password?"}{" "}
-            <Link href="/admin-login" className="text-primary hover:underline">
+            <Link href="/admin/login" className="text-primary hover:underline">
               {isBn ? "লগইন করুন" : "Login"}
             </Link>
           </p>

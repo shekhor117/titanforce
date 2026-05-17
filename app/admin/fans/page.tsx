@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Fan, useDataStore } from "@/lib/data-store"
+import { dataStore, Fan } from "@/lib/data-store"
 import { CheckCircle, XCircle, Clock, Users, Trash2, Edit, X, Save, Plus, Search } from "lucide-react"
 
 export default function AdminFans() {
@@ -12,6 +12,8 @@ export default function AdminFans() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showForm, setShowForm] = useState(false)
   const [editingFan, setEditingFan] = useState<Fan | null>(null)
+  const [fans, setFans] = useState<Fan[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,7 +22,11 @@ export default function AdminFans() {
     status: "active" as Fan["status"],
   })
   
-  const fans = useDataStore(dataStore.getFans, "fans")
+  useEffect(() => {
+    setIsClient(true)
+    const fansData = dataStore.getFans()
+    setFans(Array.isArray(fansData) ? fansData : [])
+  }, [])
 
   const handleSaveFan = () => {
     if (!formData.name || !formData.email) {

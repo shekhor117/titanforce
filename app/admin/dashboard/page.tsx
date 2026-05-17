@@ -1,7 +1,6 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import StoreDataService from "@/lib/store-data-service"
 import GalleryDataService from "@/lib/gallery-data-service"
 import TrophyDataService from "@/lib/trophy-data-service"
@@ -13,32 +12,43 @@ import {
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
+import { useDataStore } from "@/lib/use-data-store"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   
-  // Subscribe to data store changes (these are synchronous)
-  const players = useDataStore(dataStore.getPlayers, "players") as any
-  const matches = useDataStore(dataStore.getMatches, "matches") as any
-  const fans = useDataStore(dataStore.getFans, "fans") as any
-  const partners = useDataStore(dataStore.getPartners, "partners") as any
-  const news = useDataStore(dataStore.getNews, "news") as any
-  const media = useDataStore(dataStore.getMedia, "media") as any
-  const contacts = useDataStore(dataStore.getContacts, "contacts") as any
-  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog") as any
+  // Get data from the hook
+  const { players, matches, partners, newsItems, mediaItems, loading, error } = useDataStore()
+  
+  // Get local storage data
+  const [fans, setFans] = useState<any[]>([])
+  const [contacts, setContacts] = useState<any[]>([])
+  const [activityLog, setActivityLog] = useState<any[]>([])
+  
+  useEffect(() => {
+    // Import dataStore to get local storage data
+    const loadLocalData = async () => {
+      const { dataStore } = await import("@/lib/data-store")
+      setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
+      setContacts(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts() : [])
+      setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
+    }
+    loadLocalData()
+  }, [])
 
   // Ensure arrays
   const playerList = Array.isArray(players) ? players : []
   const matchList = Array.isArray(matches) ? matches : []
   const fanList = Array.isArray(fans) ? fans : []
   const partnerList = Array.isArray(partners) ? partners : []
-  const newsList = Array.isArray(news) ? news : []
-  const mediaList = Array.isArray(media) ? media : []
+  const newsList = Array.isArray(newsItems) ? newsItems : []
+  const mediaList = Array.isArray(mediaItems) ? mediaItems : []
   const contactList = Array.isArray(contacts) ? contacts : []
   const activityList = Array.isArray(activityLog) ? activityLog : []
 
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  // State for player editing (kept but not used in current version)
+  const [selectedPlayer, setSelectedPlayer] = useState<any | null>(null)
   const [editingPlayer, setEditingPlayer] = useState(false)
 
   // Calculate stats
@@ -332,6 +342,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
+          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error.message}</p>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -339,7 +356,7 @@ export default function AdminDashboard() {
             {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
           </h1>
           <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "টাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
+            {isBn ? "ট���ইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
           </p>
         </div>
         <div className="flex items-center gap-3">

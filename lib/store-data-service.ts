@@ -180,6 +180,19 @@ export class StoreDataService {
     return order
   }
 
+  static updateOrder(id: string, updatedOrder: Partial<Order>): Order {
+    const index = mockOrders.findIndex((o) => o.id === id)
+    if (index === -1) {
+      throw new Error('Order not found')
+    }
+    mockOrders[index] = {
+      ...mockOrders[index],
+      ...updatedOrder,
+      updatedAt: new Date().toISOString(),
+    }
+    return mockOrders[index]
+  }
+
   static getOrderStats() {
     const orders = mockOrders
     const totalOrders = orders.length

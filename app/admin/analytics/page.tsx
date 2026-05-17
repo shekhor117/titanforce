@@ -1,8 +1,8 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, useDataStore } from "@/lib/data-store"
-import { useState } from "react"
+import { dataStore } from "@/lib/data-store"
+import { useState, useEffect } from "react"
 import { 
   BarChart3, TrendingUp, Users, Trophy, Newspaper, Image, 
   Handshake, Mail, Activity, Calendar, Clock, ArrowUp, ArrowDown, 
@@ -31,16 +31,27 @@ interface PlayerAnalytics {
 export default function AdminAnalyticsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const [isClient, setIsClient] = useState(false)
+  const [players, setPlayers] = useState<any[]>([])
+  const [matches, setMatches] = useState<any[]>([])
+  const [fans, setFans] = useState<any[]>([])
+  const [partners, setPartners] = useState<any[]>([])
+  const [news, setNews] = useState<any[]>([])
+  const [media, setMedia] = useState<any[]>([])
+  const [contacts, setContacts] = useState<any[]>([])
+  const [activityLog, setActivityLog] = useState<any[]>([])
 
-  // Get all data
-  const players = useDataStore(dataStore.getPlayers, "players")
-  const matches = useDataStore(dataStore.getMatches, "matches")
-  const fans = useDataStore(dataStore.getFans, "fans")
-  const partners = useDataStore(dataStore.getPartners, "partners")
-  const news = useDataStore(dataStore.getNews, "news")
-  const media = useDataStore(dataStore.getMedia, "media")
-  const contacts = useDataStore(dataStore.getContacts, "contacts")
-  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
+  useEffect(() => {
+    setIsClient(true)
+    setPlayers(Array.isArray(dataStore.getPlayers()) ? dataStore.getPlayers() : [])
+    setMatches(Array.isArray(dataStore.getMatches()) ? dataStore.getMatches() : [])
+    setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
+    setPartners(Array.isArray(dataStore.getPartners()) ? dataStore.getPartners() : [])
+    setNews(Array.isArray(dataStore.getNews()) ? dataStore.getNews() : [])
+    setMedia(Array.isArray(dataStore.getMedia()) ? dataStore.getMedia() : [])
+    setContacts(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts() : [])
+    setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
+  }, [])
 
   // Player Analytics State
   const [playerAnalytics, setPlayerAnalytics] = useState<PlayerAnalytics[]>([

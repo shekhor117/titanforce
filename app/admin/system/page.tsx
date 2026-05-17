@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, useDataStore, ActivityLog } from "@/lib/data-store"
+import { dataStore, ActivityLog } from "@/lib/data-store"
 import { 
   Download, Upload, RefreshCw, Trash2, Database, HardDrive, 
   Clock, Activity, Shield, AlertTriangle, CheckCircle, X, FileJson, Settings
@@ -19,29 +19,30 @@ export default function AdminSystemPage() {
   const [error, setError] = useState("")
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [clearType, setClearType] = useState<string>("")
-
-  // Get activity log
-  const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
+  const [isClient, setIsClient] = useState(false)
 
   // Get stats using sync methods
-  const players = dataStore.getPlayers()
-  const matches = dataStore.getMatches()
-  const fans = dataStore.getFans()
-  const partners = dataStore.getPartners()
+  const [stats, setStats] = useState({
+    players: 0,
+    matches: 0,
+    fans: 0,
+    partners: 0,
+    activityLog: 0
+  })
+
+  useEffect(() => {
+    setIsClient(true)
+    setStats({
+      players: (dataStore.getPlayers() || []).length,
+      matches: (dataStore.getMatches() || []).length,
+      fans: (dataStore.getFans() || []).length,
+      partners: (dataStore.getPartners() || []).length,
+      activityLog: (dataStore.getActivityLog() || []).length
+    })
+  }, [])
   const news = dataStore.getNews()
   const media = dataStore.getMedia()
   const users = dataStore.getAdminUsers()
-  
-  const stats = {
-    players: players.length,
-    matches: matches.length,
-    fans: fans.length,
-    partners: partners.length,
-    news: news.length,
-    media: media.length,
-    users: users.length,
-    contacts: 0, // Contacts is async, so default to 0
-  }
 
   // Export data
   const handleExport = () => {

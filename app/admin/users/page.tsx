@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, AdminUser, useDataStore } from "@/lib/data-store"
+import { dataStore, AdminUser } from "@/lib/data-store"
 import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock } from "lucide-react"
 
 export default function AdminUsersPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const users = useDataStore(dataStore.getAdminUsers, "adminUsers")
+  const [users, setUsers] = useState<AdminUser[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterRole, setFilterRole] = useState<string>("all")
   const [showModal, setShowModal] = useState(false)
@@ -20,6 +21,12 @@ export default function AdminUsersPage() {
     role: "fan" as AdminUser["role"],
     status: "active" as AdminUser["status"],
   })
+
+  useEffect(() => {
+    setIsClient(true)
+    const usersData = dataStore.getAdminUsers()
+    setUsers(Array.isArray(usersData) ? usersData : [])
+  }, [])
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

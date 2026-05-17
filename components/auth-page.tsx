@@ -3,21 +3,23 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 import { mockSignUp } from '@/lib/auth-utils'
 
 type Role = 'player' | 'fan' | 'partner'
+type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
 
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
   defaultRole?: Role
   showAllRoles?: boolean
+  enableOTP?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false, enableOTP = true }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -25,22 +27,91 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const isBn = language === 'bn'
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
+  const [authStep, setAuthStep] = useState<AuthStep>('credentials')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [selectedRole, setSelectedRole] = useState<Role>(defaultRole)
+  const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
   const [isAppleLoading, setIsAppleLoading] = useState(false)
+  const [otpSentEmail, setOtpSentEmail] = useState('')
+  const [otpResendTimer, setOtpResendTimer] = useState(0)
+
+  // Additional signup details
+  const [phone, setPhone] = useState('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState<'male' | 'female' | 'other' | ''>('')
+  const [location, setLocation] = useState('')
+  const [instagram, setInstagram] = useState('')
+  const [twitter, setTwitter] = useState('')
+  const [facebook, setFacebook] = useState('')
+  
+  // Role-specific fields
+  const [favoriteTeam, setFavoriteTeam] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
+  const [organizationType, setOrganizationType] = useState('')
+  const [contactPerson, setContactPerson] = useState('')
+  const [partnshipType, setPartnershipType] = useState<'sponsor' | 'media' | 'equipment' | 'other' | ''>('')
+  
+  // Preferences
+  const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false)
+  const [shareData, setShareData] = useState(false)
 
   const roles: { id: Role; label: string; labelBn: string; icon: React.ReactNode }[] = [
     { id: 'player', label: 'Player', labelBn: 'খেলোয়াড়', icon: <User className="w-4 h-4" /> },
     { id: 'fan', label: 'Fan', labelBn: 'অনুরাগী', icon: <Heart className="w-4 h-4" /> },
     { id: 'partner', label: 'Partner', labelBn: 'অংশীদার', icon: <Handshake className="w-4 h-4" /> },
   ]
+
+  // Generate a 6-digit mock OTP (in production, this would be sent to email)
+  const generateMockOTP = (): string => {
+    return Math.floor(100000 + Math.random() * 900000).toString()
+  }
+
+  // Store OTP in session (in production, send via email)
+  const sendOTPEmail = async (emailAddress: string) => {
+    try {
+      const mockOTP = generateMockOTP()
+      // In production, send via email service
+      // For now, store in sessionStorage for demo
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('otp_code', mockOTP)
+        sessionStorage.setItem('otp_email', emailAddress)
+        // OTP valid for 5 minutes
+        sessionStorage.setItem('otp_expiry', (Date.now() + 5 * 60 * 1000).toString())
+        console.log("[v0] Mock OTP sent to", emailAddress, "- Demo OTP:", mockOTP)
+      }
+      setOtpSentEmail(emailAddress)
+      setOtpResendTimer(60) // 60 second cooldown
+    } catch (err) {
+      console.error("[v0] Error sending OTP:", err)
+      throw err
+    }
+  }
+
+  // Verify OTP code
+  const verifyOTPCode = (code: string): boolean => {
+    if (typeof window === 'undefined') return false
+    
+    const storedOTP = sessionStorage.getItem('otp_code')
+    const otpExpiry = sessionStorage.getItem('otp_expiry')
+    
+    if (!storedOTP || !otpExpiry) return false
+    if (Date.now() > parseInt(otpExpiry)) {
+      setError(isBn ? 'OTP এর মেয়াদ শেষ হয়েছে' : 'OTP has expired')
+      return false
+    }
+    
+    return code === storedOTP
+  }
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,49 +120,101 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       setError(null)
 
       if (view === 'login') {
-        try {
-          await login(email, password, selectedRole)
-          router.push('/profile')
-        } catch (loginErr) {
-          console.log("[v0] Supabase login failed, attempting mock login...")
-          // If Supabase fails, try mock login
+        // Check credentials first
+        if (authStep === 'credentials') {
+          // Validate credentials with mock auth or Supabase
           try {
             const { mockSignInWithEmail } = await import('@/lib/mock-auth')
             const mockUser = mockSignInWithEmail(email, password)
             if (!mockUser) {
               throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
             }
-            // Store role info
-            if (typeof window !== 'undefined') {
-              const userData = { ...mockUser, role: selectedRole }
-              localStorage.setItem('mockAuthUser', JSON.stringify(userData))
+          } catch (credErr) {
+            // Try Supabase
+            try {
+              const { data } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+              })
+              if (!data.user) {
+                throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
+              }
+            } catch (supabaseErr) {
+              throw credErr
             }
-            router.push('/profile')
-          } catch (mockErr) {
-            throw loginErr
           }
+
+          // If OTP is enabled, proceed to OTP verification
+          if (enableOTP) {
+            await sendOTPEmail(email)
+            setAuthStep('otp')
+            setIsLoading(false)
+            return
+          }
+
+          // Otherwise login directly
+          await login(email, password, selectedRole)
+          router.push('/profile')
+        } else if (authStep === 'otp') {
+          // Verify OTP
+          if (!verifyOTPCode(otp)) {
+            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
+          }
+
+          // OTP verified, complete login
+          await login(email, password, selectedRole)
+          // Clear OTP data
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('otp_code')
+            sessionStorage.removeItem('otp_email')
+            sessionStorage.removeItem('otp_expiry')
+          }
+          router.push('/profile')
         }
       } else {
-        // Try Supabase first, fall back to mock if not configured
-        try {
-          const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                full_name: fullName,
-                role: selectedRole,
+        // Signup flow
+        if (authStep === 'credentials') {
+          // Try Supabase first, fall back to mock if not configured
+          try {
+            const { error } = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  full_name: fullName,
+                  role: selectedRole,
+                },
+                emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+                  `${window.location.origin}/auth/callback?role=${selectedRole}`,
               },
-              emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-                `${window.location.origin}/auth/callback?role=${selectedRole}`,
-            },
-          })
-          if (error) throw error
+            })
+            if (error) throw error
+          } catch (supabaseErr) {
+            console.log("[v0] Supabase signup failed, attempting mock signup...")
+            await mockSignUp(email, password, fullName, selectedRole)
+          }
+
+          // Proceed to OTP verification if enabled
+          if (enableOTP) {
+            await sendOTPEmail(email)
+            setAuthStep('otp')
+            setIsLoading(false)
+            return
+          }
+
           router.push('/auth/sign-up-success')
-        } catch (supabaseErr) {
-          console.log("[v0] Supabase signup failed, attempting mock signup...")
-          // If Supabase fails, use mock signup for development
-          await mockSignUp(email, password, fullName, selectedRole)
+        } else if (authStep === 'otp') {
+          // Verify OTP for signup
+          if (!verifyOTPCode(otp)) {
+            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
+          }
+
+          // OTP verified, complete signup
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('otp_code')
+            sessionStorage.removeItem('otp_email')
+            sessionStorage.removeItem('otp_expiry')
+          }
           router.push('/auth/sign-up-success')
         }
       }
@@ -125,6 +248,144 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
     }
   }
 
+  const handleResendOTP = async () => {
+    try {
+      if (otpResendTimer > 0) return
+      setIsLoading(true)
+      setError(null)
+      await sendOTPEmail(otpSentEmail)
+      setOtp('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (isBn ? 'OTP পুনরায় পাঠাতে ব্যর্থ' : 'Failed to resend OTP'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleBackToCredentials = () => {
+    setAuthStep('credentials')
+    setOtp('')
+    setError(null)
+    setOtpResendTimer(0)
+  }
+
+  // Signup step navigation
+  const handleNextStep = async (e?: React.FormEvent) => {
+    e?.preventDefault()
+    setError(null)
+
+    if (authStep === 'credentials') {
+      // Validate credentials
+      if (view === 'signup') {
+        if (!email || !password || !confirmPassword || !fullName) {
+          setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
+          return
+        }
+        if (password.length < 8) {
+          setError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে' : 'Password must be at least 8 characters')
+          return
+        }
+        if (password !== confirmPassword) {
+          setError(isBn ? 'পাসওয়ার্ড মেলে না' : 'Passwords do not match')
+          return
+        }
+      }
+      setAuthStep('details')
+    } else if (authStep === 'details') {
+      // Validate details
+      if (!dateOfBirth || !gender || !location) {
+        setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
+        return
+      }
+      
+      // Role-specific validation
+      if (selectedRole === 'fan' && !favoriteTeam) {
+        setError(isBn ? 'প্রিয় দল নির্বাচন করুন' : 'Please select your favorite team')
+        return
+      }
+      if (selectedRole === 'partner' && (!organizationName || !organizationType)) {
+        setError(isBn ? 'সংস্থার তথ্য পূরণ করুন' : 'Please fill organization details')
+        return
+      }
+      
+      setAuthStep('preferences')
+    }
+  }
+
+  const handlePreviousStep = () => {
+    if (authStep === 'preferences') {
+      setAuthStep('details')
+    } else if (authStep === 'details') {
+      setAuthStep('credentials')
+    }
+    setError(null)
+  }
+
+  const handleCompleteSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!agreeToTerms) {
+      setError(isBn ? 'শর্তাবলী গ্রহণ করুন' : 'Please accept terms and conditions')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // Create account with full details
+      const signupData = {
+        email,
+        password,
+        fullName,
+        phone,
+        dateOfBirth,
+        gender,
+        location,
+        instagram,
+        twitter,
+        facebook,
+        favoriteTeam: selectedRole === 'fan' ? favoriteTeam : undefined,
+        organizationName: selectedRole === 'partner' ? organizationName : undefined,
+        organizationType: selectedRole === 'partner' ? organizationType : undefined,
+        partnshipType: selectedRole === 'partner' ? partnshipType : undefined,
+        subscribeNewsletter,
+        shareData,
+        role: selectedRole,
+      }
+
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: signupData,
+            emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+              `${window.location.origin}/auth/callback?role=${selectedRole}`,
+          },
+        })
+        if (error) throw error
+      } catch (supabaseErr) {
+        console.log("[v0] Supabase signup failed, attempting mock signup...")
+        await mockSignUp(email, password, fullName, selectedRole)
+      }
+
+      // Proceed to OTP verification if enabled
+      if (enableOTP) {
+        await sendOTPEmail(email)
+        setAuthStep('otp')
+        setIsLoading(false)
+        return
+      }
+
+      router.push('/auth/sign-up-success')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (isBn ? 'সাইন আপ ব্যর্থ' : 'Sign up failed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
@@ -155,10 +416,14 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">
-            {view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up')}
+            {authStep === 'otp' ? (isBn ? 'OTP যাচাই করুন' : 'Verify OTP') : (view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up'))}
           </h1>
           <p className="text-base font-medium text-muted-foreground">
-            {view === 'login' ? (
+            {authStep === 'otp' ? (
+              <>
+                {isBn ? 'আমরা একটি OTP পাঠিয়েছি' : 'We sent an OTP to'} <span className="font-semibold text-foreground">{otpSentEmail}</span>
+              </>
+            ) : view === 'login' ? (
               <>
                 {isBn ? 'অ্যাকাউন্ট নেই?' : "Don't have an account?"}{' '}
                 <button
@@ -170,7 +435,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </>
             ) : (
               <>
-                {isBn ? 'ইতিমধ্যে অ্যাকাউন্ট আছে?' : 'Already have an account?'}{' '}
+                {isBn ? 'ইতিমধ্যে অ্যাকাউন্ট ���ছে?' : 'Already have an account?'}{' '}
                 <button
                   onClick={() => setView('login')}
                   className="text-primary hover:underline cursor-pointer transition-colors"
@@ -216,7 +481,270 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         )}
 
         {/* Form */}
-        <form onSubmit={handleEmailAuth} className="w-full space-y-4">
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          if (view === 'login') {
+            handleEmailAuth(e)
+          } else {
+            // Signup flow
+            if (authStep === 'credentials' || authStep === 'details') {
+              handleNextStep(e)
+            } else if (authStep === 'preferences') {
+              handleCompleteSignup(e)
+            } else {
+              handleEmailAuth(e)
+            }
+          }
+        }} className="w-full space-y-4">
+          {authStep === 'otp' ? (
+            <>
+              {/* OTP Input Section */}
+              <div className="space-y-4">
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                  <p className="text-sm text-muted-foreground text-center mb-2">
+                    {isBn ? 'আপনার ইমেলে পাঠানো 6-ডিজিট কোড প্রবেশ করুন' : 'Enter the 6-digit code sent to your email'}
+                  </p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="000000"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                    className="w-full p-4 text-center text-2xl tracking-widest font-mono bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || otp.length !== 6}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                  {isLoading ? (isBn ? 'যাচাই করছি...' : 'Verifying...') : (isBn ? 'চালিয়ে যান' : 'Continue')}
+                </button>
+
+                <div className="text-center space-y-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    disabled={otpResendTimer > 0 || isLoading}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {isBn ? 'কোড পুনরায় পাঠান' : 'Resend code'}
+                    {otpResendTimer > 0 && ` (${otpResendTimer}s)`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBackToCredentials}
+                    className="block w-full text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                  >
+                    {isBn ? 'পিছনে ফিরুন' : 'Go back'}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : view === 'signup' && authStep === 'details' ? (
+            <>
+              {/* Details Step */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value as any)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  >
+                    <option value="">{isBn ? 'লিঙ্গ' : 'Gender'}</option>
+                    <option value="male">{isBn ? 'পুরুষ' : 'Male'}</option>
+                    <option value="female">{isBn ? 'নারী' : 'Female'}</option>
+                    <option value="other">{isBn ? 'অন্যান্য' : 'Other'}</option>
+                  </select>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder={isBn ? "শহর/অবস্থান" : "City/Location"}
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                />
+
+                <input
+                  type="tel"
+                  placeholder={isBn ? "ফোন নম্বর (ঐচ্ছিক)" : "Phone Number (Optional)"}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                />
+
+                {/* Role-specific fields */}
+                {selectedRole === 'fan' && (
+                  <input
+                    type="text"
+                    placeholder={isBn ? "প্রিয় দল" : "Favorite Team"}
+                    value={favoriteTeam}
+                    onChange={(e) => setFavoriteTeam(e.target.value)}
+                    required
+                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                )}
+
+                {selectedRole === 'partner' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder={isBn ? "সংস্থার নাম" : "Organization Name"}
+                      value={organizationName}
+                      onChange={(e) => setOrganizationName(e.target.value)}
+                      required
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    />
+                    <select
+                      value={organizationType}
+                      onChange={(e) => setOrganizationType(e.target.value)}
+                      required
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    >
+                      <option value="">{isBn ? 'ব্যবসার ধর��' : 'Business Type'}</option>
+                      <option value="sports">{isBn ? 'ক্রীড়া' : 'Sports'}</option>
+                      <option value="media">{isBn ? 'মিডিয়া' : 'Media'}</option>
+                      <option value="equipment">{isBn ? 'সরঞ্জাম' : 'Equipment'}</option>
+                      <option value="other">{isBn ? 'অন্যান্য' : 'Other'}</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder={isBn ? "যোগাযোগ ব্যক্তি" : "Contact Person"}
+                      value={contactPerson}
+                      onChange={(e) => setContactPerson(e.target.value)}
+                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    />
+                  </>
+                )}
+              </div>
+
+              {/* Navigation buttons for details step */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পিছনে' : 'Back'}
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পরবর্তী' : 'Next'}
+                </button>
+              </div>
+            </>
+          ) : view === 'signup' && authStep === 'preferences' ? (
+            <>
+              {/* Preferences Step */}
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-foreground">{isBn ? 'সোশ্যাল মিডিয়া (ঐচ্ছিক)' : 'Social Media (Optional)'}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Instagram className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Instagram"
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Twitter className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Twitter/X"
+                        value={twitter}
+                        onChange={(e) => setTwitter(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <Facebook className="w-4 h-4 text-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder="Facebook"
+                        value={facebook}
+                        onChange={(e) => setFacebook(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Preferences checkboxes */}
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={subscribeNewsletter}
+                      onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">{isBn ? 'আমাদের নিউজলেটার এবং আপডেট সাবস্ক্রাইব করুন' : 'Subscribe to newsletter and updates'}</span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={shareData}
+                      onChange={(e) => setShareData(e.target.checked)}
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">{isBn ? 'আমাকে ব্যক্তিগতকৃত অভিজ্ঞতার জন্য ডেটা শেয়ার করতে দিন' : 'Share my data for personalized experience'}</span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreeToTerms}
+                      onChange={(e) => setAgreeToTerms(e.target.checked)}
+                      required
+                      className="mt-1"
+                    />
+                    <span className="text-sm text-foreground/80">
+                      {isBn ? 'আমি শর্তাবলী এবং গোপনীয়তা নীতি গ্রহণ করি' : 'I agree to the terms and privacy policy'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Navigation buttons for preferences step */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                >
+                  {isBn ? 'পিছনে' : 'Back'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={!agreeToTerms || isLoading}
+                  className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                >
+                  {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account'}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Credentials Input Section */}
           {view === 'signup' && (
             <input
               type="text"
@@ -256,9 +784,30 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             </button>
           </div>
 
+          {view === 'signup' && (
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+              >
+                {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+              </button>
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
@@ -266,7 +815,11 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...')
               : view === 'login'
                 ? (isBn ? 'লগইন করুন' : 'Continue')
-                : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
+                : authStep === 'credentials'
+                  ? (isBn ? 'পরবর্তী' : 'Next')
+                  : authStep === 'details'
+                    ? (isBn ? 'পরবর্তী' : 'Next')
+                    : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
           </button>
 
           {view === 'login' && (
@@ -280,6 +833,25 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </button>
             </div>
           )}
+
+          {/* Show step indicator for signup */}
+          {view === 'signup' && authStep !== 'otp' && (
+            <div className="flex justify-center gap-2 py-4">
+              {(['credentials', 'details', 'preferences'] as const).map((step) => (
+                <div
+                  key={step}
+                  className={`h-1 rounded-full transition-all ${
+                    authStep === step
+                      ? 'w-8 bg-primary'
+                      : ['credentials', 'details', 'preferences'].indexOf(step) < ['credentials', 'details', 'preferences'].indexOf(authStep)
+                        ? 'w-3 bg-primary/50'
+                        : 'w-3 bg-border'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+          </>
         </form>
 
         {/* Divider */}

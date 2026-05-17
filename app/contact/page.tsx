@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Phone, MapPin, MessageSquare, Send } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 
 export default function ContactPage() {
+  const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === 'bn'
   
@@ -37,17 +39,17 @@ export default function ContactPage() {
     {
       icon: <Phone className="w-6 h-6" />,
       label: isBn ? 'ফোন' : 'Phone',
-      value: '+880-1-XXX-XXXXXX',
+      value: '+8809697377938',
     },
     {
       icon: <Mail className="w-6 h-6" />,
       label: isBn ? 'ইমেইল' : 'Email',
-      value: 'contact@titanforce.com',
+      value: 'titanforcemulikandi@gmail.com',
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       label: isBn ? 'অবস্থান' : 'Location',
-      value: isBn ? 'ঢাকা, বাংলাদেশ' : 'Dhaka, Bangladesh',
+      value: isBn ? 'মুলিকান্দি, জাকিগঞ্জ, সিলেট' : 'Mulikandi, Zakigonj, Sylhet',
     },
   ]
 
@@ -55,15 +57,25 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="py-20 bg-gradient-to-b from-primary/10 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {isBn ? 'যোগাযোগ করুন' : 'Contact Us'}
-          </h1>
-          <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
-            {isBn 
-              ? 'আমাদের সাথে যোগাযোগ করতে আমরা আমাদের থেকে শুনতে আগ্রহী' 
-              : 'Get in touch with us. We\'d love to hear from you.'}
-          </p>
+        <div className="container mx-auto px-4">
+          <button
+            onClick={() => router.back()}
+            className="mb-8 inline-flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors group"
+            aria-label={isBn ? 'ফিরে যান' : 'Go back'}
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm font-medium">{isBn ? 'ফিরে যান' : 'Back'}</span>
+          </button>
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {isBn ? 'যোগাযোগ করুন' : 'Contact Us'}
+            </h1>
+            <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
+              {isBn 
+                ? 'আমাদের সাথে যোগাযোগ করতে আমরা আমাদের থেকে শুনতে আগ্রহী' 
+                : 'Get in touch with us. We\'d love to hear from you.'}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -93,14 +105,30 @@ export default function ContactPage() {
                 {isBn ? 'আমাদের অনুসরণ করুন' : 'Follow Us'}
               </h3>
               <div className="flex gap-4">
-                {['Facebook', 'Twitter', 'Instagram', 'YouTube'].map((social) => (
-                  <button
-                    key={social}
-                    className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary"
-                  >
-                    {social[0]}
-                  </button>
-                ))}
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </div>
