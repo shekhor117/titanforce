@@ -13,8 +13,11 @@ export function GalleryShowcase() {
   const [featuredItems, setFeaturedItems] = useState([])
 
   useEffect(() => {
-    const featured = GalleryDataService.getFeaturedItems(4)
-    setFeaturedItems(featured)
+    const loadFeaturedItems = async () => {
+      const featured = await GalleryDataService.getFeaturedItems(4)
+      setFeaturedItems(featured)
+    }
+    loadFeaturedItems()
   }, [])
 
   if (featuredItems.length === 0) return null

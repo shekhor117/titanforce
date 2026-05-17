@@ -26,8 +26,11 @@ export default function GalleryPage() {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
 
   useEffect(() => {
-    const allItems = GalleryDataService.getGalleryItems()
-    setItems(allItems)
+    const loadItems = async () => {
+      const allItems = await GalleryDataService.getGalleryItems()
+      setItems(allItems)
+    }
+    loadItems()
   }, [])
 
   useEffect(() => {
