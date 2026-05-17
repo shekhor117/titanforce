@@ -47,8 +47,28 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
       setError(null)
 
       if (view === 'login') {
-        await login(email, password, selectedRole)
-        router.push('/profile')
+        try {
+          await login(email, password, selectedRole)
+          router.push('/profile')
+        } catch (loginErr) {
+          console.log("[v0] Supabase login failed, attempting mock login...")
+          // If Supabase fails, try mock login
+          try {
+            const { mockSignInWithEmail } = await import('@/lib/mock-auth')
+            const mockUser = mockSignInWithEmail(email, password)
+            if (!mockUser) {
+              throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
+            }
+            // Store role info
+            if (typeof window !== 'undefined') {
+              const userData = { ...mockUser, role: selectedRole }
+              localStorage.setItem('mockAuthUser', JSON.stringify(userData))
+            }
+            router.push('/profile')
+          } catch (mockErr) {
+            throw loginErr
+          }
+        }
       } else {
         // Try Supabase first, fall back to mock if not configured
         try {

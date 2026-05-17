@@ -153,11 +153,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string, role: UserRole) => {
-    if (!supabase) {
-      throw new Error("Authentication is not configured")
-    }
     setIsLoading(true)
     try {
+      if (!supabase) {
+        // Use mock auth when Supabase is not configured
+        const { mockSignInWithEmail } = await import("@/lib/mock-auth")
+        const mockUser = mockSignInWithEmail(email, password)
+        if (!mockUser) {
+          throw new Error("Invalid credentials")
+        }
+        const newUser: User = {
+          id: mockUser.id,
+          name: mockUser.name,
+          email: mockUser.email,
+          role: role,
+        }
+        setUser(newUser)
+        return
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
