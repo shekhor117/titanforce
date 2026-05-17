@@ -29,8 +29,10 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [authStep, setAuthStep] = useState<AuthStep>('credentials')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [selectedRole, setSelectedRole] = useState<Role>(defaultRole)
   const [otp, setOtp] = useState('')
@@ -274,12 +276,16 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
 
     if (authStep === 'credentials') {
       // Validate credentials
-      if (!email || !password || !fullName) {
+      if (!email || !password || !confirmPassword || !fullName) {
         setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
         return
       }
       if (password.length < 8) {
         setError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে' : 'Password must be at least 8 characters')
+        return
+      }
+      if (password !== confirmPassword) {
+        setError(isBn ? 'পাসওয়ার্ড মেলে না' : 'Passwords do not match')
         return
       }
       setAuthStep('details')
@@ -427,7 +433,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </>
             ) : (
               <>
-                {isBn ? 'ইতিমধ্যে অ্যাকাউন্ট আছে?' : 'Already have an account?'}{' '}
+                {isBn ? 'ইতিমধ্যে অ্যাকাউন্ট ���ছে?' : 'Already have an account?'}{' '}
                 <button
                   onClick={() => setView('login')}
                   className="text-primary hover:underline cursor-pointer transition-colors"
@@ -773,6 +779,25 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
             >
               {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+            </button>
+          </div>
+
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+            >
+              {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
             </button>
           </div>
 
