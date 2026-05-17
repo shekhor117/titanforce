@@ -39,17 +39,17 @@ export default function ContactPage() {
     {
       icon: <Phone className="w-6 h-6" />,
       label: isBn ? 'ফোন' : 'Phone',
-      value: '+880-1-XXX-XXXXXX',
+      value: '+8809697377938',
     },
     {
       icon: <Mail className="w-6 h-6" />,
       label: isBn ? 'ইমেইল' : 'Email',
-      value: 'contact@titanforce.com',
+      value: 'titanforcemulikandi@gmail.com',
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       label: isBn ? 'অবস্থান' : 'Location',
-      value: isBn ? 'ঢাকা, বাংলাদেশ' : 'Dhaka, Bangladesh',
+      value: isBn ? 'মুলিকান্দি, জাকিগঞ্জ, সিলেট' : 'Mulikandi, Zakigonj, Sylhet',
     },
   ]
 
