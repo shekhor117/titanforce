@@ -173,8 +173,8 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
             <p className="text-sm text-muted-foreground mb-3 text-center">
               {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select your role'}
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              {roles.map((role) => (
+            <div className="grid grid-cols-2 gap-3">
+              {roles.filter((role) => role.id !== 'player').map((role) => (
                 <button
                   key={role.id}
                   type="button"
@@ -323,7 +323,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isFacebookLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
+              {isFacebookLoading ? (isBn ? 'অপ��ক্ষা করুন...' : 'Loading...') : (isBn ? `Facebook দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Facebook`)}
             </span>
           </button>
         </div>
