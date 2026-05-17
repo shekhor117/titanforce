@@ -14,9 +14,10 @@ type Role = 'player' | 'fan' | 'partner'
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
   defaultRole?: Role
+  showAllRoles?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'fan' }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -194,8 +195,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan' }:
             <p className="text-sm text-muted-foreground mb-3 text-center">
               {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select your role'}
             </p>
-            <div className="grid grid-cols-2 gap-3">
-              {roles.filter((role) => role.id !== 'player').map((role) => (
+            <div className={`grid ${showAllRoles ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
+              {roles.filter((role) => showAllRoles || role.id !== 'player').map((role) => (
                 <button
                   key={role.id}
                   type="button"
