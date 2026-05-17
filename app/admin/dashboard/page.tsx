@@ -3,6 +3,7 @@
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import StoreDataService from "@/lib/store-data-service"
+import GalleryDataService from "@/lib/gallery-data-service"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
@@ -111,6 +112,16 @@ export default function AdminDashboard() {
       bgColor: "bg-red-500/10",
       borderColor: "border-red-500/30",
       subtext: `${contactList.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
+    },
+    {
+      label: isBn ? "গ্যালারি" : "Gallery",
+      value: GalleryDataService.getGalleryStats().total.toString(),
+      icon: <Image className="w-6 h-6" />,
+      href: "/admin/gallery",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
+      borderColor: "border-accent/30",
+      subtext: `${GalleryDataService.getGalleryStats().featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
   ]
 
