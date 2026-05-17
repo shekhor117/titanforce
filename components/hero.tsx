@@ -34,19 +34,20 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-black to-black" />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-transparent to-cyan-600/20" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-indigo-500/30 blur-3xl animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-3xl animate-pulse animation-delay-1000" />
 
               <Image
                 src="/logo.png"
                 alt="Opening Logo"
                 width={160}
                 height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(59,130,246,0.9)]"
+                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(99,102,241,0.9)]"
                 priority
               />
             </div>
@@ -56,10 +57,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </h1>
 
             <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 animate-[loadingBar_3s_cubic-bezier(0.42,0,0.58,1)_forwards]" />
+              <div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 animate-[loadingBar_3s_cubic-bezier(0.42,0,0.58,1)_forwards]" />
             </div>
 
-            <p className="mt-4 text-zinc-400 tracking-[6px] text-sm animate-pulse">
+            <p className="mt-4 text-gray-400 tracking-[6px] text-sm animate-pulse">
               LOADING EXPERIENCE
             </p>
           </div>
@@ -69,8 +70,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       <section id="home" className="hero-gradient relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-red-600/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-3xl animate-blob" />
         </div>
 
         <div

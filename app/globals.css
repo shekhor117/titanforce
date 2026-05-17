@@ -4,70 +4,70 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #000000;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
-  --card-foreground: #f5f5f5;
-  --popover: #1a1a1a;
-  --popover-foreground: #f5f5f5;
-  --primary: #dc2626;
-  --primary-foreground: #000000;
-  --secondary: #991b1b;
-  --secondary-foreground: #f5f5f5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #991b1b;
-  --accent-foreground: #f5f5f5;
+  --background: #0a0e27;
+  --foreground: #f0f4f8;
+  --card: #131c3a;
+  --card-foreground: #e8ecf1;
+  --popover: #131c3a;
+  --popover-foreground: #e8ecf1;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #1e40af;
+  --secondary-foreground: #f0f4f8;
+  --muted: #1f2937;
+  --muted-foreground: #9ca3af;
+  --accent: #06b6d4;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #262626;
-  --input: #262626;
-  --ring: #dc2626;
+  --border: #1f2937;
+  --input: #1f2937;
+  --ring: #6366f1;
   --radius: 0.625rem;
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
-  --card-foreground: #f5f5f5;
-  --popover: #1a1a1a;
-  --popover-foreground: #f5f5f5;
-  --primary: #dc2626;
-  --primary-foreground: #000000;
-  --secondary: #991b1b;
-  --secondary-foreground: #f5f5f5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #991b1b;
-  --accent-foreground: #f5f5f5;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #262626;
-  --input: #262626;
-  --ring: #dc2626;
-}
-
-.light {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --card: #f5f5f5;
-  --card-foreground: #1a1a1a;
-  --popover: #f5f5f5;
-  --popover-foreground: #1a1a1a;
-  --primary: #dc2626;
+  --background: #0a0e27;
+  --foreground: #f0f4f8;
+  --card: #131c3a;
+  --card-foreground: #e8ecf1;
+  --popover: #131c3a;
+  --popover-foreground: #e8ecf1;
+  --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #fee2e2;
-  --secondary-foreground: #7f1d1d;
-  --muted: #e5e5e5;
-  --muted-foreground: #737373;
-  --accent: #991b1b;
+  --secondary: #1e40af;
+  --secondary-foreground: #f0f4f8;
+  --muted: #1f2937;
+  --muted-foreground: #9ca3af;
+  --accent: #06b6d4;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e5e5e5;
-  --input: #f5f5f5;
-  --ring: #dc2626;
+  --border: #1f2937;
+  --input: #1f2937;
+  --ring: #6366f1;
+}
+
+.light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #e0e7ff;
+  --secondary-foreground: #312e81;
+  --muted: #e2e8f0;
+  --muted-foreground: #475569;
+  --accent: #06b6d4;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #6366f1;
 }
 
 @theme inline {
@@ -183,11 +183,11 @@ html {
 
 /* Hero gradient */
 .hero-gradient {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 40%, #2a0505 60%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #0a0e27 0%, #1e1b4b 30%, #172554 60%, #0a0e27 100%);
 }
 
 .light .hero-gradient {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 40%, #fecaca 60%, #fef2f2 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 30%, #cffafe 60%, #f8fafc 100%);
 }
 
 /* Stripe background */
@@ -196,12 +196,13 @@ html {
     -45deg,
     transparent,
     transparent 40px,
-    rgba(220, 38, 38, 0.03) 40px,
-    rgba(220, 38, 38, 0.03) 80px
+    rgba(99, 102, 241, 0.05) 40px,
+    rgba(99, 102, 241, 0.05) 80px
   );
 }
 
 /* Card glow effect */
 .card-glow:hover {
-  box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.2), 0 0 60px rgba(6, 182, 212, 0.1);
+  transition: box-shadow 0.3s ease;
 }
