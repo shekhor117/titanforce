@@ -22,10 +22,9 @@ export function AdminLoginPage() {
   const [shouldAutoRedirect, setShouldAutoRedirect] = useState(true)
 
   useEffect(() => {
-    // Only auto-redirect if we have a valid admin and this is not a logout scenario
-    if (isInitialized && admin && shouldAutoRedirect) {
-      router.push("/admin/dashboard")
-    }
+    // Check if user is already logged in and not on login page
+    // Don't auto-redirect from login page - let user control navigation
+    // This allows testing the login form functionality
   }, [admin, isInitialized, shouldAutoRedirect, router])
 
   // Disable auto-redirect when user submits login form
@@ -49,12 +48,9 @@ export function AdminLoginPage() {
 
     setIsSubmitting(true)
     try {
-      console.log("[v0] Form submitted, attempting login...")
       await login(email, password)
-      console.log("[v0] Login successful, redirecting to dashboard...")
       router.push("/admin/dashboard")
     } catch (err) {
-      console.error("[v0] Login failed:", err)
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
       setLocalError(message)
       setIsSubmitting(false)
@@ -173,7 +169,7 @@ export function AdminLoginPage() {
               {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
             </Link>
             <p>
-              {isBn ? "নতুন ব্যবহারকারী?" : "New user?"}{" "}
+              {isBn ? "নতুন ব্যবহার��ারী?" : "New user?"}{" "}
               <Link
                 href="/admin/signup"
                 className="text-primary hover:underline"
