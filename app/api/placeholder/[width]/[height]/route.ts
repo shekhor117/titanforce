@@ -1,10 +1,11 @@
 export async function GET(
   request: Request,
-  { params }: { params: { width: string; height: string } }
+  { params }: { params: Promise<{ width: string; height: string }> }
 ) {
   try {
-    const width = parseInt(params.width, 10)
-    const height = parseInt(params.height, 10)
+    const { width: widthStr, height: heightStr } = await params
+    const width = parseInt(widthStr, 10)
+    const height = parseInt(heightStr, 10)
 
     if (!width || !height || width < 1 || height < 1) {
       return new Response('Invalid dimensions', { status: 400 })

@@ -851,8 +851,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               ))}
             </div>
           )}
-            </>
-          )}
+          </>
         </form>
 
         {/* Divider */}
