@@ -140,17 +140,17 @@ export default function AdminDashboard() {
       },
       {
         label: isBn ? "ইনভেন্টরি" : "Inventory",
-        value: StoreDataService.calculateTotalStock().toString(),
+        value: StoreDataService.getProducts().reduce((sum: number, p: any) => sum + p.totalStock, 0).toString(),
         icon: <Boxes className="w-6 h-6" />,
         href: "/admin/store/inventory",
         color: "text-indigo-400",
         bgColor: "bg-indigo-500/10",
         borderColor: "border-indigo-500/30",
-        subtext: `${StoreDataService.getLowStockItems().length} ${isBn ? "কম স্টক" : "low stock"}`
+        subtext: `${StoreDataService.getLowStockProducts().length} ${isBn ? "কম স্টক" : "low stock"}`
       },
       {
         label: isBn ? "বিক্রয়" : "Sales",
-        value: `৳${StoreDataService.calculateTotalRevenue()}`,
+        value: `৳${StoreDataService.getOrders().reduce((sum: any, o: any) => sum + o.total, 0)}`,
         icon: <TrendingUp className="w-6 h-6" />,
         href: "/admin/store/analytics",
         color: "text-emerald-400",
