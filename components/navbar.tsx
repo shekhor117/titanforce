@@ -17,12 +17,12 @@ export function Navbar() {
   const { items } = useCart()
 
   const navLinks = [
-    { href: "#home", label: t.nav.home },
-    { href: "#about", label: t.nav.about },
-    { href: "#squad", label: t.nav.squad },
-    { href: "#matches", label: t.nav.matches },
+    { href: "/", label: t.nav.home },
+    { href: "/about", label: t.nav.about },
+    { href: "/team-squad", label: t.nav.squad },
+    { href: "/matches", label: t.nav.matches },
     { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
-    { href: "#contact", label: t.nav.contact },
+    { href: "/contact", label: t.nav.contact },
   ]
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -30,7 +30,7 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b-2 border-primary backdrop-blur-md bg-background/80">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
-        <Link href="#home" className="flex items-center gap-1 sm:gap-2 min-w-0">
+        <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0">
           <Image
             src="/logo.png"
             alt="Titan Force FC Logo"
