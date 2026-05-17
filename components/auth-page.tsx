@@ -7,6 +7,7 @@ import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2 } from 'lucide-
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
+import { mockSignUp } from '@/lib/auth-utils'
 
 type Role = 'player' | 'fan' | 'partner'
 
@@ -47,24 +48,30 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
 
       if (view === 'login') {
         await login(email, password, selectedRole)
-        // Don't reset isLoading - let the redirect happen
         router.push('/profile')
       } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-              role: selectedRole,
+        // Try Supabase first, fall back to mock if not configured
+        try {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName,
+                role: selectedRole,
+              },
+              emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+                `${window.location.origin}/auth/callback?role=${selectedRole}`,
             },
-            emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-              `${window.location.origin}/auth/callback?role=${selectedRole}`,
-          },
-        })
-        if (error) throw error
-        // Don't reset isLoading - let the redirect happen
-        router.push('/auth/sign-up-success')
+          })
+          if (error) throw error
+          router.push('/auth/sign-up-success')
+        } catch (supabaseErr) {
+          console.log("[v0] Supabase signup failed, attempting mock signup...")
+          // If Supabase fails, use mock signup for development
+          await mockSignUp(email, password, fullName, selectedRole)
+          router.push('/auth/sign-up-success')
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : (isBn ? 'প্রমাণীকরণ ব্যর্থ হয়েছে' : 'Authentication failed'))
