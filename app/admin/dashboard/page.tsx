@@ -15,6 +15,17 @@ import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
 import { useDataStore } from "@/lib/use-data-store"
 
+function DashboardErrorBoundary({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) {
+  const [hasError, setHasError] = useState(false)
+
+  try {
+    return <>{children}</>
+  } catch (error) {
+    console.error("[v0] Dashboard error:", error)
+    return <>{fallback}</>
+  }
+}
+
 export default function AdminDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
@@ -356,7 +367,7 @@ export default function AdminDashboard() {
       {/* Error State */}
       {error && (
         <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
-          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error.message}</p>
+          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error instanceof Error ? error.message : "Unknown error"}</p>
         </div>
       )}
 
@@ -662,7 +673,7 @@ export default function AdminDashboard() {
           </h2>
         </div>
         <p className={`text-foreground/60 text-sm mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগারেশন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
+          {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগার���শন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {advancedTools.map((tool) => (
@@ -698,8 +709,21 @@ export default function AdminDashboard() {
           </h2>
         </div>
 
-        {/* Player Stats Dashboard */}
-        <PlayerStatsDashboard players={players} />
+        {/* Player Stats Dashboard with error boundary */}
+        <div>
+          {playerList && playerList.length > 0 ? (
+            <PlayerStatsDashboard players={playerList} />
+          ) : (
+            <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+              <div className="flex items-center justify-center py-8">
+                <div className="text-center text-foreground/60">
+                  <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p>{isBn ? "খেলোয়াড় ডেটা লোড হচ্ছে..." : "Loading player data..."}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* System Overview */}
