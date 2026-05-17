@@ -35,10 +35,21 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       try {
         console.log("[v0] Initializing admin auth...")
         
-        // If Supabase is not configured, check for mock session
+        // If Supabase is not configured, check for mock session or create default
         if (!supabase) {
           console.log("[v0] Supabase not configured, checking mock session...")
-          const mockUser = mockGetSession()
+          let mockUser = mockGetSession()
+          
+          // If no session exists, auto-login with default admin account for development
+          if (!mockUser) {
+            console.log("[v0] No mock session found, auto-logging in with default admin...")
+            try {
+              mockUser = await signInWithEmail("admin@titanforce.com", "admin123")
+            } catch (err) {
+              console.warn("[v0] Failed to auto-login with default admin:", err)
+            }
+          }
+          
           if (mockUser && isMounted) {
             const userRole = mockUser.role as "admin" | "moderator"
             if (userRole === "admin" || userRole === "moderator") {
@@ -49,7 +60,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 role: userRole,
                 emailVerified: mockUser.emailVerified,
               }
-              console.log("[v0] Mock session found with role:", userRole)
+              console.log("[v0] Mock session active with role:", userRole)
               setAdmin(user)
             }
           }
