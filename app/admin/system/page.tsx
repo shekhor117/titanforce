@@ -23,8 +23,25 @@ export default function AdminSystemPage() {
   // Get activity log
   const activityLog = useDataStore(dataStore.getActivityLog, "activityLog")
 
-  // Get stats
-  const stats = dataStore.getDashboardStats()
+  // Get stats using sync methods
+  const players = dataStore.getPlayers()
+  const matches = dataStore.getMatches()
+  const fans = dataStore.getFans()
+  const partners = dataStore.getPartners()
+  const news = dataStore.getNews()
+  const media = dataStore.getMedia()
+  const users = dataStore.getAdminUsers()
+  
+  const stats = {
+    players: players.length,
+    matches: matches.length,
+    fans: fans.length,
+    partners: partners.length,
+    news: news.length,
+    media: media.length,
+    users: users.length,
+    contacts: 0, // Contacts is async, so default to 0
+  }
 
   // Export data
   const handleExport = () => {
