@@ -33,9 +33,19 @@ export default function StoreInventoryPage() {
   const handleEditVariant = (product: AdminProduct) => {
     setEditingProduct(product.id)
     const variantMap: Record<string, number> = {}
-    product.variants.forEach((v) => {
-      variantMap[`${v.size}-${v.color}`] = v.stock
-    })
+    // Handle both variants array and size/color/stock combinations
+    if (product.variants && Array.isArray(product.variants)) {
+      product.variants.forEach((v) => {
+        variantMap[`${v.size}-${v.color}`] = v.stock
+      })
+    } else if (product.sizes && product.colors) {
+      // Build variants from sizes and colors if variants not available
+      product.sizes.forEach(size => {
+        product.colors.forEach(color => {
+          variantMap[`${size}-${color}`] = 0
+        })
+      })
+    }
     setEditingVariants(variantMap)
   }
 
@@ -136,20 +146,20 @@ export default function StoreInventoryPage() {
                         />
                         <div>
                           <p className="font-semibold text-foreground">{product.name}</p>
-                          <p className="text-xs text-foreground/60">{product.sku}</p>
+                          {(product as any).sku && <p className="text-xs text-foreground/60">{(product as any).sku}</p>}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-bold text-foreground text-lg">{product.totalStock}</span>
+                      <span className="font-bold text-foreground text-lg">{(product as any).totalStock || (product as any).stock || 0}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStockStatus(product.totalStock).bg} ${
-                          getStockStatus(product.totalStock).color
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStockStatus((product as any).totalStock || (product as any).stock || 0).bg} ${
+                          getStockStatus((product as any).totalStock || (product as any).stock || 0).color
                         }`}
                       >
-                        {getStockStatus(product.totalStock).label}
+                        {getStockStatus((product as any).totalStock || (product as any).stock || 0).label}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -196,24 +206,22 @@ export default function StoreInventoryPage() {
             </div>
 
             <div className="space-y-4 mb-6">
-              {products
-                .find((p) => p.id === editingProduct)
-                ?.variants.map((variant) => {
-                  const key = `${variant.size}-${variant.color}`
+              {editingVariants &&
+                Object.entries(editingVariants).map(([key, value]) => {
                   return (
                     <div key={key} className="flex items-center gap-4 p-4 bg-background rounded-lg border border-primary/20">
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-foreground mb-1">
-                          {variant.size} - {variant.color}
+                          {key}
                         </p>
-                        <span className={`text-xs font-semibold px-2 py-1 rounded ${getStockStatus(editingVariants[key] || 0).bg} ${getStockStatus(editingVariants[key] || 0).color}`}>
-                          {getStockStatus(editingVariants[key] || 0).label}
+                        <span className={`text-xs font-semibold px-2 py-1 rounded ${getStockStatus(value || 0).bg} ${getStockStatus(value || 0).color}`}>
+                          {getStockStatus(value || 0).label}
                         </span>
                       </div>
                       <input
                         type="number"
                         min="0"
-                        value={editingVariants[key] || 0}
+                        value={value || 0}
                         onChange={(e) => handleVariantChange(key, parseInt(e.target.value))}
                         className="w-20 px-3 py-2 bg-background border border-primary/20 rounded text-foreground text-right font-semibold focus:outline-none focus:border-primary"
                       />
