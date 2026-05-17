@@ -276,17 +276,19 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
 
     if (authStep === 'credentials') {
       // Validate credentials
-      if (!email || !password || !confirmPassword || !fullName) {
-        setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
-        return
-      }
-      if (password.length < 8) {
-        setError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে' : 'Password must be at least 8 characters')
-        return
-      }
-      if (password !== confirmPassword) {
-        setError(isBn ? 'পাসওয়ার্ড মেলে না' : 'Passwords do not match')
-        return
+      if (view === 'signup') {
+        if (!email || !password || !confirmPassword || !fullName) {
+          setError(isBn ? 'সব ফিল্ড পূরণ করুন' : 'Please fill all fields')
+          return
+        }
+        if (password.length < 8) {
+          setError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে' : 'Password must be at least 8 characters')
+          return
+        }
+        if (password !== confirmPassword) {
+          setError(isBn ? 'পাসওয়ার্ড মেলে না' : 'Passwords do not match')
+          return
+        }
       }
       setAuthStep('details')
     } else if (authStep === 'details') {
@@ -612,7 +614,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                       required
                       className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
                     >
-                      <option value="">{isBn ? 'ব্যবসার ধরন' : 'Business Type'}</option>
+                      <option value="">{isBn ? 'ব্যবসার ধর��' : 'Business Type'}</option>
                       <option value="sports">{isBn ? 'ক্রীড়া' : 'Sports'}</option>
                       <option value="media">{isBn ? 'মিডিয়া' : 'Media'}</option>
                       <option value="equipment">{isBn ? 'সরঞ্জাম' : 'Equipment'}</option>
@@ -782,24 +784,26 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             </button>
           </div>
 
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
-            >
-              {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
-            </button>
-          </div>
+          {view === 'signup' && (
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+              >
+                {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+              </button>
+            </div>
+          )}
 
           <button
             type="submit"
