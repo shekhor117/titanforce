@@ -4,6 +4,7 @@ import { useLanguage } from "@/lib/language-context"
 import StoreDataService from "@/lib/store-data-service"
 import GalleryDataService from "@/lib/gallery-data-service"
 import TrophyDataService from "@/lib/trophy-data-service"
+import PlayerDataService from "@/lib/player-data-service"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
@@ -25,6 +26,16 @@ export default function AdminDashboard() {
   const [fans, setFans] = useState<any[]>([])
   const [contacts, setContacts] = useState<any[]>([])
   const [activityLog, setActivityLog] = useState<any[]>([])
+  const [playerStats, setPlayerStats] = useState({ total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } })
+  
+  useEffect(() => {
+    // Load player stats from Supabase
+    const loadData = async () => {
+      const stats = await PlayerDataService.getPlayerStats()
+      setPlayerStats(stats)
+    }
+    loadData()
+  }, [])
   
   useEffect(() => {
     // Import dataStore to get local storage data
@@ -55,13 +66,13 @@ export default function AdminDashboard() {
   const stats = [
     { 
       label: isBn ? "খেলোয়াড়" : "Players", 
-      value: playerList.length.toString(), 
+      value: playerStats.total.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/players",
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/30",
-      subtext: `${playerList.filter((p: any) => p.status?.toLowerCase() === "active").length} ${isBn ? "সক্রিয়" : "active"}`
+      subtext: `${playerStats.active} ${isBn ? "সক্রিয়" : "active"}`
     },
     { 
       label: isBn ? "ম্যাচ" : "Matches", 

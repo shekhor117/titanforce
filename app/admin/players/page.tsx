@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Plus, Edit, Trash2, Save, X } from "lucide-react"
 import { dataStore, Player } from "@/lib/data-store"
+import PlayerDataService from "@/lib/player-data-service"
 
 export default function AdminPlayers() {
   const { language } = useLanguage()
@@ -17,10 +18,14 @@ export default function AdminPlayers() {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsClient(true)
-    const playersData = dataStore.getPlayers()
-    setPlayers(Array.isArray(playersData) ? playersData : [])
+    loadPlayers()
   }, [])
+
+  const loadPlayers = async () => {
+    setIsClient(true)
+    const playersData = await PlayerDataService.getPlayers()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+  }
 
   const filteredPlayers = players.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -42,9 +47,15 @@ export default function AdminPlayers() {
     }
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
     
-    // Delete logic would go here
-    alert(isBn ? "খেলোয়াড় মুছা হয়েছে" : "Player deleted")
-    setEditingPlayer(null)
+    try {
+      // Delete logic would go here
+      alert(isBn ? "খেলোয়াড় মুছা হয়েছে" : "Player deleted")
+      loadPlayers()
+      setEditingPlayer(null)
+    } catch (error) {
+      console.error('[v0] Error deleting player:', error)
+      alert(isBn ? 'খেলোয়াড় মোছা ব্যর্থ' : 'Failed to delete player')
+    }
   }
 
   return (
