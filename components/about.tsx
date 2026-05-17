@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, useDataStore } from "@/lib/data-store"
+import { Zap } from "lucide-react"
 
 export function About() {
   const [isVisible, setIsVisible] = useState(false)
@@ -18,8 +19,8 @@ export function About() {
   const aboutDescription = settings?.aboutDescription || t.about.description
 
   const stats = [
-    { value: `${activePlayers.length}+`, label: t.about.players },
-    { value: "⚡", label: t.about.spirit },
+    { value: activePlayers.length.toString(), label: t.about.players },
+    { value: "icon", label: t.about.spirit, isIcon: true },
     { value: "1", label: t.about.team },
   ]
 
@@ -58,7 +59,15 @@ export function About() {
         <div className="grid grid-cols-3 gap-6 mt-12 max-w-lg mx-auto">
           {stats.map((stat) => (
             <div key={stat.label}>
-              <div className="font-[var(--font-display)] text-4xl text-primary">{stat.value}</div>
+              <div className="font-[var(--font-display)] text-4xl text-primary">
+                {stat.isIcon ? (
+                  <div className="flex justify-center">
+                    <Zap className="w-12 h-12 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                  </div>
+                ) : (
+                  stat.value
+                )}
+              </div>
               <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {stat.label}
               </div>
