@@ -312,12 +312,6 @@ class PlayerDataService {
       return { total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } }
     }
   }
-      }
-    } catch (error) {
-      console.error('Error getting player stats:', error)
-      return { total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } }
-    }
-  }
 
   async getTopScorers(limit: number = 5): Promise<Player[]> {
     try {
