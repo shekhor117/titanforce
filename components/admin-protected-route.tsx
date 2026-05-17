@@ -14,7 +14,6 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   // Timeout for initialization - if it takes more than 10 seconds, assume not authenticated
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.log("[v0] Admin auth initialization completed or timed out")
       setHasTimedOut(true)
     }, 10000)
     

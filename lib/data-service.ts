@@ -140,9 +140,7 @@ export class DataService {
 
   // Players
   async getPlayers(): Promise<Player[]> {
-    console.log("[v0] DataService: Fetching players from Supabase")
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, returning empty array")
       return []
     }
     try {
@@ -153,11 +151,8 @@ export class DataService {
 
       if (error) {
         console.error("[v0] DataService: getPlayers error:", error)
-        // Log the error but don't throw - return empty array for graceful degradation
-        console.error("[v0] DataService: Returning empty players array due to error")
         return []
       }
-      console.log("[v0] DataService: Got", data?.length || 0, "players")
       return data || []
     } catch (error) {
       console.error("[v0] DataService: getPlayers exception:", error)
@@ -213,10 +208,8 @@ export class DataService {
   }
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {
-    console.log("[v0] DataService: Subscribing to players changes")
     
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, skipping subscription")
       return () => {}
     }
     
@@ -224,7 +217,6 @@ export class DataService {
       // Clean up any existing subscription first
       const existingChannel = this.subscriptions.get('players')
       if (existingChannel) {
-        console.log("[v0] DataService: Cleaning up existing players subscription")
         try {
           this.supabase.removeChannel(existingChannel)
         } catch (error) {
@@ -242,7 +234,6 @@ export class DataService {
             table: 'players',
           },
           async (payload) => {
-            console.log("[v0] DataService: Players change event received:", payload.eventType)
             try {
               const players = await this.getPlayers()
               callback(players)
@@ -253,19 +244,15 @@ export class DataService {
           }
         )
         .on('subscribe', () => {
-          console.log("[v0] DataService: Players subscription active")
         })
         .on('unsubscribe', () => {
-          console.log("[v0] DataService: Players subscription closed")
         })
         .subscribe((status) => {
-          console.log("[v0] DataService: Players subscription status:", status)
         })
 
       this.subscriptions.set('players', channel)
 
       return () => {
-        console.log("[v0] DataService: Unsubscribing from players")
         try {
           this.supabase.removeChannel(channel)
         } catch (error) {
@@ -282,9 +269,7 @@ export class DataService {
 
   // Matches
   async getMatches(): Promise<Match[]> {
-    console.log("[v0] DataService: Fetching matches from Supabase")
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, returning empty array")
       return []
     }
     try {
@@ -298,7 +283,6 @@ export class DataService {
         console.error("[v0] DataService: Returning empty matches array due to error")
         return []
       }
-      console.log("[v0] DataService: Got", data?.length || 0, "matches")
       return data || []
     } catch (error) {
       console.error("[v0] DataService: getMatches exception:", error)
@@ -342,10 +326,8 @@ export class DataService {
   }
 
   subscribeToMatches(callback: DataCallback<Match>, onError?: ErrorCallback): () => void {
-    console.log("[v0] DataService: Subscribing to matches changes")
     
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, skipping subscription")
       return () => {}
     }
     
@@ -353,7 +335,6 @@ export class DataService {
       // Clean up any existing subscription first
       const existingChannel = this.subscriptions.get('matches')
       if (existingChannel) {
-        console.log("[v0] DataService: Cleaning up existing matches subscription")
         try {
           this.supabase.removeChannel(existingChannel)
         } catch (error) {
@@ -384,7 +365,6 @@ export class DataService {
       this.subscriptions.set('matches', channel)
 
       return () => {
-        console.log("[v0] DataService: Unsubscribing from matches")
         try {
           this.supabase.removeChannel(channel)
         } catch (error) {
@@ -401,9 +381,7 @@ export class DataService {
 
   // Partners
   async getPartners(): Promise<Partner[]> {
-    console.log("[v0] DataService: Fetching partners from Supabase")
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, returning empty array")
       return []
     }
     try {
@@ -417,7 +395,6 @@ export class DataService {
         console.error("[v0] DataService: Returning empty partners array due to error")
         return []
       }
-      console.log("[v0] DataService: Got", data?.length || 0, "partners")
       return data || []
     } catch (error) {
       console.error("[v0] DataService: getPartners exception:", error)
@@ -461,10 +438,8 @@ export class DataService {
   }
 
   subscribeToPartners(callback: DataCallback<Partner>, onError?: ErrorCallback): () => void {
-    console.log("[v0] DataService: Subscribing to partners changes")
     
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, skipping subscription")
       return () => {}
     }
     
@@ -472,7 +447,6 @@ export class DataService {
       // Clean up any existing subscription first
       const existingChannel = this.subscriptions.get('partners')
       if (existingChannel) {
-        console.log("[v0] DataService: Cleaning up existing partners subscription")
         try {
           this.supabase.removeChannel(existingChannel)
         } catch (error) {
@@ -503,7 +477,6 @@ export class DataService {
       this.subscriptions.set('partners', channel)
 
       return () => {
-        console.log("[v0] DataService: Unsubscribing from partners")
         try {
           this.supabase.removeChannel(channel)
         } catch (error) {
@@ -520,9 +493,7 @@ export class DataService {
 
   // News Items
   async getNewsItems(includeUnpublished = false): Promise<NewsItem[]> {
-    console.log("[v0] DataService: Fetching news items from Supabase")
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, returning empty array")
       return []
     }
     try {
@@ -539,7 +510,6 @@ export class DataService {
         console.error("[v0] DataService: Returning empty news items array due to error")
         return []
       }
-      console.log("[v0] DataService: Got", data?.length || 0, "news items")
       return data || []
     } catch (error) {
       console.error("[v0] DataService: getNewsItems exception:", error)
@@ -583,10 +553,8 @@ export class DataService {
   }
 
   subscribeToNewsItems(callback: DataCallback<NewsItem>, onError?: ErrorCallback): () => void {
-    console.log("[v0] DataService: Subscribing to news changes")
     
     if (!this.supabase) {
-      console.log("[v0] DataService: Supabase not configured, skipping subscription")
       return () => {}
     }
     
@@ -594,7 +562,6 @@ export class DataService {
       // Clean up any existing subscription first
       const existingChannel = this.subscriptions.get('news')
       if (existingChannel) {
-        console.log("[v0] DataService: Cleaning up existing news subscription")
         try {
           this.supabase.removeChannel(existingChannel)
         } catch (error) {
@@ -625,7 +592,6 @@ export class DataService {
       this.subscriptions.set('news', channel)
 
       return () => {
-        console.log("[v0] DataService: Unsubscribing from news")
         try {
           this.supabase.removeChannel(channel)
         } catch (error) {
