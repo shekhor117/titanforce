@@ -32,10 +32,10 @@ export default function StoreProductsPage() {
     loadProducts()
   }, [])
 
-  const loadProducts = () => {
+  const loadProducts = async () => {
     setIsLoading(true)
-    const data = StoreDataService.getProducts()
-    setProducts(data)
+    const data = await StoreDataService.getProducts()
+    setProducts(data as any)
     setIsLoading(false)
   }
 
@@ -45,10 +45,10 @@ export default function StoreProductsPage() {
     return matchesSearch && matchesCategory
   })
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) {
-      StoreDataService.deleteProduct(id)
-      loadProducts()
+      await StoreDataService.deleteProduct(id)
+      await loadProducts()
     }
   }
 
@@ -86,23 +86,23 @@ export default function StoreProductsPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       if (editingProduct) {
-        StoreDataService.updateProduct(editingProduct.id, {
+        await StoreDataService.updateProduct(editingProduct.id, {
           ...formData,
           variants: editingProduct.variants,
-          image: editingProduct.image,
+          imageUrl: editingProduct.image,
           rating: editingProduct.rating,
           reviews: editingProduct.reviews,
           features: editingProduct.features,
           sku: editingProduct.sku,
         })
       } else {
-        StoreDataService.createProduct({
+        await StoreDataService.addProduct({
           ...formData,
-          image: "/placeholder.jpg",
+          imageUrl: "/placeholder.jpg",
           rating: 0,
           reviews: 0,
           features: [],
@@ -110,10 +110,10 @@ export default function StoreProductsPage() {
           variants: formData.colors.flatMap((color) =>
             formData.sizes.map((size) => ({ color, size, stock: 10 }))
           ),
-          totalStock: formData.colors.length * formData.sizes.length * 10,
+          stock: formData.colors.length * formData.sizes.length * 10,
         })
       }
-      loadProducts()
+      await loadProducts()
       setShowForm(false)
     } catch (error) {
       console.error("[v0] Error saving product:", error)
