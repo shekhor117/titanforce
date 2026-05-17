@@ -92,7 +92,7 @@ export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
       case "GK":
         return "bg-amber-500/20 text-amber-400"
       case "DEF":
-        return "bg-blue-500/20 text-blue-400"
+        return "bg-blue-500/20 text-accent"
       case "MID":
         return "bg-green-500/20 text-green-400"
       case "FWD":
@@ -175,7 +175,7 @@ export function PlayerComparisonTable({ players }: PlayerComparisonTableProps) {
                 </td>
                 <td className="text-right p-3 font-semibold text-red-400">{player.goals || 0}</td>
                 <td className="text-right p-3 font-semibold text-green-400">{player.assists || 0}</td>
-                <td className="text-right p-3 font-semibold text-blue-400">{player.appearances || 0}</td>
+                <td className="text-right p-3 font-semibold text-accent">{player.appearances || 0}</td>
                 <td className="text-right p-3 font-semibold text-yellow-400">{player.minutes || 0}</td>
                 <td className="text-right p-3 font-semibold text-purple-400">{player.passAccuracy || 0}%</td>
                 <td className="text-right p-3 font-semibold text-primary">{(player.averageRating || 0).toFixed(2)}</td>

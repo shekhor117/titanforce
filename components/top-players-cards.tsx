@@ -28,7 +28,7 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
       case "GK":
         return "bg-amber-500/20 text-amber-400 border-amber-500/30"
       case "DEF":
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30"
+        return "bg-accent/20 text-accent border-accent/30"
       case "MID":
         return "bg-green-500/20 text-green-400 border-green-500/30"
       case "FWD":

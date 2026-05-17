@@ -60,7 +60,7 @@ export function PlayerUpdatesActivity({ players }: PlayerUpdatesActivityProps) {
           description: `${isBn ? "পরিসংখ্যান আপডেট" : "Stats updated"} - ${player.appearances} ${isBn ? "ম্যাচ" : "appearances"}`,
           timestamp: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000),
           icon: <Edit3 className="w-4 h-4" />,
-          color: "text-blue-400",
+          color: "text-accent",
         })
       }
 
@@ -107,7 +107,7 @@ export function PlayerUpdatesActivity({ players }: PlayerUpdatesActivityProps) {
       case "status_change":
         return <CheckCircle className="w-4 h-4 text-green-400" />
       case "stat_update":
-        return <Edit3 className="w-4 h-4 text-blue-400" />
+        return <Edit3 className="w-4 h-4 text-accent" />
       default:
         return <Activity className="w-4 h-4 text-foreground/50" />
     }

@@ -22,7 +22,7 @@ export function PlayerAttributesRadar({ players, limit = 4 }: PlayerAttributesRa
     { key: "pace", label: isBn ? "গতি" : "Pace", color: "bg-red-500" },
     { key: "shooting", label: isBn ? "শ্যুট" : "Shooting", color: "bg-orange-500" },
     { key: "passing", label: isBn ? "পাস" : "Passing", color: "bg-green-500" },
-    { key: "dribbling", label: isBn ? "ড্রিবলিং" : "Dribbling", color: "bg-blue-500" },
+    { key: "dribbling", label: isBn ? "ড্রিবলিং" : "Dribbling", color: "bg-accent" },
     { key: "defending", label: isBn ? "ডিফেন্ডিং" : "Defending", color: "bg-purple-500" },
     { key: "physical", label: isBn ? "শারীরিক" : "Physical", color: "bg-yellow-500" },
   ]
