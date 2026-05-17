@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import GalleryDataService, { GalleryItem, GalleryType } from '@/lib/gallery-data-service'
 import { useLanguage } from '@/lib/language-context'
-import { Image as ImageIcon, Trash2, Star, Plus, X } from 'lucide-react'
+import { Image as ImageIcon, Trash2, Star, Plus, X, ArrowLeft } from 'lucide-react'
 
 const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -14,6 +15,7 @@ const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = 
 ]
 
 export default function AdminGalleryPage() {
+  const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === 'bn'
   
@@ -99,13 +101,22 @@ export default function AdminGalleryPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header with Back Button */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{isBn ? 'গ্যালারি পরিচালনা' : 'Manage Gallery'}</h1>
-          <p className="text-muted-foreground mt-1">
-            {isBn ? `মোট ${stats.total} আইটেম` : `${stats.total} total items`}
-          </p>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push('/admin/dashboard')}
+            className="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            title={isBn ? 'ড্যাশবোর্ডে ফিরুন' : 'Back to Dashboard'}
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">{isBn ? 'গ্যালারি পরিচালনা' : 'Manage Gallery'}</h1>
+            <p className="text-muted-foreground mt-1">
+              {isBn ? `মোট ${stats.total} আইটেম` : `${stats.total} total items`}
+            </p>
+          </div>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
