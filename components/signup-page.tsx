@@ -39,7 +39,7 @@ export function SignupPage() {
     setIsLoading(true)
     try {
       // Placeholder - would create admin account
-      setTimeout(() => router.push("/admin-login"), 1000)
+      setTimeout(() => router.push("/admin/login"), 1000)
     } catch (err) {
       setError(isBn ? "সাইন আপ ব্যর্থ হয়েছে" : "Sign up failed")
     } finally {
@@ -150,7 +150,7 @@ export function SignupPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             {isBn ? "ইতিমধ্যে অ্যাকাউন্ট আছে?" : "Already have an account?"}{" "}
-            <Link href="/admin-login" className="text-primary hover:underline">
+            <Link href="/admin/login" className="text-primary hover:underline">
               {isBn ? "লগইন করুন" : "Login"}
             </Link>
           </p>

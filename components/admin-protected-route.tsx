@@ -30,7 +30,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     if (!isClient) return
 
     // Check if we're on a public admin page
-    const isPublicPage = pathname?.includes("/admin-login") || 
+    const isPublicPage = pathname?.includes("/admin/login") || 
                          pathname?.includes("/admin/signup") || 
                          pathname?.includes("/admin/forgot-password")
 
@@ -38,7 +38,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     if (isInitialized) {
       if (!admin && !isRedirecting && !isPublicPage) {
         setIsRedirecting(true)
-        router.push("/admin-login")
+        router.push("/admin/login")
       }
       return
     }
@@ -46,7 +46,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     // Only redirect on timeout if still not initialized
     if (hasTimedOut && !admin && !isRedirecting && !isPublicPage) {
       setIsRedirecting(true)
-      router.push("/admin-login")
+      router.push("/admin/login")
     }
   }, [isClient, admin, isInitialized, hasTimedOut, isRedirecting, router, pathname])
 
