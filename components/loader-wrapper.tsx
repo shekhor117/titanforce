@@ -44,12 +44,10 @@ export default function LoaderWrapper({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
+            style={{ willChange: "opacity" }}
           >
-            {/* Background gradient effect */}
-            <div className="absolute inset-0 opacity-30">
-              <div className="absolute top-0 left-1/2 w-96 h-96 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-            </div>
+            {/* Simplified background - removed animated blobs for better performance */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black opacity-50 pointer-events-none"></div>
 
             {/* Content */}
             <div className="relative z-10 text-center">
@@ -62,10 +60,14 @@ export default function LoaderWrapper({
                   ease: [0.25, 0.46, 0.45, 0.94],
                   delay: 0.1
                 }}
+                style={{ willChange: "transform, opacity" }}
               >
                 <motion.h1
                   className="text-7xl md:text-8xl font-bold text-white tracking-[0.3em] leading-none"
-                  style={{ textShadow: "0 0 40px rgba(220, 38, 38, 0.3)" }}
+                  style={{ 
+                    textShadow: "0 0 40px rgba(220, 38, 38, 0.3)",
+                    willChange: "transform"
+                  }}
                 >
                   TITAN
                 </motion.h1>
@@ -77,6 +79,7 @@ export default function LoaderWrapper({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
+                style={{ willChange: "opacity" }}
               >
                 <motion.div
                   className="w-12 h-0.5 bg-gradient-to-r from-transparent to-red-600"
@@ -84,12 +87,14 @@ export default function LoaderWrapper({
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
                   origin="left"
+                  style={{ willChange: "transform" }}
                 />
                 <motion.div
                   className="w-2 h-2 bg-red-600 rounded-full"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.5 }}
+                  style={{ willChange: "transform" }}
                 />
                 <motion.div
                   className="w-12 h-0.5 bg-gradient-to-l from-transparent to-red-600"
@@ -97,6 +102,7 @@ export default function LoaderWrapper({
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
                   origin="right"
+                  style={{ willChange: "transform" }}
                 />
               </motion.div>
 
@@ -106,6 +112,7 @@ export default function LoaderWrapper({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
+                style={{ willChange: "opacity, transform" }}
               >
                 Force Football Club
               </motion.p>
@@ -116,6 +123,7 @@ export default function LoaderWrapper({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
+                style={{ willChange: "opacity" }}
               >
                 Pride · Passion · Power
               </motion.p>
@@ -127,6 +135,7 @@ export default function LoaderWrapper({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.0 }}
+              style={{ willChange: "opacity" }}
             >
               {[0, 1, 2].map((i) => (
                 <motion.div
@@ -142,6 +151,7 @@ export default function LoaderWrapper({
                     delay: i * 0.2,
                     ease: "easeInOut",
                   }}
+                  style={{ willChange: "transform, opacity" }}
                 />
               ))}
             </motion.div>
@@ -152,6 +162,7 @@ export default function LoaderWrapper({
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
               transition={{ duration: 2, ease: "easeInOut" }}
+              style={{ willChange: "width" }}
             />
           </motion.div>
         )}
