@@ -1,17 +1,23 @@
 'use client'
 
-import { useMemo } from 'react'
-import TrophyDataService from '@/lib/trophy-data-service'
+import { useEffect, useState } from 'react'
+import TrophyDataService, { Trophy } from '@/lib/trophy-data-service'
 import { useLanguage } from '@/lib/language-context'
 import Link from 'next/link'
 
 export function TrophyTimeline() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
+  const [trophies, setTrophies] = useState<Trophy[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const trophies = useMemo(() => {
-    const all = TrophyDataService.getTrophies()
-    return all.sort((a, b) => b.year - a.year)
+  useEffect(() => {
+    const loadTrophies = async () => {
+      const data = await TrophyDataService.getTrophies()
+      setTrophies(data.sort((a, b) => b.year - a.year))
+      setIsLoading(false)
+    }
+    loadTrophies()
   }, [])
 
   const categoryColors = {
@@ -26,6 +32,16 @@ export function TrophyTimeline() {
     cup: isBn ? 'কাপ' : 'Cup',
     championship: isBn ? 'চ্যাম্পিয়নশিপ' : 'Championship',
     tournament: isBn ? 'টুর্নামেন্ট' : 'Tournament',
+  }
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-muted-foreground">{isBn ? 'লোড হচ্ছে...' : 'Loading...'}</p>
+        </div>
+      </section>
+    )
   }
 
   return (

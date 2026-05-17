@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import TrophyDataService, { Trophy } from '@/lib/trophy-data-service'
 import { useLanguage } from '@/lib/language-context'
@@ -11,10 +11,11 @@ export default function AdminTrophyPage() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
 
-  const [trophies, setTrophies] = useState<Trophy[]>(TrophyDataService.getTrophies())
+  const [trophies, setTrophies] = useState<Trophy[]>([])
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [stats] = useState(TrophyDataService.getTrophyStats())
+  const [stats, setStats] = useState({ total: 0, featured: 0, byCategory: { league: 0, cup: 0, championship: 0, tournament: 0 } })
+  const [isLoading, setIsLoading] = useState(true)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,32 +27,59 @@ export default function AdminTrophyPage() {
     featured: false,
   })
 
-  const handleAddTrophy = () => {
+  useEffect(() => {
+    loadTrophies()
+  }, [])
+
+  const loadTrophies = async () => {
+    setIsLoading(true)
+    const data = await TrophyDataService.getTrophies()
+    const stats = await TrophyDataService.getTrophyStats()
+    setTrophies(data)
+    setStats(stats)
+    setIsLoading(false)
+  }
+
+  const handleAddTrophy = async () => {
     if (!formData.name.trim()) {
       alert(isBn ? 'ট্রফির নাম প্রয়োজন' : 'Trophy name is required')
       return
     }
 
-    if (editingId) {
-      TrophyDataService.updateTrophy(editingId, formData)
-    } else {
-      TrophyDataService.addTrophy(formData)
-    }
+    try {
+      if (editingId) {
+        await TrophyDataService.updateTrophy(editingId, formData)
+      } else {
+        await TrophyDataService.addTrophy(formData)
+      }
 
-    setTrophies(TrophyDataService.getTrophies())
-    resetForm()
+      await loadTrophies()
+      resetForm()
+    } catch (error) {
+      console.error('[v0] Error saving trophy:', error)
+      alert(isBn ? 'ট্রফি সংরক্ষণ ব্যর্থ' : 'Failed to save trophy')
+    }
   }
 
-  const handleDeleteTrophy = (id: string) => {
+  const handleDeleteTrophy = async (id: string) => {
     if (confirm(isBn ? 'এটি মুছে ফেলতে নিশ্চিত?' : 'Are you sure you want to delete this?')) {
-      TrophyDataService.deleteTrophy(id)
-      setTrophies(TrophyDataService.getTrophies())
+      try {
+        await TrophyDataService.deleteTrophy(id)
+        await loadTrophies()
+      } catch (error) {
+        console.error('[v0] Error deleting trophy:', error)
+        alert(isBn ? 'ট্রফি মোছা ব্যর্থ' : 'Failed to delete trophy')
+      }
     }
   }
 
-  const handleToggleFeatured = (id: string) => {
-    TrophyDataService.toggleFeatured(id)
-    setTrophies(TrophyDataService.getTrophies())
+  const handleToggleFeatured = async (id: string) => {
+    try {
+      await TrophyDataService.toggleFeatured(id)
+      await loadTrophies()
+    } catch (error) {
+      console.error('[v0] Error toggling featured:', error)
+    }
   }
 
   const handleEditTrophy = (trophy: Trophy) => {
