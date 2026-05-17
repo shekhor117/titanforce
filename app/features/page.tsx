@@ -7,6 +7,7 @@ import { PlayerRanking } from "@/components/player-ranking"
 import { TrainingChart } from "@/components/training-chart"
 import { InjuryTracking } from "@/components/injury-tracking"
 import { BackButton } from "@/components/back-button"
+import { TeamStatsOverview } from "@/components/team-stats-overview"
 
 export const metadata = {
   title: "Advanced Features | Titan Force FC",
@@ -33,6 +34,9 @@ export default function FeaturesPage() {
             Explore our comprehensive suite of tools for lineup building, tactical planning, player analytics, and more.
           </p>
         </section>
+
+        {/* Team Stats Overview - Client Component */}
+        <TeamStatsOverview />
 
         <LineupBuilder />
         <TacticalBoard />
