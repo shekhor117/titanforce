@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Plus, Edit, Trash2, Save, X } from "lucide-react"
-import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { dataStore, Player } from "@/lib/data-store"
 
 export default function AdminPlayers() {
   const { language } = useLanguage()
@@ -13,9 +13,15 @@ export default function AdminPlayers() {
   const [showForm, setShowForm] = useState(false)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [players, setPlayers] = useState<Player[]>([])
+  const [isClient, setIsClient] = useState(false)
 
-  const playersData = useDataStore(dataStore.getPlayers, "players")
-  const players = Array.isArray(playersData) ? playersData : []
+  useEffect(() => {
+    setIsClient(true)
+    const playersData = dataStore.getPlayers()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+  }, [])
+
   const filteredPlayers = players.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   )

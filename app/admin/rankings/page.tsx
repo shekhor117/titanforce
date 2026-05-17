@@ -1,17 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { BarChart4, Save, RefreshCw, ArrowUp, ArrowDown } from "lucide-react"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { dataStore } from "@/lib/data-store"
 
 export default function AdminRankingsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const { admin } = useAdmin()
+  const [players, setPlayers] = useState<any[]>([])
+  const [isClient, setIsClient] = useState(false)
 
-  const players = useDataStore(dataStore.getPlayers, "players")
+  useEffect(() => {
+    setIsClient(true)
+    const playersData = dataStore.getPlayers()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+  }, [])
 
   const [rankings, setRankings] = useState(
     players.map(p => ({

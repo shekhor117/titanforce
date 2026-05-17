@@ -1,21 +1,26 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Trophy, Save, RefreshCw, Star } from "lucide-react"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { dataStore } from "@/lib/data-store"
 
 export default function AdminMotmPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const { admin } = useAdmin()
+  const [isClient, setIsClient] = useState(false)
+  const [players, setPlayers] = useState<any[]>([])
+  const [matches, setMatches] = useState<any[]>([])
 
-  const playersData = useDataStore(dataStore.getPlayers, "players")
-  const matchesData = useDataStore(dataStore.getMatches, "matches")
-  
-  const players = Array.isArray(playersData) ? playersData : []
-  const matches = Array.isArray(matchesData) ? matchesData : []
+  useEffect(() => {
+    setIsClient(true)
+    const playersData = dataStore.getPlayers()
+    const matchesData = dataStore.getMatches()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+    setMatches(Array.isArray(matchesData) ? matchesData : [])
+  }, [])
 
   const [selectedMatch, setSelectedMatch] = useState(matches.length > 0 ? matches[0] : null)
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null)

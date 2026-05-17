@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, ContactMessage, useDataStore } from "@/lib/data-store"
+import { dataStore, ContactMessage } from "@/lib/data-store"
 import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone, Plus, X, Save, CheckCircle } from "lucide-react"
 
 export default function AdminContactsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const contacts = useDataStore(dataStore.getContacts, "contacts")
+  const [contacts, setContacts] = useState<ContactMessage[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
@@ -21,6 +22,12 @@ export default function AdminContactsPage() {
     subject: "",
     message: "",
   })
+
+  useEffect(() => {
+    setIsClient(true)
+    const contactsData = dataStore.getContacts()
+    setContacts(Array.isArray(contactsData) ? contactsData : [])
+  }, [])
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

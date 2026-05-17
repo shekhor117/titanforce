@@ -1,17 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Layers, Save, RefreshCw, Plus, X } from "lucide-react"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { dataStore } from "@/lib/data-store"
 
 export default function AdminLineupPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const { admin } = useAdmin()
+  const [players, setPlayers] = useState<any[]>([])
+  const [isClient, setIsClient] = useState(false)
 
-  const players = Array.isArray(useDataStore(dataStore.getPlayers, "players")) ? useDataStore(dataStore.getPlayers, "players") : []
+  useEffect(() => {
+    setIsClient(true)
+    const playersData = dataStore.getPlayers()
+    setPlayers(Array.isArray(playersData) ? playersData : [])
+  }, [])
 
   const formations = ["4-3-3", "4-4-2", "3-5-2", "4-2-3-1", "5-3-2", "3-4-3"]
   const [selectedFormation, setSelectedFormation] = useState(formations[0])

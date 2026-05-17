@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, X, Save, Eye, EyeOff, Calendar } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
-import { dataStore, NewsItem, useDataStore } from "@/lib/data-store"
+import { dataStore, NewsItem } from "@/lib/data-store"
 
 export default function AdminNews() {
   const { language } = useLanguage()
@@ -12,6 +12,8 @@ export default function AdminNews() {
   const [showForm, setShowForm] = useState(false)
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null)
   const [filter, setFilter] = useState<"all" | "draft" | "published">("all")
+  const [news, setNews] = useState<NewsItem[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -23,8 +25,11 @@ export default function AdminNews() {
     image: "",
   })
 
-  // Get news from data store
-  const news = useDataStore(dataStore.getNews, "news")
+  useEffect(() => {
+    setIsClient(true)
+    const newsData = dataStore.getNews()
+    setNews(Array.isArray(newsData) ? newsData : [])
+  }, [])
 
   const handleImageUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, image: data.signedUrl }))

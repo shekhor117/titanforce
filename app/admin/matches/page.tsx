@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Match, useDataStore } from "@/lib/data-store"
+import { dataStore, Match } from "@/lib/data-store"
 import { Plus, Edit, Trash2, X, Save, Calendar, MapPin, Search } from "lucide-react"
 
 export default function AdminMatches() {
@@ -12,6 +12,8 @@ export default function AdminMatches() {
   const [editingMatch, setEditingMatch] = useState<Match | null>(null)
   const [filter, setFilter] = useState<"all" | "upcoming" | "live" | "completed">("all")
   const [searchTerm, setSearchTerm] = useState("")
+  const [matches, setMatches] = useState<Match[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [formData, setFormData] = useState({
     home: "Titan Force",
     away: "",
@@ -24,8 +26,11 @@ export default function AdminMatches() {
     result: "" as Match["result"] | "",
   })
   
-  const matchesData = useDataStore(dataStore.getMatches, "matches")
-  const matches = Array.isArray(matchesData) ? matchesData : []
+  useEffect(() => {
+    setIsClient(true)
+    const matchesData = dataStore.getMatches()
+    setMatches(Array.isArray(matchesData) ? matchesData : [])
+  }, [])
 
   const handleSaveMatch = () => {
     if (!formData.away || !formData.date || !formData.venue) {

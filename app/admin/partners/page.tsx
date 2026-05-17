@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, Partner, useDataStore } from "@/lib/data-store"
+import { dataStore, Partner } from "@/lib/data-store"
 import { Plus, Edit, Trash2, ExternalLink, X, Save, Search } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 
@@ -14,6 +14,8 @@ export default function AdminPartners() {
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null)
   const [filter, setFilter] = useState<"all" | "title" | "main" | "official" | "media">("all")
   const [searchTerm, setSearchTerm] = useState("")
+  const [partners, setPartners] = useState<Partner[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     type: "official" as Partner["type"],
@@ -23,7 +25,11 @@ export default function AdminPartners() {
     status: "active" as Partner["status"],
   })
   
-  const partners = useDataStore(dataStore.getPartners, "partners")
+  useEffect(() => {
+    setIsClient(true)
+    const partnersData = dataStore.getPartners()
+    setPartners(Array.isArray(partnersData) ? partnersData : [])
+  }, [])
 
   const handleLogoUpload = (data: { signedUrl: string; filePath: string }) => {
     setFormData((prev) => ({ ...prev, logo: data }))
