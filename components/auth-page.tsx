@@ -745,113 +745,114 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
           ) : (
             <>
               {/* Credentials Input Section */}
-          {view === 'signup' && (
-            <input
-              type="text"
-              placeholder={isBn ? "পুর��� নাম" : "Full Name"}
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required={view === 'signup'}
-              className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
-            />
-          )}
-
-          <input
-            type="email"
-            placeholder={view === 'login' ? (isBn ? "ইমেল বা সাপোর্টার আইডি" : "Email or Supporter ID") : (isBn ? "ইমেল ঠিকানা" : "Email Address")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
-          />
-
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder={isBn ? "পাসওয়ার্ড" : "Password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
-            >
-              {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
-            </button>
-          </div>
-
-          {view === 'signup' && (
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
-              >
-                {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
-              </button>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-            {isLoading
-              ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...')
-              : view === 'login'
-                ? (isBn ? 'লগইন করুন' : 'Continue')
-                : authStep === 'credentials'
-                  ? (isBn ? 'পরবর্তী' : 'Next')
-                  : authStep === 'details'
-                    ? (isBn ? 'পরবর্তী' : 'Next')
-                    : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
-          </button>
-
-          {view === 'login' && (
-            <div className="flex justify-center gap-4 pt-2">
-              <button 
-                type="button" 
-                onClick={() => router.push('/auth/forgot-password')}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
-              >
-                {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
-              </button>
-            </div>
-          )}
-
-          {/* Show step indicator for signup */}
-          {view === 'signup' && authStep !== 'otp' && (
-            <div className="flex justify-center gap-2 py-4">
-              {(['credentials', 'details', 'preferences'] as const).map((step) => (
-                <div
-                  key={step}
-                  className={`h-1 rounded-full transition-all ${
-                    authStep === step
-                      ? 'w-8 bg-primary'
-                      : ['credentials', 'details', 'preferences'].indexOf(step) < ['credentials', 'details', 'preferences'].indexOf(authStep)
-                        ? 'w-3 bg-primary/50'
-                        : 'w-3 bg-border'
-                  }`}
+              {view === 'signup' && (
+                <input
+                  type="text"
+                  placeholder={isBn ? "পূর্ণ নাম" : "Full Name"}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required={view === 'signup'}
+                  className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
                 />
-              ))}
-            </div>
+              )}
+
+              <input
+                type="email"
+                placeholder={view === 'login' ? (isBn ? "ইমেল বা সাপোর্টার আইডি" : "Email or Supporter ID") : (isBn ? "ইমেল ঠিকানা" : "Email Address")}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+              />
+
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={isBn ? "পাসওয়ার্ড" : "Password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+                >
+                  {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+                </button>
+              </div>
+
+              {view === 'signup' && (
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm Password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={showConfirmPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+                  >
+                    {showConfirmPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                {isLoading
+                  ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...')
+                  : view === 'login'
+                    ? (isBn ? 'লগইন করুন' : 'Continue')
+                    : authStep === 'credentials'
+                      ? (isBn ? 'পরবর্তী' : 'Next')
+                      : authStep === 'details'
+                        ? (isBn ? 'পরবর্তী' : 'Next')
+                        : (isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account')}
+              </button>
+
+              {view === 'login' && (
+                <div className="flex justify-center gap-4 pt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => router.push('/auth/forgot-password')}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                  >
+                    {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
+                  </button>
+                </div>
+              )}
+
+              {/* Show step indicator for signup */}
+              {view === 'signup' && authStep !== 'otp' && (
+                <div className="flex justify-center gap-2 py-4">
+                  {(['credentials', 'details', 'preferences'] as const).map((step) => (
+                    <div
+                      key={step}
+                      className={`h-1 rounded-full transition-all ${
+                        authStep === step
+                          ? 'w-8 bg-primary'
+                          : ['credentials', 'details', 'preferences'].indexOf(step) < ['credentials', 'details', 'preferences'].indexOf(authStep)
+                            ? 'w-3 bg-primary/50'
+                            : 'w-3 bg-border'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
-          </>
         </form>
 
         {/* Divider */}
