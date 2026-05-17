@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import GalleryDataService, { GalleryType, GalleryItem } from '@/lib/gallery-data-service'
 import { useLanguage } from '@/lib/language-context'
-import { X, Search } from 'lucide-react'
+import { X, Search, ArrowLeft } from 'lucide-react'
 
 const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -14,6 +15,7 @@ const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = 
 ]
 
 export default function GalleryPage() {
+  const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === 'bn'
   
@@ -51,6 +53,10 @@ export default function GalleryPage() {
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-accent py-12 px-4">
         <div className="max-w-6xl mx-auto">
+          <button onClick={() => router.back()} className="inline-flex items-center gap-2 mb-4 px-3 py-2 rounded border border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 transition-all">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm uppercase tracking-wider">{isBn ? 'পিছনে' : 'Back'}</span>
+          </button>
           <h1 className="text-4xl font-bold text-primary-foreground mb-2">
             {isBn ? 'গ্যালারি' : 'Gallery'}
           </h1>
