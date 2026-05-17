@@ -3,21 +3,23 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 import { mockSignUp } from '@/lib/auth-utils'
 
 type Role = 'player' | 'fan' | 'partner'
+type AuthStep = 'credentials' | 'otp'
 
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
   defaultRole?: Role
   showAllRoles?: boolean
+  enableOTP?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false, enableOTP = true }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -25,22 +27,68 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const isBn = language === 'bn'
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
+  const [authStep, setAuthStep] = useState<AuthStep>('credentials')
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [selectedRole, setSelectedRole] = useState<Role>(defaultRole)
+  const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
   const [isAppleLoading, setIsAppleLoading] = useState(false)
+  const [otpSentEmail, setOtpSentEmail] = useState('')
+  const [otpResendTimer, setOtpResendTimer] = useState(0)
 
   const roles: { id: Role; label: string; labelBn: string; icon: React.ReactNode }[] = [
     { id: 'player', label: 'Player', labelBn: 'খেলোয়াড়', icon: <User className="w-4 h-4" /> },
     { id: 'fan', label: 'Fan', labelBn: 'অনুরাগী', icon: <Heart className="w-4 h-4" /> },
     { id: 'partner', label: 'Partner', labelBn: 'অংশীদার', icon: <Handshake className="w-4 h-4" /> },
   ]
+
+  // Generate a 6-digit mock OTP (in production, this would be sent to email)
+  const generateMockOTP = (): string => {
+    return Math.floor(100000 + Math.random() * 900000).toString()
+  }
+
+  // Store OTP in session (in production, send via email)
+  const sendOTPEmail = async (emailAddress: string) => {
+    try {
+      const mockOTP = generateMockOTP()
+      // In production, send via email service
+      // For now, store in sessionStorage for demo
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('otp_code', mockOTP)
+        sessionStorage.setItem('otp_email', emailAddress)
+        // OTP valid for 5 minutes
+        sessionStorage.setItem('otp_expiry', (Date.now() + 5 * 60 * 1000).toString())
+        console.log("[v0] Mock OTP sent to", emailAddress, "- Demo OTP:", mockOTP)
+      }
+      setOtpSentEmail(emailAddress)
+      setOtpResendTimer(60) // 60 second cooldown
+    } catch (err) {
+      console.error("[v0] Error sending OTP:", err)
+      throw err
+    }
+  }
+
+  // Verify OTP code
+  const verifyOTPCode = (code: string): boolean => {
+    if (typeof window === 'undefined') return false
+    
+    const storedOTP = sessionStorage.getItem('otp_code')
+    const otpExpiry = sessionStorage.getItem('otp_expiry')
+    
+    if (!storedOTP || !otpExpiry) return false
+    if (Date.now() > parseInt(otpExpiry)) {
+      setError(isBn ? 'OTP এর মেয়াদ শেষ হয়েছে' : 'OTP has expired')
+      return false
+    }
+    
+    return code === storedOTP
+  }
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,49 +97,101 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       setError(null)
 
       if (view === 'login') {
-        try {
-          await login(email, password, selectedRole)
-          router.push('/profile')
-        } catch (loginErr) {
-          console.log("[v0] Supabase login failed, attempting mock login...")
-          // If Supabase fails, try mock login
+        // Check credentials first
+        if (authStep === 'credentials') {
+          // Validate credentials with mock auth or Supabase
           try {
             const { mockSignInWithEmail } = await import('@/lib/mock-auth')
             const mockUser = mockSignInWithEmail(email, password)
             if (!mockUser) {
               throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
             }
-            // Store role info
-            if (typeof window !== 'undefined') {
-              const userData = { ...mockUser, role: selectedRole }
-              localStorage.setItem('mockAuthUser', JSON.stringify(userData))
+          } catch (credErr) {
+            // Try Supabase
+            try {
+              const { data } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+              })
+              if (!data.user) {
+                throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
+              }
+            } catch (supabaseErr) {
+              throw credErr
             }
-            router.push('/profile')
-          } catch (mockErr) {
-            throw loginErr
           }
+
+          // If OTP is enabled, proceed to OTP verification
+          if (enableOTP) {
+            await sendOTPEmail(email)
+            setAuthStep('otp')
+            setIsLoading(false)
+            return
+          }
+
+          // Otherwise login directly
+          await login(email, password, selectedRole)
+          router.push('/profile')
+        } else if (authStep === 'otp') {
+          // Verify OTP
+          if (!verifyOTPCode(otp)) {
+            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
+          }
+
+          // OTP verified, complete login
+          await login(email, password, selectedRole)
+          // Clear OTP data
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('otp_code')
+            sessionStorage.removeItem('otp_email')
+            sessionStorage.removeItem('otp_expiry')
+          }
+          router.push('/profile')
         }
       } else {
-        // Try Supabase first, fall back to mock if not configured
-        try {
-          const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                full_name: fullName,
-                role: selectedRole,
+        // Signup flow
+        if (authStep === 'credentials') {
+          // Try Supabase first, fall back to mock if not configured
+          try {
+            const { error } = await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  full_name: fullName,
+                  role: selectedRole,
+                },
+                emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+                  `${window.location.origin}/auth/callback?role=${selectedRole}`,
               },
-              emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-                `${window.location.origin}/auth/callback?role=${selectedRole}`,
-            },
-          })
-          if (error) throw error
+            })
+            if (error) throw error
+          } catch (supabaseErr) {
+            console.log("[v0] Supabase signup failed, attempting mock signup...")
+            await mockSignUp(email, password, fullName, selectedRole)
+          }
+
+          // Proceed to OTP verification if enabled
+          if (enableOTP) {
+            await sendOTPEmail(email)
+            setAuthStep('otp')
+            setIsLoading(false)
+            return
+          }
+
           router.push('/auth/sign-up-success')
-        } catch (supabaseErr) {
-          console.log("[v0] Supabase signup failed, attempting mock signup...")
-          // If Supabase fails, use mock signup for development
-          await mockSignUp(email, password, fullName, selectedRole)
+        } else if (authStep === 'otp') {
+          // Verify OTP for signup
+          if (!verifyOTPCode(otp)) {
+            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
+          }
+
+          // OTP verified, complete signup
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('otp_code')
+            sessionStorage.removeItem('otp_email')
+            sessionStorage.removeItem('otp_expiry')
+          }
           router.push('/auth/sign-up-success')
         }
       }
@@ -125,6 +225,27 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
     }
   }
 
+  const handleResendOTP = async () => {
+    try {
+      if (otpResendTimer > 0) return
+      setIsLoading(true)
+      setError(null)
+      await sendOTPEmail(otpSentEmail)
+      setOtp('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (isBn ? 'OTP পুনরায় পাঠাতে ব্যর্থ' : 'Failed to resend OTP'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleBackToCredentials = () => {
+    setAuthStep('credentials')
+    setOtp('')
+    setError(null)
+    setOtpResendTimer(0)
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative">
       {/* Back Button */}
@@ -155,10 +276,14 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">
-            {view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up')}
+            {authStep === 'otp' ? (isBn ? 'OTP যাচাই করুন' : 'Verify OTP') : (view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up'))}
           </h1>
           <p className="text-base font-medium text-muted-foreground">
-            {view === 'login' ? (
+            {authStep === 'otp' ? (
+              <>
+                {isBn ? 'আমরা একটি OTP পাঠিয়েছি' : 'We sent an OTP to'} <span className="font-semibold text-foreground">{otpSentEmail}</span>
+              </>
+            ) : view === 'login' ? (
               <>
                 {isBn ? 'অ্যাকাউন্ট নেই?' : "Don't have an account?"}{' '}
                 <button
@@ -217,6 +342,57 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
 
         {/* Form */}
         <form onSubmit={handleEmailAuth} className="w-full space-y-4">
+          {authStep === 'otp' ? (
+            <>
+              {/* OTP Input Section */}
+              <div className="space-y-4">
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                  <p className="text-sm text-muted-foreground text-center mb-2">
+                    {isBn ? 'আপনার ইমেলে পাঠানো 6-ডিজিট কোড প্রবেশ করুন' : 'Enter the 6-digit code sent to your email'}
+                  </p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="000000"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                    className="w-full p-4 text-center text-2xl tracking-widest font-mono bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || otp.length !== 6}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                  {isLoading ? (isBn ? 'যাচাই করছি...' : 'Verifying...') : (isBn ? 'চালিয়ে যান' : 'Continue')}
+                </button>
+
+                <div className="text-center space-y-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    disabled={otpResendTimer > 0 || isLoading}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {isBn ? 'কোড পুনরায় পাঠান' : 'Resend code'}
+                    {otpResendTimer > 0 && ` (${otpResendTimer}s)`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBackToCredentials}
+                    className="block w-full text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                  >
+                    {isBn ? 'পিছনে ফিরুন' : 'Go back'}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Credentials Input Section */}
           {view === 'signup' && (
             <input
               type="text"
@@ -279,6 +455,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                 {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot password?"}
               </button>
             </div>
+          )}
+            </>
           )}
         </form>
 
