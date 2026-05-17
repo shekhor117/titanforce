@@ -23,12 +23,18 @@ export function FeatureProtectedRoute({
   const isBn = language === "bn"
   const [hasAccess, setHasAccess] = useState(false)
   const [showAccessDenied, setShowAccessDenied] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure we're on the client before using router
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Check if user has admin or moderator access
   const isAuthorized = admin?.role === "admin" || admin?.role === "moderator"
 
   useEffect(() => {
-    if (!isInitialized) return
+    if (!isClient || !isInitialized) return
 
     if (isAuthorized) {
       setHasAccess(true)
@@ -40,7 +46,7 @@ export function FeatureProtectedRoute({
       }, 3000)
       return () => clearTimeout(timer)
     }
-  }, [admin, isInitialized, isAuthorized, router])
+  }, [isClient, admin, isInitialized, isAuthorized, router])
 
   // Show loading state while initializing
   if (!isInitialized) {

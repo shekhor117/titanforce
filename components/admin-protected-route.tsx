@@ -10,6 +10,12 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [hasTimedOut, setHasTimedOut] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure we're on the client before using router
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Timeout for initialization - if it takes more than 10 seconds, assume not authenticated
   useEffect(() => {
@@ -21,6 +27,8 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   }, [])
 
   useEffect(() => {
+    if (!isClient) return
+
     // Check if we're on a public admin page
     const isPublicPage = pathname?.includes("/admin-login") || 
                          pathname?.includes("/admin/signup") || 
@@ -40,7 +48,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
       setIsRedirecting(true)
       router.push("/admin-login")
     }
-  }, [admin, isInitialized, hasTimedOut, isRedirecting, router, pathname])
+  }, [isClient, admin, isInitialized, hasTimedOut, isRedirecting, router, pathname])
 
   // If we have admin data, render immediately
   if (admin) {
