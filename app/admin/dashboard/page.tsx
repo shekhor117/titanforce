@@ -31,12 +31,23 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Load player stats from Supabase
     const loadData = async () => {
-      const stats = await PlayerDataService.getPlayerStats()
-      setPlayerStats(stats)
+      try {
+        const stats = await PlayerDataService.getPlayerStats()
+        setPlayerStats(stats)
+      } catch (err) {
+        console.error("[v0] Error loading player stats:", err)
+      }
     }
     loadData()
   }, [])
   
+  // Safely convert to arrays
+  const playerList = Array.isArray(players) ? players : []
+  const matchList = Array.isArray(matches) ? matches : []
+  const fanList = Array.isArray(fans) ? fans : []
+  const partnerList = Array.isArray(partners) ? partners : []
+  const newsList = Array.isArray(newsItems) ? newsItems : []
+  const mediaList = Array.isArray(mediaItems) ? mediaItems : []
   useEffect(() => {
     // Import dataStore to get local storage data
     const loadLocalData = async () => {
@@ -172,7 +183,7 @@ export default function AdminDashboard() {
         subtext: `${StoreDataService.getProducts().filter((p: any) => (p as any).inStock !== false).length} ${isBn ? "স্টকে" : "in stock"}`
       },
       {
-        label: isBn ? "অর্ডার" : "Orders",
+        label: isBn ? "অর��ডার" : "Orders",
         value: StoreDataService.getOrders().length.toString(),
         icon: <Package className="w-6 h-6" />,
         href: "/admin/store/orders",
@@ -356,7 +367,7 @@ export default function AdminDashboard() {
       {/* Error State */}
       {error && (
         <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
-          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error.message}</p>
+          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error instanceof Error ? error.message : "Unknown error"}</p>
         </div>
       )}
 
@@ -662,7 +673,7 @@ export default function AdminDashboard() {
           </h2>
         </div>
         <p className={`text-foreground/60 text-sm mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগারেশন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
+          {isBn ? "প্ল্যাটফর্মের উন্নত বৈশিষ্ট্য এবং কনফিগার���শন পরিচালনা করুন" : "Manage advanced features and configurations for the platform"}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {advancedTools.map((tool) => (
@@ -698,8 +709,21 @@ export default function AdminDashboard() {
           </h2>
         </div>
 
-        {/* Player Stats Dashboard */}
-        <PlayerStatsDashboard players={players} />
+        {/* Player Stats Dashboard with error boundary */}
+        <div>
+          {playerList && playerList.length > 0 ? (
+            <PlayerStatsDashboard players={playerList} />
+          ) : (
+            <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+              <div className="flex items-center justify-center py-8">
+                <div className="text-center text-foreground/60">
+                  <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p>{isBn ? "খেলোয়াড় ডেটা লোড হচ্ছে..." : "Loading player data..."}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* System Overview */}
@@ -712,7 +736,7 @@ export default function AdminDashboard() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div className="text-center p-3 rounded-lg bg-background/50">
-            <div className="text-2xl font-bold text-primary">{playerList.length}</div>
+            <div className="text-2xl font-bold text-primary">{playerList?.length || 0}</div>
           </div>
           <div className="flex-1 flex flex-col items-start">
             <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -725,7 +749,7 @@ export default function AdminDashboard() {
       <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Trophy className="w-6 h-6 text-yellow-400 group-hover:scale-110 transition-transform" />
-          <div className="text-2xl font-bold text-yellow-400">{matchList.length}</div>
+          <div className="text-2xl font-bold text-yellow-400">{matchList?.length || 0}</div>
         </div>
         <div className="flex-1 flex flex-col items-start">
           <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -737,7 +761,7 @@ export default function AdminDashboard() {
       <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Users className="w-6 h-6 text-green-400 group-hover:scale-110 transition-transform" />
-          <div className="text-2xl font-bold text-green-400">{fanList.length}</div>
+          <div className="text-2xl font-bold text-green-400">{fanList?.length || 0}</div>
         </div>
         <div className="flex-1 flex flex-col items-start">
           <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -749,7 +773,7 @@ export default function AdminDashboard() {
       <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Handshake className="w-6 h-6 text-purple-400 group-hover:scale-110 transition-transform" />
-          <div className="text-2xl font-bold text-purple-400">{partnerList.length}</div>
+          <div className="text-2xl font-bold text-purple-400">{partnerList?.length || 0}</div>
         </div>
         <div className="flex-1 flex flex-col items-start">
           <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -761,7 +785,7 @@ export default function AdminDashboard() {
       <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Newspaper className="w-6 h-6 text-orange-400 group-hover:scale-110 transition-transform" />
-          <div className="text-2xl font-bold text-orange-400">{newsList.length}</div>
+          <div className="text-2xl font-bold text-orange-400">{newsList?.length || 0}</div>
         </div>
         <div className="flex-1 flex flex-col items-start">
           <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -773,7 +797,7 @@ export default function AdminDashboard() {
       <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Image className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
-          <div className="text-2xl font-bold text-pink-400">{mediaList.length}</div>
+          <div className="text-2xl font-bold text-pink-400">{mediaList?.length || 0}</div>
         </div>
         <div className="flex-1 flex flex-col items-start">
           <p className={`text-xs uppercase tracking-widest text-foreground/60 mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>

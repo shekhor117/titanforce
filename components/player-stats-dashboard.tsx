@@ -67,6 +67,29 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
     },
   ]
 
+  // Calculate percentages safely
+  const totalPlayers = safePlayersArray.length
+  const activePercentage = totalPlayers > 0 ? ((activePlayers / totalPlayers) * 100).toFixed(0) : "0"
+  const injuredPercentage = totalPlayers > 0 ? ((injuredPlayers / totalPlayers) * 100).toFixed(0) : "0"
+  const suspendedPercentage = totalPlayers > 0 ? ((suspendedPlayers / totalPlayers) * 100).toFixed(0) : "0"
+
+  // If no players data, show empty state
+  if (!safePlayersArray || safePlayersArray.length === 0) {
+    return (
+      <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+        <h3 className={`font-display text-lg tracking-wider text-foreground mb-4 ${isBn ? "font-bengali" : ""}`}>
+          {isBn ? "খেলোয়াড় পরিসংখ্যান" : "Player Statistics"}
+        </h3>
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center text-foreground/60">
+            <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p>{isBn ? "খেলোয়াড় ডেটা উপলব্ধ নেই" : "No player data available"}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Aggregate Stats */}
@@ -100,7 +123,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
                 {isBn ? "সক্রিয়" : "Active"}
               </div>
               <div className="text-xs text-foreground/60">
-                {((activePlayers / players.length) * 100).toFixed(0)}%
+                {activePercentage}%
               </div>
             </div>
           </div>
@@ -112,7 +135,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
                 {isBn ? "আহত" : "Injured"}
               </div>
               <div className="text-xs text-foreground/60">
-                {((injuredPlayers / players.length) * 100).toFixed(0)}%
+                {injuredPercentage}%
               </div>
             </div>
           </div>
@@ -124,7 +147,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
                 {isBn ? "স্থগিত" : "Suspended"}
               </div>
               <div className="text-xs text-foreground/60">
-                {((suspendedPlayers / players.length) * 100).toFixed(0)}%
+                {suspendedPercentage}%
               </div>
             </div>
           </div>
