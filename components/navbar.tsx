@@ -17,35 +17,35 @@ export function Navbar() {
   const { items } = useCart()
 
   const navLinks = [
-    { href: "#home", label: t.nav.home },
-    { href: "#about", label: t.nav.about },
-    { href: "#squad", label: t.nav.squad },
-    { href: "#matches", label: t.nav.matches },
+    { href: "/", label: t.nav.home },
+    { href: "/about", label: t.nav.about },
+    { href: "/team-squad", label: t.nav.squad },
+    { href: "/matches", label: t.nav.matches },
     { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
-    { href: "#contact", label: t.nav.contact },
+    { href: "/contact", label: t.nav.contact },
   ]
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b-2 border-primary backdrop-blur-md bg-background/80">
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
-        <Link href="#home" className="flex items-center gap-1 sm:gap-2 min-w-0">
+    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
             src="/logo.png"
             alt="Titan Force FC Logo"
             width={50}
             height={50}
-            className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0"
+            className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider text-primary truncate">
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
             TITAN FORCE
           </h1>
         </Link>
 
         <button
-          className="md:hidden p-2 text-foreground hover:bg-secondary rounded transition-colors"
+          className="md:hidden p-2 text-foreground hover:bg-muted rounded transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
           aria-expanded={mobileMenuOpen}
@@ -53,7 +53,7 @@ export function Navbar() {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        <div className="hidden md:flex items-center gap-4 text-sm font-semibold uppercase tracking-wide">
+        <div className="hidden md:flex items-center gap-6 text-sm font-semibold uppercase tracking-wide">
           {navLinks.map((link) => (
             <Link
               key={link.href}

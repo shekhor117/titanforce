@@ -36,6 +36,12 @@ export default function SettingsPage() {
   const [successMessage, setSuccessMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [activeTab, setActiveTab] = useState<"profile" | "security" | "preferences">("profile")
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure we're on the client before using router
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -49,24 +55,25 @@ export default function SettingsPage() {
   })
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isClient || isLoading) return
+
+    if (!user) {
       router.push("/login")
+      return
     }
     
-    if (user) {
-      const session = mockGetSession()
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        phone: session?.phone || "",
-        address: session?.address || "",
-        website: session?.website || "",
-        dateOfBirth: session?.dateOfBirth || "",
-        bio: session?.bio || "",
-        about: session?.about || "",
-      })
-    }
-  }, [user, isLoading, router])
+    const session = mockGetSession()
+    setFormData({
+      name: user.name || "",
+      email: user.email || "",
+      phone: session?.phone || "",
+      address: session?.address || "",
+      website: session?.website || "",
+      dateOfBirth: session?.dateOfBirth || "",
+      bio: session?.bio || "",
+      about: session?.about || "",
+    })
+  }, [isClient, user, isLoading, router])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -447,7 +454,7 @@ export default function SettingsPage() {
                           {isBn ? "দুই-ফ্যাক্টর প্রমাণীকরণ" : "Two-Factor Authentication"}
                         </h3>
                         <p className="text-foreground/60 text-sm mb-4">
-                          {isBn ? "আপনার অ্যাকাউন্টে একটি অতিরিক্ত নিরাপত্তা স্তর যোগ করুন।"
+                          {isBn ? "আপনার অ্যাকাউন্টে একটি অ���িরিক্ত নিরাপত্তা স্তর যোগ করুন।"
                             : "Add an extra layer of security to your account."}
                         </p>
                         <button className="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium">

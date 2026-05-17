@@ -25,7 +25,7 @@ const iconMap = {
 }
 
 const colorMap = {
-  match: "bg-blue-500/20 text-blue-500",
+  match: "bg-accent/20 text-accent",
   goal: "bg-green-500/20 text-green-500",
   achievement: "bg-purple-500/20 text-purple-500",
   comment: "bg-amber-500/20 text-amber-500",

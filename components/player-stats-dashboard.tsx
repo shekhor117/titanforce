@@ -48,8 +48,8 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
       label: isBn ? "উপস্থিতি" : "Appearances",
       value: totalAppearances.toString(),
       icon: <Activity className="w-5 h-5" />,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
     },
     {
       label: isBn ? "মিনিট" : "Minutes",

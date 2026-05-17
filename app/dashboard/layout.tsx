@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, Suspense } from "react"
+import { useEffect, Suspense, useState } from "react"
 import { Clock, CheckCircle, XCircle, Home } from "lucide-react"
 import Link from "next/link"
 
@@ -18,12 +18,20 @@ function DashboardContent({
   const { language } = useLanguage()
   const isBn = language === "bn"
   const isPending = searchParams.get("pending") === "true"
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure we're on the client before using router
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isClient || isLoading) return
+    
+    if (!user) {
       router.push("/")
     }
-  }, [user, isLoading, router])
+  }, [isClient, user, isLoading, router])
 
   if (isLoading) {
     return (

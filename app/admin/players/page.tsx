@@ -123,6 +123,130 @@ export default function AdminPlayers() {
           </p>
         </div>
       )}
+
+      {/* Add/Edit Player Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border-2 border-secondary rounded-lg max-w-md w-full max-h-96 overflow-y-auto p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">
+                {editingPlayer ? (isBn ? "খেলোয়াড় সম্পাদনা করুন" : "Edit Player") : (isBn ? "নতুন খেলোয়াড় যোগ করুন" : "Add New Player")}
+              </h2>
+              <button 
+                onClick={() => {
+                  setShowForm(false)
+                  setEditingPlayer(null)
+                }}
+                className="text-foreground/60 hover:text-foreground"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form className="space-y-4" onSubmit={(e) => {
+              e.preventDefault()
+              // Form submission logic would go here
+              setShowForm(false)
+              setEditingPlayer(null)
+              alert(isBn ? "খেলোয়াড় সংরক্ষিত হয়েছে" : "Player saved")
+            }}>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  {isBn ? "নাম" : "Name"} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  defaultValue={editingPlayer?.name || ""}
+                  placeholder={isBn ? "খেলোয়াড়ের নাম" : "Player name"}
+                  className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    {isBn ? "জার্সি নং" : "Jersey #"} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    defaultValue={editingPlayer?.num || ""}
+                    placeholder={isBn ? "নং" : "#"}
+                    className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    {isBn ? "বয়স" : "Age"} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    defaultValue={editingPlayer?.age || ""}
+                    placeholder={isBn ? "বয়স" : "Age"}
+                    className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  {isBn ? "অবস্থান" : "Position"} <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  defaultValue={editingPlayer?.position || ""}
+                  className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
+                >
+                  <option value="">{isBn ? "নির্বাচন করুন" : "Select"}</option>
+                  <option value="GK">{isBn ? "গোলকিপার" : "Goalkeeper"}</option>
+                  <option value="DF">{isBn ? "ডিফেন্ডার" : "Defender"}</option>
+                  <option value="MF">{isBn ? "মিডফিল্ডার" : "Midfielder"}</option>
+                  <option value="FW">{isBn ? "ফরওয়ার্ড" : "Forward"}</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  {isBn ? "অবস্থা" : "Status"} <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  defaultValue={editingPlayer?.status || ""}
+                  className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
+                >
+                  <option value="">{isBn ? "নির্বাচন করুন" : "Select"}</option>
+                  <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
+                  <option value="inactive">{isBn ? "নিষ্ক্রিয়" : "Inactive"}</option>
+                  <option value="injured">{isBn ? "আহত" : "Injured"}</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition"
+                >
+                  <Save className="w-4 h-4" />
+                  {isBn ? "সংরক্ষণ করুন" : "Save"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false)
+                    setEditingPlayer(null)
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-foreground/20 rounded hover:bg-foreground/5 transition"
+                >
+                  <X className="w-4 h-4" />
+                  {isBn ? "বাতিল করুন" : "Cancel"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

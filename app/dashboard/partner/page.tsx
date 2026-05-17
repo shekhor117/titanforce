@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
@@ -17,12 +17,19 @@ export default function PartnerDashboard() {
   const { user, logout, isLoading } = useAuth()
   const { language } = useLanguage()
   const isBn = language === "bn"
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== "partner")) {
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient || isLoading) return
+    
+    if (!user || user.role !== "partner") {
       router.push("/login")
     }
-  }, [user, isLoading, router])
+  }, [isClient, user, isLoading, router])
 
   if (isLoading || !user || user.role !== "partner") {
     return (

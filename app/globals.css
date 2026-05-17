@@ -4,70 +4,70 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #000000;
+  --background: #0a0a0a;
   --foreground: #f5f5f5;
   --card: #1a1a1a;
-  --card-foreground: #f5f5f5;
+  --card-foreground: #f0f0f0;
   --popover: #1a1a1a;
-  --popover-foreground: #f5f5f5;
-  --primary: #dc2626;
-  --primary-foreground: #000000;
-  --secondary: #991b1b;
+  --popover-foreground: #f0f0f0;
+  --primary: #a71930;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
   --secondary-foreground: #f5f5f5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #991b1b;
-  --accent-foreground: #f5f5f5;
+  --muted: #2a2a2a;
+  --muted-foreground: #999999;
+  --accent: #d91e3f;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #262626;
-  --input: #262626;
-  --ring: #dc2626;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
   --radius: 0.625rem;
 }
 
 .dark {
-  --background: #000000;
+  --background: #0a0a0a;
   --foreground: #f5f5f5;
   --card: #1a1a1a;
-  --card-foreground: #f5f5f5;
+  --card-foreground: #f0f0f0;
   --popover: #1a1a1a;
-  --popover-foreground: #f5f5f5;
-  --primary: #dc2626;
-  --primary-foreground: #000000;
-  --secondary: #991b1b;
-  --secondary-foreground: #f5f5f5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #991b1b;
-  --accent-foreground: #f5f5f5;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #262626;
-  --input: #262626;
-  --ring: #dc2626;
-}
-
-.light {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --card: #f5f5f5;
-  --card-foreground: #1a1a1a;
-  --popover: #f5f5f5;
-  --popover-foreground: #1a1a1a;
-  --primary: #dc2626;
+  --popover-foreground: #f0f0f0;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #fee2e2;
-  --secondary-foreground: #7f1d1d;
-  --muted: #e5e5e5;
-  --muted-foreground: #737373;
-  --accent: #991b1b;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #2a2a2a;
+  --muted-foreground: #999999;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e5e5e5;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
+}
+
+.light {
+  --background: #f5f5f5;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #a71930;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #5a1220;
+  --muted: #e8e8e8;
+  --muted-foreground: #666666;
+  --accent: #d91e3f;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e8e8e8;
   --input: #f5f5f5;
-  --ring: #dc2626;
+  --ring: #a71930;
 }
 
 @theme inline {
@@ -152,17 +152,15 @@ html {
 @keyframes blob {
   0%, 100% {
     transform: translate(0, 0) scale(1);
+    opacity: 0.2;
   }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
+  50% {
+    opacity: 0.15;
   }
 }
 
 .animate-blob {
-  animation: blob 7s infinite;
+  animation: blob 4s infinite;
 }
 
 .animation-delay-2000 {
@@ -185,11 +183,11 @@ html {
 
 /* Hero gradient */
 .hero-gradient {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 40%, #2a0505 60%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #2a0f18 30%, #3d1425 60%, #0a0a0a 100%);
 }
 
 .light .hero-gradient {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 40%, #fecaca 60%, #fef2f2 100%);
+  background: linear-gradient(135deg, #f5f5f5 0%, #fce8ec 30%, #f3d5dd 60%, #f5f5f5 100%);
 }
 
 /* Stripe background */
@@ -198,12 +196,13 @@ html {
     -45deg,
     transparent,
     transparent 40px,
-    rgba(220, 38, 38, 0.03) 40px,
-    rgba(220, 38, 38, 0.03) 80px
+    rgba(167, 25, 48, 0.05) 40px,
+    rgba(167, 25, 48, 0.05) 80px
   );
 }
 
 /* Card glow effect */
 .card-glow:hover {
-  box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 0 30px rgba(167, 25, 48, 0.3), 0 0 60px rgba(217, 30, 63, 0.15);
+  transition: box-shadow 0.3s ease;
 }

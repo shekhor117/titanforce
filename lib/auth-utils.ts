@@ -149,6 +149,24 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
+export async function mockSignUp(
+  email: string,
+  password: string,
+  name: string,
+  role: "player" | "fan" | "partner"
+): Promise<void> {
+  // Create a user with the specified role
+  const user = mockSignUpWithEmail(email, password, name)
+  
+  // Map signup role to user role
+  const userRole = role === "player" ? "user" : "user"
+  
+  // Store user in localStorage with role info
+  if (typeof window !== "undefined") {
+    localStorage.setItem("mockAuthUser", JSON.stringify({ ...user, role: userRole, signupRole: role }))
+  }
+}
+
 export async function sendPasswordReset(email: string): Promise<void> {
   const supabase = createClient()
   

@@ -15,7 +15,7 @@ interface UpcomingEventsProps {
 }
 
 const typeStyles = {
-  match: "bg-blue-500/20 border-blue-500 text-blue-600 dark:text-blue-400",
+  match: "bg-accent/20 border-accent text-accent dark:text-accent",
   training: "bg-green-500/20 border-green-500 text-green-600 dark:text-green-400",
   event: "bg-purple-500/20 border-purple-500 text-purple-600 dark:text-purple-400",
   deadline: "bg-red-500/20 border-red-500 text-red-600 dark:text-red-400",

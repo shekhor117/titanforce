@@ -95,7 +95,7 @@ export function TrainingChart() {
   const metrics = [
     { key: "fitness", label: isBn ? "ফিটনেস" : "Fitness", icon: Heart, color: "#dc2626" },
     { key: "stamina", label: isBn ? "স্ট্যামিনা" : "Stamina", icon: Activity, color: "#22c55e" },
-    { key: "speed", label: isBn ? "গতি" : "Speed", icon: Zap, color: "#3b82f6" },
+    { key: "speed", label: isBn ? "গতি" : "Speed", icon: Zap, color: "#a71930" },
     { key: "strength", label: isBn ? "শক্তি" : "Strength", icon: Dumbbell, color: "#fbbf24" },
   ]
 
@@ -140,7 +140,7 @@ export function TrainingChart() {
           </div>
           <div className="p-4 rounded-xl bg-card border-2 border-secondary">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-blue-400" />
+              <TrendingUp className="w-5 h-5 text-accent" />
               <span className={`text-xs uppercase tracking-wider text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {isBn ? "শীর্ষ পারফরম্যান্স" : "Peak Performance"}
               </span>

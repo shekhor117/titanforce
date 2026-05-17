@@ -33,12 +33,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
-        console.log("[v0] Initializing admin auth...")
-        
-        // If Supabase is not configured, check for mock session
+        // If Supabase is not configured, check for mock session or create default
         if (!supabase) {
-          console.log("[v0] Supabase not configured, checking mock session...")
-          const mockUser = mockGetSession()
+          let mockUser = mockGetSession()
+          
+          // If no session exists, auto-login with default admin account for development
+          if (!mockUser) {
+            try {
+              mockUser = await signInWithEmail("admin@titanforce.com", "admin123")
+            } catch (err) {
+              console.warn("[v0] Failed to auto-login with default admin:", err)
+            }
+          }
+          
           if (mockUser && isMounted) {
             const userRole = mockUser.role as "admin" | "moderator"
             if (userRole === "admin" || userRole === "moderator") {
@@ -49,7 +56,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 role: userRole,
                 emailVerified: mockUser.emailVerified,
               }
-              console.log("[v0] Mock session found with role:", userRole)
               setAdmin(user)
             }
           }
@@ -60,11 +66,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // Check for existing session with Supabase
         const { data, error } = await supabase.auth.getSession()
         
-        console.log("[v0] getSession result - hasSession:", !!data.session, "error:", error)
-        
         if (data.session?.user && isMounted) {
           const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
-          console.log("[v0] Session found with role:", userRole)
           
           // Only set admin if user has admin/moderator role
           if (userRole === "admin" || userRole === "moderator") {
@@ -75,7 +78,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
               role: userRole,
               emailVerified: data.session.user.email_confirmed_at ? true : false,
             }
-            console.log("[v0] Admin user set:", user.email)
             setAdmin(user)
           }
         }
@@ -83,7 +85,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // Set up auth state change listener
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
-            console.log("[v0] Auth state changed:", _event, "hasSession:", !!session)
             if (!isMounted) return
             
             if (session?.user) {
@@ -109,7 +110,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         )
 
         subscription = authSubscription
-        console.log("[v0] Admin auth initialization complete")
         if (isMounted) setIsInitialized(true)
       } catch (err) {
         console.error("[v0] Error verifying auth:", err)
@@ -132,20 +132,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      console.log("[v0] Admin login attempt for:", email)
-      
       // Use authentication
       const user = await signInWithEmail(email, password)
-      console.log("[v0] User authenticated, role:", user.role)
       
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
-        console.log("[v0] User role not authorized:", user.role)
         await signOut()
         throw new Error("Your account does not have admin access")
       }
 
-      console.log("[v0] Admin login successful")
       setAdmin(user)
       setIsLoading(false)
     } catch (err) {

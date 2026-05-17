@@ -10,7 +10,7 @@ interface NewsReactionsProps {
 }
 
 const reactions = [
-  { type: "like" as const, icon: ThumbsUp, label: "Like", labelBn: "পছন্দ", color: "text-blue-500" },
+  { type: "like" as const, icon: ThumbsUp, label: "Like", labelBn: "পছন্দ", color: "text-accent" },
   { type: "love" as const, icon: Heart, label: "Love", labelBn: "ভালোবাসা", color: "text-red-500" },
   { type: "wow" as const, icon: Sparkles, label: "Wow", labelBn: "বাহ", color: "text-yellow-500" },
   { type: "sad" as const, icon: Frown, label: "Sad", labelBn: "দুঃখিত", color: "text-purple-500" },
@@ -90,7 +90,7 @@ export function NewsReactionsCompact({ newsId }: { newsId: string }) {
     <div className="flex items-center gap-2 text-xs text-foreground/60">
       {counts.like > 0 && (
         <span className="flex items-center gap-1">
-          <ThumbsUp className="w-3 h-3 text-blue-500" /> {counts.like}
+            <Icon className={`w-4 h-4 ${userReaction === type ? color : ""}`} /> {counts.like}
         </span>
       )}
       {counts.love > 0 && (

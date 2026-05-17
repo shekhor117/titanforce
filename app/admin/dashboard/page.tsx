@@ -3,6 +3,8 @@
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import StoreDataService from "@/lib/store-data-service"
+import GalleryDataService from "@/lib/gallery-data-service"
+import TrophyDataService from "@/lib/trophy-data-service"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
@@ -112,6 +114,26 @@ export default function AdminDashboard() {
       borderColor: "border-red-500/30",
       subtext: `${contactList.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
     },
+    {
+      label: isBn ? "গ্যালারি" : "Gallery",
+      value: GalleryDataService.getGalleryStats().total.toString(),
+      icon: <Image className="w-6 h-6" />,
+      href: "/admin/gallery",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
+      borderColor: "border-accent/30",
+      subtext: `${GalleryDataService.getGalleryStats().featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
+    },
+    {
+      label: isBn ? "ট্রফি" : "Trophies",
+      value: TrophyDataService.getTrophyStats().total.toString(),
+      icon: <Trophy className="w-6 h-6" />,
+      href: "/admin/trophies",
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-500/10",
+      borderColor: "border-yellow-500/30",
+      subtext: `${TrophyDataService.getTrophyStats().featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
+    },
   ]
 
   // Store stats - wrapped in try-catch to prevent render errors
@@ -140,17 +162,17 @@ export default function AdminDashboard() {
       },
       {
         label: isBn ? "ইনভেন্টরি" : "Inventory",
-        value: StoreDataService.calculateTotalStock().toString(),
+        value: StoreDataService.getProducts().reduce((sum: number, p: any) => sum + p.totalStock, 0).toString(),
         icon: <Boxes className="w-6 h-6" />,
         href: "/admin/store/inventory",
         color: "text-indigo-400",
         bgColor: "bg-indigo-500/10",
         borderColor: "border-indigo-500/30",
-        subtext: `${StoreDataService.getLowStockItems().length} ${isBn ? "কম স্টক" : "low stock"}`
+        subtext: `${StoreDataService.getLowStockProducts().length} ${isBn ? "কম স্টক" : "low stock"}`
       },
       {
         label: isBn ? "বিক্রয়" : "Sales",
-        value: `৳${StoreDataService.calculateTotalRevenue()}`,
+        value: `৳${StoreDataService.getOrders().reduce((sum: any, o: any) => sum + o.total, 0)}`,
         icon: <TrendingUp className="w-6 h-6" />,
         href: "/admin/store/analytics",
         color: "text-emerald-400",
