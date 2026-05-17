@@ -149,6 +149,8 @@ export default function AdminGalleryPage() {
       news: items.filter(item => item.type === 'news').length
     }
   }
+
+  return (
     <div className="space-y-6">
       {/* Header with Back Button */}
       <div className="flex items-center justify-between">
