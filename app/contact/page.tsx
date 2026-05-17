@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Phone, MapPin, MessageSquare, Send } from 'lucide-react'
+import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 
 export default function ContactPage() {
@@ -93,14 +93,30 @@ export default function ContactPage() {
                 {isBn ? 'আমাদের অনুসরণ করুন' : 'Follow Us'}
               </h3>
               <div className="flex gap-4">
-                {['Facebook', 'Twitter', 'Instagram', 'YouTube'].map((social) => (
-                  <button
-                    key={social}
-                    className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary"
-                  >
-                    {social[0]}
-                  </button>
-                ))}
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </button>
+                <button
+                  className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition text-primary flex items-center justify-center"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </div>
