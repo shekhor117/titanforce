@@ -3,19 +3,26 @@
 import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Match, useDataStore } from "@/lib/data-store"
 import { MatchPrediction } from "@/components/match-prediction"
+import MatchDataService, { Match } from "@/lib/match-data-service"
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
+  const [matches, setMatches] = useState<Match[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get matches from data store
-  const allMatches = useDataStore(dataStore.getMatches, "matches")
-  const matches = Array.isArray(allMatches) ? allMatches : []
+  useEffect(() => {
+    const loadMatches = async () => {
+      const data = await MatchDataService.getMatches()
+      setMatches(data)
+      setIsLoading(false)
+    }
+    loadMatches()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,8 +59,8 @@ export function Matches() {
   }
 
   const getScoreDisplay = (match: Match) => {
-    if (match.homeScore !== null && match.awayScore !== null) {
-      return `${match.homeScore} - ${match.awayScore}`
+    if (match.home_score !== null && match.away_score !== null) {
+      return `${match.home_score} - ${match.away_score}`
     }
     return "vs"
   }
@@ -74,7 +81,14 @@ export function Matches() {
         </div>
 
         <div className="space-y-4">
-          {matches.map((match, index) => {
+          {isLoading ? (
+            <div className="text-center py-12 text-foreground/60">
+              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                {isBn ? "ম্যাচ লোড হচ্ছে..." : "Loading matches..."}
+              </p>
+            </div>
+          ) : matches.length > 0 ? (
+            matches.map((match, index) => {
             const statusStyle = getStatusColor(match)
             return (
               <button
@@ -119,7 +133,14 @@ export function Matches() {
                 </div>
               </button>
             )
-          })}
+          })
+          ) : (
+            <div className="text-center py-12 text-foreground/60">
+              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                {isBn ? "কোন ম্যাচ পাওয়া যায়নি" : "No matches found"}
+              </p>
+            </div>
+          )}
         </div>
 
         {matches.length === 0 && (

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Match } from "@/lib/data-store"
 import { Plus, Edit, Trash2, X, Save, Calendar, MapPin, Search } from "lucide-react"
+import MatchDataService, { Match } from "@/lib/match-data-service"
 
 export default function AdminMatches() {
   const { language } = useLanguage()
@@ -20,19 +20,23 @@ export default function AdminMatches() {
     date: "",
     time: "",
     venue: "Mulikandi Ground",
-    homeScore: "",
-    awayScore: "",
+    home_score: "",
+    away_score: "",
     status: "upcoming" as Match["status"],
     result: "" as Match["result"] | "",
   })
   
   useEffect(() => {
-    setIsClient(true)
-    const matchesData = dataStore.getMatches()
-    setMatches(Array.isArray(matchesData) ? matchesData : [])
+    loadMatches()
   }, [])
 
-  const handleSaveMatch = () => {
+  const loadMatches = async () => {
+    setIsClient(true)
+    const data = await MatchDataService.getMatches()
+    setMatches(Array.isArray(data) ? data : [])
+  }
+
+  const handleSaveMatch = async () => {
     if (!formData.away || !formData.date || !formData.venue) {
       alert(isBn ? "সব ফিল্ড পূরণ করুন" : "Please fill all required fields")
       return
@@ -40,33 +44,39 @@ export default function AdminMatches() {
 
     // Calculate result based on scores
     let result: Match["result"] | undefined
-    if (formData.status === "completed" && formData.homeScore && formData.awayScore) {
-      const homeScore = parseInt(formData.homeScore)
-      const awayScore = parseInt(formData.awayScore)
+    if (formData.status === "completed" && formData.home_score && formData.away_score) {
+      const homeScore = parseInt(formData.home_score)
+      const awayScore = parseInt(formData.away_score)
       if (homeScore > awayScore) result = "W"
       else if (homeScore < awayScore) result = "L"
       else result = "D"
     }
 
-    const matchData: Omit<Match, "id"> = {
+    const matchData: Omit<Match, "id" | "created_at" | "updated_at"> = {
       home: formData.home,
       away: formData.away,
       date: formData.date,
       time: formData.time,
       venue: formData.venue,
-      homeScore: formData.homeScore ? parseInt(formData.homeScore) : null,
-      awayScore: formData.awayScore ? parseInt(formData.awayScore) : null,
+      home_score: formData.home_score ? parseInt(formData.home_score) : null,
+      away_score: formData.away_score ? parseInt(formData.away_score) : null,
       status: formData.status,
       result,
     }
 
-    if (editingMatch) {
-      dataStore.updateMatch(editingMatch.id, matchData)
-    } else {
-      dataStore.addMatch(matchData)
+    try {
+      if (editingMatch) {
+        await MatchDataService.updateMatch(editingMatch.id, matchData)
+      } else {
+        await MatchDataService.addMatch(matchData)
+      }
+      await loadMatches()
+      resetForm()
+      alert(isBn ? "ম্যাচ সংরক্ষণ হয়েছে" : "Match saved successfully")
+    } catch (error) {
+      console.error('[v0] Error saving match:', error)
+      alert(isBn ? "ম্যাচ সংরক্ষণ ব্যর্থ" : "Failed to save match")
     }
-    
-    resetForm()
   }
 
   const handleEditMatch = (match: Match) => {
@@ -77,8 +87,8 @@ export default function AdminMatches() {
       date: match.date,
       time: match.time,
       venue: match.venue,
-      homeScore: match.homeScore?.toString() || "",
-      awayScore: match.awayScore?.toString() || "",
+      home_score: match.home_score?.toString() || "",
+      away_score: match.away_score?.toString() || "",
       status: match.status,
       result: match.result || "",
     })
@@ -87,7 +97,14 @@ export default function AdminMatches() {
 
   const handleDeleteMatch = async (matchId: string) => {
     if (!confirm(isBn ? "এই ম্যাচ মুছতে চান?" : "Delete this match?")) return
-    dataStore.deleteMatch(matchId)
+    try {
+      await MatchDataService.deleteMatch(matchId)
+      await loadMatches()
+      alert(isBn ? "ম্যাচ মুছা হয়েছে" : "Match deleted")
+    } catch (error) {
+      console.error('[v0] Error deleting match:', error)
+      alert(isBn ? "ম্যাচ মোছা ব্যর্থ" : "Failed to delete match")
+    }
   }
 
   const resetForm = () => {
@@ -97,13 +114,13 @@ export default function AdminMatches() {
       date: "",
       time: "",
       venue: "Mulikandi Ground",
-      homeScore: "",
-      awayScore: "",
+      home_score: "",
+      away_score: "",
       status: "upcoming",
       result: "",
     })
-    setShowForm(false)
     setEditingMatch(null)
+    setShowForm(false)
   }
 
   const filteredMatches = matches
