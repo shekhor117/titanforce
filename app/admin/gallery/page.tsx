@@ -26,18 +26,27 @@ export default function AdminGalleryPage() {
   const [showForm, setShowForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
+  const [fileInput, setFileInput] = useState<File | null>(null)
+
+  useEffect(() => {
+    loadGalleryItems()
+  }, [])
+
+  const loadGalleryItems = async () => {
+    try {
+      const allItems = await GalleryDataService.getGalleryItems()
+      setItems(allItems)
+    } catch (error) {
+      console.error('Failed to load gallery items:', error)
+    }
+  }
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    imageUrl: '',
     type: 'match' as GalleryType,
     isFeatured: false
   })
-
-  useEffect(() => {
-    const allItems = GalleryDataService.getGalleryItems()
-    setItems(allItems)
-  }, [])
 
   useEffect(() => {
     let filtered = items
@@ -62,42 +71,84 @@ export default function AdminGalleryPage() {
     setIsSubmitting(true)
 
     try {
-      const newItem = GalleryDataService.addItem({
-        ...formData,
-        uploadedBy: 'admin'
+      let imageUrl = ''
+      
+      if (fileInput) {
+        const fileName = `${Date.now()}-${fileInput.name}`
+        imageUrl = await GalleryDataService.uploadGalleryImage(fileInput, fileName) || ''
+      }
+
+      if (!imageUrl) {
+        alert(isBn ? 'ছবি আপলোড করতে ব্যর্থ হয়েছে' : 'Failed to upload image')
+        return
+      }
+
+      const newItem = await GalleryDataService.addItem({
+        title: formData.title,
+        description: formData.description,
+        imageUrl,
+        type: formData.type,
+        isFeatured: formData.isFeatured
       })
       
-      setItems([newItem, ...items])
-      setFormData({
-        title: '',
-        description: '',
-        imageUrl: '',
-        type: 'match',
-        isFeatured: false
-      })
-      setShowForm(false)
+      if (newItem) {
+        setItems([newItem, ...items])
+        setFormData({
+          title: '',
+          description: '',
+          type: 'match',
+          isFeatured: false
+        })
+        setFileInput(null)
+        setShowForm(false)
+      }
     } catch (error) {
       console.error('Failed to add item:', error)
+      alert(isBn ? 'আইটেম যোগ করতে ব্যর্থ হয়েছে' : 'Failed to add item')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(isBn ? 'আপনি কি নিশ্চিত?' : 'Are you sure?')) {
-      GalleryDataService.deleteItem(id)
-      setItems(items.filter(item => item.id !== id))
+      try {
+        const success = await GalleryDataService.deleteItem(id)
+        if (success) {
+          setItems(items.filter(item => item.id !== id))
+        }
+      } catch (error) {
+        console.error('Failed to delete item:', error)
+        alert(isBn ? 'আইটেম মুছতে ব্যর্থ হয়েছে' : 'Failed to delete item')
+      }
     }
   }
 
-  const handleToggleFeatured = (id: string) => {
-    GalleryDataService.toggleFeatured(id)
-    setItems(items.map(item =>
-      item.id === id ? { ...item, isFeatured: !item.isFeatured } : item
-    ))
+  const handleToggleFeatured = async (id: string) => {
+    try {
+      const success = await GalleryDataService.toggleFeatured(id)
+      if (success) {
+        setItems(items.map(item =>
+          item.id === id ? { ...item, isFeatured: !item.isFeatured } : item
+        ))
+      }
+    } catch (error) {
+      console.error('Failed to toggle featured:', error)
+      alert(isBn ? 'ব্যর্থ হয়েছে' : 'Failed to update')
+    }
   }
 
-  const stats = GalleryDataService.getGalleryStats()
+  const stats = {
+    total: items.length,
+    featured: items.filter(item => item.isFeatured).length,
+    byType: {
+      match: items.filter(item => item.type === 'match').length,
+      'team-events': items.filter(item => item.type === 'team-events').length,
+      training: items.filter(item => item.type === 'training').length,
+      merchandise: items.filter(item => item.type === 'merchandise').length,
+      news: items.filter(item => item.type === 'news').length
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -216,21 +267,18 @@ export default function AdminGalleryPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">{isBn ? 'ছবির URL' : 'Image URL'}</label>
+              <label className="block text-sm font-medium mb-2">{isBn ? 'ছবি' : 'Image'}</label>
               <input
-                type="url"
+                type="file"
+                accept="image/*"
                 required
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                placeholder="https://example.com/image.jpg"
+                onChange={(e) => setFileInput(e.target.files?.[0] || null)}
                 className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              {formData.imageUrl && (
-                <img
-                  src={formData.imageUrl}
-                  alt="Preview"
-                  className="mt-3 w-full h-48 object-cover rounded-lg"
-                />
+              {fileInput && (
+                <div className="mt-3 text-sm text-muted-foreground">
+                  {isBn ? 'নির্বাচিত:' : 'Selected:'} {fileInput.name}
+                </div>
               )}
             </div>
 

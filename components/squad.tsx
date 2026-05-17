@@ -5,7 +5,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { X, MapPin, Calendar, Footprints, Trophy, Target, Star, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import PlayerDataService, { Player } from "@/lib/player-data-service"
+import { dataStore } from "@/lib/data-store"
 import { PlayerRating } from "@/components/player-rating"
 
 type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
@@ -43,14 +44,20 @@ export function Squad() {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [selectedPosition, setSelectedPosition] = useState<Position>("all")
   const [isVisible, setIsVisible] = useState(false)
+  const [players, setPlayers] = useState<Player[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get players from data store (safe default)
-  const fallbackPlayers = useDataStore(dataStore.getPlayers, "players")
-  const players = Array.isArray(fallbackPlayers) ? fallbackPlayers : []
-  const activePlayers = players.filter(p => p.status?.toLowerCase() === "active")
+  useEffect(() => {
+    const loadPlayers = async () => {
+      const data = await PlayerDataService.getPlayers()
+      setPlayers(Array.isArray(data) ? data : [])
+      setIsLoading(false)
+    }
+    loadPlayers()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -69,6 +76,7 @@ export function Squad() {
     return () => observer.disconnect()
   }, [])
 
+  const activePlayers = players.filter(p => p.status?.toLowerCase() === "active")
   const filteredPlayers =
     selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.category === selectedPosition)
 
@@ -110,68 +118,81 @@ export function Squad() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
-          {filteredPlayers.map((player, index) => {
-            const photo = getPlayerPhoto(player)
-            return (
-              <Link
-                key={player.id}
-                href={`/player/${player.num}`}
-                className={`card-glow rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                  }`}
-                style={{ transitionDelay: `${index * 50}ms` }}
-              >
-                {photo ? (
-                  <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30">
-                    <Image
-                      src={photo}
-                      alt={player.full_name}
-                      fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                    />
-                    <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 font-[var(--font-display)] text-lg sm:text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                      {player.num}
+          {isLoading ? (
+            <div className="col-span-full text-center py-12 text-foreground/60">
+              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                {isBn ? "খেলোয়াড় লোড হচ্ছে..." : "Loading players..."}
+              </p>
+            </div>
+          ) : filteredPlayers.length > 0 ? (
+            filteredPlayers.map((player, index) => {
+              const photo = getPlayerPhoto(player)
+              return (
+                <Link
+                  key={player.id}
+                  href={`/player/${player.num}`}
+                  className={`card-glow rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                    }`}
+                  style={{ transitionDelay: `${index * 50}ms` }}
+                >
+                  {photo ? (
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30">
+                      <Image
+                        src={photo}
+                        alt={player.full_name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                        onError={(e) => {
+                          console.log("[v0] Image failed to load:", photo)
+                        }}
+                      />
+                      <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 font-[var(--font-display)] text-lg sm:text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        {player.num}
+                      </div>
                     </div>
+                  ) : (
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 sm:mb-3 bg-secondary/30 flex items-center justify-center">
+                      <div className="font-[var(--font-display)] text-3xl sm:text-4xl text-primary">
+                        {player.num}
+                      </div>
+                    </div>
+                  )}
+                  <h3 className="font-[var(--font-display)] text-lg sm:text-xl tracking-wider mt-1 sm:mt-2 text-foreground truncate">
+                    {player.name.toUpperCase()}
+                  </h3>
+                  <p className="text-xs uppercase tracking-wider mt-0.5 sm:mt-1 text-foreground/60 truncate">
+                    {player.position}
+                  </p>
+                  <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-[10px] flex-wrap">
+                    <span className="px-2 py-0.5 font-bold uppercase tracking-wider rounded bg-secondary text-primary flex-shrink-0">
+                      {player.category}
+                    </span>
+                    <span className={`text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
                   </div>
-                ) : (
-                  <div className="font-[var(--font-display)] text-3xl sm:text-4xl text-primary">{player.num}</div>
-                )}
-                <h3 className="font-[var(--font-display)] text-lg sm:text-xl tracking-wider mt-1 sm:mt-2 text-foreground truncate">
-                  {player.name.toUpperCase()}
-                </h3>
-                <p className="text-xs uppercase tracking-wider mt-0.5 sm:mt-1 text-foreground/60 truncate">
-                  {player.position}
-                </p>
-                <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 text-[10px] flex-wrap">
-                  <span className="px-2 py-0.5 font-bold uppercase tracking-wider rounded bg-secondary text-primary flex-shrink-0">
-                    {player.category}
-                  </span>
-                  <span className={`text-foreground/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{t.squad.age} {player.age}</span>
-                </div>
-                <div className="flex items-center gap-2 mt-1.5 sm:mt-2 text-[10px] text-foreground/60 flex-wrap">
-                  <span className="flex items-center gap-1 flex-shrink-0">
-                    <Target className="w-3 h-3" />
-                    {player.goals}
-                  </span>
-                  <span className="flex items-center gap-1 flex-shrink-0">
-                    <Trophy className="w-3 h-3" />
-                    {player.assists}
-                  </span>
-                </div>
-                {/* Compact Rating Display */}
-                <PlayerRatingBadge playerId={player.id} />
-              </Link>
-            )
-          })}
+                  <div className="flex items-center gap-2 mt-1.5 sm:mt-2 text-[10px] text-foreground/60 flex-wrap">
+                    <span className="flex items-center gap-1 flex-shrink-0">
+                      <Target className="w-3 h-3" />
+                      {player.goals}
+                    </span>
+                    <span className="flex items-center gap-1 flex-shrink-0">
+                      <Trophy className="w-3 h-3" />
+                      {player.assists}
+                    </span>
+                  </div>
+                  {/* Compact Rating Display */}
+                  <PlayerRatingBadge playerId={player.id} />
+                </Link>
+              )
+            })
+          ) : (
+            <div className="col-span-full text-center py-12 text-foreground/60">
+              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
+                {isBn ? "কোন খেলোয়াড় পাওয়া যায়নি" : "No players found"}
+              </p>
+            </div>
+          )}
         </div>
-
-        {filteredPlayers.length === 0 && (
-          <div className="text-center py-12 text-foreground/60">
-            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "কোন খেলোয়াড় পাওয়া যায়নি" : "No players found"}
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Player Detail Modal */}

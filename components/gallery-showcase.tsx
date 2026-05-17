@@ -6,18 +6,69 @@ import GalleryDataService from '@/lib/gallery-data-service'
 import { useLanguage } from '@/lib/language-context'
 import { ArrowRight } from 'lucide-react'
 
+// Default featured items for display when no Supabase data is available
+const DEFAULT_FEATURED_ITEMS = [
+  {
+    id: '1',
+    title: 'Champions League Victory',
+    description: 'Historic win against rivals in the final match',
+    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
+    type: 'match',
+    isFeatured: true,
+    createdAt: new Date()
+  },
+  {
+    id: '2',
+    title: 'Team Celebration',
+    description: 'Players celebrating after winning the trophy',
+    imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
+    type: 'team-events',
+    isFeatured: true,
+    createdAt: new Date()
+  },
+  {
+    id: '3',
+    title: 'Training Session',
+    description: 'Intense tactical training with the coaching staff',
+    imageUrl: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
+    type: 'training',
+    isFeatured: true,
+    createdAt: new Date()
+  },
+  {
+    id: '4',
+    title: 'Official Jersey Launch',
+    description: 'New season merchandise collection unveiled',
+    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
+    type: 'merchandise',
+    isFeatured: true,
+    createdAt: new Date()
+  }
+]
+
 export function GalleryShowcase() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
   
-  const [featuredItems, setFeaturedItems] = useState([])
+  const [featuredItems, setFeaturedItems] = useState(DEFAULT_FEATURED_ITEMS)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const featured = GalleryDataService.getFeaturedItems(4)
-    setFeaturedItems(featured)
+    const loadFeaturedItems = async () => {
+      try {
+        const featured = await GalleryDataService.getFeaturedItems(4)
+        if (featured && featured.length > 0) {
+          setFeaturedItems(featured)
+        }
+      } catch (error) {
+        console.error('Error loading featured items:', error)
+        // Keep default items on error
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadFeaturedItems()
   }, [])
-
-  if (featuredItems.length === 0) return null
 
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-background to-card/30">
