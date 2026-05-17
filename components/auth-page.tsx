@@ -13,9 +13,10 @@ type Role = 'player' | 'fan' | 'partner'
 
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
+  defaultRole?: Role
 }
 
-export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'fan' }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -27,7 +28,7 @@ export default function AuthPage({ defaultView = 'login' }: AuthPageProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [selectedRole, setSelectedRole] = useState<Role>('fan')
+  const [selectedRole, setSelectedRole] = useState<Role>(defaultRole)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
