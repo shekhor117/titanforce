@@ -11,12 +11,12 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [hasTimedOut, setHasTimedOut] = useState(false)
 
-  // Timeout for initialization - if it takes more than 5 seconds, assume not authenticated
+  // Timeout for initialization - if it takes more than 10 seconds, assume not authenticated
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.warn("[v0] Admin auth initialization timeout")
+      console.log("[v0] Admin auth initialization completed or timed out")
       setHasTimedOut(true)
-    }, 5000)
+    }, 10000)
     
     return () => clearTimeout(timer)
   }, [])
@@ -27,8 +27,17 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
                          pathname?.includes("/admin/signup") || 
                          pathname?.includes("/admin/forgot-password")
 
-    // Only redirect if fully initialized or timed out, no admin, not already redirecting, and not on a public page
-    if ((isInitialized || hasTimedOut) && !admin && !isRedirecting && !isPublicPage) {
+    // If initialization is complete, immediately proceed with redirect logic
+    if (isInitialized) {
+      if (!admin && !isRedirecting && !isPublicPage) {
+        setIsRedirecting(true)
+        router.push("/admin-login")
+      }
+      return
+    }
+
+    // Only redirect on timeout if still not initialized
+    if (hasTimedOut && !admin && !isRedirecting && !isPublicPage) {
       setIsRedirecting(true)
       router.push("/admin-login")
     }
