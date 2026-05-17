@@ -34,6 +34,12 @@ export default function ProfilePage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
   const [mockUserData, setMockUserData] = useState<any>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  // Ensure we're on the client before using router
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -52,32 +58,33 @@ export default function ProfilePage() {
   })
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isClient || isLoading) return
+
+    if (!user) {
       router.push("/login")
+      return
     }
 
-    if (user) {
-      const mockUser = mockGetUserById(user.id)
-      if (mockUser) {
-        setMockUserData(mockUser)
-        setFormData({
-          name: mockUser.name || "",
-          email: mockUser.email || "",
-          phone: mockUser.phone || "",
-          address: mockUser.address || "",
-          bio: mockUser.bio || "",
-          website: mockUser.website || "",
-          dateOfBirth: mockUser.dateOfBirth || "",
-          position: mockUser.position || "",
-          jersey: mockUser.jersey || "",
-          experience: mockUser.experience || "",
-          foot: mockUser.foot || "",
-          height: mockUser.height || "",
-          weight: mockUser.weight || "",
-        })
-      }
+    const mockUser = mockGetUserById(user.id)
+    if (mockUser) {
+      setMockUserData(mockUser)
+      setFormData({
+        name: mockUser.name || "",
+        email: mockUser.email || "",
+        phone: mockUser.phone || "",
+        address: mockUser.address || "",
+        bio: mockUser.bio || "",
+        website: mockUser.website || "",
+        dateOfBirth: mockUser.dateOfBirth || "",
+        position: mockUser.position || "",
+        jersey: mockUser.jersey || "",
+        experience: mockUser.experience || "",
+        foot: mockUser.foot || "",
+        height: mockUser.height || "",
+        weight: mockUser.weight || "",
+      })
     }
-  }, [user, isLoading, router])
+  }, [isClient, user, isLoading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -228,7 +235,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
                   >
                     <Edit className="w-4 h-4" />
-                    {isBn ? "সম্পাদনা" : "Edit"}
+                    {isBn ? "��ম্পাদনা" : "Edit"}
                   </button>
                 )}
               </div>
