@@ -6,6 +6,7 @@ import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { TrophyTimeline } from "@/components/trophy-timeline"
+import { ManOfTheMatch } from "@/components/man-of-the-match"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -37,6 +38,7 @@ export default function Home() {
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <About />
         <GalleryShowcase />
+        <ManOfTheMatch />
         <TrophyTimeline />
         <Contact />
       </main>
