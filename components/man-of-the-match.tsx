@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { Star, Trophy } from "lucide-react"
+import { Trophy } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import MatchDataService, { Match } from "@/lib/match-data-service"
 import PlayerDataService, { Player } from "@/lib/player-data-service"
@@ -14,7 +14,6 @@ export function ManOfTheMatch() {
   const [latestMatch, setLatestMatch] = useState<Match | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [selectedMotm, setSelectedMotm] = useState<string | null>(null)
-  const [matchRating, setMatchRating] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -47,10 +46,6 @@ export function ManOfTheMatch() {
 
     loadData()
   }, [])
-
-  const handleRating = (rating: number) => {
-    setMatchRating(rating)
-  }
 
   const handleMotmSelection = (playerId: string) => {
     setSelectedMotm(selectedMotm === playerId ? null : playerId)
@@ -99,31 +94,7 @@ export function ManOfTheMatch() {
           </p>
         </div>
 
-        {/* Rating Section */}
-        <div className={`bg-card/50 rounded-xl p-8 mb-12 border-2 border-secondary/30 transition-all duration-600 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <p className="text-primary text-sm uppercase tracking-[0.2em] font-semibold mb-6">
-            {isBn ? "এই ম্যাচ রেট করুন" : "RATE THIS MATCH"}
-          </p>
-          <div className="flex justify-center gap-4">
-            {[1, 2, 3, 4, 5].map((rating) => (
-              <button
-                key={rating}
-                onClick={() => handleRating(rating)}
-                className={`transition-all duration-200 ${
-                  rating <= matchRating ? "scale-110" : "hover:scale-105"
-                }`}
-              >
-                <Star
-                  className={`w-12 h-12 ${
-                    rating <= matchRating
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-foreground/30"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Player Cards Grid */}
         <div className={`transition-all duration-600 delay-300 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
