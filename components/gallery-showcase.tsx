@@ -132,7 +132,7 @@ export function GalleryShowcase() {
 
                       {/* Content */}
                       <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                        <div className="transform translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
+                        <div className="group-hover/card:translate-y-0 transition-transform duration-300">
                           <div className="mb-2">
                             <span className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold mb-2">
                               {item.type === 'match' && (isBn ? 'ম্যাচ' : 'Match')}
