@@ -129,7 +129,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.subtitle}
             </p>
           </div>
-          <h2 className={`text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`mt-6 mb-6 text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             <span className="block text-white overflow-hidden animate-smoothFadeUp">
               {t.hero.welcome}
             </span>
