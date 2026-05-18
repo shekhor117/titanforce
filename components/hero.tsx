@@ -110,7 +110,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-18 md:py-36 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-18 md:py-36 pb-11 text-center">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
@@ -137,19 +137,19 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-4 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-1 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
 
           {/* About the Club Section */}
           <div>
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-1.25 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
             <h3 className={`text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutSettings.aboutTitle}
             </h3>
-            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {aboutSettings.aboutDescription}
             </p>
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
@@ -180,7 +180,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
 
             {/* Buttons at Bottom */}
-            <div className="mt-12 pt-12 flex justify-center gap-4 animate-buttonSlideIn">
+            <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
                 className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
@@ -189,7 +189,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-8 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>
