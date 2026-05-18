@@ -110,7 +110,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-36 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-18 md:py-36 text-center">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
@@ -137,16 +137,16 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-2 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
 
           {/* About the Club Section */}
           <div>
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-1 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
-            <h3 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            <h3 className={`text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutSettings.aboutTitle}
             </h3>
             <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -163,7 +163,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               </div>
               <div>
                 <div className="flex justify-center">
-                  <Zap className="w-12 h-12 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                  <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
                 </div>
                 <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.spirit}
