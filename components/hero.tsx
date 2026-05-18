@@ -143,32 +143,36 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <h3 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutTitle}
             </h3>
-            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {aboutDescription}
             </p>
-            <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
-              <div>
-                <div className="font-[var(--font-display)] text-4xl text-primary">
-                  {activePlayers.length}
+            
+            {/* Stats Tabs at Bottom */}
+            <div className="mt-12 pt-12 border-t border-foreground/10">
+              <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+                <div>
+                  <div className="font-[var(--font-display)] text-4xl text-primary">
+                    {activePlayers.length}
+                  </div>
+                  <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {t.about.players}
+                  </div>
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.players}
+                <div>
+                  <div className="flex justify-center">
+                    <Zap className="w-12 h-12 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                  </div>
+                  <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {t.about.spirit}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div className="flex justify-center">
-                  <Zap className="w-12 h-12 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.spirit}
-                </div>
-              </div>
-              <div>
-                <div className="font-[var(--font-display)] text-4xl text-primary">
-                  1
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.team}
+                <div>
+                  <div className="font-[var(--font-display)] text-4xl text-primary">
+                    1
+                  </div>
+                  <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {t.about.team}
+                  </div>
                 </div>
               </div>
             </div>
