@@ -42,7 +42,7 @@ export function FeatureProtectedRoute({
       setShowAccessDenied(true)
       // Redirect to login after 3 seconds if not authorized
       const timer = setTimeout(() => {
-        router.push("/admin-login")
+        router.push("/admin/login")
       }, 3000)
       return () => clearTimeout(timer)
     }
@@ -94,7 +94,7 @@ export function FeatureProtectedRoute({
           </p>
 
           <button
-            onClick={() => router.push("/admin-login")}
+            onClick={() => router.push("/admin/login")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition"
           >
             <ArrowLeft className="w-4 h-4" />
