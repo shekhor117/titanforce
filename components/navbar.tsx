@@ -20,7 +20,7 @@ export function Navbar() {
     { href: "/", label: t.nav.home },
     { href: "/about", label: t.nav.about },
     { href: "/team-squad", label: t.nav.squad },
-    { href: "/matches", label: t.nav.matches },
+    { href: "/fixtures-results", label: t.nav.matches },
     { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
     { href: "/contact", label: t.nav.contact },
   ]
@@ -39,7 +39,7 @@ export function Navbar() {
             className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #a71930 0%, #465fb1 100%)' }}>
             TITAN FORCE
           </h1>
         </Link>

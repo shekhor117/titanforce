@@ -4,6 +4,9 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
+import { usePlayers } from "@/lib/use-data-store"
+import { Zap } from "lucide-react"
+import { getDataService } from "@/lib/data-service"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -14,6 +17,32 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [loading, setLoading] = useState(!skipAnimation)
+  const { players } = usePlayers()
+  const [aboutSettings, setAboutSettings] = useState({
+    aboutTitle: t.about.title,
+    aboutDescription: t.about.description
+  })
+
+  useEffect(() => {
+    // Fetch settings from data service
+    const loadSettings = async () => {
+      try {
+        const service = getDataService()
+        const settings = await service.getSettings?.()
+        if (settings) {
+          setAboutSettings({
+            aboutTitle: settings.aboutTitle || t.about.title,
+            aboutDescription: settings.aboutDescription || t.about.description
+          })
+        }
+      } catch (err) {
+        console.log("[v0] Using default about settings")
+      }
+    }
+    loadSettings()
+  }, [])
+
+  const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
 
   useEffect(() => {
     // Skip animation if requested
@@ -81,7 +110,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-36 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
@@ -96,11 +125,11 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
           <div className="animate-smoothFadeUp">
-            <p className={`text-sm uppercase tracking-[0.3em] mb-4 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.subtitle}
             </p>
           </div>
-          <h2 className={`text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`mt-6 mb-6 text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             <span className="block text-white overflow-hidden animate-smoothFadeUp">
               {t.hero.welcome}
             </span>
@@ -108,22 +137,63 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-6 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-0 mb-4 text-lg text-foreground/70 max-w-xl mx-0 ml-[383px] mr-[388px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
-          <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
-            <TransitionLink
-              href="/team-squad"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {t.hero.viewSquad}
-            </TransitionLink>
-            <TransitionLink
-              href="/fixtures-results"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {t.hero.matches}
-            </TransitionLink>
+
+          {/* About the Club Section */}
+          <div>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {t.about.location}
+            </p>
+            <h3 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+              {aboutSettings.aboutTitle}
+            </h3>
+            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {aboutSettings.aboutDescription}
+            </p>
+            <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-primary">
+                  {activePlayers.length}
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.players}
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-center">
+                  <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.spirit}
+                </div>
+              </div>
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-primary">
+                  1
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.team}
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons at Bottom */}
+            <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
+              <TransitionLink
+                href="/team-squad"
+                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              >
+                {t.hero.viewSquad}
+              </TransitionLink>
+              <TransitionLink
+                href="/fixtures-results"
+                className={`px-8 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              >
+                {t.hero.matches}
+              </TransitionLink>
+            </div>
           </div>
         </div>
 
