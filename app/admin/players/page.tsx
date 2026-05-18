@@ -16,6 +16,13 @@ export default function AdminPlayers() {
   const [searchTerm, setSearchTerm] = useState("")
   const [players, setPlayers] = useState<Player[]>([])
   const [isClient, setIsClient] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    num: "",
+    age: "",
+    position: "",
+    status: ""
+  })
 
   useEffect(() => {
     loadPlayers()
@@ -37,6 +44,13 @@ export default function AdminPlayers() {
       return
     }
     setEditingPlayer(player)
+    setFormData({
+      name: player.name,
+      num: player.num.toString(),
+      age: player.age.toString(),
+      position: player.position || "",
+      status: player.status || ""
+    })
     setShowForm(true)
   }
 
@@ -48,7 +62,8 @@ export default function AdminPlayers() {
     if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
     
     try {
-      // Delete logic would go here
+      // Delete from dataStore
+      dataStore.deletePlayer(playerId)
       alert(isBn ? "খেলোয়াড় মুছা হয়েছে" : "Player deleted")
       loadPlayers()
       setEditingPlayer(null)
@@ -56,6 +71,48 @@ export default function AdminPlayers() {
       console.error('[v0] Error deleting player:', error)
       alert(isBn ? 'খেলোয়াড় মোছা ব্যর্থ' : 'Failed to delete player')
     }
+  }
+
+  const handleSavePlayer = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (admin?.role !== "admin") {
+      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সংরক্ষণ করতে পারে" : "Only admins can save players")
+      return
+    }
+
+    try {
+      const playerData = {
+        name: formData.name,
+        num: parseInt(formData.num),
+        age: parseInt(formData.age),
+        position: formData.position,
+        status: formData.status || "active"
+      }
+
+      if (editingPlayer) {
+        // Update existing player
+        dataStore.updatePlayer(editingPlayer.id, playerData)
+      } else {
+        // Add new player
+        dataStore.addPlayer(playerData)
+      }
+
+      alert(isBn ? "খেলোয়াড় সংরক্ষিত হয়েছে" : "Player saved successfully")
+      setShowForm(false)
+      setEditingPlayer(null)
+      setFormData({ name: "", num: "", age: "", position: "", status: "" })
+      loadPlayers()
+    } catch (error) {
+      console.error('[v0] Error saving player:', error)
+      alert(isBn ? 'খেলোয়াড় সংরক্ষণ ব্যর্থ' : 'Failed to save player')
+    }
+  }
+
+  const openNewPlayerForm = () => {
+    setEditingPlayer(null)
+    setFormData({ name: "", num: "", age: "", position: "", status: "active" })
+    setShowForm(true)
   }
 
   return (
@@ -71,10 +128,7 @@ export default function AdminPlayers() {
           </p>
         </div>
         <button
-          onClick={() => {
-            setEditingPlayer(null)
-            setShowForm(true)
-          }}
+          onClick={openNewPlayerForm}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition"
         >
           <Plus className="w-4 h-4" />
@@ -160,13 +214,7 @@ export default function AdminPlayers() {
               </button>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => {
-              e.preventDefault()
-              // Form submission logic would go here
-              setShowForm(false)
-              setEditingPlayer(null)
-              alert(isBn ? "খেলোয়াড় সংরক্ষিত হয়েছে" : "Player saved")
-            }}>
+            <form className="space-y-4" onSubmit={handleSavePlayer}>
               <div>
                 <label className="block text-sm font-medium mb-1">
                   {isBn ? "নাম" : "Name"} <span className="text-red-500">*</span>
@@ -174,7 +222,8 @@ export default function AdminPlayers() {
                 <input
                   type="text"
                   required
-                  defaultValue={editingPlayer?.name || ""}
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder={isBn ? "খেলোয়াড়ের নাম" : "Player name"}
                   className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
                 />
@@ -188,7 +237,8 @@ export default function AdminPlayers() {
                   <input
                     type="number"
                     required
-                    defaultValue={editingPlayer?.num || ""}
+                    value={formData.num}
+                    onChange={(e) => setFormData({ ...formData, num: e.target.value })}
                     placeholder={isBn ? "নং" : "#"}
                     className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
                   />
@@ -200,7 +250,8 @@ export default function AdminPlayers() {
                   <input
                     type="number"
                     required
-                    defaultValue={editingPlayer?.age || ""}
+                    value={formData.age}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                     placeholder={isBn ? "বয়স" : "Age"}
                     className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
                   />
@@ -213,7 +264,8 @@ export default function AdminPlayers() {
                 </label>
                 <select
                   required
-                  defaultValue={editingPlayer?.position || ""}
+                  value={formData.position}
+                  onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                   className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
                 >
                   <option value="">{isBn ? "নির্বাচন করুন" : "Select"}</option>
@@ -230,7 +282,8 @@ export default function AdminPlayers() {
                 </label>
                 <select
                   required
-                  defaultValue={editingPlayer?.status || ""}
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="w-full px-3 py-2 rounded border border-secondary bg-background/50"
                 >
                   <option value="">{isBn ? "নির্বাচন করুন" : "Select"}</option>
