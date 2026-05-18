@@ -43,6 +43,7 @@ export default function AdminSystemPage() {
   const news = dataStore.getNews()
   const media = dataStore.getMedia()
   const users = dataStore.getAdminUsers()
+  const activityLog = dataStore.getActivityLog() || []
 
   // Export data
   const handleExport = () => {
