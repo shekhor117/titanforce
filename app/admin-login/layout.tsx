@@ -1,7 +1,7 @@
 "use client"
 
-import { AdminLoginPage } from "@/components/admin-login-page"
+import { ReactNode } from "react"
 
-export default function AdminLoginRoute() {
-  return <AdminLoginPage />
+export default function AdminLoginLayout({ children }: { children: ReactNode }) {
+  return children
 }
