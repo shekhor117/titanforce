@@ -35,8 +35,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <GalleryShowcase />
         <About />
+        <GalleryShowcase />
         <TrophyTimeline />
         <Contact />
       </main>
