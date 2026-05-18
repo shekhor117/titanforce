@@ -63,12 +63,42 @@ export default function AdminPlayers() {
   const [trophies, setTrophies] = useState<{ name: string; year: string }[]>([])
   const [newTrophy, setNewTrophy] = useState({ name: "", year: new Date().getFullYear().toString() })
   const [trainingData, setTrainingData] = useState({
+    avg_fitness: "",
+    avg_intensity: "",
+    peak_performance: "",
+    total_sessions: "",
     pace_recovery: "",
     ball_control: "",
     agility_drills: "",
     strength_training: "",
     flexibility: "",
-    endurance: ""
+    endurance: "",
+    weekly_training: [
+      { day: "Mon", value: "" },
+      { day: "Tue", value: "" },
+      { day: "Wed", value: "" },
+      { day: "Thu", value: "" },
+      { day: "Fri", value: "" },
+      { day: "Sat", value: "" },
+      { day: "Sun", value: "" }
+    ],
+    weekly_progress: [
+      { week: "W1", value: "" },
+      { week: "W2", value: "" },
+      { week: "W3", value: "" },
+      { week: "W4", value: "" },
+      { week: "W5", value: "" },
+      { week: "W6", value: "" }
+    ],
+    training_intensity: [
+      { day: "Mon", value: "" },
+      { day: "Tue", value: "" },
+      { day: "Wed", value: "" },
+      { day: "Thu", value: "" },
+      { day: "Fri", value: "" },
+      { day: "Sat", value: "" },
+      { day: "Sun", value: "" }
+    ]
   })
 
   useEffect(() => {
@@ -206,6 +236,45 @@ export default function AdminPlayers() {
       setEditingPlayer(null)
       setTrophies([])
       setNewTrophy({ name: "", year: new Date().getFullYear().toString() })
+      setImagePreview("")
+      setTrainingData({
+        avg_fitness: "",
+        avg_intensity: "",
+        peak_performance: "",
+        total_sessions: "",
+        pace_recovery: "",
+        ball_control: "",
+        agility_drills: "",
+        strength_training: "",
+        flexibility: "",
+        endurance: "",
+        weekly_training: [
+          { day: "Mon", value: "" },
+          { day: "Tue", value: "" },
+          { day: "Wed", value: "" },
+          { day: "Thu", value: "" },
+          { day: "Fri", value: "" },
+          { day: "Sat", value: "" },
+          { day: "Sun", value: "" }
+        ],
+        weekly_progress: [
+          { week: "W1", value: "" },
+          { week: "W2", value: "" },
+          { week: "W3", value: "" },
+          { week: "W4", value: "" },
+          { week: "W5", value: "" },
+          { week: "W6", value: "" }
+        ],
+        training_intensity: [
+          { day: "Mon", value: "" },
+          { day: "Tue", value: "" },
+          { day: "Wed", value: "" },
+          { day: "Thu", value: "" },
+          { day: "Fri", value: "" },
+          { day: "Sat", value: "" },
+          { day: "Sun", value: "" }
+        ]
+      })
       setFormData({ 
         name: "", num: "", age: "", position: "", category: "", status: "active", hometown: "", 
         foot: "Right", email: "", date_of_birth: "", join_date: "", bio: "", image_url: "",
@@ -628,18 +697,96 @@ export default function AdminPlayers() {
                   onClick={() => setExpandedSections({ ...expandedSections, training: !expandedSections.training })}
                   className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
                 >
-                  <span>{isBn ? "প্রশিক্ষণ কর্মক্ষমতা" : "Training Performance (0-100)"}</span>
+                  <span>{isBn ? "প্রশিক্ষণ কর্মক্ষমতা" : "Training Performance"}</span>
                   <ChevronDown className={`w-5 h-5 transition ${expandedSections.training ? "rotate-180" : ""}`} />
                 </button>
                 {expandedSections.training && (
-                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
-                    <div className="grid grid-cols-2 gap-3">
-                      {[{ key: "pace_recovery", label: isBn ? "পেস রিকভারি" : "Pace Recovery" }, { key: "ball_control", label: isBn ? "বল নিয়ন্ত্রণ" : "Ball Control" }, { key: "agility_drills", label: isBn ? "চটপটতা ড্রিল" : "Agility Drills" }, { key: "strength_training", label: isBn ? "শক্তি প্রশিক্ষণ" : "Strength Training" }, { key: "flexibility", label: isBn ? "নমনীয়তা" : "Flexibility" }, { key: "endurance", label: isBn ? "সহনশীলতা" : "Endurance" }].map(attr => (
-                        <div key={attr.key}>
-                          <label className="block text-sm font-medium mb-1">{attr.label}</label>
-                          <input type="number" min="0" max="100" value={trainingData[attr.key as keyof typeof trainingData]} onChange={(e) => setTrainingData({ ...trainingData, [attr.key]: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
+                  <div className="px-4 py-4 space-y-4 border-t border-secondary">
+                    {/* Analytics Metrics */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3">{isBn ? "বিশ্লেষণ মেট্রিক্স" : "Analytics Metrics"}</h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{isBn ? "গড় ফিটনেস" : "Avg Fitness (%)"}</label>
+                          <input type="number" min="0" max="100" value={trainingData.avg_fitness} onChange={(e) => setTrainingData({ ...trainingData, avg_fitness: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
                         </div>
-                      ))}
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{isBn ? "গড় তীব্রতা" : "Avg Intensity (%)"}</label>
+                          <input type="number" min="0" max="100" value={trainingData.avg_intensity} onChange={(e) => setTrainingData({ ...trainingData, avg_intensity: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{isBn ? "শিখর কর্মক্ষমতা" : "Peak Performance (%)"}</label>
+                          <input type="number" min="0" max="100" value={trainingData.peak_performance} onChange={(e) => setTrainingData({ ...trainingData, peak_performance: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">{isBn ? "মোট সেশন" : "Total Sessions"}</label>
+                          <input type="number" value={trainingData.total_sessions} onChange={(e) => setTrainingData({ ...trainingData, total_sessions: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Attribute Skills */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3">{isBn ? "দক্ষতা স্তর (0-100)" : "Skill Levels (0-100)"}</h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        {[{ key: "pace_recovery", label: isBn ? "পেস রিকভারি" : "Pace Recovery" }, { key: "ball_control", label: isBn ? "বল নিয়ন্ত্রণ" : "Ball Control" }, { key: "agility_drills", label: isBn ? "চটপটতা ড্রিল" : "Agility Drills" }, { key: "strength_training", label: isBn ? "শক্তি প্রশিক্ষণ" : "Strength Training" }, { key: "flexibility", label: isBn ? "নমনীয়তা" : "Flexibility" }, { key: "endurance", label: isBn ? "সহনশীলতা" : "Endurance" }].map(attr => (
+                          <div key={attr.key}>
+                            <label className="block text-xs font-medium mb-1">{attr.label}</label>
+                            <input type="number" min="0" max="100" value={trainingData[attr.key as keyof typeof trainingData] as string} onChange={(e) => setTrainingData({ ...trainingData, [attr.key]: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Weekly Training Data */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3">{isBn ? "সাপ্তাহিক প্রশিক্ষণ" : "Weekly Training (0-100)"}</h4>
+                      <div className="grid grid-cols-7 gap-2">
+                        {trainingData.weekly_training.map((day, idx) => (
+                          <div key={idx}>
+                            <label className="block text-xs font-medium text-center mb-1">{day.day}</label>
+                            <input type="number" min="0" max="100" value={day.value} onChange={(e) => {
+                              const updated = [...trainingData.weekly_training]
+                              updated[idx].value = e.target.value
+                              setTrainingData({ ...trainingData, weekly_training: updated })
+                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Weekly Progress Data */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3">{isBn ? "সাপ্তাহিক অগ্রগতি" : "Weekly Progress (0-100)"}</h4>
+                      <div className="grid grid-cols-6 gap-2">
+                        {trainingData.weekly_progress.map((week, idx) => (
+                          <div key={idx}>
+                            <label className="block text-xs font-medium text-center mb-1">{week.week}</label>
+                            <input type="number" min="0" max="100" value={week.value} onChange={(e) => {
+                              const updated = [...trainingData.weekly_progress]
+                              updated[idx].value = e.target.value
+                              setTrainingData({ ...trainingData, weekly_progress: updated })
+                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Training Intensity Data */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-3">{isBn ? "প্রশিক্ষণ তীব্রতা" : "Training Intensity (0-100)"}</h4>
+                      <div className="grid grid-cols-7 gap-2">
+                        {trainingData.training_intensity.map((day, idx) => (
+                          <div key={idx}>
+                            <label className="block text-xs font-medium text-center mb-1">{day.day}</label>
+                            <input type="number" min="0" max="100" value={day.value} onChange={(e) => {
+                              const updated = [...trainingData.training_intensity]
+                              updated[idx].value = e.target.value
+                              setTrainingData({ ...trainingData, training_intensity: updated })
+                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
