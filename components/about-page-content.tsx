@@ -54,7 +54,7 @@ export function AboutPageContent() {
         }}
       />
 
-      <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[37px] text-center">
+      <div className="relative max-w-6xl mx-auto px-4 py-[46px] md:py-36 pb-[33px] text-center">
         {/* Logo */}
         <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
           <div className="relative">
@@ -73,20 +73,17 @@ export function AboutPageContent() {
         {/* Subtitle */}
         <div className="animate-smoothFadeUp">
           <p className={`text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.hero.subtitle}
           </p>
         </div>
 
         {/* Main Heading */}
         <h1 className={`mt-6 mb-6 text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
           <span className="block text-white overflow-hidden animate-smoothFadeUp">
-            {t.about.title}
           </span>
         </h1>
 
         {/* Tagline */}
         <p className={`mt-0 mb-4 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {t.hero.tagline}
         </p>
 
         {/* About Section */}
