@@ -137,7 +137,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-2 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-4 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
 
