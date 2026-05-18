@@ -17,6 +17,7 @@ export default function StoreOrdersPage() {
   const [filterStatus, setFilterStatus] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [editingOrderId, setEditingOrderId] = useState<string | null>(null)
   const [editFormData, setEditFormData] = useState({
     customerName: "",
@@ -35,14 +36,27 @@ export default function StoreOrdersPage() {
   }
 
   useEffect(() => {
-    loadOrders()
+    try {
+      loadOrders()
+    } catch (err) {
+      console.error("[v0] Error in orders page:", err)
+      setError(isBn ? "ডেটা লোড করতে ত্রুটি হয়েছে" : "Error loading data")
+    }
   }, [])
 
   const loadOrders = () => {
-    setIsLoading(true)
-    const data = StoreDataService.getOrders()
-    setOrders(data)
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+      setError(null)
+      const data = StoreDataService.getOrders()
+      setOrders(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error("[v0] Error loading orders:", err)
+      setError(isBn ? "অর্ডার লোড করতে ব্যর্থ" : "Failed to load orders")
+      setOrders([])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const filteredOrders = orders.filter((order) => {
@@ -113,6 +127,22 @@ export default function StoreOrdersPage() {
           {isBn ? `মোট ${orders.length} অর্ডার` : `Total ${orders.length} orders`}
         </p>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-red-400" />
+          <div>
+            <p className="text-red-400 font-semibold">{error}</p>
+            <button
+              onClick={() => loadOrders()}
+              className="mt-2 text-sm text-red-300 hover:text-red-200 underline"
+            >
+              {isBn ? "পুনরায় চেষ্টা করুন" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Search and Filter */}
       <div className="flex flex-col md:flex-row gap-4">

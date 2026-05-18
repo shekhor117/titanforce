@@ -17,17 +17,33 @@ export default function StoreInventoryPage() {
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingVariants, setEditingVariants] = useState<Record<string, number>>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadInventory()
+    try {
+      loadInventory()
+    } catch (err) {
+      console.error("[v0] Error in inventory page:", err)
+      setError(isBn ? "ডেটা লোড করতে ত্রুটি হয়েছে" : "Error loading data")
+    }
   }, [])
 
   const loadInventory = () => {
-    setIsLoading(true)
-    const data = StoreDataService.getProducts()
-    setProducts(data)
-    setLowStockProducts(StoreDataService.getLowStockProducts(10))
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+      setError(null)
+      const data = StoreDataService.getProducts()
+      setProducts(Array.isArray(data) ? data : [])
+      const lowStockData = StoreDataService.getLowStockProducts(10)
+      setLowStockProducts(Array.isArray(lowStockData) ? lowStockData : [])
+    } catch (err) {
+      console.error("[v0] Error loading inventory:", err)
+      setError(isBn ? "ইনভেন্টরি লোড করতে ব্যর্থ" : "Failed to load inventory")
+      setProducts([])
+      setLowStockProducts([])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleEditVariant = (product: AdminProduct) => {
@@ -83,6 +99,22 @@ export default function StoreInventoryPage() {
           {isBn ? "ইনভেন্টরি ব্যবস্থাপনা" : "Inventory Management"}
         </h1>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-400" />
+          <div>
+            <p className="text-red-400 font-semibold">{error}</p>
+            <button
+              onClick={() => loadInventory()}
+              className="mt-2 text-sm text-red-300 hover:text-red-200 underline"
+            >
+              {isBn ? "পুনরায় চেষ্টা করুন" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Low Stock Alert */}
       {lowStockProducts.length > 0 && (
