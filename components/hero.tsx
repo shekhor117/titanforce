@@ -140,20 +140,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <p className={`mt-6 text-lg text-foreground/70 max-w-xl mx-auto animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
-          <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
-            <TransitionLink
-              href="/team-squad"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {t.hero.viewSquad}
-            </TransitionLink>
-            <TransitionLink
-              href="/fixtures-results"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {t.hero.matches}
-            </TransitionLink>
-          </div>
 
           {/* About the Club Section */}
           <div className="mt-16 pt-16 border-t border-foreground/10">
@@ -191,6 +177,22 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                   {t.about.team}
                 </div>
               </div>
+            </div>
+
+            {/* Buttons at Bottom */}
+            <div className="mt-12 pt-12 border-t border-foreground/10 flex justify-center gap-4 animate-buttonSlideIn">
+              <TransitionLink
+                href="/team-squad"
+                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              >
+                {t.hero.viewSquad}
+              </TransitionLink>
+              <TransitionLink
+                href="/fixtures-results"
+                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              >
+                {t.hero.matches}
+              </TransitionLink>
             </div>
           </div>
         </div>
