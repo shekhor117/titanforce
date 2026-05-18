@@ -125,7 +125,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
           <div className="animate-smoothFadeUp">
-            <p className={`text-sm uppercase tracking-[0.3em] mb-4 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.subtitle}
             </p>
           </div>
@@ -137,19 +137,19 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-1 mb-4 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-0 mb-4 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.hero.tagline}
           </p>
 
           {/* About the Club Section */}
           <div>
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-1.25 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
-            <h3 className={`mt-6 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            <h3 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutSettings.aboutTitle}
             </h3>
-            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {aboutSettings.aboutDescription}
             </p>
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
