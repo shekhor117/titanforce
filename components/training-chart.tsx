@@ -192,9 +192,9 @@ export function TrainingChart() {
                       <stop offset="95%" stopColor={currentMetric.color} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" fontSize={12} />
-                  <YAxis domain={[0, 100]} stroke="rgba(255,255,255,0.5)" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.15} />
+                  <XAxis dataKey="date" stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
+                  <YAxis domain={[0, 100]} stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
                   <Area
                     type="monotone"
                     dataKey={selectedMetric}
@@ -215,9 +215,9 @@ export function TrainingChart() {
             <div className="h-[250px]">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={playerAttributes}>
-                  <PolarGrid stroke="rgba(255,255,255,0.2)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: "rgba(255,255,255,0.7)", fontSize: 11 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 10 }} />
+                  <PolarGrid stroke="currentColor" strokeOpacity={0.2} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: "currentColor", fontSize: 11 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: "currentColor", fontSize: 10 }} />
                   <Radar
                     name="Attributes"
                     dataKey="A"
@@ -239,9 +239,9 @@ export function TrainingChart() {
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyProgress}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="week" stroke="rgba(255,255,255,0.5)" fontSize={12} />
-                  <YAxis domain={[60, 100]} stroke="rgba(255,255,255,0.5)" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.15} />
+                  <XAxis dataKey="week" stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
+                  <YAxis domain={[60, 100]} stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
                   <Bar dataKey="performance" fill="#dc2626" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -256,9 +256,9 @@ export function TrainingChart() {
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trainingData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" fontSize={12} />
-                  <YAxis domain={[0, 100]} stroke="rgba(255,255,255,0.5)" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.15} />
+                  <XAxis dataKey="date" stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
+                  <YAxis domain={[0, 100]} stroke="currentColor" strokeOpacity={0.4} fontSize={12} />
                   <Line
                     type="monotone"
                     dataKey="intensity"
