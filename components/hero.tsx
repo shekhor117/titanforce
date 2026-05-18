@@ -137,7 +137,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-0 mb-4 text-lg text-foreground/70 max-w-xl mx-0 ml-[383px] mr-[388px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`mt-[10px] mb-[10px] text-lg text-foreground/70 max-w-xl mx-auto ml-[50px] mr-[50px] animate-smoothFadeUp animation-delay-200 text-center leading-[1.25] ${isBn ? "font-[var(--font-bengali)]" : "font-[\"Inter\", sans-serif]"}`}>
             {t.hero.tagline}
           </p>
 

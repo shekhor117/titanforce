@@ -17,17 +17,33 @@ export default function StoreInventoryPage() {
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingVariants, setEditingVariants] = useState<Record<string, number>>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadInventory()
+    try {
+      loadInventory()
+    } catch (err) {
+      console.error("[v0] Error in inventory page:", err)
+      setError(isBn ? "ডেটা লোড করতে ত্রুটি হয়েছে" : "Error loading data")
+    }
   }, [])
 
-  const loadInventory = () => {
-    setIsLoading(true)
-    const data = StoreDataService.getProducts()
-    setProducts(data)
-    setLowStockProducts(StoreDataService.getLowStockProducts(10))
-    setIsLoading(false)
+  const loadInventory = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const data = await StoreDataService.getProducts()
+      setProducts(Array.isArray(data) ? data : [])
+      const lowStockData = await StoreDataService.getLowStockProducts(10)
+      setLowStockProducts(Array.isArray(lowStockData) ? lowStockData : [])
+    } catch (err) {
+      console.error("[v0] Error loading inventory:", err)
+      setError(isBn ? "ইনভেন্টরি লোড করতে ব্যর্থ" : "Failed to load inventory")
+      setProducts([])
+      setLowStockProducts([])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleEditVariant = (product: AdminProduct) => {
@@ -56,17 +72,18 @@ export default function StoreInventoryPage() {
     }))
   }
 
-  const handleSaveVariants = (product: AdminProduct) => {
-    Object.entries(editingVariants).forEach(([key, stock]) => {
-      const [size, color] = key.split("-")
-      try {
-        StoreDataService.updateInventory(product.id, size, color, stock)
-      } catch (error) {
-        console.error("[v0] Error updating inventory:", error)
+  const handleSaveVariants = async (product: AdminProduct) => {
+    try {
+      for (const [key, stock] of Object.entries(editingVariants)) {
+        const [size, color] = key.split("-")
+        await StoreDataService.updateInventory(product.id, size, color, stock)
       }
-    })
-    loadInventory()
-    setEditingProduct(null)
+      await loadInventory()
+      setEditingProduct(null)
+    } catch (error) {
+      console.error("[v0] Error saving variants:", error)
+      setError(isBn ? "ভেরিয়েন্ট আপডেট ব্যর্থ" : "Failed to update variants")
+    }
   }
 
   const getStockStatus = (stock: number) => {
@@ -83,6 +100,22 @@ export default function StoreInventoryPage() {
           {isBn ? "ইনভেন্টরি ব্যবস্থাপনা" : "Inventory Management"}
         </h1>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-400" />
+          <div>
+            <p className="text-red-400 font-semibold">{error}</p>
+            <button
+              onClick={() => loadInventory()}
+              className="mt-2 text-sm text-red-300 hover:text-red-200 underline"
+            >
+              {isBn ? "পুনরায় চেষ্টা করুন" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Low Stock Alert */}
       {lowStockProducts.length > 0 && (
