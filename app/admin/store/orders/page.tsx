@@ -44,11 +44,11 @@ export default function StoreOrdersPage() {
     }
   }, [])
 
-  const loadOrders = () => {
+  const loadOrders = async () => {
     try {
       setIsLoading(true)
       setError(null)
-      const data = StoreDataService.getOrders()
+      const data = await StoreDataService.getOrders()
       setOrders(Array.isArray(data) ? data : [])
     } catch (err) {
       console.error("[v0] Error loading orders:", err)

@@ -28,13 +28,13 @@ export default function StoreInventoryPage() {
     }
   }, [])
 
-  const loadInventory = () => {
+  const loadInventory = async () => {
     try {
       setIsLoading(true)
       setError(null)
-      const data = StoreDataService.getProducts()
+      const data = await StoreDataService.getProducts()
       setProducts(Array.isArray(data) ? data : [])
-      const lowStockData = StoreDataService.getLowStockProducts(10)
+      const lowStockData = await StoreDataService.getLowStockProducts(10)
       setLowStockProducts(Array.isArray(lowStockData) ? lowStockData : [])
     } catch (err) {
       console.error("[v0] Error loading inventory:", err)
@@ -72,17 +72,18 @@ export default function StoreInventoryPage() {
     }))
   }
 
-  const handleSaveVariants = (product: AdminProduct) => {
-    Object.entries(editingVariants).forEach(([key, stock]) => {
-      const [size, color] = key.split("-")
-      try {
-        StoreDataService.updateInventory(product.id, size, color, stock)
-      } catch (error) {
-        console.error("[v0] Error updating inventory:", error)
+  const handleSaveVariants = async (product: AdminProduct) => {
+    try {
+      for (const [key, stock] of Object.entries(editingVariants)) {
+        const [size, color] = key.split("-")
+        await StoreDataService.updateInventory(product.id, size, color, stock)
       }
-    })
-    loadInventory()
-    setEditingProduct(null)
+      await loadInventory()
+      setEditingProduct(null)
+    } catch (error) {
+      console.error("[v0] Error saving variants:", error)
+      setError(isBn ? "ভেরিয়েন্ট আপডেট ব্যর্থ" : "Failed to update variants")
+    }
   }
 
   const getStockStatus = (stock: number) => {

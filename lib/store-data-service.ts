@@ -703,6 +703,36 @@ class StoreDataService {
       }
     }
   }
+
+  async getLowStockProducts(threshold: number = 10): Promise<StoreProduct[]> {
+    try {
+      const products = await this.getProducts()
+      return products.filter(p => p.stock <= threshold)
+    } catch (error) {
+      console.error('Error getting low stock products:', error)
+      return []
+    }
+  }
+
+  async updateInventory(productId: string, size: string, color: string, stock: number): Promise<boolean> {
+    try {
+      const product = await this.getProductById(productId)
+      if (!product) return false
+
+      // Update the variant stock
+      const updatedVariants = (product.variants || []).map(v => {
+        if (v.size === size && v.color === color) {
+          return { ...v, stock }
+        }
+        return v
+      })
+
+      return (await this.updateProduct(productId, { variants: updatedVariants })) !== null
+    } catch (error) {
+      console.error('Error updating inventory:', error)
+      return false
+    }
+  }
 }
 
 export default new StoreDataService()
