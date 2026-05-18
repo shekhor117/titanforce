@@ -8,7 +8,6 @@ import { TrainingChart } from "@/components/training-chart"
 import { InjuryTracking } from "@/components/injury-tracking"
 import { BackButton } from "@/components/back-button"
 import { TeamStatsOverview } from "@/components/team-stats-overview"
-import { ManOfTheMatch } from "@/components/man-of-the-match"
 
 export const metadata = {
   title: "Advanced Features | Titan Force FC",
@@ -40,7 +39,6 @@ export default function FeaturesPage() {
         <TeamStatsOverview />
 
         <LineupBuilder />
-        <ManOfTheMatch />
         <TacticalBoard />
         <MatchVoting />
         <PlayerRanking />
