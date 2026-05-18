@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar"
-import { About } from "@/components/about"
 import { Footer } from "@/components/footer"
+import { AboutPageContent } from "@/components/about-page-content"
 
 export const metadata = {
   title: "About Us | Titan Force",
@@ -12,7 +12,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        <About />
+        <AboutPageContent />
       </main>
       <Footer />
     </div>
