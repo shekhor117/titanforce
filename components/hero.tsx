@@ -146,7 +146,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-1.25 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
-            <h3 className={`text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            <h3 className={`mt-6 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutSettings.aboutTitle}
             </h3>
             <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
