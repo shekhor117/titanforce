@@ -142,7 +142,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </p>
 
           {/* About the Club Section */}
-          <div className="mt-16 pt-16 border-t border-foreground/10">
+          <div className="border-t border-foreground/10">
             <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
