@@ -4,8 +4,9 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
+import { getDataService } from "@/lib/data-service"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -16,13 +17,32 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [loading, setLoading] = useState(!skipAnimation)
+  const { players } = usePlayers()
+  const [aboutSettings, setAboutSettings] = useState({
+    aboutTitle: t.about.title,
+    aboutDescription: t.about.description
+  })
 
-  // Get settings and players from data store for About section
-  const settings = useDataStore(dataStore.getSettings, "settings")
-  const players = useDataStore(dataStore.getPlayers, "players")
+  useEffect(() => {
+    // Fetch settings from data service
+    const loadSettings = async () => {
+      try {
+        const service = getDataService()
+        const settings = await service.getSettings?.()
+        if (settings) {
+          setAboutSettings({
+            aboutTitle: settings.aboutTitle || t.about.title,
+            aboutDescription: settings.aboutDescription || t.about.description
+          })
+        }
+      } catch (err) {
+        console.log("[v0] Using default about settings")
+      }
+    }
+    loadSettings()
+  }, [])
+
   const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
-  const aboutTitle = settings?.aboutTitle || t.about.title
-  const aboutDescription = settings?.aboutDescription || t.about.description
 
   useEffect(() => {
     // Skip animation if requested
@@ -141,10 +161,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.about.location}
             </p>
             <h3 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-              {aboutTitle}
+              {aboutSettings.aboutTitle}
             </h3>
             <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {aboutDescription}
+              {aboutSettings.aboutDescription}
             </p>
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
               <div>
