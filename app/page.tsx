@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { TrophyTimeline } from "@/components/trophy-timeline"
 import { Contact } from "@/components/contact"
@@ -35,7 +34,6 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <About />
         <GalleryShowcase />
         <TrophyTimeline />
         <Contact />

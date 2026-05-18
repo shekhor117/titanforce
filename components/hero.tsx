@@ -4,6 +4,8 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
+import { dataStore, useDataStore } from "@/lib/data-store"
+import { Zap } from "lucide-react"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -14,6 +16,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   const [loading, setLoading] = useState(!skipAnimation)
+
+  // Get settings and players from data store for About section
+  const settings = useDataStore(dataStore.getSettings, "settings")
+  const players = useDataStore(dataStore.getPlayers, "players")
+  const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
+  const aboutTitle = settings?.aboutTitle || t.about.title
+  const aboutDescription = settings?.aboutDescription || t.about.description
 
   useEffect(() => {
     // Skip animation if requested
@@ -124,6 +133,45 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             >
               {t.hero.matches}
             </TransitionLink>
+          </div>
+
+          {/* About the Club Section */}
+          <div className="mt-16 pt-16 border-t border-foreground/10">
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {t.about.location}
+            </p>
+            <h3 className={`text-4xl md:text-5xl tracking-wide mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+              {aboutTitle}
+            </h3>
+            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {aboutDescription}
+            </p>
+            <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-primary">
+                  {activePlayers.length}
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.players}
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-center">
+                  <Zap className="w-12 h-12 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.spirit}
+                </div>
+              </div>
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-primary">
+                  1
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.team}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
