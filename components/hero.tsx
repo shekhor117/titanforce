@@ -110,7 +110,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-18 md:py-36 pb-11 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[51px] text-center">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
