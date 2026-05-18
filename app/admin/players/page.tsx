@@ -20,7 +20,9 @@ export default function AdminPlayers() {
     basic: true,
     biography: false,
     attributes: false,
-    stats: false
+    stats: false,
+    trophies: false,
+    training: false
   })
   const [formData, setFormData] = useState({
     name: "",
@@ -58,6 +60,16 @@ export default function AdminPlayers() {
   })
   const [imagePreview, setImagePreview] = useState<string>("")
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [trophies, setTrophies] = useState<{ name: string; year: string }[]>([])
+  const [newTrophy, setNewTrophy] = useState({ name: "", year: new Date().getFullYear().toString() })
+  const [trainingData, setTrainingData] = useState({
+    pace_recovery: "",
+    ball_control: "",
+    agility_drills: "",
+    strength_training: "",
+    flexibility: "",
+    endurance: ""
+  })
 
   useEffect(() => {
     loadPlayers()
@@ -81,6 +93,7 @@ export default function AdminPlayers() {
     setEditingPlayer(player)
     const imageUrl = player.image_url || ""
     setImagePreview(imageUrl)
+    setTrophies(player.trophies || [])
     setFormData({
       name: player.name,
       num: player.num.toString(),
@@ -178,7 +191,8 @@ export default function AdminPlayers() {
         passing: parseInt(formData.passing),
         dribbling: parseInt(formData.dribbling),
         defending: parseInt(formData.defending),
-        physical: parseInt(formData.physical)
+        physical: parseInt(formData.physical),
+        trophies: trophies
       }
 
       if (editingPlayer) {
@@ -190,6 +204,8 @@ export default function AdminPlayers() {
       alert(isBn ? "খেলোয়াড় সংরক্ষিত হয়েছে" : "Player saved successfully")
       setShowForm(false)
       setEditingPlayer(null)
+      setTrophies([])
+      setNewTrophy({ name: "", year: new Date().getFullYear().toString() })
       setFormData({ 
         name: "", num: "", age: "", position: "", category: "", status: "active", hometown: "", 
         foot: "Right", email: "", date_of_birth: "", join_date: "", bio: "", image_url: "",
@@ -538,6 +554,90 @@ export default function AdminPlayers() {
                         <div key={stat.key}>
                           <label className="block text-xs font-medium mb-1">{stat.label}</label>
                           <input type="number" value={formData[stat.key as keyof typeof formData]} onChange={(e) => setFormData({ ...formData, [stat.key]: e.target.value })} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-sm" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* TROPHIES */}
+              <div className="border border-secondary rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setExpandedSections({ ...expandedSections, trophies: !expandedSections.trophies })}
+                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
+                >
+                  <span>{isBn ? "ট্রফি" : "Trophies"} ({trophies.length})</span>
+                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.trophies ? "rotate-180" : ""}`} />
+                </button>
+                {expandedSections.trophies && (
+                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
+                    {trophies.length > 0 && (
+                      <div className="space-y-2 mb-4">
+                        {trophies.map((trophy, idx) => (
+                          <div key={idx} className="flex items-center justify-between px-3 py-2 rounded bg-foreground/5 border border-secondary">
+                            <div>
+                              <p className="font-medium">{trophy.name}</p>
+                              <p className="text-xs text-foreground/60">{trophy.year}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setTrophies(trophies.filter((_, i) => i !== idx))}
+                              className="text-red-400 hover:text-red-300"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">{isBn ? "ট্রফির নাম" : "Trophy Name"}</label>
+                        <input type="text" value={newTrophy.name} onChange={(e) => setNewTrophy({ ...newTrophy, name: e.target.value })} placeholder={isBn ? "যেমন: চ্যাম্পিয়নশিপ" : "e.g., Championship"} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">{isBn ? "বছর" : "Year"}</label>
+                          <input type="number" value={newTrophy.year} onChange={(e) => setNewTrophy({ ...newTrophy, year: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (newTrophy.name.trim()) {
+                              setTrophies([...trophies, newTrophy])
+                              setNewTrophy({ name: "", year: new Date().getFullYear().toString() })
+                            }
+                          }}
+                          className="flex items-center justify-center gap-2 px-3 py-2 bg-primary/20 text-primary rounded hover:bg-primary/30 transition font-medium"
+                        >
+                          <Plus className="w-4 h-4" />
+                          {isBn ? "যোগ করুন" : "Add"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* TRAINING PERFORMANCE */}
+              <div className="border border-secondary rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setExpandedSections({ ...expandedSections, training: !expandedSections.training })}
+                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
+                >
+                  <span>{isBn ? "প্রশিক্ষণ কর্মক্ষমতা" : "Training Performance (0-100)"}</span>
+                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.training ? "rotate-180" : ""}`} />
+                </button>
+                {expandedSections.training && (
+                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
+                    <div className="grid grid-cols-2 gap-3">
+                      {[{ key: "pace_recovery", label: isBn ? "পেস রিকভারি" : "Pace Recovery" }, { key: "ball_control", label: isBn ? "বল নিয়ন্ত্রণ" : "Ball Control" }, { key: "agility_drills", label: isBn ? "চটপটতা ড্রিল" : "Agility Drills" }, { key: "strength_training", label: isBn ? "শক্তি প্রশিক্ষণ" : "Strength Training" }, { key: "flexibility", label: isBn ? "নমনীয়তা" : "Flexibility" }, { key: "endurance", label: isBn ? "সহনশীলতা" : "Endurance" }].map(attr => (
+                        <div key={attr.key}>
+                          <label className="block text-sm font-medium mb-1">{attr.label}</label>
+                          <input type="number" min="0" max="100" value={trainingData[attr.key as keyof typeof trainingData]} onChange={(e) => setTrainingData({ ...trainingData, [attr.key]: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
                         </div>
                       ))}
                     </div>
