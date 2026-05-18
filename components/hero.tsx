@@ -146,10 +146,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-12 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {aboutDescription}
             </p>
-          </div>
-
-          {/* Stats Tabs at Bottom */}
-          <div className="mt-12 pt-12 border-t border-foreground/10">
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
               <div>
                 <div className="font-[var(--font-display)] text-4xl text-primary">
