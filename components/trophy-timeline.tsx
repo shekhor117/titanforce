@@ -4,6 +4,14 @@ import { useEffect, useState } from 'react'
 import TrophyDataService, { Trophy } from '@/lib/trophy-data-service'
 import { useLanguage } from '@/lib/language-context'
 import Link from 'next/link'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel'
+import { ArrowRight } from 'lucide-react'
 
 export function TrophyTimeline() {
   const { language } = useLanguage()
@@ -45,96 +53,102 @@ export function TrophyTimeline() {
   }
 
   return (
-    <section className="py-16 bg-background relative">
-      <div className="max-w-4xl mx-auto px-4">
+    <section className="py-16 bg-background">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
-            {isBn ? 'ট্রফি রেকর্ড' : 'Trophy Record'}
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            {isBn ? 'টাইটান ফোর্সের গৌরবময় ইতিহাস' : 'Glorious history of Titan Force'}
-          </p>
-        </div>
-
-        {/* Timeline */}
-        <div className="relative">
-          {/* Center Line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-accent to-transparent transform -translate-x-1/2" />
-
-          {/* Trophies */}
-          <div className="space-y-12">
-            {trophies.map((trophy, index) => (
-              <div key={trophy.id} className={`flex ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
-                {/* Content */}
-                <div className="w-1/2 px-6">
-                  <div className="p-6 rounded-xl bg-card border-2 border-border hover:border-primary/50 transition-all group hover:shadow-lg hover:shadow-primary/20">
-                    {/* Year Badge */}
-                    <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                      <span className="text-sm font-bold text-primary">{trophy.year}</span>
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="text-3xl flex-shrink-0">{trophy.icon}</div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                          {trophy.name}
-                        </h3>
-                        <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
-                          {categoryLabels[trophy.category]}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-sm text-foreground/70 mb-3">{trophy.description}</p>
-
-                    {/* Runners Up */}
-                    {trophy.runners_up && (
-                      <div className="text-xs text-muted-foreground mb-3 pb-3 border-b border-border">
-                        <span className="font-medium">{isBn ? 'রানার আপ' : 'Runners up'}:</span> {trophy.runners_up}
-                      </div>
-                    )}
-
-                    {/* Category Badge */}
-                    <div className={`inline-block px-3 py-1 rounded-lg text-xs font-medium text-white bg-gradient-to-r ${categoryColors[trophy.category]}`}>
-                      {categoryLabels[trophy.category]}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Timeline Dot */}
-                <div className="w-0 flex justify-center">
-                  <div className="relative z-10">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-accent border-4 border-background shadow-lg" />
-                    <div className="absolute inset-0 w-6 h-6 rounded-full bg-primary/20 animate-pulse" />
-                  </div>
-                </div>
-              </div>
-            ))}
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <h2 className="text-4xl font-bold text-foreground mb-2">
+              {isBn ? 'ট্রফি রেকর্ড' : 'Trophy Record'}
+            </h2>
+            <p className="text-muted-foreground">
+              {isBn ? 'টাইটান ফোর্সের গৌরবময় ইতিহাস' : 'Glorious history of Titan Force'}
+            </p>
           </div>
-
-          {/* End Marker */}
-          <div className="flex justify-center mt-12">
-            <div className="text-center">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center mx-auto mb-2">
-                <span className="text-white font-bold">✓</span>
-              </div>
-              <p className="text-sm text-muted-foreground">{isBn ? 'চলমান সাফল্য' : 'Ongoing Success'}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* View All Button */}
-        <div className="text-center mt-12">
           <Link
             href="/admin/trophies"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-medium"
+            className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
           >
-            {isBn ? 'সম্পূর্ণ ইতিহাস দেখুন' : 'View Full History'}
-            <span>→</span>
+            {isBn ? 'সম্পূর্ণ ইতিহাস' : 'Full History'}
+            <ArrowRight className="w-5 h-5" />
           </Link>
+        </div>
+
+        {/* Swipeable Trophy Carousel */}
+        <div className="relative group">
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+              skipSnaps: false,
+            }}
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {trophies.map((trophy) => (
+                <CarouselItem key={trophy.id} className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+                  <div className="h-full">
+                    <div className="relative p-8 rounded-2xl bg-gradient-to-br from-card to-card/50 border-2 border-border hover:border-primary/50 transition-all group/card hover:shadow-xl hover:shadow-primary/20 h-full flex flex-col">
+                      {/* Year Badge */}
+                      <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit">
+                        <span className="text-sm font-bold text-primary">{trophy.year}</span>
+                      </div>
+
+                      {/* Trophy Icon */}
+                      <div className="text-6xl mb-4 group-hover/card:scale-110 transition-transform duration-300">
+                        {trophy.icon}
+                      </div>
+
+                      {/* Trophy Name */}
+                      <h3 className="font-bold text-2xl text-foreground mb-2 group-hover/card:text-primary transition-colors line-clamp-2">
+                        {trophy.name}
+                      </h3>
+
+                      {/* Category */}
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
+                        {categoryLabels[trophy.category]}
+                      </p>
+
+                      {/* Description */}
+                      <p className="text-sm text-foreground/70 mb-4 line-clamp-3 flex-grow">
+                        {trophy.description}
+                      </p>
+
+                      {/* Runners Up */}
+                      {trophy.runners_up && (
+                        <div className="text-xs text-muted-foreground mb-4 pb-4 border-b border-border/50">
+                          <span className="font-medium text-foreground">{isBn ? 'রানার আপ' : 'Runners up'}:</span>
+                          <p className="mt-1">{trophy.runners_up}</p>
+                        </div>
+                      )}
+
+                      {/* Category Badge */}
+                      <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r ${categoryColors[trophy.category]} w-fit`}>
+                        {categoryLabels[trophy.category]}
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+
+            {/* Navigation Buttons */}
+            <div className="absolute -left-16 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+              <CarouselPrevious className="relative left-0 top-0 translate-y-0 size-10 bg-primary hover:bg-primary/90 text-primary-foreground border-0" />
+            </div>
+            <div className="absolute -right-16 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+              <CarouselNext className="relative right-0 top-0 translate-y-0 size-10 bg-primary hover:bg-primary/90 text-primary-foreground border-0" />
+            </div>
+          </Carousel>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-8 flex-wrap">
+            {trophies.slice(0, Math.min(10, trophies.length)).map((_, index) => (
+              <div
+                key={index}
+                className="h-2 rounded-full transition-all duration-300 bg-muted-foreground/30 hover:bg-muted-foreground/50 w-2"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
