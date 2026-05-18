@@ -56,6 +56,8 @@ export default function AdminPlayers() {
     defending: "",
     physical: ""
   })
+  const [imagePreview, setImagePreview] = useState<string>("")
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   useEffect(() => {
     loadPlayers()
@@ -77,6 +79,8 @@ export default function AdminPlayers() {
       return
     }
     setEditingPlayer(player)
+    const imageUrl = player.image_url || ""
+    setImagePreview(imageUrl)
     setFormData({
       name: player.name,
       num: player.num.toString(),
@@ -90,7 +94,7 @@ export default function AdminPlayers() {
       date_of_birth: player.date_of_birth || "",
       join_date: player.join_date || "",
       bio: player.bio || "",
-      image_url: player.image_url || "",
+      image_url: imageUrl,
       goals: player.goals?.toString() || "0",
       assists: player.assists?.toString() || "0",
       clean_sheets: player.clean_sheets?.toString() || "0",
@@ -201,9 +205,40 @@ export default function AdminPlayers() {
     }
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      setUploadingImage(true)
+      
+      // Create a data URL for immediate preview
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const result = event.target?.result as string
+        setImagePreview(result)
+        setFormData(prev => ({ ...prev, image_url: result }))
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error("[v0] Error uploading image:", error)
+      alert(isBn ? "ছবি আপলোড ব্যর্থ" : "Failed to upload image")
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   const openNewPlayerForm = () => {
     setEditingPlayer(null)
-    setFormData({ name: "", num: "", age: "", position: "", status: "active" })
+    setImagePreview("")
+    setFormData({ 
+      name: "", num: "", age: "", position: "", category: "", status: "active", hometown: "", 
+      foot: "Right", email: "", date_of_birth: "", join_date: "", bio: "", image_url: "",
+      goals: "0", assists: "0", clean_sheets: "0", appearances: "0", minutes_played: "0",
+      pass_accuracy: "0", chances_created: "0", premier_matches: "0", cup_matches: "0",
+      yellow_cards: "0", red_cards: "0", man_of_the_match: "0", average_rating: "0",
+      pace: "0", shooting: "0", passing: "0", dribbling: "0", defending: "0", physical: "0"
+    })
     setShowForm(true)
   }
 
@@ -397,8 +432,46 @@ export default function AdminPlayers() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">{isBn ? "ছবি URL" : "Image URL"}</label>
-                      <input type="url" value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
+                      <label className="block text-sm font-medium mb-2">{isBn ? "খেলোয়াড়ের ছবি" : "Player Image"}</label>
+                      <div className="flex gap-4">
+                        <div className="flex-1">
+                          <div className="mb-3">
+                            <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-secondary rounded-lg cursor-pointer hover:bg-foreground/5 transition">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                disabled={uploadingImage}
+                                className="hidden"
+                              />
+                              <span className="text-center text-sm">
+                                {uploadingImage ? (isBn ? "আপলোড হচ্ছে..." : "Uploading...") : (isBn ? "ছবি নির্বাচন করুন" : "Choose image")}
+                              </span>
+                            </label>
+                          </div>
+                          <label className="block text-xs font-medium mb-1">{isBn ? "অথবা URL" : "or Image URL"}</label>
+                          <input
+                            type="url"
+                            value={formData.image_url}
+                            onChange={(e) => {
+                              setFormData({ ...formData, image_url: e.target.value })
+                              setImagePreview(e.target.value)
+                            }}
+                            placeholder="https://example.com/image.jpg"
+                            className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm"
+                          />
+                        </div>
+                        {imagePreview && (
+                          <div className="w-24 h-32 rounded-lg overflow-hidden border border-secondary flex-shrink-0">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                              onError={() => setImagePreview("")}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
