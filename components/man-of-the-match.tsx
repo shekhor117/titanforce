@@ -3,18 +3,18 @@
 import { useEffect, useState, useRef } from "react"
 import { Trophy } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import MatchDataService, { Match } from "@/lib/match-data-service"
-import PlayerDataService, { Player } from "@/lib/player-data-service"
+import { useMatches, usePlayers } from "@/lib/use-data-store"
 
 export function ManOfTheMatch() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [latestMatch, setLatestMatch] = useState<Match | null>(null)
-  const [players, setPlayers] = useState<Player[]>([])
   const [selectedMotm, setSelectedMotm] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+
+  // Use realtime hooks - automatically syncs when admin updates
+  const { matches, loading: matchesLoading } = useMatches()
+  const { players, loading: playersLoading } = usePlayers()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,25 +27,8 @@ export function ManOfTheMatch() {
     return () => observer.disconnect()
   }, [])
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const matches = await MatchDataService.getMatches()
-        const playersData = await PlayerDataService.getPlayers()
-        
-        // Get the latest completed match
-        const completed = matches.find(m => m.status === 'completed')
-        setLatestMatch(completed || matches[0] || null)
-        setPlayers(playersData)
-      } catch (error) {
-        console.error("[v0] Error loading MOTM data:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadData()
-  }, [])
+  const isLoading = matchesLoading || playersLoading
+  const latestMatch = matches.find(m => m.status === 'completed') || matches[0] || null
 
   const handleMotmSelection = (playerId: string) => {
     setSelectedMotm(selectedMotm === playerId ? null : playerId)

@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { X, MapPin, Calendar, Footprints, Trophy, Target, Star, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import PlayerDataService, { Player } from "@/lib/player-data-service"
+import { usePlayers } from "@/lib/use-data-store"
 import { dataStore } from "@/lib/data-store"
 import { PlayerRating } from "@/components/player-rating"
 
@@ -41,23 +41,15 @@ function PlayerRatingBadge({ playerId }: { playerId: string }) {
 }
 
 export function Squad() {
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [selectedPlayer, setSelectedPlayer] = useState<any | null>(null)
   const [selectedPosition, setSelectedPosition] = useState<Position>("all")
   const [isVisible, setIsVisible] = useState(false)
-  const [players, setPlayers] = useState<Player[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
-
-  useEffect(() => {
-    const loadPlayers = async () => {
-      const data = await PlayerDataService.getPlayers()
-      setPlayers(Array.isArray(data) ? data : [])
-      setIsLoading(false)
-    }
-    loadPlayers()
-  }, [])
+  
+  // Use realtime hook for players - automatically syncs when admin updates
+  const { players, loading: isLoading, error } = usePlayers()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

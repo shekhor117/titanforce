@@ -4,25 +4,18 @@ import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
-import MatchDataService, { Match } from "@/lib/match-data-service"
+import { useMatches } from "@/lib/use-data-store"
+import type { Match } from "@/lib/data-service"
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
-  const [matches, setMatches] = useState<Match[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   const { language, t } = useLanguage()
   const isBn = language === "bn"
-
-  useEffect(() => {
-    const loadMatches = async () => {
-      const data = await MatchDataService.getMatches()
-      setMatches(data)
-      setIsLoading(false)
-    }
-    loadMatches()
-  }, [])
+  
+  // Use realtime hook for matches - automatically syncs when admin updates
+  const { matches, loading: isLoading, error } = useMatches()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

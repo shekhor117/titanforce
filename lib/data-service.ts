@@ -123,6 +123,20 @@ export interface ContactMessage {
   updated_at: string
 }
 
+export interface Trophy {
+  id: string
+  name: string
+  year: number
+  category: 'league' | 'cup' | 'championship' | 'tournament'
+  description: string
+  icon: string
+  runners_up?: string
+  image_url?: string
+  featured?: boolean
+  created_at: string
+  updated_at: string
+}
+
 // Callback types
 type DataCallback<T> = (data: T[]) => void
 type ErrorCallback = (error: Error) => void
@@ -818,6 +832,111 @@ export class DataService {
     } catch (error) {
       console.error("[v0] DataService: Error setting up contact messages subscription:", error)
       onError?.(error as Error)
+      return () => {}
+    }
+  }
+
+  // Trophies
+  async getTrophies(): Promise<Trophy[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('trophies')
+        .select('*')
+        .order('year', { ascending: false })
+
+      if (error) {
+        console.error("[v0] DataService: getTrophies error:", error)
+        return []
+      }
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService: getTrophies exception:", error)
+      return []
+    }
+  }
+
+  async createTrophy(trophy: Omit<Trophy, 'id' | 'created_at' | 'updated_at'>): Promise<Trophy> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('trophies')
+      .insert([trophy])
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async updateTrophy(id: string, updates: Partial<Trophy>): Promise<Trophy> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('trophies')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async deleteTrophy(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase
+      .from('trophies')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  }
+
+  subscribeToTrophies(callback: DataCallback<Trophy>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) return () => {}
+    
+    try {
+      const existingChannel = this.subscriptions.get('trophies')
+      if (existingChannel) {
+        try {
+          this.supabase.removeChannel(existingChannel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing old trophies channel:", error)
+        }
+      }
+      
+      const channel = this.supabase
+        .channel(`trophies-changes-${Date.now()}-${Math.random()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'trophies',
+          },
+          async () => {
+            try {
+              const trophies = await this.getTrophies()
+              callback(trophies)
+            } catch (error) {
+              onError?.(error instanceof Error ? error : new Error(String(error)))
+            }
+          }
+        )
+        .subscribe()
+
+      this.subscriptions.set('trophies', channel)
+
+      return () => {
+        try {
+          this.supabase.removeChannel(channel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing trophies channel:", error)
+        }
+        this.subscriptions.delete('trophies')
+      }
+    } catch (error) {
+      console.error("[v0] DataService: Error setting up trophies subscription:", error)
+      onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
   }
