@@ -1,12 +1,12 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { mockJerseys, JerseyProduct } from "@/lib/jersey-products"
 import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
+import StoreDataService, { AdminProduct } from "@/lib/store-data-service"
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -15,6 +15,8 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "rating">("rating")
+  const [products, setProducts] = useState<AdminProduct[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const categories = [
     { id: "all", label: isBn ? "সব" : "All" },
@@ -24,11 +26,33 @@ export default function ShopPage() {
     { id: "retro", label: isBn ? "রেট্রো" : "Retro" }
   ]
 
-  let filteredProducts = mockJerseys.filter(product => {
+  // Load products from Supabase with realtime updates
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoading(true)
+      const data = await StoreDataService.getProducts()
+      setProducts(data || [])
+      setIsLoading(false)
+    }
+    
+    loadProducts()
+
+    // Subscribe to realtime updates from admin panel
+    const unsubscribe = StoreDataService.subscribeToProducts((updatedProducts) => {
+      console.log("[v0] Shop: Products realtime update -", updatedProducts.length, "products")
+      setProducts(updatedProducts)
+    }, (error) => {
+      console.error("[v0] Shop: Subscription error:", error.message)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  let filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === "all" || product.category === selectedCategory
     const matchesSearch = searchQuery === "" || 
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      (product.description || "").toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })
 

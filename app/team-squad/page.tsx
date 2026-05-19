@@ -6,11 +6,45 @@ import { Squad } from "@/components/squad"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft } from "lucide-react"
+import { useEffect } from "react"
 
 export default function TeamSquadPage() {
   const router = useRouter()
   const { language, t } = useLanguage()
   const isBn = language === "bn"
+
+  useEffect(() => {
+    // Add BreadcrumbList schema
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://titanforcefc.com',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Squad',
+          item: 'https://titanforcefc.com/squad',
+        },
+      ],
+    }
+
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.innerHTML = JSON.stringify(breadcrumbSchema)
+    document.head.appendChild(script)
+
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-background stripe-bg">
