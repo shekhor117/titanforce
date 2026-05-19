@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import GalleryDataService, { GalleryType, GalleryItem } from '@/lib/gallery-data-service'
 import { useLanguage } from '@/lib/language-context'
 import { X, Search, ArrowLeft } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -88,6 +89,36 @@ export default function GalleryPage() {
       setItems(allItems && allItems.length > 0 ? allItems : SAMPLE_ITEMS)
     }
     loadItems()
+  }, [])
+
+  // Real-time subscription for gallery updates
+  useEffect(() => {
+    const supabase = createClient()
+    if (!supabase) return
+
+    const subscription = supabase
+      .channel('gallery-updates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'gallery' },
+        async (payload) => {
+          console.log('[v0] Gallery update received:', payload)
+          // Refresh gallery items when any changes occur
+          try {
+            const updatedItems = await GalleryDataService.getGalleryItems()
+            if (updatedItems && updatedItems.length > 0) {
+              setItems(updatedItems)
+            }
+          } catch (error) {
+            console.error('[v0] Error refreshing gallery:', error)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
