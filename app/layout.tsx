@@ -32,12 +32,12 @@ const notoSansBengali = Noto_Sans_Bengali({
 })
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Titan Force FC | Football Club in Sylhet, Bangladesh',
-  description: 'Pride · Passion · Power - Official website of Titan Force FC, a passionate football club from Mulikandi, Sylhet Bangladesh. Squad, fixtures, news, gallery and shop.',
+  title: 'Titan Force Mulikandi | Official Football Club Website',
+  description: 'Official football club website',
   alternates: {
     languages: {
-      en: 'https://titanforcefc.com/en',
-      bn: 'https://titanforcefc.com/bn',
+      en: 'https://titanforcemulikandi.vercel.app/en',
+      bn: 'https://titanforcemulikandi.vercel.app/bn',
     },
   },
 })

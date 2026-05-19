@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcefc.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcemulikandi.vercel.app'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()

@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
-const SITE_NAME = 'Titan Force FC'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcefc.com'
-const SITE_DESCRIPTION = 'Titan Force FC - Pride, Passion, Power. Bangladesh football club based in Sylhet.'
+const SITE_NAME = 'Titan Force Mulikandi'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcemulikandi.vercel.app'
+const SITE_DESCRIPTION = 'Official football club website'
 const SITE_IMAGE = `${SITE_URL}/og-image.jpg`
 const SITE_LOCALE = 'en_US'
 
