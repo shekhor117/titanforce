@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar"
+import { SiteLayout } from "@/components/site-layout"
 import { Footer } from "@/components/footer"
 import { LineupBuilder } from "@/components/lineup-builder"
 import { TacticalBoard } from "@/components/tactical-board"
@@ -17,37 +17,38 @@ export const metadata = {
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-background stripe-bg">
-      <Navbar />
-      <main>
-        {/* Hero */}
-        <section className="py-20 px-4 text-center hero-gradient">
-          <div className="max-w-6xl mx-auto">
-            <BackButton className="mb-6" />
-          </div>
-          <p className="text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary">
-            ADVANCED TOOLS
-          </p>
-          <h1 className="font-[var(--font-display)] text-5xl md:text-7xl tracking-wide text-foreground mb-4">
-            TEAM FEATURES
-          </h1>
-          <p className="text-foreground/70 max-w-xl mx-auto">
-            Explore our comprehensive suite of tools for lineup building, tactical planning, player analytics, and more.
-          </p>
-        </section>
+    <SiteLayout>
+      <div className="min-h-screen bg-background stripe-bg">
+        <main>
+          {/* Hero */}
+          <section className="py-20 px-4 text-center hero-gradient">
+            <div className="max-w-6xl mx-auto">
+              <BackButton className="mb-6" />
+            </div>
+            <p className="text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary">
+              ADVANCED TOOLS
+            </p>
+            <h1 className="font-[var(--font-display)] text-5xl md:text-7xl tracking-wide text-foreground mb-4">
+              TEAM FEATURES
+            </h1>
+            <p className="text-foreground/70 max-w-xl mx-auto">
+              Explore our comprehensive suite of tools for lineup building, tactical planning, player analytics, and more.
+            </p>
+          </section>
 
-        {/* Team Stats Overview - Client Component */}
-        <TeamStatsOverview />
+          {/* Team Stats Overview - Client Component */}
+          <TeamStatsOverview />
 
-        <LineupBuilder />
-        <ManOfTheMatch />
-        <TacticalBoard />
-        <MatchVoting />
-        <PlayerRanking />
-        <TrainingChart />
-        <InjuryTracking />
-      </main>
-      <Footer />
-    </div>
+          <LineupBuilder />
+          <ManOfTheMatch />
+          <TacticalBoard />
+          <MatchVoting />
+          <PlayerRanking />
+          <TrainingChart />
+          <InjuryTracking />
+        </main>
+        <Footer />
+      </div>
+    </SiteLayout>
   )
 }

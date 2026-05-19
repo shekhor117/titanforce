@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar"
+import { SiteLayout } from "@/components/site-layout"
 import { Footer } from "@/components/footer"
 import { AboutPageContent } from "@/components/about-page-content"
 
@@ -9,12 +9,13 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
-        <AboutPageContent />
-      </main>
-      <Footer />
-    </div>
+    <SiteLayout>
+      <div className="min-h-screen bg-background">
+        <main>
+          <AboutPageContent />
+        </main>
+        <Footer />
+      </div>
+    </SiteLayout>
   )
 }

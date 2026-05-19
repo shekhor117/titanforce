@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { Menu, X, Globe, ShoppingBag } from "lucide-react"
+import { Menu, Globe, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
@@ -9,12 +8,13 @@ import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { useCart } from "@/lib/cart-context"
+import { useSidebar } from "@/components/ui/sidebar"
 
 export function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
+  const { setOpenMobile } = useSidebar()
 
   const navLinks = [
     { href: "/", label: t.nav.home },
@@ -46,11 +46,10 @@ export function Navbar() {
 
         <button
           className="md:hidden p-2 text-foreground hover:bg-muted rounded transition-colors"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-          aria-expanded={mobileMenuOpen}
+          onClick={() => setOpenMobile(true)}
+          aria-label="Open menu"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <Menu className="w-6 h-6" />
         </button>
 
         <div className="hidden md:flex items-center gap-6 text-sm font-semibold uppercase tracking-wide">
@@ -101,61 +100,6 @@ export function Navbar() {
           )}
         </div>
       </div>
-
-      {mobileMenuOpen && (
-        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-foreground hover:text-primary transition-colors py-2 px-2 rounded ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          
-          <Link
-            href="/shop"
-            className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </Link>
-          
-          <div className="border-t border-secondary pt-3 mt-2 flex flex-col gap-3">
-            <div className="w-full flex items-center gap-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-1 text-xs"
-                aria-label="Toggle language"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
-              </button>
-            </div>
-
-            {user ? (
-              <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
-            ) : (
-              <Link
-                href="/login"
-                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {language === "bn" ? "লগইন" : "Login"}
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
     </nav>
   )
 }

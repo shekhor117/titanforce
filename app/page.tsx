@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Navbar } from "@/components/navbar"
+import { SiteLayout } from "@/components/site-layout"
 import { Hero } from "@/components/hero"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { TrophyTimeline } from "@/components/trophy-timeline"
@@ -30,15 +30,16 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background stripe-bg">
-      <Navbar />
-      <main>
-        <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <GalleryShowcase />
-        <TrophyTimeline />
-        <Contact />
-      </main>
-      {!heroLoading && <Footer />}
-    </div>
+    <SiteLayout>
+      <div className="min-h-screen bg-background stripe-bg">
+        <main>
+          <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
+          <GalleryShowcase />
+          <TrophyTimeline />
+          <Contact />
+        </main>
+        {!heroLoading && <Footer />}
+      </div>
+    </SiteLayout>
   )
 }
