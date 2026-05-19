@@ -24,10 +24,11 @@ export function useDataStore() {
 
   useEffect(() => {
     let isMounted = true
+    const dataService = getDataService()
+    
     const loadData = async () => {
       try {
         setLoading(true)
-        const dataService = getDataService()
         setService(dataService)
         const [playersData, matchesData, partnersData, newsData, mediaData] = await Promise.all([
           dataService.getPlayers(),
@@ -44,13 +45,13 @@ export function useDataStore() {
           setNewsItems(newsData)
           setMediaItems(mediaData)
           setError(null)
-          console.log("[v0] Loaded initial data:", { players: playersData.length, matches: matchesData.length })
+          console.log("[v0] useDataStore: Loaded initial data:", { players: playersData.length, matches: matchesData.length })
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] Error loading data:", error.message)
+          console.error("[v0] useDataStore: Error loading data:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -59,12 +60,66 @@ export function useDataStore() {
 
     loadData()
 
-    // Subscribe to real-time updates - only if service is initialized
-    let unsubscribePlayers = () => {}
-    let unsubscribeMatches = () => {}
-    let unsubscribePartners = () => {}
-    let unsubscribeNews = () => {}
-    let unsubscribeMedia = () => {}
+    // Subscribe to real-time updates for all data types
+    const unsubscribePlayers = dataService.subscribeToPlayers((data) => {
+      if (isMounted) {
+        console.log("[v0] useDataStore: Players real-time update -", data.length, "players")
+        setPlayers(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useDataStore: Players subscription error:", err.message)
+        setError(err)
+      }
+    })
+
+    const unsubscribeMatches = dataService.subscribeToMatches((data) => {
+      if (isMounted) {
+        console.log("[v0] useDataStore: Matches real-time update -", data.length, "matches")
+        setMatches(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useDataStore: Matches subscription error:", err.message)
+        setError(err)
+      }
+    })
+
+    const unsubscribePartners = dataService.subscribeToPartners((data) => {
+      if (isMounted) {
+        console.log("[v0] useDataStore: Partners real-time update -", data.length, "partners")
+        setPartners(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useDataStore: Partners subscription error:", err.message)
+        setError(err)
+      }
+    })
+
+    const unsubscribeNews = dataService.subscribeToNewsItems((data) => {
+      if (isMounted) {
+        console.log("[v0] useDataStore: News real-time update -", data.length, "articles")
+        setNewsItems(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useDataStore: News subscription error:", err.message)
+        setError(err)
+      }
+    })
+
+    const unsubscribeMedia = dataService.subscribeToMediaItems((data) => {
+      if (isMounted) {
+        console.log("[v0] useDataStore: Media real-time update -", data.length, "items")
+        setMediaItems(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useDataStore: Media subscription error:", err.message)
+        setError(err)
+      }
+    })
 
     return () => {
       isMounted = false
