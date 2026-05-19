@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import TrophyDataService, { Trophy } from '@/lib/trophy-data-service'
+import { useTrophies } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
 import Link from 'next/link'
 import {
@@ -16,17 +16,9 @@ import { ArrowRight } from 'lucide-react'
 export function TrophyTimeline() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
-  const [trophies, setTrophies] = useState<Trophy[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const loadTrophies = async () => {
-      const data = await TrophyDataService.getTrophies()
-      setTrophies(data.sort((a, b) => b.year - a.year))
-      setIsLoading(false)
-    }
-    loadTrophies()
-  }, [])
+  
+  // Use realtime hook - automatically syncs when admin updates
+  const { trophies, loading: isLoading } = useTrophies()
 
   const categoryColors = {
     league: 'from-primary to-red-600',

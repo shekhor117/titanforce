@@ -9,6 +9,7 @@ import type {
   NewsItem,
   MediaItem,
   Fan,
+  Trophy,
 } from '@/lib/data-service'
 
 export function useDataStore() {
@@ -347,4 +348,56 @@ export function useMediaItems() {
   }, [])
 
   return { mediaItems, loading, error, service }
+}
+
+export function useTrophies() {
+  const service = getDataService()
+  const [trophies, setTrophies] = useState<Trophy[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadTrophies = async () => {
+      try {
+        setLoading(true)
+        const data = await service.getTrophies()
+        if (isMounted) {
+          setTrophies(data)
+          setError(null)
+          console.log("[v0] useTrophies: Loaded", data.length, "trophies")
+        }
+      } catch (err) {
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+          console.error("[v0] useTrophies: Load error:", error.message)
+        }
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadTrophies()
+
+    const unsubscribe = service.subscribeToTrophies((data) => {
+      if (isMounted) {
+        console.log("[v0] useTrophies: Real-time update -", data.length, "trophies")
+        setTrophies(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        console.error("[v0] useTrophies: Subscription error:", err.message)
+        setError(err)
+      }
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
+
+  return { trophies, loading, error, service }
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import GalleryDataService from '@/lib/gallery-data-service'
+import { useMediaItems } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
@@ -56,27 +56,21 @@ const DEFAULT_FEATURED_ITEMS = [
 export function GalleryShowcase() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
-  
-  const [featuredItems, setFeaturedItems] = useState(DEFAULT_FEATURED_ITEMS)
-  const [isLoading, setIsLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
-
-  useEffect(() => {
-    const loadFeaturedItems = async () => {
-      try {
-        const featured = await GalleryDataService.getFeaturedItems(6)
-        if (featured && featured.length > 0) {
-          setFeaturedItems(featured)
-        }
-      } catch (error) {
-        console.error('Error loading featured items:', error)
-        // Keep default items on error
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadFeaturedItems()
-  }, [])
+  
+  // Use realtime hook for media items - automatically syncs when admin updates
+  const { mediaItems, loading: isLoading, error } = useMediaItems()
+  
+  // Filter to featured items and map to display format
+  const featuredItems = mediaItems.length > 0 ? mediaItems.map(item => ({
+    id: item.id,
+    title: item.title,
+    description: item.description || '',
+    imageUrl: item.url,
+    type: item.category || item.type,
+    isFeatured: true,
+    createdAt: new Date(item.created_at)
+  })) : DEFAULT_FEATURED_ITEMS
 
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-background to-card/30">
