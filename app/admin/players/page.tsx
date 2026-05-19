@@ -2,103 +2,29 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { useAdmin } from "@/lib/admin-context"
-import { Plus, Edit, Trash2, Save, X, ChevronDown } from "lucide-react"
-import { dataStore, Player } from "@/lib/data-store"
-import PlayerDataService from "@/lib/player-data-service"
+import { Plus, Edit, Trash2, Save, X } from "lucide-react"
+import { getDataService } from "@/lib/data-service"
+import type { Player } from "@/lib/data-service"
 
 export default function AdminPlayers() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const { admin } = useAdmin()
   const [showForm, setShowForm] = useState(false)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [players, setPlayers] = useState<Player[]>([])
-  const [isClient, setIsClient] = useState(false)
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    basic: true,
-    biography: false,
-    attributes: false,
-    stats: false,
-    trophies: false,
-    training: false
-  })
+  const [isLoading, setIsLoading] = useState(true)
+  
   const [formData, setFormData] = useState({
     name: "",
-    num: "",
-    age: "",
+    number: "",
     position: "",
-    category: "",
-    status: "",
-    hometown: "",
-    foot: "Right",
-    email: "",
-    date_of_birth: "",
-    join_date: "",
+    status: "active" as "active" | "injured" | "suspended",
     bio: "",
     image_url: "",
-    goals: "",
-    assists: "",
-    clean_sheets: "",
-    appearances: "",
-    minutes_played: "",
-    pass_accuracy: "",
-    chances_created: "",
-    premier_matches: "",
-    cup_matches: "",
-    yellow_cards: "",
-    red_cards: "",
-    man_of_the_match: "",
-    average_rating: "",
-    pace: "",
-    shooting: "",
-    passing: "",
-    dribbling: "",
-    defending: "",
-    physical: ""
-  })
-  const [imagePreview, setImagePreview] = useState<string>("")
-  const [uploadingImage, setUploadingImage] = useState(false)
-  const [trophies, setTrophies] = useState<{ name: string; year: string }[]>([])
-  const [newTrophy, setNewTrophy] = useState({ name: "", year: new Date().getFullYear().toString() })
-  const [trainingData, setTrainingData] = useState({
-    avg_fitness: "",
-    avg_intensity: "",
-    peak_performance: "",
-    total_sessions: "",
-    pace_recovery: "",
-    ball_control: "",
-    agility_drills: "",
-    strength_training: "",
-    flexibility: "",
-    endurance: "",
-    weekly_training: [
-      { day: "Mon", value: "" },
-      { day: "Tue", value: "" },
-      { day: "Wed", value: "" },
-      { day: "Thu", value: "" },
-      { day: "Fri", value: "" },
-      { day: "Sat", value: "" },
-      { day: "Sun", value: "" }
-    ],
-    weekly_progress: [
-      { week: "W1", value: "" },
-      { week: "W2", value: "" },
-      { week: "W3", value: "" },
-      { week: "W4", value: "" },
-      { week: "W5", value: "" },
-      { week: "W6", value: "" }
-    ],
-    training_intensity: [
-      { day: "Mon", value: "" },
-      { day: "Tue", value: "" },
-      { day: "Wed", value: "" },
-      { day: "Thu", value: "" },
-      { day: "Fri", value: "" },
-      { day: "Sat", value: "" },
-      { day: "Sun", value: "" }
-    ]
+    goals: 0,
+    assists: 0,
+    appearances: 0,
   })
 
   useEffect(() => {
@@ -106,706 +32,158 @@ export default function AdminPlayers() {
   }, [])
 
   const loadPlayers = async () => {
-    setIsClient(true)
-    const playersData = await PlayerDataService.getPlayers()
-    setPlayers(Array.isArray(playersData) ? playersData : [])
+    try {
+      setIsLoading(true)
+      const dataService = getDataService()
+      const data = await dataService.getPlayers()
+      setPlayers(Array.isArray(data) ? data : [])
+    } catch (error) {
+      console.error("[v0] Error loading players:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSavePlayer = async () => {
+    if (!formData.name || !formData.number) {
+      alert(isBn ? "নাম এবং নম্বর প্রয়োজন" : "Name and number are required")
+      return
+    }
+
+    try {
+      const dataService = getDataService()
+      const playerData = {
+        name: formData.name,
+        number: parseInt(formData.number),
+        position: formData.position || "Forward",
+        status: formData.status,
+        bio: formData.bio,
+        image_url: formData.image_url,
+        goals: formData.goals,
+        assists: formData.assists,
+        appearances: formData.appearances,
+      }
+
+      if (editingPlayer) {
+        await dataService.updatePlayer(editingPlayer.id, playerData)
+      } else {
+        await dataService.createPlayer(playerData)
+      }
+
+      await loadPlayers()
+      resetForm()
+      alert(isBn ? "সংরক্ষণ সফল" : "Saved successfully")
+    } catch (error) {
+      console.error("[v0] Error:", error)
+      alert(isBn ? "ত্রুটি হয়েছে" : "Error occurred")
+    }
+  }
+
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player)
+    setFormData({
+      name: player.name,
+      number: player.number.toString(),
+      position: player.position || "",
+      status: player.status || "active",
+      bio: player.bio || "",
+      image_url: player.image_url || "",
+      goals: player.goals || 0,
+      assists: player.assists || 0,
+      appearances: player.appearances || 0,
+    })
+    setShowForm(true)
+  }
+
+  const handleDeletePlayer = async (id: string) => {
+    if (!confirm(isBn ? "নিশ্চিত?" : "Are you sure?")) return
+
+    try {
+      const dataService = getDataService()
+      await dataService.deletePlayer(id)
+      await loadPlayers()
+    } catch (error) {
+      console.error("[v0] Error:", error)
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      number: "",
+      position: "",
+      status: "active",
+      bio: "",
+      image_url: "",
+      goals: 0,
+      assists: 0,
+      appearances: 0,
+    })
+    setEditingPlayer(null)
+    setShowForm(false)
   }
 
   const filteredPlayers = players.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleEditPlayer = (player: Player) => {
-    if (admin?.role !== "admin") {
-      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সম্পাদনা করতে পারে" : "Only admins can edit players")
-      return
-    }
-    setEditingPlayer(player)
-    const imageUrl = player.image_url || ""
-    setImagePreview(imageUrl)
-    setTrophies(player.trophies || [])
-    setFormData({
-      name: player.name,
-      num: player.num.toString(),
-      age: player.age.toString(),
-      position: player.position || "",
-      category: player.category || "",
-      status: player.status || "active",
-      hometown: player.hometown || "",
-      foot: player.foot || "Right",
-      email: player.email || "",
-      date_of_birth: player.date_of_birth || "",
-      join_date: player.join_date || "",
-      bio: player.bio || "",
-      image_url: imageUrl,
-      goals: player.goals?.toString() || "0",
-      assists: player.assists?.toString() || "0",
-      clean_sheets: player.clean_sheets?.toString() || "0",
-      appearances: player.appearances?.toString() || "0",
-      minutes_played: player.minutes_played?.toString() || "0",
-      pass_accuracy: player.pass_accuracy?.toString() || "0",
-      chances_created: player.chances_created?.toString() || "0",
-      premier_matches: player.premier_matches?.toString() || "0",
-      cup_matches: player.cup_matches?.toString() || "0",
-      yellow_cards: player.yellow_cards?.toString() || "0",
-      red_cards: player.red_cards?.toString() || "0",
-      man_of_the_match: player.man_of_the_match?.toString() || "0",
-      average_rating: player.average_rating?.toString() || "0",
-      pace: player.pace?.toString() || "0",
-      shooting: player.shooting?.toString() || "0",
-      passing: player.passing?.toString() || "0",
-      dribbling: player.dribbling?.toString() || "0",
-      defending: player.defending?.toString() || "0",
-      physical: player.physical?.toString() || "0"
-    })
-    setShowForm(true)
-  }
-
-  const handleDeletePlayer = (playerId: string) => {
-    if (admin?.role !== "admin") {
-      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় মুছতে পারে" : "Only admins can delete players")
-      return
-    }
-    if (!confirm(isBn ? "এই খেলোয়াড় মুছতে চান?" : "Delete this player?")) return
-    
-    try {
-      // Delete from dataStore
-      dataStore.deletePlayer(playerId)
-      alert(isBn ? "খেলোয়াড় মুছা হয়েছে" : "Player deleted")
-      loadPlayers()
-      setEditingPlayer(null)
-    } catch (error) {
-      console.error('[v0] Error deleting player:', error)
-      alert(isBn ? 'খেলোয়াড় মোছা ব্যর্থ' : 'Failed to delete player')
-    }
-  }
-
-  const handleSavePlayer = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (admin?.role !== "admin") {
-      alert(isBn ? "শুধুমাত্র অ্যাডমিন খেলোয়াড় সংরক্ষণ করতে পারে" : "Only admins can save players")
-      return
-    }
-
-    try {
-      const playerData: Partial<Player> = {
-        name: formData.name,
-        num: parseInt(formData.num),
-        age: parseInt(formData.age),
-        position: formData.position,
-        category: formData.category as any,
-        status: formData.status as any,
-        hometown: formData.hometown,
-        foot: formData.foot as any,
-        email: formData.email,
-        date_of_birth: formData.date_of_birth,
-        join_date: formData.join_date,
-        bio: formData.bio,
-        image_url: formData.image_url,
-        goals: parseInt(formData.goals),
-        assists: parseInt(formData.assists),
-        clean_sheets: parseInt(formData.clean_sheets),
-        appearances: parseInt(formData.appearances),
-        minutes_played: parseInt(formData.minutes_played),
-        pass_accuracy: parseInt(formData.pass_accuracy),
-        chances_created: parseInt(formData.chances_created),
-        premier_matches: parseInt(formData.premier_matches),
-        cup_matches: parseInt(formData.cup_matches),
-        yellow_cards: parseInt(formData.yellow_cards),
-        red_cards: parseInt(formData.red_cards),
-        man_of_the_match: parseInt(formData.man_of_the_match),
-        average_rating: parseInt(formData.average_rating),
-        pace: parseInt(formData.pace),
-        shooting: parseInt(formData.shooting),
-        passing: parseInt(formData.passing),
-        dribbling: parseInt(formData.dribbling),
-        defending: parseInt(formData.defending),
-        physical: parseInt(formData.physical),
-        trophies: trophies
-      }
-
-      if (editingPlayer) {
-        dataStore.updatePlayer(editingPlayer.id, playerData)
-      } else {
-        dataStore.addPlayer(playerData as any)
-      }
-
-      alert(isBn ? "খেলোয়াড় সংরক্ষিত হয়েছে" : "Player saved successfully")
-      setShowForm(false)
-      setEditingPlayer(null)
-      setTrophies([])
-      setNewTrophy({ name: "", year: new Date().getFullYear().toString() })
-      setImagePreview("")
-      setTrainingData({
-        avg_fitness: "",
-        avg_intensity: "",
-        peak_performance: "",
-        total_sessions: "",
-        pace_recovery: "",
-        ball_control: "",
-        agility_drills: "",
-        strength_training: "",
-        flexibility: "",
-        endurance: "",
-        weekly_training: [
-          { day: "Mon", value: "" },
-          { day: "Tue", value: "" },
-          { day: "Wed", value: "" },
-          { day: "Thu", value: "" },
-          { day: "Fri", value: "" },
-          { day: "Sat", value: "" },
-          { day: "Sun", value: "" }
-        ],
-        weekly_progress: [
-          { week: "W1", value: "" },
-          { week: "W2", value: "" },
-          { week: "W3", value: "" },
-          { week: "W4", value: "" },
-          { week: "W5", value: "" },
-          { week: "W6", value: "" }
-        ],
-        training_intensity: [
-          { day: "Mon", value: "" },
-          { day: "Tue", value: "" },
-          { day: "Wed", value: "" },
-          { day: "Thu", value: "" },
-          { day: "Fri", value: "" },
-          { day: "Sat", value: "" },
-          { day: "Sun", value: "" }
-        ]
-      })
-      setFormData({ 
-        name: "", num: "", age: "", position: "", category: "", status: "active", hometown: "", 
-        foot: "Right", email: "", date_of_birth: "", join_date: "", bio: "", image_url: "",
-        goals: "0", assists: "0", clean_sheets: "0", appearances: "0", minutes_played: "0",
-        pass_accuracy: "0", chances_created: "0", premier_matches: "0", cup_matches: "0",
-        yellow_cards: "0", red_cards: "0", man_of_the_match: "0", average_rating: "0",
-        pace: "0", shooting: "0", passing: "0", dribbling: "0", defending: "0", physical: "0"
-      })
-      loadPlayers()
-    } catch (error) {
-      console.error('[v0] Error saving player:', error)
-      alert(isBn ? 'খেলোয়াড় সংরক্ষণ ব্যর্থ' : 'Failed to save player')
-    }
-  }
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    try {
-      setUploadingImage(true)
-      
-      // Create a data URL for immediate preview
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const result = event.target?.result as string
-        setImagePreview(result)
-        setFormData(prev => ({ ...prev, image_url: result }))
-      }
-      reader.readAsDataURL(file)
-    } catch (error) {
-      console.error("[v0] Error uploading image:", error)
-      alert(isBn ? "ছবি আপলোড ব্যর্থ" : "Failed to upload image")
-    } finally {
-      setUploadingImage(false)
-    }
-  }
-
-  const openNewPlayerForm = () => {
-    setEditingPlayer(null)
-    setImagePreview("")
-    setFormData({ 
-      name: "", num: "", age: "", position: "", category: "", status: "active", hometown: "", 
-      foot: "Right", email: "", date_of_birth: "", join_date: "", bio: "", image_url: "",
-      goals: "0", assists: "0", clean_sheets: "0", appearances: "0", minutes_played: "0",
-      pass_accuracy: "0", chances_created: "0", premier_matches: "0", cup_matches: "0",
-      yellow_cards: "0", red_cards: "0", man_of_the_match: "0", average_rating: "0",
-      pace: "0", shooting: "0", passing: "0", dribbling: "0", defending: "0", physical: "0"
-    })
-    setShowForm(true)
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "খেলোয়াড়" : "Players"}
-          </h1>
-          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "দল খেলোয়াড় পরিচালনা করুন" : "Manage team players"}
-          </p>
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">{isBn ? "খেলোয়াড় পরিচালনা" : "Players"}</h1>
+
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded"
+          >
+            <Plus className="w-4 h-4" />
+            {isBn ? "নতুন যোগ করুন" : "Add"}
+          </button>
+          <input
+            type="text"
+            placeholder={isBn ? "খুঁজুন..." : "Search..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 border border-border rounded flex-1"
+          />
         </div>
-        <button
-          onClick={openNewPlayerForm}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition"
-        >
-          <Plus className="w-4 h-4" />
-          {isBn ? "খেলোয়াড় যোগ করুন" : "Add Player"}
-        </button>
-      </div>
 
-      {/* Search */}
-      <div>
-        <input
-          type="text"
-          placeholder={isBn ? "খেলোয়াড় অনুসন্ধান করুন..." : "Search players..."}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border-2 border-secondary bg-transparent"
-        />
-      </div>
-
-      {/* Players Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredPlayers.map((player) => (
-          <div key={player.id} className="rounded-lg border-2 border-secondary bg-card p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <h3 className="font-semibold text-lg">{player.name}</h3>
-                <p className="text-sm text-foreground/60">#{player.num}</p>
-              </div>
-              <span className="text-xs px-2 py-1 rounded bg-primary/20 text-primary">
-                {player.position || player.pos || "N/A"}
-              </span>
-            </div>
-
-            <div className="space-y-1 text-sm text-foreground/70 mb-4">
-              <p>{isBn ? "বয়স" : "Age"}: {player.age}</p>
-              <p>{isBn ? "অবস্থান" : "Position"}: {player.position || player.pos}</p>
-              <p>{isBn ? "অবস্থা" : "Status"}: {player.status}</p>
-            </div>
-
+        {showForm && (
+          <div className="bg-muted p-4 rounded-lg mb-6 space-y-3">
+            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
+            <input type="number" placeholder="Number" value={formData.number} onChange={(e) => setFormData({...formData, number: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
+            <input type="text" placeholder="Position" value={formData.position} onChange={(e) => setFormData({...formData, position: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
+            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 border border-border rounded">
+              <option value="active">Active</option>
+              <option value="injured">Injured</option>
+              <option value="suspended">Suspended</option>
+            </select>
+            <input type="number" placeholder="Goals" value={formData.goals} onChange={(e) => setFormData({...formData, goals: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 border border-border rounded" />
             <div className="flex gap-2">
-              <button
-                onClick={() => handleEditPlayer(player)}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-primary text-primary hover:bg-primary/10 transition text-sm"
-              >
-                <Edit className="w-4 h-4" />
-                {isBn ? "সম্পাদনা" : "Edit"}
+              <button onClick={handleSavePlayer} className="flex-1 bg-green-600 text-white py-2 rounded flex items-center justify-center gap-2">
+                <Save className="w-4 h-4" /> {isBn ? "সংরক্ষণ" : "Save"}
               </button>
-              <button
-                onClick={() => handleDeletePlayer(player.id)}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-red-500/50 text-red-400 hover:bg-red-500/10 transition text-sm"
-              >
-                <Trash2 className="w-4 h-4" />
-                {isBn ? "মুছুন" : "Delete"}
+              <button onClick={resetForm} className="flex-1 bg-gray-600 text-white py-2 rounded">
+                {isBn ? "বাতিল" : "Cancel"}
               </button>
             </div>
           </div>
-        ))}
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {filteredPlayers.map(player => (
+            <div key={player.id} className="border border-border rounded-lg p-4">
+              <h3 className="font-bold text-lg">{player.name} #{player.number}</h3>
+              <p className="text-sm text-muted-foreground">{player.position}</p>
+              <div className="flex gap-2 mt-3">
+                <button onClick={() => handleEditPlayer(player)} className="flex-1 bg-blue-600 text-white py-2 rounded text-sm">Edit</button>
+                <button onClick={() => handleDeletePlayer(player.id)} className="flex-1 bg-red-600 text-white py-2 rounded text-sm">Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-
-      {filteredPlayers.length === 0 && (
-        <div className="text-center py-12">
-          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "কোনো খেলোয়াড় পাওয়া যায়নি" : "No players found"}
-          </p>
-        </div>
-      )}
-
-      {/* Add/Edit Player Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border-2 border-secondary rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-            <div className="flex justify-between items-center sticky top-0 bg-card pb-4 border-b border-secondary">
-              <h2 className="text-2xl font-bold">
-                {editingPlayer ? (isBn ? "খেলোয়াড় সম্পাদনা করুন" : "Edit Player") : (isBn ? "নতুন খেলোয়াড় যোগ করুন" : "Add New Player")}
-              </h2>
-              <button 
-                onClick={() => {
-                  setShowForm(false)
-                  setEditingPlayer(null)
-                }}
-                className="text-foreground/60 hover:text-foreground"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <form className="space-y-4" onSubmit={handleSavePlayer}>
-              {/* BASIC INFORMATION */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, basic: !expandedSections.basic })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "প্রাথমিক তথ্য" : "Basic Information"}</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.basic ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.basic && (
-                  <div className="px-4 py-4 space-y-4 border-t border-secondary">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">{isBn ? "নাম" : "Name"} <span className="text-red-500">*</span></label>
-                      <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "জার্সি নং" : "Jersey #"} <span className="text-red-500">*</span></label>
-                        <input type="number" required value={formData.num} onChange={(e) => setFormData({ ...formData, num: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "বয়স" : "Age"} <span className="text-red-500">*</span></label>
-                        <input type="number" required value={formData.age} onChange={(e) => setFormData({ ...formData, age: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "অবস্থান" : "Position"} <span className="text-red-500">*</span></label>
-                        <select required value={formData.position} onChange={(e) => setFormData({ ...formData, position: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50">
-                          <option value="">Select</option>
-                          <option value="CM">CM</option>
-                          <option value="CDM">CDM</option>
-                          <option value="GK">GK</option>
-                          <option value="DF">DF</option>
-                          <option value="MF">MF</option>
-                          <option value="FW">FW</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "বিভাগ" : "Category"}</label>
-                        <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50">
-                          <option value="">Select</option>
-                          <option value="GK">GK</option>
-                          <option value="DEF">DEF</option>
-                          <option value="MID">MID</option>
-                          <option value="FWD">FWD</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "অবস্থা" : "Status"} <span className="text-red-500">*</span></label>
-                        <select required value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50">
-                          <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
-                          <option value="injured">{isBn ? "আহত" : "Injured"}</option>
-                          <option value="suspended">{isBn ? "স্থগিত" : "Suspended"}</option>
-                          <option value="recovering">{isBn ? "পুনরুদ্ধার" : "Recovering"}</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "পা" : "Foot"}</label>
-                        <select value={formData.foot} onChange={(e) => setFormData({ ...formData, foot: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50">
-                          <option value="Right">Right</option>
-                          <option value="Left">Left</option>
-                          <option value="Both">Both</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "হোমটাউন" : "Hometown"}</label>
-                        <input type="text" value={formData.hometown} onChange={(e) => setFormData({ ...formData, hometown: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "ইমেইল" : "Email"}</label>
-                        <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "জন্মতারিখ" : "Date of Birth"}</label>
-                        <input type="date" value={formData.date_of_birth} onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "যোগদানের তারিখ" : "Join Date"}</label>
-                        <input type="date" value={formData.join_date} onChange={(e) => setFormData({ ...formData, join_date: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">{isBn ? "খেলোয়াড়ের ছবি" : "Player Image"}</label>
-                      <div className="flex gap-4">
-                        <div className="flex-1">
-                          <div className="mb-3">
-                            <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-secondary rounded-lg cursor-pointer hover:bg-foreground/5 transition">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                disabled={uploadingImage}
-                                className="hidden"
-                              />
-                              <span className="text-center text-sm">
-                                {uploadingImage ? (isBn ? "আপলোড হচ্ছে..." : "Uploading...") : (isBn ? "ছবি নির্বাচন করুন" : "Choose image")}
-                              </span>
-                            </label>
-                          </div>
-                          <label className="block text-xs font-medium mb-1">{isBn ? "অথবা URL" : "or Image URL"}</label>
-                          <input
-                            type="url"
-                            value={formData.image_url}
-                            onChange={(e) => {
-                              setFormData({ ...formData, image_url: e.target.value })
-                              setImagePreview(e.target.value)
-                            }}
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm"
-                          />
-                        </div>
-                        {imagePreview && (
-                          <div className="w-24 h-32 rounded-lg overflow-hidden border border-secondary flex-shrink-0">
-                            <img
-                              src={imagePreview}
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                              onError={() => setImagePreview("")}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* BIOGRAPHY */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, biography: !expandedSections.biography })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "জীবনী" : "Biography"}</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.biography ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.biography && (
-                  <div className="px-4 py-4 space-y-4 border-t border-secondary">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">{isBn ? "বায়োগ্রাফি" : "Biography"}</label>
-                      <textarea value={formData.bio} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} rows={4} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* PLAYER ATTRIBUTES */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, attributes: !expandedSections.attributes })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "খেলোয়াড়ের বৈশিষ্ট্য" : "Player Attributes (0-100)"}</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.attributes ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.attributes && (
-                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
-                    <div className="grid grid-cols-2 gap-3">
-                      {[{ key: "pace", label: "Pace" }, { key: "shooting", label: "Shooting" }, { key: "passing", label: "Passing" }, { key: "dribbling", label: "Dribbling" }, { key: "defending", label: "Defending" }, { key: "physical", label: "Physical" }].map(attr => (
-                        <div key={attr.key}>
-                          <label className="block text-sm font-medium mb-1">{attr.label}</label>
-                          <input type="number" min="0" max="100" value={formData[attr.key as keyof typeof formData]} onChange={(e) => setFormData({ ...formData, [attr.key]: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* STATISTICS */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, stats: !expandedSections.stats })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "পরিসংখ্যান" : "Statistics"}</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.stats ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.stats && (
-                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
-                    <div className="grid grid-cols-3 gap-2">
-                      {[{ key: "goals", label: "Goals" }, { key: "assists", label: "Assists" }, { key: "appearances", label: "Appearances" }, { key: "minutes_played", label: "Minutes Played" }, { key: "pass_accuracy", label: "Pass Accuracy %" }, { key: "chances_created", label: "Chances Created" }, { key: "premier_matches", label: "Premier Matches" }, { key: "cup_matches", label: "Cup Matches" }, { key: "yellow_cards", label: "Yellow Cards" }, { key: "red_cards", label: "Red Cards" }, { key: "man_of_the_match", label: "MOTM Awards" }, { key: "average_rating", label: "Average Rating" }, { key: "clean_sheets", label: "Clean Sheets" }].map(stat => (
-                        <div key={stat.key}>
-                          <label className="block text-xs font-medium mb-1">{stat.label}</label>
-                          <input type="number" value={formData[stat.key as keyof typeof formData]} onChange={(e) => setFormData({ ...formData, [stat.key]: e.target.value })} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-sm" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* TROPHIES */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, trophies: !expandedSections.trophies })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "ট্রফি" : "Trophies"} ({trophies.length})</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.trophies ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.trophies && (
-                  <div className="px-4 py-4 space-y-3 border-t border-secondary">
-                    {trophies.length > 0 && (
-                      <div className="space-y-2 mb-4">
-                        {trophies.map((trophy, idx) => (
-                          <div key={idx} className="flex items-center justify-between px-3 py-2 rounded bg-foreground/5 border border-secondary">
-                            <div>
-                              <p className="font-medium">{trophy.name}</p>
-                              <p className="text-xs text-foreground/60">{trophy.year}</p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setTrophies(trophies.filter((_, i) => i !== idx))}
-                              className="text-red-400 hover:text-red-300"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className="space-y-2">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">{isBn ? "ট্রফির নাম" : "Trophy Name"}</label>
-                        <input type="text" value={newTrophy.name} onChange={(e) => setNewTrophy({ ...newTrophy, name: e.target.value })} placeholder={isBn ? "যেমন: চ্যাম্পিয়নশিপ" : "e.g., Championship"} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">{isBn ? "বছর" : "Year"}</label>
-                          <input type="number" value={newTrophy.year} onChange={(e) => setNewTrophy({ ...newTrophy, year: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50" />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (newTrophy.name.trim()) {
-                              setTrophies([...trophies, newTrophy])
-                              setNewTrophy({ name: "", year: new Date().getFullYear().toString() })
-                            }
-                          }}
-                          className="flex items-center justify-center gap-2 px-3 py-2 bg-primary/20 text-primary rounded hover:bg-primary/30 transition font-medium"
-                        >
-                          <Plus className="w-4 h-4" />
-                          {isBn ? "যোগ করুন" : "Add"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* TRAINING PERFORMANCE */}
-              <div className="border border-secondary rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setExpandedSections({ ...expandedSections, training: !expandedSections.training })}
-                  className="w-full flex items-center justify-between px-4 py-3 font-semibold text-lg hover:bg-foreground/5"
-                >
-                  <span>{isBn ? "প্রশিক্ষণ কর্মক্ষমতা" : "Training Performance"}</span>
-                  <ChevronDown className={`w-5 h-5 transition ${expandedSections.training ? "rotate-180" : ""}`} />
-                </button>
-                {expandedSections.training && (
-                  <div className="px-4 py-4 space-y-4 border-t border-secondary">
-                    {/* Analytics Metrics */}
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3">{isBn ? "বিশ্লেষণ মেট্রিক্স" : "Analytics Metrics"}</h4>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs font-medium mb-1">{isBn ? "গড় ফিটনেস" : "Avg Fitness (%)"}</label>
-                          <input type="number" min="0" max="100" value={trainingData.avg_fitness} onChange={(e) => setTrainingData({ ...trainingData, avg_fitness: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium mb-1">{isBn ? "গড় তীব্রতা" : "Avg Intensity (%)"}</label>
-                          <input type="number" min="0" max="100" value={trainingData.avg_intensity} onChange={(e) => setTrainingData({ ...trainingData, avg_intensity: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium mb-1">{isBn ? "শিখর কর্মক্ষমতা" : "Peak Performance (%)"}</label>
-                          <input type="number" min="0" max="100" value={trainingData.peak_performance} onChange={(e) => setTrainingData({ ...trainingData, peak_performance: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium mb-1">{isBn ? "মোট সেশন" : "Total Sessions"}</label>
-                          <input type="number" value={trainingData.total_sessions} onChange={(e) => setTrainingData({ ...trainingData, total_sessions: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Attribute Skills */}
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3">{isBn ? "দক্ষতা স্তর (0-100)" : "Skill Levels (0-100)"}</h4>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[{ key: "pace_recovery", label: isBn ? "পেস রিকভারি" : "Pace Recovery" }, { key: "ball_control", label: isBn ? "বল নিয়ন্ত্রণ" : "Ball Control" }, { key: "agility_drills", label: isBn ? "চটপটতা ড্রিল" : "Agility Drills" }, { key: "strength_training", label: isBn ? "শক্তি প্রশিক্ষণ" : "Strength Training" }, { key: "flexibility", label: isBn ? "নমনীয়তা" : "Flexibility" }, { key: "endurance", label: isBn ? "সহনশীলতা" : "Endurance" }].map(attr => (
-                          <div key={attr.key}>
-                            <label className="block text-xs font-medium mb-1">{attr.label}</label>
-                            <input type="number" min="0" max="100" value={trainingData[attr.key as keyof typeof trainingData] as string} onChange={(e) => setTrainingData({ ...trainingData, [attr.key]: e.target.value })} className="w-full px-3 py-2 rounded border border-secondary bg-background/50 text-sm" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Weekly Training Data */}
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3">{isBn ? "সাপ্তাহিক প্রশিক্ষণ" : "Weekly Training (0-100)"}</h4>
-                      <div className="grid grid-cols-7 gap-2">
-                        {trainingData.weekly_training.map((day, idx) => (
-                          <div key={idx}>
-                            <label className="block text-xs font-medium text-center mb-1">{day.day}</label>
-                            <input type="number" min="0" max="100" value={day.value} onChange={(e) => {
-                              const updated = [...trainingData.weekly_training]
-                              updated[idx].value = e.target.value
-                              setTrainingData({ ...trainingData, weekly_training: updated })
-                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Weekly Progress Data */}
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3">{isBn ? "সাপ্তাহিক অগ্রগতি" : "Weekly Progress (0-100)"}</h4>
-                      <div className="grid grid-cols-6 gap-2">
-                        {trainingData.weekly_progress.map((week, idx) => (
-                          <div key={idx}>
-                            <label className="block text-xs font-medium text-center mb-1">{week.week}</label>
-                            <input type="number" min="0" max="100" value={week.value} onChange={(e) => {
-                              const updated = [...trainingData.weekly_progress]
-                              updated[idx].value = e.target.value
-                              setTrainingData({ ...trainingData, weekly_progress: updated })
-                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Training Intensity Data */}
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3">{isBn ? "প্রশিক্ষণ তীব্রতা" : "Training Intensity (0-100)"}</h4>
-                      <div className="grid grid-cols-7 gap-2">
-                        {trainingData.training_intensity.map((day, idx) => (
-                          <div key={idx}>
-                            <label className="block text-xs font-medium text-center mb-1">{day.day}</label>
-                            <input type="number" min="0" max="100" value={day.value} onChange={(e) => {
-                              const updated = [...trainingData.training_intensity]
-                              updated[idx].value = e.target.value
-                              setTrainingData({ ...trainingData, training_intensity: updated })
-                            }} className="w-full px-2 py-1 rounded border border-secondary bg-background/50 text-center text-xs" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-3 pt-2 sticky bottom-0 bg-card border-t border-secondary py-4">
-                <button type="submit" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition">
-                  <Save className="w-4 h-4" />
-                  {isBn ? "সংরক্ষণ করুন" : "Save"}
-                </button>
-                <button type="button" onClick={() => { setShowForm(false); setEditingPlayer(null) }} className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-foreground/20 rounded hover:bg-foreground/5 transition">
-                  <X className="w-4 h-4" />
-                  {isBn ? "বাতিল করুন" : "Cancel"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
