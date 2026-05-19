@@ -13,8 +13,6 @@ import {
   Globe,
   Info,
   X,
-  ChevronLeft,
-  LogIn,
 } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
@@ -40,9 +38,7 @@ export function SiteSidebar() {
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
-  const { setOpenMobile, toggleSidebar, state } = useSidebar()
-
-  const isCollapsed = state === "collapsed"
+  const { setOpenMobile } = useSidebar()
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
@@ -62,9 +58,9 @@ export function SiteSidebar() {
   return (
     <Sidebar
       side="left"
-      variant="sidebar"
-      collapsible="icon"
-      className="border-r border-sidebar-border"
+      variant="floating"
+      collapsible="offcanvas"
+      className="border-none"
     >
       <SidebarHeader className="p-4">
         <div className="flex items-center justify-between">
@@ -80,16 +76,14 @@ export function SiteSidebar() {
               height={40}
               className="object-contain group-hover:scale-110 transition-transform"
             />
-            {!isCollapsed && (
-              <span
-                className="font-[var(--font-display)] text-xl tracking-wider bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: "linear-gradient(107deg, #a71930 0%, #465fb1 100%)",
-                }}
-              >
-                TITAN FORCE
-              </span>
-            )}
+            <span
+              className="font-[var(--font-display)] text-xl tracking-wider bg-clip-text text-transparent"
+              style={{
+                backgroundImage: "linear-gradient(107deg, #a71930 0%, #465fb1 100%)",
+              }}
+            >
+              TITAN FORCE
+            </span>
           </Link>
           <button
             onClick={() => setOpenMobile(false)}
@@ -97,15 +91,6 @@ export function SiteSidebar() {
             aria-label="Close sidebar"
           >
             <X className="w-5 h-5" />
-          </button>
-          <button
-            onClick={toggleSidebar}
-            className={`hidden md:flex p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-all ${
-              isCollapsed ? "rotate-180" : ""
-            }`}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <ChevronLeft className="w-5 h-5" />
           </button>
         </div>
       </SidebarHeader>
@@ -180,27 +165,16 @@ export function SiteSidebar() {
 
       <SidebarFooter className="p-4 border-t border-border/50">
         <div className="flex flex-col gap-3">
-          <div className={`flex items-center ${isCollapsed ? "flex-col gap-2" : "gap-2"}`}>
+          <div className="flex items-center gap-2">
             <ThemeToggle />
-            {!isCollapsed && (
-              <button
-                onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-border text-foreground hover:bg-muted transition-all flex-1 text-sm font-medium"
-                aria-label="Toggle language"
-              >
-                <Globe className="w-4 h-4" />
-                <span>{language === "en" ? "বাংলা" : "English"}</span>
-              </button>
-            )}
-            {isCollapsed && (
-              <button
-                onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center p-2 rounded-md border border-border text-foreground hover:bg-muted transition-all"
-                aria-label="Toggle language"
-              >
-                <Globe className="w-4 h-4" />
-              </button>
-            )}
+            <button
+              onClick={() => setLanguage(language === "en" ? "bn" : "en")}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-border text-foreground hover:bg-muted transition-all flex-1 text-sm font-medium"
+              aria-label="Toggle language"
+            >
+              <Globe className="w-4 h-4" />
+              <span>{language === "en" ? "বাংলা" : "English"}</span>
+            </button>
           </div>
 
           {user ? (
@@ -210,14 +184,10 @@ export function SiteSidebar() {
               href="/login"
               className={`w-full px-4 py-2.5 font-bold text-sm uppercase tracking-wider rounded-md bg-primary text-primary-foreground hover:opacity-90 transition text-center ${
                 language === "bn" ? "font-[var(--font-bengali)]" : ""
-              } ${isCollapsed ? "px-2" : ""}`}
+              }`}
               onClick={handleLinkClick}
             >
-              {isCollapsed ? (
-                <LogIn className="w-4 h-4 mx-auto" />
-              ) : (
-                language === "bn" ? "লগইন" : "Login"
-              )}
+              {language === "bn" ? "লগইন" : "Login"}
             </Link>
           )}
         </div>

@@ -11,12 +11,12 @@ interface SiteLayoutProps {
 
 export function SiteLayout({ children }: SiteLayoutProps) {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <SiteSidebar />
-      <main className="flex flex-col w-full min-h-screen">
+      <div className="flex flex-col w-full min-h-screen">
         <Navbar />
         {children}
-      </main>
+      </div>
     </SidebarProvider>
   )
 }
