@@ -31,6 +31,9 @@ export default function AdminDashboard() {
   const [trophyStats, setTrophyStats] = useState({ total: 0, featured: 0, byCategory: {} })
   const [storeProducts, setStoreProducts] = useState<any[]>([])
   const [storeOrders, setStoreOrders] = useState<any[]>([])
+  const [newsCount, setNewsCount] = useState(0)
+  const [mediaCount, setMediaCount] = useState(0)
+  const [contactCount, setContactCount] = useState(0)
   
   useEffect(() => {
     // Load player stats from Supabase
@@ -85,14 +88,23 @@ export default function AdminDashboard() {
     }
     loadStoreData()
   }, [])
-  
+
   useEffect(() => {
-    // Import dataStore to get local storage data
+    // Load news count from hook data
+    setNewsCount(Array.isArray(newsItems) ? newsItems.length : 0)
+  }, [newsItems])
+
+  useEffect(() => {
+    // Load media count from hook data
+    setMediaCount(Array.isArray(mediaItems) ? mediaItems.length : 0)
+  }, [mediaItems])
+
+  useEffect(() => {
+    // Load contact count from local data
     const loadLocalData = async () => {
       const { dataStore } = await import("@/lib/data-store")
-      setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
       setContacts(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts() : [])
-      setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
+      setContactCount(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts().length : 0)
     }
     loadLocalData()
   }, [])
