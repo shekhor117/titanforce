@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode } from "react"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { Navbar } from "@/components/navbar"
 import { SiteSidebar } from "@/components/site-sidebar"
 
@@ -11,12 +11,12 @@ interface SiteLayoutProps {
 
 export function SiteLayout({ children }: SiteLayoutProps) {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <SiteSidebar />
-      <SidebarInset className="flex flex-col min-h-screen">
+      <div className="flex flex-col w-full min-h-screen">
         <Navbar />
         {children}
-      </SidebarInset>
+      </div>
     </SidebarProvider>
   )
 }
