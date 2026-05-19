@@ -5,6 +5,7 @@ import StoreDataService from "@/lib/store-data-service"
 import GalleryDataService from "@/lib/gallery-data-service"
 import TrophyDataService from "@/lib/trophy-data-service"
 import PlayerDataService from "@/lib/player-data-service"
+import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
@@ -48,12 +49,11 @@ export default function AdminDashboard() {
     loadGalleryStats()
     
     // Real-time subscription for gallery
-    const supabase = require('@/lib/supabase/client').createClient()
+    const supabase = createClient()
     if (supabase) {
       const subscription = supabase
         .channel('gallery-dashboard')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery' }, () => {
-          console.log("[v0] Gallery updated, refreshing stats")
           loadGalleryStats()
         })
         .subscribe()
@@ -79,12 +79,11 @@ export default function AdminDashboard() {
     loadTrophyStats()
     
     // Real-time subscription for trophies
-    const supabase = require('@/lib/supabase/client').createClient()
+    const supabase = createClient()
     if (supabase) {
       const subscription = supabase
         .channel('trophies-dashboard')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'trophies' }, () => {
-          console.log("[v0] Trophies updated, refreshing stats")
           loadTrophyStats()
         })
         .subscribe()
@@ -108,12 +107,11 @@ export default function AdminDashboard() {
     loadStoreProducts()
     
     // Real-time subscription for products
-    const supabase = require('@/lib/supabase/client').createClient()
+    const supabase = createClient()
     if (supabase) {
       const subscription = supabase
         .channel('products-dashboard')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
-          console.log("[v0] Products updated, refreshing stats")
           loadStoreProducts()
         })
         .subscribe()
