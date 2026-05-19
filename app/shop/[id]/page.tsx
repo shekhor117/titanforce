@@ -1,12 +1,14 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { getProductById } from "@/lib/jersey-products"
 import { useCart } from "@/lib/cart-context"
 import { useRouter, useParams } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Star, ShoppingCart, Check, ChevronLeft, AlertCircle } from "lucide-react"
+import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
+import { getProductById } from "@/lib/jersey-products"
+import { createClient } from "@/lib/supabase/client"
 
 export default function ProductDetailPage() {
   const { language } = useLanguage()
@@ -15,7 +17,8 @@ export default function ProductDetailPage() {
   const router = useRouter()
   const productId = params.id as string
 
-  const product = getProductById(productId)
+  const [product, setProduct] = useState<StoreProduct | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const { addItem } = useCart()
 
   const [selectedSize, setSelectedSize] = useState("")
@@ -23,6 +26,75 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1)
   const [isAdded, setIsAdded] = useState(false)
   const [error, setError] = useState("")
+
+  // Load product from database or fallback to mock data
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const dbProduct = await StoreDataService.getProductById(productId)
+        if (dbProduct) {
+          console.log("[v0] Product loaded from database:", dbProduct)
+          setProduct(dbProduct)
+        } else {
+          // Fallback to mock data
+          const mockProduct = getProductById(productId)
+          if (mockProduct) {
+            setProduct(mockProduct as unknown as StoreProduct)
+          }
+        }
+      } catch (error) {
+        console.error("[v0] Error loading product:", error)
+        const mockProduct = getProductById(productId)
+        if (mockProduct) {
+          setProduct(mockProduct as unknown as StoreProduct)
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadProduct()
+  }, [productId])
+
+  // Real-time subscription for product updates
+  useEffect(() => {
+    if (!product) return
+    
+    const supabase = createClient()
+    if (!supabase) return
+
+    const subscription = supabase
+      .channel(`product-${productId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products', filter: `id=eq.${productId}` },
+        async (payload) => {
+          console.log("[v0] Product update received:", payload)
+          // Refresh product data when it changes
+          try {
+            const updatedProduct = await StoreDataService.getProductById(productId)
+            if (updatedProduct) {
+              setProduct(updatedProduct)
+            }
+          } catch (error) {
+            console.error("[v0] Error refreshing product:", error)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [productId, product])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -55,7 +127,7 @@ export default function ProductDetailPage() {
       return
     }
 
-    addItem(product, quantity, selectedSize, selectedColor)
+    addItem(product as any, quantity, selectedSize, selectedColor)
     setIsAdded(true)
 
     setTimeout(() => {
@@ -90,9 +162,12 @@ export default function ProductDetailPage() {
           {/* Image */}
           <div className="bg-secondary rounded-lg overflow-hidden h-96 lg:h-full flex items-center justify-center">
             <img
-              src={product.image}
+              src={product.imageUrl || "/api/placeholder/400/500"}
               alt={product.name}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/api/placeholder/400/500"
+              }}
             />
           </div>
 

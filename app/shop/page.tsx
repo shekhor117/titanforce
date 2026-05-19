@@ -1,30 +1,89 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { mockJerseys, JerseyProduct } from "@/lib/jersey-products"
 import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
+import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
+import { mockJerseys } from "@/lib/jersey-products"
+import { createClient } from "@/lib/supabase/client"
 
 export default function ShopPage() {
   const { language } = useLanguage()
   const { getTotalItems } = useCart()
   const isBn = language === "bn"
+  
+  const [products, setProducts] = useState<StoreProduct[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "rating">("rating")
+  const [isLoading, setIsLoading] = useState(true)
 
   const categories = [
     { id: "all", label: isBn ? "সব" : "All" },
-    { id: "home", label: isBn ? "হোম" : "Home" },
-    { id: "away", label: isBn ? "অ্যাওয়ে" : "Away" },
-    { id: "training", label: isBn ? "প্রশিক্ষণ" : "Training" },
-    { id: "retro", label: isBn ? "রেট্রো" : "Retro" }
+    { id: "Home", label: isBn ? "হোম" : "Home" },
+    { id: "Away", label: isBn ? "অ্যাওয়ে" : "Away" },
+    { id: "Training", label: isBn ? "প্রশিক্ষণ" : "Training" },
+    { id: "Retro", label: isBn ? "রেট্রো" : "Retro" }
   ]
 
-  let filteredProducts = mockJerseys.filter(product => {
+  // Load initial products from database
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const dbProducts = await StoreDataService.getProducts()
+        if (dbProducts && dbProducts.length > 0) {
+          console.log("[v0] Products loaded from database:", dbProducts.length)
+          setProducts(dbProducts)
+        } else {
+          // Fallback to mock data if database is empty
+          console.log("[v0] No products in database, using mock data")
+          setProducts(mockJerseys as unknown as StoreProduct[])
+        }
+      } catch (error) {
+        console.error("[v0] Error loading products:", error)
+        setProducts(mockJerseys as unknown as StoreProduct[])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadProducts()
+  }, [])
+
+  // Real-time subscription for product updates
+  useEffect(() => {
+    const supabase = createClient()
+    if (!supabase) return
+
+    const subscription = supabase
+      .channel('store-products')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        async (payload) => {
+          console.log("[v0] Product update received:", payload)
+          // Refresh products when any changes occur
+          try {
+            const updatedProducts = await StoreDataService.getProducts()
+            if (updatedProducts && updatedProducts.length > 0) {
+              setProducts(updatedProducts)
+            }
+          } catch (error) {
+            console.error("[v0] Error refreshing products:", error)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  let filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === "all" || product.category === selectedCategory
     const matchesSearch = searchQuery === "" || 
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,7 +97,7 @@ export default function ShopPage() {
   } else if (sortBy === "price-desc") {
     filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price)
   } else if (sortBy === "rating") {
-    filteredProducts = [...filteredProducts].sort((a, b) => b.rating - a.rating)
+    filteredProducts = [...filteredProducts].sort((a, b) => (b.rating || 0) - (a.rating || 0))
   }
 
   return (
@@ -132,8 +191,12 @@ export default function ShopPage() {
           </div>
         </motion.div>
 
-        {/* Products Grid */}
-        {filteredProducts.length > 0 ? (
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="text-center py-12">
+            <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
+          </div>
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product, index) => (
               <motion.div
@@ -147,12 +210,15 @@ export default function ShopPage() {
                     {/* Image */}
                     <div className="relative aspect-square bg-background overflow-hidden">
                       <img
-                        src={product.image}
+                        src={product.imageUrl || "/api/placeholder/400/500"}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = "/api/placeholder/400/500"
+                        }}
                       />
                       <div className="absolute top-3 right-3 px-3 py-1 bg-primary text-foreground text-sm font-bold rounded-full">
-                        ৳{product.price}
+                        ৳{product.price.toLocaleString()}
                       </div>
                     </div>
 
@@ -173,12 +239,12 @@ export default function ShopPage() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-4 h-4 ${i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-foreground/30"}`}
+                              className={`w-4 h-4 ${i < Math.floor(product.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-foreground/30"}`}
                             />
                           ))}
                         </div>
                         <span className="text-foreground/60 text-sm">
-                          {product.rating} ({product.reviews} {isBn ? "রিভিউ" : "reviews"})
+                          {(product.rating || 0).toFixed(1)} ({product.reviews || 0} {isBn ? "রিভিউ" : "reviews"})
                         </span>
                       </div>
 
