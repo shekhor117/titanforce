@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import GalleryDataService, { GalleryType, GalleryItem } from '@/lib/gallery-data-service'
 import { useLanguage } from '@/lib/language-context'
+import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
 
-const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = [
+const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
   { value: 'team-events', label: 'Team Events', labelBn: 'টিম ইভেন্ট' },
   { value: 'training', label: 'Training', labelBn: 'প্রশিক্ষণ' },
@@ -14,278 +14,178 @@ const GALLERY_TYPES: { value: GalleryType; label: string; labelBn: string }[] = 
   { value: 'news', label: 'News', labelBn: 'খবর' }
 ]
 
-const SAMPLE_ITEMS: GalleryItem[] = [
-  {
-    id: '1',
-    title: 'Champions League Victory',
-    description: 'Historic win against rivals in the final match',
-    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
-    type: 'match',
-    isFeatured: true,
-    createdAt: new Date('2024-05-15')
-  },
-  {
-    id: '2',
-    title: 'Team Celebration',
-    description: 'Players celebrating after winning the trophy',
-    imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
-    type: 'team-events',
-    isFeatured: true,
-    createdAt: new Date('2024-05-14')
-  },
-  {
-    id: '3',
-    title: 'Training Session',
-    description: 'Intense tactical training with the coaching staff',
-    imageUrl: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
-    type: 'training',
-    isFeatured: true,
-    createdAt: new Date('2024-05-13')
-  },
-  {
-    id: '4',
-    title: 'Official Jersey Launch',
-    description: 'New season merchandise collection unveiled',
-    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
-    type: 'merchandise',
-    isFeatured: true,
-    createdAt: new Date('2024-05-12')
-  },
-  {
-    id: '5',
-    title: 'Match Highlights',
-    description: 'Best moments from today\'s match',
-    imageUrl: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&h=600&fit=crop',
-    type: 'match',
-    isFeatured: false,
-    createdAt: new Date('2024-05-11')
-  },
-  {
-    id: '6',
-    title: 'News Update',
-    description: 'Latest news from the club',
-    imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9e55?w=800&h=600&fit=crop',
-    type: 'news',
-    isFeatured: false,
-    createdAt: new Date('2024-05-10')
-  }
-]
-
 export default function GalleryPage() {
   const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === 'bn'
-  
-  const [items, setItems] = useState<GalleryItem[]>([])
-  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>([])
-  const [selectedType, setSelectedType] = useState<GalleryType | 'all'>('all')
+  const [selectedType, setSelectedType] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
+  const [selectedImage, setSelectedImage] = useState<any>(null)
 
-  useEffect(() => {
-    const loadItems = async () => {
-      const allItems = await GalleryDataService.getGalleryItems()
-      setItems(allItems && allItems.length > 0 ? allItems : SAMPLE_ITEMS)
-    }
-    loadItems()
-  }, [])
+  // Use realtime hook - automatically syncs when admin uploads new images
+  const { mediaItems, loading, error } = useMediaItems()
 
-  useEffect(() => {
-    let filtered = items
+  // Filter and search gallery items
+  const filteredItems = mediaItems.filter(item => {
+    const matchesType = selectedType === 'all' || item.category === selectedType
+    const matchesSearch = searchQuery === '' || 
+      (item.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.description || '').toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesType && matchesSearch
+  })
 
-    if (selectedType !== 'all') {
-      filtered = filtered.filter(item => item.type === selectedType)
-    }
+  const handleImageSelect = (item: any) => {
+    setSelectedImage(item)
+  }
 
-    if (searchQuery) {
-      filtered = filtered.filter(
-        item =>
-          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-
-    setFilteredItems(filtered)
-  }, [items, selectedType, searchQuery])
+  const handleClose = () => {
+    setSelectedImage(null)
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-accent py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <button onClick={() => router.back()} className="inline-flex items-center gap-2 mb-4 px-3 py-2 rounded border border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 transition-all">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm uppercase tracking-wider">{isBn ? 'পিছনে' : 'Back'}</span>
+      <header className='sticky top-0 z-40 border-b border-border/40 backdrop-blur-md'>
+        <div className='container px-4 py-4 flex items-center justify-between'>
+          <button
+            onClick={() => router.back()}
+            className='flex items-center gap-2 text-sm hover:text-foreground/80 transition'
+          >
+            <ArrowLeft className='w-4 h-4' />
+            {isBn ? 'ফিরে যান' : 'Back'}
           </button>
-          <h1 className="text-4xl font-bold text-primary-foreground mb-2">
+          <h1 className='text-xl md:text-2xl font-bold'>
             {isBn ? 'গ্যালারি' : 'Gallery'}
           </h1>
-          <p className="text-primary-foreground/90">
-            {isBn ? 'টাইটান ফোর্সের স্মৃতি এবং মুহূর্ত' : 'Memories and moments of Titan Force'}
-          </p>
+          <div className='w-10' />
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <input
-              type="text"
-              placeholder={isBn ? 'অনুসন্ধান করুন...' : 'Search...'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+      {/* Main Content */}
+      <main className='container px-4 py-8'>
+        {/* Search and Filter */}
+        <div className='mb-8 space-y-4'>
+          <div className='flex gap-4 flex-col md:flex-row'>
+            <div className='flex-1'>
+              <div className='relative'>
+                <Search className='absolute left-3 top-3 w-5 h-5 text-muted-foreground' />
+                <input
+                  type='text'
+                  placeholder={isBn ? 'খুঁজুন...' : 'Search...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className='w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background'
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Category Filters */}
-        <div className="flex gap-2 flex-wrap mb-8">
-          <button
-            onClick={() => setSelectedType('all')}
-            className={`px-4 py-2 rounded-lg transition-colors font-medium ${
-              selectedType === 'all'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-card border border-border text-foreground hover:border-primary/50'
-            }`}
-          >
-            {isBn ? 'সব' : 'All'}
-          </button>
-          {GALLERY_TYPES.map(type => (
+          {/* Type Filter */}
+          <div className='flex gap-2 flex-wrap'>
             <button
-              key={type.value}
-              onClick={() => setSelectedType(type.value)}
-              className={`px-4 py-2 rounded-lg transition-colors font-medium ${
-                selectedType === type.value
+              onClick={() => setSelectedType('all')}
+              className={`px-4 py-2 rounded-lg transition ${
+                selectedType === 'all'
                   ? 'bg-primary text-primary-foreground'
-                  : 'bg-card border border-border text-foreground hover:border-primary/50'
+                  : 'border border-border hover:bg-muted'
               }`}
             >
-              {isBn ? type.labelBn : type.label}
+              {isBn ? 'সব' : 'All'}
             </button>
-          ))}
+            {GALLERY_TYPES.map(type => (
+              <button
+                key={type.value}
+                onClick={() => setSelectedType(type.value)}
+                className={`px-4 py-2 rounded-lg transition ${
+                  selectedType === type.value
+                    ? 'bg-primary text-primary-foreground'
+                    : 'border border-border hover:bg-muted'
+                }`}
+              >
+                {isBn ? type.labelBn : type.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map(item => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedItem(item)}
-              className="group cursor-pointer bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
-            >
-              <div className="relative h-64 overflow-hidden bg-muted">
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=500&fit=crop'
-                  }}
-                />
-                {item.isFeatured && (
-                  <div className="absolute top-3 right-3 bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-bold">
-                    {isBn ? 'বৈশিষ্ট্য' : 'Featured'}
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4">
-                <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
-                  {item.description}
-                </p>
-                <div className="flex items-center justify-between mt-4">
-                  <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
-                    {GALLERY_TYPES.find(t => t.value === item.type)?.[isBn ? 'labelBn' : 'label']}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {item.createdAt.toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredItems.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📷</div>
-            <p className="text-muted-foreground text-lg">
-              {isBn ? 'কোন ছবি পাওয়া যায়নি' : 'No images found'}
-            </p>
+        {/* Loading State */}
+        {loading && (
+          <div className='text-center py-12'>
+            <p className='text-muted-foreground'>{isBn ? 'লোড হচ্ছে...' : 'Loading...'}</p>
           </div>
         )}
-      </div>
 
-      {/* Lightbox Modal */}
-      {selectedItem && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setSelectedItem(null)}
-        >
-          <div
-            className="bg-card border border-border rounded-lg overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <div className="flex items-center justify-between p-4 border-b border-border">
-              <h2 className="text-xl font-bold text-foreground">{selectedItem.title}</h2>
+        {/* Error State */}
+        {error && (
+          <div className='text-center py-12'>
+            <p className='text-destructive'>{isBn ? 'ত্রুটি হয়েছে' : 'Error loading gallery'}</p>
+          </div>
+        )}
+
+        {/* Gallery Grid */}
+        {!loading && !error && (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {filteredItems.length > 0 ? (
+              filteredItems.map(item => (
+                <div
+                  key={item.id}
+                  onClick={() => handleImageSelect(item)}
+                  className='cursor-pointer group'
+                >
+                  <div className='relative overflow-hidden rounded-lg aspect-square bg-muted'>
+                    <img
+                      src={item.url}
+                      alt={item.title}
+                      className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+                    />
+                    {item.title && (
+                      <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4'>
+                        <div>
+                          <h3 className='font-semibold text-white'>{item.title}</h3>
+                          {item.description && (
+                            <p className='text-sm text-gray-200'>{item.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className='col-span-full text-center py-12'>
+                <p className='text-muted-foreground'>{isBn ? 'কোনো ছবি নেই' : 'No images found'}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Image Modal */}
+        {selectedImage && (
+          <div className='fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4'>
+            <div className='relative max-w-4xl w-full'>
               <button
-                onClick={() => setSelectedItem(null)}
-                className="p-2 hover:bg-muted rounded transition-colors"
+                onClick={handleClose}
+                className='absolute -top-10 right-0 text-white hover:text-gray-300'
               >
-                <X className="w-6 h-6" />
+                <X className='w-6 h-6' />
               </button>
-            </div>
-
-            {/* Image */}
-            <div className="flex-1 overflow-auto bg-muted flex items-center justify-center min-h-96">
               <img
-                src={selectedItem.imageUrl}
-                alt={selectedItem.title}
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop'
-                }}
+                src={selectedImage.url}
+                alt={selectedImage.title}
+                className='w-full h-auto rounded-lg'
               />
-            </div>
-
-            {/* Details */}
-            <div className="p-6 border-t border-border space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-1">
-                  {isBn ? 'বিবরণ' : 'Description'}
-                </h3>
-                <p className="text-foreground">{selectedItem.description}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-1">
-                    {isBn ? 'ধরন' : 'Type'}
-                  </p>
-                  <span className="text-xs px-3 py-1 bg-primary/10 text-primary rounded inline-block">
-                    {GALLERY_TYPES.find(t => t.value === selectedItem.type)?.[isBn ? 'labelBn' : 'label']}
-                  </span>
+              {selectedImage.title && (
+                <div className='mt-4 text-white'>
+                  <h2 className='text-2xl font-bold mb-2'>{selectedImage.title}</h2>
+                  {selectedImage.description && (
+                    <p className='text-gray-300'>{selectedImage.description}</p>
+                  )}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-1">
-                    {isBn ? 'তারিখ' : 'Date'}
-                  </p>
-                  <p className="text-foreground text-sm">
-                    {selectedItem.createdAt.toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </main>
     </div>
   )
 }
