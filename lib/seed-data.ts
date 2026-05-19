@@ -131,48 +131,72 @@ export async function seedDatabaseWithSampleData() {
       console.log('[v0] Successfully seeded', matchesData.length, 'matches')
     }
 
-    // Seed Products (Store)
-    const productsData = [
-      {
-        name: 'Home Jersey 2024',
-        description: 'Official home jersey with squad number',
-        price: 3500,
-        category: 'Home',
-        image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop',
-        stock: 50,
-        rating: 4.8,
-        reviews: 25,
-      },
-      {
-        name: 'Away Jersey 2024',
-        description: 'Official away jersey - white and blue',
-        price: 3500,
-        category: 'Away',
-        image_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=600&fit=crop',
-        stock: 35,
-        rating: 4.6,
-        reviews: 18,
-      },
-      {
-        name: 'Training Kit',
-        description: 'Lightweight training jersey and shorts',
-        price: 2500,
-        category: 'Training',
-        image_url: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=500&h=600&fit=crop',
-        stock: 60,
-        rating: 4.5,
-        reviews: 22,
-      },
-    ]
-
-    const { error: productsError } = await supabase
+    // Seed Products (Store) - only if not already present
+    const { count: productsCount } = await supabase
       .from('products')
-      .insert(productsData)
+      .select('id', { count: 'exact', head: true })
 
-    if (productsError) {
-      console.error('[v0] Error seeding products:', productsError)
-    } else {
-      console.log('[v0] Successfully seeded', productsData.length, 'products')
+    if (!productsCount || productsCount === 0) {
+      const productsData = [
+        {
+          name: 'Home Jersey 2024',
+          description: 'Official home jersey with squad number',
+          price: 3500,
+          category: 'Home',
+          image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop',
+          total_stock: 50,
+          rating: 4.8,
+          reviews: 25,
+          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          colors: ['Red', 'White', 'Black'],
+        },
+        {
+          name: 'Away Jersey 2024',
+          description: 'Official away jersey - white and blue',
+          price: 3500,
+          category: 'Away',
+          image_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=600&fit=crop',
+          total_stock: 35,
+          rating: 4.6,
+          reviews: 18,
+          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          colors: ['White', 'Blue', 'Black'],
+        },
+        {
+          name: 'Training Kit',
+          description: 'Lightweight training jersey and shorts',
+          price: 2500,
+          category: 'Training',
+          image_url: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=500&h=600&fit=crop',
+          total_stock: 60,
+          rating: 4.5,
+          reviews: 22,
+          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          colors: ['Black', 'Gray', 'White'],
+        },
+        {
+          name: 'Retro Jersey 1995',
+          description: 'Classic retro jersey inspired by iconic 1995 design',
+          price: 3999,
+          category: 'Retro',
+          image_url: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500&h=600&fit=crop',
+          total_stock: 25,
+          rating: 4.9,
+          reviews: 89,
+          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          colors: ['Red', 'Gold'],
+        },
+      ]
+
+      const { error: productsError } = await supabase
+        .from('products')
+        .insert(productsData)
+
+      if (productsError) {
+        console.error('[v0] Error seeding products:', productsError)
+      } else {
+        console.log('[v0] Successfully seeded', productsData.length, 'products')
+      }
     }
 
     // Seed News
@@ -203,60 +227,66 @@ export async function seedDatabaseWithSampleData() {
       console.log('[v0] Successfully seeded', newsData.length, 'news items')
     }
 
-    // Seed Gallery
-    const galleryData = [
-      {
-        title: 'Champions League Victory',
-        description: 'Historic win against rivals in the final match',
-        image_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
-        type: 'match',
-        is_featured: true,
-      },
-      {
-        title: 'Team Celebration',
-        description: 'Players celebrating after winning the trophy',
-        image_url: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
-        type: 'team-events',
-        is_featured: true,
-      },
-      {
-        title: 'Training Session',
-        description: 'Intense tactical training with the coaching staff',
-        image_url: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
-        type: 'training',
-        is_featured: true,
-      },
-      {
-        title: 'Stadium Atmosphere',
-        description: 'Amazing crowd support during home match',
-        image_url: 'https://images.unsplash.com/photo-1552074328-5b1bb4dffc36?w=800&h=600&fit=crop',
-        type: 'match',
-        is_featured: true,
-      },
-      {
-        title: 'Jersey Launch Event',
-        description: 'New season merchandise collection unveiled',
-        image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
-        type: 'merchandise',
-        is_featured: true,
-      },
-      {
-        title: 'Player Interview',
-        description: 'Post-match interview with team captain',
-        image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
-        type: 'news',
-        is_featured: false,
-      },
-    ]
-
-    const { error: galleryError } = await supabase
+    // Seed Gallery - only if not already present
+    const { count: galleryCount } = await supabase
       .from('gallery')
-      .insert(galleryData)
+      .select('id', { count: 'exact', head: true })
 
-    if (galleryError) {
-      console.error('[v0] Error seeding gallery:', galleryError)
-    } else {
-      console.log('[v0] Successfully seeded', galleryData.length, 'gallery items')
+    if (!galleryCount || galleryCount === 0) {
+      const galleryData = [
+        {
+          title: 'Champions League Victory',
+          description: 'Historic win against rivals in the final match',
+          image_url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
+          type: 'match',
+          is_featured: true,
+        },
+        {
+          title: 'Team Celebration',
+          description: 'Players celebrating after winning the trophy',
+          image_url: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
+          type: 'team-events',
+          is_featured: true,
+        },
+        {
+          title: 'Training Session',
+          description: 'Intense tactical training with the coaching staff',
+          image_url: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
+          type: 'training',
+          is_featured: true,
+        },
+        {
+          title: 'Stadium Atmosphere',
+          description: 'Amazing crowd support during home match',
+          image_url: 'https://images.unsplash.com/photo-1552074328-5b1bb4dffc36?w=800&h=600&fit=crop',
+          type: 'match',
+          is_featured: true,
+        },
+        {
+          title: 'Jersey Launch Event',
+          description: 'New season merchandise collection unveiled',
+          image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
+          type: 'merchandise',
+          is_featured: true,
+        },
+        {
+          title: 'Player Interview',
+          description: 'Post-match interview with team captain',
+          image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
+          type: 'news',
+          is_featured: false,
+        },
+      ]
+
+      const { error: galleryError } = await supabase
+        .from('gallery')
+        .insert(galleryData)
+
+      if (galleryError) {
+        console.error('[v0] Error seeding gallery:', galleryError)
+      } else {
+        console.log('[v0] Successfully seeded', galleryData.length, 'gallery items')
+      }
     }
 
     console.log('[v0] Database seeding completed successfully!')
