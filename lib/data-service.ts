@@ -941,6 +941,148 @@ export class DataService {
     }
   }
 
+  // Unified realtime sync for all data entities
+  subscribeToAllData(
+    onPlayersChange: DataCallback<Player>,
+    onMatchesChange: DataCallback<Match>,
+    onPartnersChange: DataCallback<Partner>,
+    onNewsChange: DataCallback<NewsItem>,
+    onMediaChange: DataCallback<MediaItem>,
+    onTrophiesChange: DataCallback<Trophy>,
+    onError?: ErrorCallback
+  ): () => void {
+    if (!this.supabase) return () => {}
+
+    try {
+      // Clean up any existing unified channel
+      const existingChannel = this.subscriptions.get('all-sync')
+      if (existingChannel) {
+        try {
+          this.supabase.removeChannel(existingChannel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing old all-sync channel:", error)
+        }
+      }
+
+      const channel = this.supabase.channel('all-sync')
+
+      // Players subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'players' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: Players update detected -", payload.eventType)
+            const players = await this.getPlayers()
+            onPlayersChange(players)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated players:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      // Matches subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'matches' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: Matches update detected -", payload.eventType)
+            const matches = await this.getMatches()
+            onMatchesChange(matches)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated matches:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      // Partners subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'partners' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: Partners update detected -", payload.eventType)
+            const partners = await this.getPartners()
+            onPartnersChange(partners)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated partners:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      // News subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'news_items' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: News update detected -", payload.eventType)
+            const news = await this.getNewsItems()
+            onNewsChange(news)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated news:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      // Media subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'media_items' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: Media update detected -", payload.eventType)
+            const media = await this.getMediaItems()
+            onMediaChange(media)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated media:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      // Trophies subscription
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'trophies' },
+        async (payload) => {
+          try {
+            console.log("[v0] DataService: Trophies update detected -", payload.eventType)
+            const trophies = await this.getTrophies()
+            onTrophiesChange(trophies)
+          } catch (error) {
+            console.error("[v0] DataService: Error fetching updated trophies:", error)
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          }
+        }
+      )
+
+      channel.subscribe((status) => {
+        console.log("[v0] DataService: All-sync channel status:", status)
+      })
+
+      this.subscriptions.set('all-sync', channel)
+
+      return () => {
+        try {
+          this.supabase.removeChannel(channel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing all-sync channel:", error)
+        }
+        this.subscriptions.delete('all-sync')
+      }
+    } catch (error) {
+      console.error("[v0] DataService: Error setting up all-sync subscription:", error)
+      onError?.(error instanceof Error ? error : new Error(String(error)))
+      return () => {}
+    }
+  }
+
   // Cleanup
   unsubscribeAll(): void {
     if (!this.supabase) return

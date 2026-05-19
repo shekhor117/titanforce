@@ -30,12 +30,13 @@ export function useDataStore() {
       try {
         setLoading(true)
         setService(dataService)
-        const [playersData, matchesData, partnersData, newsData, mediaData] = await Promise.all([
+        const [playersData, matchesData, partnersData, newsData, mediaData, trophiesData] = await Promise.all([
           dataService.getPlayers(),
           dataService.getMatches(),
           dataService.getPartners(),
           dataService.getNewsItems(),
           dataService.getMediaItems(),
+          dataService.getTrophies(),
         ])
 
         if (isMounted) {
@@ -60,74 +61,54 @@ export function useDataStore() {
 
     loadData()
 
-    // Subscribe to real-time updates for all data types
-    const unsubscribePlayers = dataService.subscribeToPlayers((data) => {
-      if (isMounted) {
-        console.log("[v0] useDataStore: Players real-time update -", data.length, "players")
-        setPlayers(data)
+    // Use unified channel for all realtime updates - more efficient than separate channels
+    const unsubscribeAll = dataService.subscribeToAllData(
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: Players realtime update -", data.length, "players")
+          setPlayers(data)
+        }
+      },
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: Matches realtime update -", data.length, "matches")
+          setMatches(data)
+        }
+      },
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: Partners realtime update -", data.length, "partners")
+          setPartners(data)
+        }
+      },
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: News realtime update -", data.length, "articles")
+          setNewsItems(data)
+        }
+      },
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: Media realtime update -", data.length, "items")
+          setMediaItems(data)
+        }
+      },
+      (data) => {
+        if (isMounted) {
+          console.log("[v0] useDataStore: Trophies realtime update -", data.length, "trophies")
+        }
+      },
+      (err) => {
+        if (isMounted) {
+          console.error("[v0] useDataStore: Realtime subscription error:", err.message)
+          setError(err)
+        }
       }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] useDataStore: Players subscription error:", err.message)
-        setError(err)
-      }
-    })
-
-    const unsubscribeMatches = dataService.subscribeToMatches((data) => {
-      if (isMounted) {
-        console.log("[v0] useDataStore: Matches real-time update -", data.length, "matches")
-        setMatches(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] useDataStore: Matches subscription error:", err.message)
-        setError(err)
-      }
-    })
-
-    const unsubscribePartners = dataService.subscribeToPartners((data) => {
-      if (isMounted) {
-        console.log("[v0] useDataStore: Partners real-time update -", data.length, "partners")
-        setPartners(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] useDataStore: Partners subscription error:", err.message)
-        setError(err)
-      }
-    })
-
-    const unsubscribeNews = dataService.subscribeToNewsItems((data) => {
-      if (isMounted) {
-        console.log("[v0] useDataStore: News real-time update -", data.length, "articles")
-        setNewsItems(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] useDataStore: News subscription error:", err.message)
-        setError(err)
-      }
-    })
-
-    const unsubscribeMedia = dataService.subscribeToMediaItems((data) => {
-      if (isMounted) {
-        console.log("[v0] useDataStore: Media real-time update -", data.length, "items")
-        setMediaItems(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        console.error("[v0] useDataStore: Media subscription error:", err.message)
-        setError(err)
-      }
-    })
+    )
 
     return () => {
       isMounted = false
-      unsubscribePlayers()
-      unsubscribeMatches()
-      unsubscribePartners()
-      unsubscribeNews()
-      unsubscribeMedia()
+      unsubscribeAll()
     }
   }, [])
 
