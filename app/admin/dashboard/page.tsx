@@ -19,33 +19,107 @@ export default function AdminDashboard() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   
-  // Get data from the hook
-  const { players, matches, partners, newsItems, mediaItems, loading, error } = useDataStore()
+  // Get data from hooks with real-time sync
+  const { players, matches, partners, newsItems, mediaItems } = useDataStore()
   
   // Get local storage data
   const [fans, setFans] = useState<any[]>([])
   const [contacts, setContacts] = useState<any[]>([])
   const [activityLog, setActivityLog] = useState<any[]>([])
-  const [playerStats, setPlayerStats] = useState({ total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } })
-  const [galleryStats, setGalleryStats] = useState({ total: 0, featured: 0, byType: {} })
-  const [trophyStats, setTrophyStats] = useState({ total: 0, featured: 0, byCategory: {} })
+  const [galleryStats, setGalleryStats] = useState({ total: 0, featured: 0 })
+  const [trophyStats, setTrophyStats] = useState({ total: 0, featured: 0 })
   const [storeProducts, setStoreProducts] = useState<any[]>([])
   const [storeOrders, setStoreOrders] = useState<any[]>([])
-  const [newsCount, setNewsCount] = useState(0)
-  const [mediaCount, setMediaCount] = useState(0)
-  const [contactCount, setContactCount] = useState(0)
   
+  // Load gallery stats with real-time updates
   useEffect(() => {
-    // Load player stats from Supabase
-    const loadData = async () => {
+    const loadGalleryStats = async () => {
       try {
-        const stats = await PlayerDataService.getPlayerStats()
-        setPlayerStats(stats)
+        const items = await GalleryDataService.getGalleryItems()
+        const featured = items?.filter((item: any) => item.is_featured).length || 0
+        setGalleryStats({ 
+          total: items?.length || 0, 
+          featured 
+        })
       } catch (err) {
-        console.error("[v0] Error loading player stats:", err)
+        console.error("[v0] Error loading gallery stats:", err)
       }
     }
-    loadData()
+    loadGalleryStats()
+    
+    // Real-time subscription for gallery
+    const supabase = require('@/lib/supabase/client').createClient()
+    if (supabase) {
+      const subscription = supabase
+        .channel('gallery-dashboard')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery' }, () => {
+          console.log("[v0] Gallery updated, refreshing stats")
+          loadGalleryStats()
+        })
+        .subscribe()
+      
+      return () => subscription.unsubscribe()
+    }
+  }, [])
+
+  // Load trophy stats with real-time updates
+  useEffect(() => {
+    const loadTrophyStats = async () => {
+      try {
+        const items = await TrophyDataService.getTrophyItems()
+        const featured = items?.filter((item: any) => item.is_featured).length || 0
+        setTrophyStats({ 
+          total: items?.length || 0, 
+          featured 
+        })
+      } catch (err) {
+        console.error("[v0] Error loading trophy stats:", err)
+      }
+    }
+    loadTrophyStats()
+    
+    // Real-time subscription for trophies
+    const supabase = require('@/lib/supabase/client').createClient()
+    if (supabase) {
+      const subscription = supabase
+        .channel('trophies-dashboard')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'trophies' }, () => {
+          console.log("[v0] Trophies updated, refreshing stats")
+          loadTrophyStats()
+        })
+        .subscribe()
+      
+      return () => subscription.unsubscribe()
+    }
+  }, [])
+
+  // Load store products with real-time updates
+  useEffect(() => {
+    const loadStoreProducts = async () => {
+      try {
+        const products = await StoreDataService.getProducts()
+        const orders = await StoreDataService.getOrders()
+        setStoreProducts(products || [])
+        setStoreOrders(orders || [])
+      } catch (err) {
+        console.error("[v0] Error loading store data:", err)
+      }
+    }
+    loadStoreProducts()
+    
+    // Real-time subscription for products
+    const supabase = require('@/lib/supabase/client').createClient()
+    if (supabase) {
+      const subscription = supabase
+        .channel('products-dashboard')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+          console.log("[v0] Products updated, refreshing stats")
+          loadStoreProducts()
+        })
+        .subscribe()
+      
+      return () => subscription.unsubscribe()
+    }
   }, [])
   
   useEffect(() => {
@@ -127,74 +201,74 @@ export default function AdminDashboard() {
   const stats = [
     { 
       label: isBn ? "খেলোয়াড়" : "Players", 
-      value: playerStats.total.toString(), 
+      value: players.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/players",
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/30",
-      subtext: `${playerStats.active} ${isBn ? "সক্রিয়" : "active"}`
+      subtext: `${players.filter((p: any) => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
     },
     { 
       label: isBn ? "ম্যাচ" : "Matches", 
-      value: matchList.length.toString(), 
+      value: matches.length.toString(), 
       icon: <Trophy className="w-6 h-6" />, 
       href: "/admin/matches",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10",
       borderColor: "border-yellow-500/30",
-      subtext: `${matchList.filter((m: any) => m.status === "upcoming").length} ${isBn ? "আসন্ন" : "upcoming"}`
+      subtext: `${matches.filter((m: any) => m.status === "upcoming").length} ${isBn ? "আসন্ন" : "upcoming"}`
     },
     { 
       label: isBn ? "অনুরাগী" : "Fans", 
-      value: fanList.length.toString(), 
+      value: fans.length.toString(), 
       icon: <Users className="w-6 h-6" />, 
       href: "/admin/fans",
       color: "text-green-400",
       bgColor: "bg-green-500/10",
       borderColor: "border-green-500/30",
-      subtext: `${fanList.filter((f: any) => f.membershipType === "vip").length} VIP`
+      subtext: `${fans.filter((f: any) => f.membershipType === "vip").length} VIP`
     },
     { 
       label: isBn ? "অংশীদার" : "Partners", 
-      value: partnerList.length.toString(), 
+      value: partners.length.toString(), 
       icon: <Handshake className="w-6 h-6" />, 
       href: "/admin/partners",
       color: "text-purple-400",
       bgColor: "bg-purple-500/10",
       borderColor: "border-purple-500/30",
-      subtext: `${partnerList.filter((p: any) => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
+      subtext: `${partners.filter((p: any) => p.status === "active").length} ${isBn ? "সক্রিয়" : "active"}`
     },
   ]
 
   const additionalStats = [
     {
       label: isBn ? "সংবাদ" : "News",
-      value: newsList.length.toString(),
+      value: newsItems.length.toString(),
       icon: <Newspaper className="w-5 h-5" />,
       href: "/admin/news",
       color: "text-orange-400",
-      subtext: `${newsList.filter((n: any) => n.status === "published").length} ${isBn ? "প্রকাশিত" : "published"}`
+      subtext: `${newsItems.filter((n: any) => n.status === "published").length} ${isBn ? "প্রকাশিত" : "published"}`
     },
     {
       label: isBn ? "মিডিয়া" : "Media",
-      value: mediaList.length.toString(),
+      value: mediaItems.length.toString(),
       icon: <Image className="w-6 h-6" />,
       href: "/admin/media",
       color: "text-pink-400",
       bgColor: "bg-pink-500/10",
       borderColor: "border-pink-500/30",
-      subtext: `${mediaList.filter((m: any) => m.type === "photo").length} ${isBn ? "ছবি" : "photos"}`
+      subtext: `${mediaItems.filter((m: any) => m.type === "photo").length} ${isBn ? "ছবি" : "photos"}`
     },
     {
       label: isBn ? "যোগাযোগ" : "Contact",
-      value: contactList.length.toString(),
+      value: contacts.length.toString(),
       icon: <Mail className="w-6 h-6" />,
       href: "/admin/contacts",
       color: "text-red-400",
       bgColor: "bg-red-500/10",
       borderColor: "border-red-500/30",
-      subtext: `${contactList.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
+      subtext: `${contacts.filter((c: any) => c.status === "unread").length} ${isBn ? "অপঠিত" : "unread"}`
     },
     {
       label: isBn ? "গ্যালারি" : "Gallery",
@@ -370,7 +444,7 @@ export default function AdminDashboard() {
       bgColor: "bg-green-500/10"
     },
     { 
-      label: isBn ? "সেটিংস এবং কনফিগ" : "Settings & Config", 
+      label: isBn ? "স���টিংস এবং কনফিগ" : "Settings & Config", 
       description: isBn ? "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন" : "Configure application settings",
       href: "/admin/settings", 
       icon: <Settings className="w-5 h-5" />,
@@ -691,7 +765,7 @@ export default function AdminDashboard() {
               {/* Bio */}
               {selectedPlayer.bio && (
                 <div className="p-3 rounded-lg bg-secondary/20">
-                  <div className="text-xs text-foreground/60 mb-1">{isBn ? "জীবনী" : "Bio"}</div>
+                  <div className="text-xs text-foreground/60 mb-1">{isBn ? "জীব��ী" : "Bio"}</div>
                   <p className="text-sm text-foreground line-clamp-3">{selectedPlayer.bio}</p>
                 </div>
               )}
