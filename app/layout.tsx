@@ -10,6 +10,7 @@ import { CartProvider } from '@/lib/cart-context'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
 import LoaderWrapper from '@/components/loader-wrapper'
+import { generatePageMetadata, getOrganizationSchema } from '@/lib/seo-utils'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -30,14 +31,16 @@ const notoSansBengali = Noto_Sans_Bengali({
   variable: '--font-bengali',
 })
 
-export const metadata: Metadata = {
-  title: 'Titan Force FC | Mulikandi Football Club | টাইটান ফোর্স এফসি',
-  description: 'Pride · Passion · Power - Official website of Titan Force FC, a passionate football club from Mulikandi, Sylhet. গর্ব · আবেগ · শক্তি',
-  icons: {
-    icon: '/icon.svg',
-    apple: '/apple-icon.png',
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Titan Force FC | Football Club in Sylhet, Bangladesh',
+  description: 'Pride · Passion · Power - Official website of Titan Force FC, a passionate football club from Mulikandi, Sylhet Bangladesh. Squad, fixtures, news, gallery and shop.',
+  alternates: {
+    languages: {
+      en: 'https://titanforcefc.com/en',
+      bn: 'https://titanforcefc.com/bn',
+    },
   },
-}
+})
 
 export const dynamic = "force-dynamic"
 
@@ -49,7 +52,23 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
+        {/* Google AdSense */}
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7799270522656846" crossOrigin="anonymous"></script>
+        
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.json" />
+        
+        {/* Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getOrganizationSchema()),
+          }}
+        />
+        
+        {/* Theme Color */}
+        <meta name="theme-color" content="#1a1a1a" />
+        <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
         <ThemeProvider>

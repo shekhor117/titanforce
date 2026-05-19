@@ -14,11 +14,37 @@ export default function Home() {
   const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
+    // Add JSON-LD BreadcrumbList
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://titanforcefc.com',
+        },
+      ],
+    }
+    
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.innerHTML = JSON.stringify(breadcrumbSchema)
+    document.head.appendChild(script)
+
     // Check sessionStorage after mount
     const alreadyShown = sessionStorage.getItem("hero-shown")
     if (alreadyShown) {
       setHasSeenAnimation(true)
       setHeroLoading(false)
+    }
+
+    return () => {
+      // Cleanup
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
     }
   }, [])
 
