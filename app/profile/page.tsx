@@ -212,7 +212,7 @@ export default function ProfilePage() {
         >
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <Avatar className="w-32 h-32 border-4 border-primary flex-shrink-0">
-              <AvatarImage src={mockUserData?.avatar} />
+              <AvatarImage src={profile?.avatar_url} />
               <AvatarFallback className="text-2xl font-bold bg-primary text-foreground">
                 {userInitials}
               </AvatarFallback>

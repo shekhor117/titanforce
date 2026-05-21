@@ -81,12 +81,6 @@ export async function signInWithEmail(
 export async function signOut(): Promise<void> {
   const supabase = createClient()
   
-  if (!supabase) {
-    // Use mock sign out
-    mockSignOut()
-    return
-  }
-
   const { error } = await supabase.auth.signOut()
   if (error) {
     throw new Error(error.message)
@@ -122,15 +116,17 @@ export async function mockSignUp(
   name: string,
   role: "player" | "fan" | "partner"
 ): Promise<void> {
-  // Create a user with the specified role
-  const user = mockSignUpWithEmail(email, password, name)
+  // Sign up with real Supabase
+  const { user } = await signUpWithEmail(email, password, name)
   
-  // Map signup role to user role
-  const userRole = role === "player" ? "user" : "user"
-  
-  // Store user in localStorage with role info
-  if (typeof window !== "undefined") {
-    localStorage.setItem("mockAuthUser", JSON.stringify({ ...user, role: userRole, signupRole: role }))
+  // Store role in user metadata
+  const supabase = createClient()
+  const { error } = await supabase.auth.updateUser({
+    data: { signupRole: role }
+  })
+
+  if (error) {
+    throw new Error(error.message)
   }
 }
 
