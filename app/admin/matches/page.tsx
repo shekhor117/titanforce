@@ -1,394 +1,161 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, X, Save, Calendar, MapPin, Search } from "lucide-react"
-import MatchDataService, { Match } from "@/lib/match-data-service"
+import { useState, useEffect } from 'react'
+import { FixtureManager } from '@/components/FixtureManager'
+import { useDataService } from '@/lib/data-service'
+import type { Match } from '@/lib/data-service'
 
-export default function AdminMatches() {
-  const { language } = useLanguage()
-  const isBn = language === "bn"
-  const [showForm, setShowForm] = useState(false)
-  const [editingMatch, setEditingMatch] = useState<Match | null>(null)
-  const [filter, setFilter] = useState<"all" | "upcoming" | "live" | "completed">("all")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [matches, setMatches] = useState<Match[]>([])
-  const [isClient, setIsClient] = useState(false)
-  const [formData, setFormData] = useState({
-    home: "Titan Force",
-    away: "",
-    date: "",
-    time: "",
-    venue: "Mulikandi Ground",
-    home_score: "",
-    away_score: "",
-    status: "upcoming" as Match["status"],
-    result: "" as Match["result"] | "",
-  })
-  
+interface Fixture {
+  id: string
+  homeTeam: string
+  awayTeam: string
+  homeLogoColor: string
+  awayLogoColor: string
+  homeScore: number
+  awayScore: number
+  date: string
+  time: string
+  venue: string
+  status: 'Not Started' | 'In Progress' | 'Finished'
+  homeLineup: Array<{ name: string; number: number }>
+  awayLineup: Array<{ name: string; number: number }>
+  events: Array<{
+    player: string
+    type: 'Goal' | 'Yellow Card' | 'Red Card' | 'Substitution'
+    minute: number
+    team: 'Home' | 'Away'
+  }>
+}
+
+interface Player {
+  id: string
+  name: string
+  number: number
+}
+
+export default function AdminMatchesPage() {
+  const { getMatches, createMatch, updateMatch, deleteMatch } = useDataService()
+  const [fixtures, setFixtures] = useState<Fixture[]>([])
+  const [players] = useState<Player[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
     loadMatches()
   }, [])
 
   const loadMatches = async () => {
-    setIsClient(true)
-    const data = await MatchDataService.getMatches()
-    setMatches(Array.isArray(data) ? data : [])
-  }
-
-  const handleSaveMatch = async () => {
-    if (!formData.away || !formData.date || !formData.venue) {
-      alert(isBn ? "সব ফিল্ড পূরণ করুন" : "Please fill all required fields")
-      return
-    }
-
-    // Calculate result based on scores
-    let result: Match["result"] | undefined
-    if (formData.status === "completed" && formData.home_score && formData.away_score) {
-      const homeScore = parseInt(formData.home_score)
-      const awayScore = parseInt(formData.away_score)
-      if (homeScore > awayScore) result = "W"
-      else if (homeScore < awayScore) result = "L"
-      else result = "D"
-    }
-
-    const matchData: Omit<Match, "id" | "created_at" | "updated_at"> = {
-      home: formData.home,
-      away: formData.away,
-      date: formData.date,
-      time: formData.time,
-      venue: formData.venue,
-      home_score: formData.home_score ? parseInt(formData.home_score) : null,
-      away_score: formData.away_score ? parseInt(formData.away_score) : null,
-      status: formData.status,
-      result,
-    }
-
     try {
-      if (editingMatch) {
-        await MatchDataService.updateMatch(editingMatch.id, matchData)
-      } else {
-        await MatchDataService.addMatch(matchData)
-      }
-      await loadMatches()
-      resetForm()
-      alert(isBn ? "ম্যাচ সংরক্ষণ হয়েছে" : "Match saved successfully")
-    } catch (error) {
-      console.error('[v0] Error saving match:', error)
-      alert(isBn ? "ম্যাচ সংরক্ষণ ব্যর্থ" : "Failed to save match")
+      setLoading(true)
+      const matches = await getMatches()
+      
+      // Convert Match to Fixture format
+      const convertedFixtures: Fixture[] = matches.map(match => ({
+        id: match.id,
+        homeTeam: match.home_team,
+        awayTeam: match.away_team,
+        homeLogoColor: 'bg-emerald-600',
+        awayLogoColor: 'bg-indigo-600',
+        homeScore: match.home_score || 0,
+        awayScore: match.away_score || 0,
+        date: match.match_date,
+        time: match.match_time,
+        venue: match.venue,
+        status: (match.status as 'Not Started' | 'In Progress' | 'Finished') || 'Not Started',
+        homeLineup: match.home_lineup || [],
+        awayLineup: match.away_lineup || [],
+        events: match.match_events || [],
+      }))
+      
+      setFixtures(convertedFixtures)
+      setError(null)
+    } catch (err) {
+      console.error('[v0] Error loading matches:', err)
+      setError('Failed to load matches')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleEditMatch = (match: Match) => {
-    setEditingMatch(match)
-    setFormData({
-      home: match.home,
-      away: match.away,
-      date: match.date,
-      time: match.time,
-      venue: match.venue,
-      home_score: match.home_score?.toString() || "",
-      away_score: match.away_score?.toString() || "",
-      status: match.status,
-      result: match.result || "",
-    })
-    setShowForm(true)
-  }
-
-  const handleDeleteMatch = async (matchId: string) => {
-    if (!confirm(isBn ? "এই ম্যাচ মুছতে চান?" : "Delete this match?")) return
+  const handleAddFixture = async (fixture: Fixture) => {
     try {
-      await MatchDataService.deleteMatch(matchId)
+      await createMatch({
+        home_team: fixture.homeTeam,
+        away_team: fixture.awayTeam,
+        home_score: fixture.homeScore,
+        away_score: fixture.awayScore,
+        match_date: fixture.date,
+        match_time: fixture.time,
+        venue: fixture.venue,
+        status: fixture.status,
+        home_lineup: fixture.homeLineup,
+        away_lineup: fixture.awayLineup,
+        match_events: fixture.events,
+      })
+      
       await loadMatches()
-      alert(isBn ? "ম্যাচ মুছা হয়েছে" : "Match deleted")
-    } catch (error) {
-      console.error('[v0] Error deleting match:', error)
-      alert(isBn ? "ম্যাচ মোছা ব্যর্থ" : "Failed to delete match")
+    } catch (err) {
+      console.error('[v0] Error adding match:', err)
+      setError('Failed to add match')
     }
   }
 
-  const resetForm = () => {
-    setFormData({
-      home: "Titan Force",
-      away: "",
-      date: "",
-      time: "",
-      venue: "Mulikandi Ground",
-      home_score: "",
-      away_score: "",
-      status: "upcoming",
-      result: "",
-    })
-    setEditingMatch(null)
-    setShowForm(false)
+  const handleUpdateFixture = async (fixture: Fixture) => {
+    try {
+      await updateMatch(fixture.id, {
+        home_team: fixture.homeTeam,
+        away_team: fixture.awayTeam,
+        home_score: fixture.homeScore,
+        away_score: fixture.awayScore,
+        match_date: fixture.date,
+        match_time: fixture.time,
+        venue: fixture.venue,
+        status: fixture.status,
+        home_lineup: fixture.homeLineup,
+        away_lineup: fixture.awayLineup,
+        match_events: fixture.events,
+      })
+      
+      await loadMatches()
+    } catch (err) {
+      console.error('[v0] Error updating match:', err)
+      setError('Failed to update match')
+    }
   }
 
-  const filteredMatches = matches
-    .filter(m => filter === "all" || m.status === filter)
-    .filter(m => 
-      searchTerm === "" || 
-      m.home.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.away.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.venue.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+  const handleDeleteFixture = async (fixtureId: string) => {
+    try {
+      await deleteMatch(fixtureId)
+      await loadMatches()
+    } catch (err) {
+      console.error('[v0] Error deleting match:', err)
+      setError('Failed to delete match')
+    }
+  }
 
-  const statusBadge = (status: Match["status"]) => {
-    const styles = {
-      upcoming: "bg-yellow-500/20 text-yellow-400",
-      live: "bg-red-500/20 text-red-400 animate-pulse",
-      completed: "bg-green-500/20 text-green-400",
-    }
-    const labels = {
-      upcoming: isBn ? "আসন্ন" : "Upcoming",
-      live: isBn ? "লাইভ" : "LIVE",
-      completed: isBn ? "সম্পন্ন" : "Completed",
-    }
+  if (loading) {
     return (
-      <span className={`px-2 py-1 rounded text-xs font-semibold ${styles[status]}`}>
-        {labels[status]}
-      </span>
-    )
-  }
-
-  const resultBadge = (result: Match["result"]) => {
-    if (!result) return null
-    const styles = {
-      W: "bg-green-500/20 text-green-400",
-      L: "bg-red-500/20 text-red-400",
-      D: "bg-yellow-500/20 text-yellow-400",
-    }
-    const labels = {
-      W: isBn ? "জয়" : "Win",
-      L: isBn ? "হার" : "Loss",
-      D: isBn ? "ড্র" : "Draw",
-    }
-    return (
-      <span className={`px-2 py-1 rounded text-xs font-semibold ${styles[result]}`}>
-        {labels[result]}
-      </span>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading matches...</div>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className={`font-[var(--font-display)] text-3xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "ম্যাচ ব্যবস্থাপনা" : "Match Management"}
-          </h1>
-          <p className="text-foreground/60 text-sm mt-1">
-            {matches.length} {isBn ? "টি ম্যাচ" : "matches"}
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            resetForm()
-            setShowForm(!showForm)
-          }}
-          className={`flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-        >
-          <Plus className="w-4 h-4" />
-          {isBn ? "ম্যাচ যোগ করুন" : "Add Match"}
-        </button>
-      </div>
-
-      {/* Search & Filter */}
-      <div className="flex gap-4 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
-          <input
-            type="text"
-            placeholder={isBn ? "খোঁজ করুন..." : "Search matches..."}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-          />
-        </div>
-        <div className="flex gap-2">
-          {(["all", "upcoming", "live", "completed"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                filter === tab
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
-              }`}
-            >
-              {tab === "all" && (isBn ? "সব" : "All")}
-              {tab === "upcoming" && (isBn ? "আসন্ন" : "Upcoming")}
-              {tab === "live" && (isBn ? "লাইভ" : "Live")}
-              {tab === "completed" && (isBn ? "সম্পন্ন" : "Completed")}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Add/Edit Form */}
-      {showForm && (
-        <div className="rounded-xl border-2 border-primary bg-card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`font-[var(--font-display)] text-xl tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {editingMatch 
-                ? (isBn ? "ম্যাচ সম্পাদনা" : "Edit Match")
-                : (isBn ? "নতুন ম্যাচ" : "New Match")
-              }
-            </h3>
-            <button onClick={resetForm} className="p-2 hover:bg-secondary/20 rounded">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder={isBn ? "হোম টিম" : "Home Team"}
-                value={formData.home}
-                onChange={(e) => setFormData((prev) => ({ ...prev, home: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-              <input
-                type="text"
-                placeholder={isBn ? "অ্যাওয়ে টিম" : "Away Team"}
-                value={formData.away}
-                onChange={(e) => setFormData((prev) => ({ ...prev, away: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              <input
-                type="text"
-                placeholder={isBn ? "তারিখ (যেমন: Jan 15, 2025)" : "Date (e.g. Jan 15, 2025)"}
-                value={formData.date}
-                onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-              <input
-                type="text"
-                placeholder={isBn ? "সময় (যেমন: 4:00 PM)" : "Time (e.g. 4:00 PM)"}
-                value={formData.time}
-                onChange={(e) => setFormData((prev) => ({ ...prev, time: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-              <input
-                type="text"
-                placeholder={isBn ? "স্থান" : "Venue"}
-                value={formData.venue}
-                onChange={(e) => setFormData((prev) => ({ ...prev, venue: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              />
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Match["status"] }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-              >
-                <option value="upcoming">{isBn ? "আসন্ন" : "Upcoming"}</option>
-                <option value="live">{isBn ? "লাইভ" : "Live"}</option>
-                <option value="completed">{isBn ? "সম্পন্ন" : "Completed"}</option>
-              </select>
-              {(formData.status === "completed" || formData.status === "live") && (
-                <>
-                  <input
-                    type="number"
-                    placeholder={isBn ? "হোম স্কোর" : "Home Score"}
-                    value={formData.homeScore}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, homeScore: e.target.value }))}
-                    className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                  />
-                  <input
-                    type="number"
-                    placeholder={isBn ? "অ্যাওয়ে স্কোর" : "Away Score"}
-                    value={formData.awayScore}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, awayScore: e.target.value }))}
-                    className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                  />
-                </>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleSaveMatch}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                <Save className="w-4 h-4" />
-                {editingMatch ? (isBn ? "আপডেট করুন" : "Update") : (isBn ? "সংরক্ষণ করুন" : "Save")}
-              </button>
-              <button
-                onClick={resetForm}
-                className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                {isBn ? "বাতিল" : "Cancel"}
-              </button>
-            </div>
-          </div>
+    <div className="p-6">
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+          {error}
         </div>
       )}
-
-      {/* Matches List */}
-      <div className="space-y-4">
-        {filteredMatches.map((match) => (
-          <div key={match.id} className="rounded-xl border-2 border-secondary bg-card p-6 hover:border-primary transition">
-            <div className="flex items-start justify-between flex-wrap gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  {statusBadge(match.status)}
-                  {resultBadge(match.result)}
-                </div>
-                <div className="flex items-center gap-4 text-lg font-semibold">
-                  <span>{match.home}</span>
-                  <span className="text-primary">
-                    {match.status === "completed" || match.status === "live"
-                      ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`
-                      : "vs"
-                    }
-                  </span>
-                  <span>{match.away}</span>
-                </div>
-                <div className="flex items-center gap-4 mt-2 text-sm text-foreground/60">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {match.date} {match.time && `at ${match.time}`}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
-                    {match.venue}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => handleEditMatch(match)}
-                  className="p-2 rounded hover:bg-primary/20 transition text-primary"
-                  title={isBn ? "সম্পাদনা করুন" : "Edit"}
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteMatch(match.id)}
-                  className="p-2 rounded hover:bg-red-500/20 transition text-red-400"
-                  title={isBn ? "মুছুন" : "Delete"}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-        
-        {filteredMatches.length === 0 && (
-          <div className="text-center py-12 text-foreground/60 rounded-xl border-2 border-secondary bg-card">
-            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "কোন ম্যাচ পাওয়া যায়নি" : "No matches found"}
-            </p>
-            <p className={`text-sm mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "নতুন ম্যাচ যোগ করতে উপরের বোতাম ক্লিক করুন" : "Click the button above to add a new match"}
-            </p>
-          </div>
-        )}
-      </div>
+      
+      <FixtureManager
+        fixtures={fixtures}
+        players={players}
+        onAddFixture={handleAddFixture}
+        onUpdateFixture={handleUpdateFixture}
+        onDeleteFixture={handleDeleteFixture}
+      />
     </div>
   )
 }
