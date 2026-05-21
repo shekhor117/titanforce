@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft } from 'lucide-react'
+import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft, CheckCircle } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { dataStore } from '@/lib/data-store'
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
     
     try {
       // Save using dataStore (works with both localStorage fallback and Supabase when connected)
-      dataStore.addContact({
+      await dataStore.addContact({
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,
@@ -241,15 +241,24 @@ export default function ContactPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
               >
-                <Send className="w-4 h-4" />
-                {isBn ? 'পাঠান' : 'Send Message'}
+                <Send className={`w-4 h-4 ${isSubmitting ? 'animate-spin' : ''}`} />
+                {isSubmitting ? (isBn ? 'পাঠাচ্ছে...' : 'Sending...') : (isBn ? 'পাঠান' : 'Send Message')}
               </button>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600">
+                  {error}
+                </div>
+              )}
 
               {/* Success Message */}
               {submitted && (
-                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-600">
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-600 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
                   {isBn ? 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে!' : 'Your message has been sent successfully!'}
                 </div>
               )}
