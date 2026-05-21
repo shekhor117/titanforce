@@ -1,12 +1,12 @@
 "use client"
 
 import { useLanguage } from "@/lib/language-context"
-import { getProductById } from "@/lib/jersey-products"
 import { useCart } from "@/lib/cart-context"
 import { useRouter, useParams } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Star, ShoppingCart, Check, ChevronLeft, AlertCircle } from "lucide-react"
+import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
 
 export default function ProductDetailPage() {
   const { language } = useLanguage()
@@ -14,15 +14,36 @@ export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
   const productId = params.id as string
-
-  const product = getProductById(productId)
+  const [product, setProduct] = useState<StoreProduct | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const { addItem } = useCart()
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      setIsLoading(true)
+      const data = await StoreDataService.getProductById(productId)
+      setProduct(data || null)
+      setIsLoading(false)
+    }
+    loadProduct()
+  }, [productId])
 
   const [selectedSize, setSelectedSize] = useState("")
   const [selectedColor, setSelectedColor] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [isAdded, setIsAdded] = useState(false)
   const [error, setError] = useState("")
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -90,7 +111,7 @@ export default function ProductDetailPage() {
           {/* Image */}
           <div className="bg-secondary rounded-lg overflow-hidden h-96 lg:h-full flex items-center justify-center">
             <img
-              src={product.image}
+              src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-cover"
             />

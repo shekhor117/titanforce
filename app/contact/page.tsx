@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft } from 'lucide-react'
+import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft, CheckCircle } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { dataStore } from '@/lib/data-store'
 
 export default function ContactPage() {
   const router = useRouter()
@@ -18,21 +19,40 @@ export default function ContactPage() {
     message: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, this would send to an API
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
+    setIsSubmitting(true)
+    setError('')
+    
+    try {
+      // Save using dataStore (works with both localStorage fallback and Supabase when connected)
+      await dataStore.addContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject,
+        message: formData.message,
+      })
+      
+      setSubmitted(true)
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-    }, 3000)
+      setTimeout(() => {
+        setSubmitted(false)
+      }, 5000)
+    } catch (err) {
+      console.error('[v0] Error submitting contact form:', err)
+      setError(isBn ? 'বার্তা পাঠাতে ত্রুটি হয়েছে। দয়া করে পুনরায় চেষ্টা করুন।' : 'Error sending message. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const contactInfo = [
@@ -221,15 +241,24 @@ export default function ContactPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
               >
-                <Send className="w-4 h-4" />
-                {isBn ? 'পাঠান' : 'Send Message'}
+                <Send className={`w-4 h-4 ${isSubmitting ? 'animate-spin' : ''}`} />
+                {isSubmitting ? (isBn ? 'পাঠাচ্ছে...' : 'Sending...') : (isBn ? 'পাঠান' : 'Send Message')}
               </button>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600">
+                  {error}
+                </div>
+              )}
 
               {/* Success Message */}
               {submitted && (
-                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-600">
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-600 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
                   {isBn ? 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে!' : 'Your message has been sent successfully!'}
                 </div>
               )}

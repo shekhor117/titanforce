@@ -25,9 +25,22 @@ export default function AdminContactsPage() {
 
   useEffect(() => {
     setIsClient(true)
-    const contactsData = dataStore.getContacts()
-    setContacts(Array.isArray(contactsData) ? contactsData : [])
+    loadContacts()
+    
+    // Set up auto-refresh every 3 seconds to catch new messages
+    const interval = setInterval(() => {
+      loadContacts()
+    }, 3000)
+    
+    return () => clearInterval(interval)
   }, [])
+
+  const loadContacts = () => {
+    const contactsData = dataStore.getContacts()
+    if (Array.isArray(contactsData)) {
+      setContacts(contactsData)
+    }
+  }
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,6 +85,11 @@ export default function AdminContactsPage() {
       subject: formData.subject || "General Inquiry",
       message: formData.message,
     })
+
+    // Refresh the contacts list immediately
+    setTimeout(() => {
+      loadContacts()
+    }, 100)
 
     resetForm()
   }
