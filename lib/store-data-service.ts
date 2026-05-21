@@ -45,6 +45,44 @@ export interface Order {
   updatedAt?: Date
 }
 
+export interface JerseyOrderItem {
+  id?: string
+  playerId?: string
+  playerName?: string
+  playerNumber?: number
+  kitType: 'Home' | 'Away' | 'Third'
+  size: 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL'
+  badgeType: 'Champions Gold' | 'Premier Silver' | 'Classic Bronze'
+  hasLeaguePatch: boolean
+  customName?: string
+  customNumber?: number
+  quantity: number
+  priceUSD: number
+  priceBDT: number
+}
+
+export interface JerseyOrder {
+  id: string
+  orderNumber: string
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  customerAddress: string
+  jerseyItems: JerseyOrderItem[]
+  subtotalUSD: number
+  subtotalBDT: number
+  tax: number
+  shipping: number
+  totalUSD: number
+  totalBDT: number
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  paymentMethod: string
+  currency: 'USD' | 'BDT'
+  notes?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
 class StoreDataService {
   async getProducts(): Promise<StoreProduct[]> {
     try {
@@ -667,108 +705,165 @@ class StoreDataService {
       const totalOrders = orders.length
       const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0
       const totalProducts = products.length
-      const lowStockProducts = products.filter(p => p.stock <= 10).length
-
-      const revenueByStatus = {
-        delivered: orders
-          .filter(o => o.status === 'delivered')
-          .reduce((sum, o) => sum + o.total, 0),
-        shipped: orders
-          .filter(o => o.status === 'shipped')
-          .reduce((sum, o) => sum + o.total, 0),
-        pending: orders
-          .filter(o => o.status === 'pending')
-          .reduce((sum, o) => sum + o.total, 0)
-      }
 
       return {
         totalSales,
         totalOrders,
         averageOrderValue,
-        totalProducts,
-        lowStockProducts,
-        revenueByStatus,
-        monthlyRevenue: totalSales
+        totalProducts
       }
     } catch (error) {
-      console.error('Error getting store stats:', error)
+      console.error('Error fetching store stats:', error)
       return {
         totalSales: 0,
         totalOrders: 0,
         averageOrderValue: 0,
-        totalProducts: 0,
-        lowStockProducts: 0,
-        revenueByStatus: { delivered: 0, shipped: 0, pending: 0 },
-        monthlyRevenue: 0
+        totalProducts: 0
       }
     }
   }
 
-  async getLowStockProducts(threshold: number = 10): Promise<StoreProduct[]> {
+  // Jersey Order Methods
+  async getJerseyOrders(): Promise<JerseyOrder[]> {
     try {
-      const products = await this.getProducts()
-      return products.filter(p => p.stock <= threshold)
+      const supabase = createClient()
+      if (!supabase) return []
+
+      const { data, error } = await supabase
+        .from('jersey_orders')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      return (data || []).map(o => this.mapJerseyOrder(o))
     } catch (error) {
-      console.error('Error getting low stock products:', error)
+      console.error('[v0] Error fetching jersey orders:', error)
       return []
     }
   }
 
-  async updateInventory(productId: string, size: string, color: string, stock: number): Promise<boolean> {
+  async getJerseyOrderById(id: string): Promise<JerseyOrder | undefined> {
     try {
-      const product = await this.getProductById(productId)
-      if (!product) return false
+      const supabase = createClient()
+      if (!supabase) return undefined
 
-      // Update the variant stock
-      const updatedVariants = (product.variants || []).map(v => {
-        if (v.size === size && v.color === color) {
-          return { ...v, stock }
-        }
-        return v
-      })
+      const { data, error } = await supabase
+        .from('jersey_orders')
+        .select('*')
+        .eq('id', id)
+        .single()
 
-      return (await this.updateProduct(productId, { variants: updatedVariants })) !== null
+      if (error) throw error
+      if (!data) return undefined
+
+      return this.mapJerseyOrder(data)
     } catch (error) {
-      console.error('Error updating inventory:', error)
+      console.error('[v0] Error fetching jersey order:', error)
+      return undefined
+    }
+  }
+
+  async createJerseyOrder(order: Omit<JerseyOrder, 'id' | 'createdAt' | 'updatedAt'>): Promise<JerseyOrder | null> {
+    try {
+      const supabase = createClient()
+      if (!supabase) return null
+
+      const { data, error } = await supabase
+        .from('jersey_orders')
+        .insert({
+          order_number: order.orderNumber,
+          customer_name: order.customerName,
+          customer_email: order.customerEmail,
+          customer_phone: order.customerPhone,
+          customer_address: order.customerAddress,
+          jersey_items: order.jerseyItems,
+          subtotal_usd: order.subtotalUSD,
+          subtotal_bdt: order.subtotalBDT,
+          tax: order.tax,
+          shipping: order.shipping,
+          total_usd: order.totalUSD,
+          total_bdt: order.totalBDT,
+          status: order.status,
+          payment_method: order.paymentMethod,
+          currency: order.currency,
+          notes: order.notes || null
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return this.mapJerseyOrder(data)
+    } catch (error) {
+      console.error('[v0] Error creating jersey order:', error)
+      return null
+    }
+  }
+
+  async updateJerseyOrderStatus(id: string, status: JerseyOrder['status']): Promise<JerseyOrder | null> {
+    try {
+      const supabase = createClient()
+      if (!supabase) return null
+
+      const { data, error } = await supabase
+        .from('jersey_orders')
+        .update({ status })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return this.mapJerseyOrder(data)
+    } catch (error) {
+      console.error('[v0] Error updating jersey order status:', error)
+      return null
+    }
+  }
+
+  async deleteJerseyOrder(id: string): Promise<boolean> {
+    try {
+      const supabase = createClient()
+      if (!supabase) return false
+
+      const { error } = await supabase
+        .from('jersey_orders')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+      return true
+    } catch (error) {
+      console.error('[v0] Error deleting jersey order:', error)
       return false
     }
   }
 
-  // Realtime subscription for products - listen to admin changes
-  subscribeToProducts(
-    callback: (products: StoreProduct[]) => void,
-    onError?: (error: Error) => void
-  ): () => void {
-    try {
-      const supabase = createClient()
-      
-      const channel = supabase
-        .channel('products-sync')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'store_products' },
-          async () => {
-            try {
-              console.log('[v0] Store: Products update detected')
-              const products = await this.getProducts()
-              callback(products)
-            } catch (error) {
-              console.error('[v0] Store: Error fetching updated products:', error)
-              onError?.(error instanceof Error ? error : new Error(String(error)))
-            }
-          }
-        )
-        .subscribe()
-
-      return () => {
-        supabase.removeChannel(channel)
-      }
-    } catch (error) {
-      console.error('[v0] Store: Error setting up subscription:', error)
-      onError?.(error instanceof Error ? error : new Error(String(error)))
-      return () => {}
+  private mapJerseyOrder(data: any): JerseyOrder {
+    return {
+      id: data.id,
+      orderNumber: data.order_number,
+      customerName: data.customer_name,
+      customerEmail: data.customer_email,
+      customerPhone: data.customer_phone,
+      customerAddress: data.customer_address,
+      jerseyItems: data.jersey_items || [],
+      subtotalUSD: parseFloat(data.subtotal_usd),
+      subtotalBDT: parseFloat(data.subtotal_bdt),
+      tax: parseFloat(data.tax),
+      shipping: parseFloat(data.shipping),
+      totalUSD: parseFloat(data.total_usd),
+      totalBDT: parseFloat(data.total_bdt),
+      status: data.status,
+      paymentMethod: data.payment_method,
+      currency: data.currency,
+      notes: data.notes,
+      createdAt: data.created_at ? new Date(data.created_at) : undefined,
+      updatedAt: data.updated_at ? new Date(data.updated_at) : undefined
     }
   }
 }
 
 export default new StoreDataService()
+
