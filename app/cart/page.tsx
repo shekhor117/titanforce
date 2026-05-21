@@ -24,7 +24,7 @@ export default function CartPage() {
           {isBn ? "এখনও কোন পণ্য যোগ করেননি" : "You haven't added any jerseys yet"}
         </p>
         <Link
-          href="/shop"
+          href="/store"
           className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />
@@ -40,7 +40,7 @@ export default function CartPage() {
       <div className="border-b border-secondary bg-background/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/shop" className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors">
+            <Link href="/store" className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors">
               <ChevronLeft className="w-5 h-5" />
               <span>{isBn ? "শপিং চালিয়ে যান" : "Continue Shopping"}</span>
             </Link>

@@ -42,7 +42,7 @@ export default function CheckoutPage() {
           {isBn ? "চেকআউট করার জন্য কার্টে পণ্য যোগ করুন" : "Add items to cart before checking out"}
         </p>
         <Link
-          href="/shop"
+          href="/store"
           className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />

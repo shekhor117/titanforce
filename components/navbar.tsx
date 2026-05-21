@@ -67,7 +67,7 @@ export function Navbar() {
           <div className="h-6 w-px bg-primary/20" />
           
           <Link
-            href="/shop"
+            href="/store"
             className="flex items-center gap-2 px-4 py-2 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative group"
           >
             <ShoppingBag className="w-4 h-4" />
@@ -116,7 +116,7 @@ export function Navbar() {
           ))}
           
           <Link
-            href="/shop"
+            href="/store"
             className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative"
             onClick={() => setMobileMenuOpen(false)}
           >
