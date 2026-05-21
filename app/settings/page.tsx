@@ -23,10 +23,10 @@ import {
   Heart,
   Lock,
 } from "lucide-react"
-import { mockGetSession, mockUpdateUserProfile } from "@/lib/mock-auth"
+import { createClient } from "@/lib/supabase/client"
 
 export default function SettingsPage() {
-  const { user, isLoading } = useAuth()
+  const { user, isLoading, profile } = useAuth()
   const { language } = useLanguage()
   const router = useRouter()
   const isBn = language === "bn"
@@ -38,7 +38,6 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"profile" | "security" | "preferences">("profile")
   const [isClient, setIsClient] = useState(false)
 
-  // Ensure we're on the client before using router
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -62,18 +61,18 @@ export default function SettingsPage() {
       return
     }
     
-    const session = mockGetSession()
+    // Use real profile data from Supabase instead of mock
     setFormData({
       name: user.name || "",
       email: user.email || "",
-      phone: session?.phone || "",
-      address: session?.address || "",
-      website: session?.website || "",
-      dateOfBirth: session?.dateOfBirth || "",
-      bio: session?.bio || "",
-      about: session?.about || "",
+      phone: profile?.phone || "",
+      address: profile?.address || "",
+      website: profile?.website || "",
+      dateOfBirth: profile?.dateOfBirth || "",
+      bio: profile?.bio || "",
+      about: profile?.about || "",
     })
-  }, [isClient, user, isLoading, router])
+  }, [isClient, user, profile, isLoading, router])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -91,28 +90,29 @@ export default function SettingsPage() {
     setSuccessMessage("")
 
     try {
-      // Update user profile using mock auth
-      mockUpdateUserProfile(user.id, {
-        name: formData.name,
-        phone: formData.phone,
-        address: formData.address,
-        website: formData.website,
-        dateOfBirth: formData.dateOfBirth,
-        bio: formData.bio,
-        about: formData.about,
-      })
+      const supabase = createClient()
+      
+      // Update user profile in Supabase
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          website: formData.website,
+          dateOfBirth: formData.dateOfBirth,
+          bio: formData.bio,
+          about: formData.about,
+        })
+        .eq("id", user.id)
 
-      setSuccessMessage(
-        isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!"
-      )
-      setIsEditing(false)
+      if (error) throw error
 
-      setTimeout(() => {
-        setSuccessMessage("")
-      }, 3000)
+      setSuccessMessage(isBn ? "সেটিংস আপডেট হয়েছে" : "Settings updated successfully")
+      setTimeout(() => setSuccessMessage(""), 3000)
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to update profile"
+        error instanceof Error ? error.message : "Failed to update settings"
       setErrorMessage(message)
     } finally {
       setIsSubmitting(false)
@@ -451,7 +451,7 @@ export default function SettingsPage() {
                       <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
                         <h3 className="font-semibold text-foreground mb-2">
-                          {isBn ? "দুই-ফ্যাক্টর প্রমাণীকরণ" : "Two-Factor Authentication"}
+                          {isBn ? "দুই-ফ্যাক্টর প্র���াণীকরণ" : "Two-Factor Authentication"}
                         </h3>
                         <p className="text-foreground/60 text-sm mb-4">
                           {isBn ? "আপনার অ্যাকাউন্টে একটি অ���িরিক্ত নিরাপত্তা স্তর যোগ করুন।"

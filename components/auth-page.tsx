@@ -122,26 +122,17 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       if (view === 'login') {
         // Check credentials first
         if (authStep === 'credentials') {
-          // Validate credentials with mock auth or Supabase
+          // Validate credentials with Supabase
           try {
-            const { mockSignInWithEmail } = await import('@/lib/mock-auth')
-            const mockUser = mockSignInWithEmail(email, password)
-            if (!mockUser) {
+            const { data } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            })
+            if (!data.user) {
               throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
             }
-          } catch (credErr) {
-            // Try Supabase
-            try {
-              const { data } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-              })
-              if (!data.user) {
-                throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
-              }
-            } catch (supabaseErr) {
-              throw credErr
-            }
+          } catch (err) {
+            throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
           }
 
           // If OTP is enabled, proceed to OTP verification
@@ -174,24 +165,21 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       } else {
         // Signup flow
         if (authStep === 'credentials') {
-          // Try Supabase first, fall back to mock if not configured
-          try {
-            const { error } = await supabase.auth.signUp({
-              email,
-              password,
-              options: {
-                data: {
-                  full_name: fullName,
-                  role: selectedRole,
-                },
-                emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-                  `${window.location.origin}/auth/callback?role=${selectedRole}`,
+          // Use real Supabase signup
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName,
+                role: selectedRole,
               },
-            })
-            if (error) throw error
-          } catch (supabaseErr) {
-            console.log("[v0] Supabase signup failed, attempting mock signup...")
-            await mockSignUp(email, password, fullName, selectedRole)
+              emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+                `${window.location.origin}/auth/callback?role=${selectedRole}`,
+            },
+          })
+          if (error) {
+            throw new Error(error.message || 'Failed to sign up')
           }
 
           // Proceed to OTP verification if enabled
@@ -354,21 +342,16 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         role: selectedRole,
       }
 
-      try {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: signupData,
-            emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-              `${window.location.origin}/auth/callback?role=${selectedRole}`,
-          },
-        })
-        if (error) throw error
-      } catch (supabaseErr) {
-        console.log("[v0] Supabase signup failed, attempting mock signup...")
-        await mockSignUp(email, password, fullName, selectedRole)
-      }
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: signupData,
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+            `${window.location.origin}/auth/callback?role=${selectedRole}`,
+        },
+      })
+      if (error) throw error
 
       // Proceed to OTP verification if enabled
       if (enableOTP) {

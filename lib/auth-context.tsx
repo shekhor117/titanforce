@@ -155,44 +155,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string, role: UserRole) => {
     setIsLoading(true)
     try {
-      if (!supabase) {
-        // Use mock auth when Supabase is not configured
-        const { mockSignInWithEmail } = await import("@/lib/mock-auth")
-        const mockUser = mockSignInWithEmail(email, password)
-        if (!mockUser) {
-          throw new Error("Invalid credentials")
-        }
-        const newUser: User = {
-          id: mockUser.id,
-          name: mockUser.name,
-          email: mockUser.email,
-          role: role,
-        }
-        setUser(newUser)
-        return
-      }
+      // Always require Supabase for authentication
+      const { signInWithEmail } = await import("@/lib/auth-utils")
+      const authUser = await signInWithEmail(email, password)
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) {
-        throw new Error(error.message)
-      }
+      // Fetch profile to get actual role
+      const profileData = await fetchProfile(authUser.id)
       
-      if (data.user) {
-        const supabaseUser = data.user
-        const newUser: User = {
-          id: supabaseUser.id,
-          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-          email: supabaseUser.email || "",
-          role: role,
-          avatar: supabaseUser.user_metadata?.avatar_url,
-        }
-        setUser(newUser)
-        await fetchProfile(data.user.id)
+      const newUser: User = {
+        id: authUser.id,
+        name: authUser.name,
+        email: authUser.email,
+        role: profileData?.role || role,
       }
+      setUser(newUser)
+    } catch (error) {
+      console.error("[v0] Login error:", error)
+      throw error
     } finally {
       setIsLoading(false)
     }

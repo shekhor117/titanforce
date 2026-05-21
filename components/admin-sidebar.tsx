@@ -19,6 +19,7 @@ export function AdminSidebar() {
   const allMenuItems = [
     { href: "/admin/dashboard", label: isBn ? "ড্যাশবোর্ড" : "Dashboard", icon: "📊", restricted: false },
     { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽", restricted: false },
+    { href: "/admin/squad-manager", label: isBn ? "স্কোয়াড ম্যানেজার" : "Squad Manager", icon: "🎯", restricted: false },
     { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆", restricted: true, category: "team" },
     { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥", restricted: false },
     { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝", restricted: true, category: "team" },

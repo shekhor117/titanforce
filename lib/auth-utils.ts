@@ -1,10 +1,4 @@
 import { createClient } from "@/lib/supabase/client"
-import { 
-  mockSignInWithEmail, 
-  mockSignUpWithEmail, 
-  mockSignOut,
-  isMockAuthConfigured 
-} from "@/lib/mock-auth"
 
 export interface AuthUser {
   id: string
@@ -20,21 +14,6 @@ export async function signUpWithEmail(
   name: string
 ): Promise<{ user: AuthUser; requiresVerification: boolean }> {
   const supabase = createClient()
-  
-  if (!supabase) {
-    // Use mock authentication
-    const user = mockSignUpWithEmail(email, password, name)
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        emailVerified: user.emailVerified,
-      },
-      requiresVerification: !user.emailVerified,
-    }
-  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -73,18 +52,6 @@ export async function signInWithEmail(
   password: string
 ): Promise<AuthUser> {
   const supabase = createClient()
-  
-  if (!supabase) {
-    // Use mock authentication
-    const user = mockSignInWithEmail(email, password)
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      emailVerified: user.emailVerified,
-    }
-  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -114,12 +81,6 @@ export async function signInWithEmail(
 export async function signOut(): Promise<void> {
   const supabase = createClient()
   
-  if (!supabase) {
-    // Use mock sign out
-    mockSignOut()
-    return
-  }
-
   const { error } = await supabase.auth.signOut()
   if (error) {
     throw new Error(error.message)
@@ -155,15 +116,17 @@ export async function mockSignUp(
   name: string,
   role: "player" | "fan" | "partner"
 ): Promise<void> {
-  // Create a user with the specified role
-  const user = mockSignUpWithEmail(email, password, name)
+  // Sign up with real Supabase
+  const { user } = await signUpWithEmail(email, password, name)
   
-  // Map signup role to user role
-  const userRole = role === "player" ? "user" : "user"
-  
-  // Store user in localStorage with role info
-  if (typeof window !== "undefined") {
-    localStorage.setItem("mockAuthUser", JSON.stringify({ ...user, role: userRole, signupRole: role }))
+  // Store role in user metadata
+  const supabase = createClient()
+  const { error } = await supabase.auth.updateUser({
+    data: { signupRole: role }
+  })
+
+  if (error) {
+    throw new Error(error.message)
   }
 }
 

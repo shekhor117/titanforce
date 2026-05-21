@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
 import { signInWithEmail, signOut, AuthUser } from "@/lib/auth-utils"
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
-import { mockGetSession } from "@/lib/mock-auth"
 
 interface AdminContextType {
   admin: AuthUser | null
@@ -33,36 +32,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
-        // If Supabase is not configured, check for mock session or create default
-        if (!supabase) {
-          let mockUser = mockGetSession()
-          
-          // If no session exists, auto-login with default admin account for development
-          if (!mockUser) {
-            try {
-              mockUser = await signInWithEmail("admin@titanforce.com", "admin123")
-            } catch (err) {
-              console.warn("[v0] Failed to auto-login with default admin:", err)
-            }
-          }
-          
-          if (mockUser && isMounted) {
-            const userRole = mockUser.role as "admin" | "moderator"
-            if (userRole === "admin" || userRole === "moderator") {
-              const user: AuthUser = {
-                id: mockUser.id,
-                email: mockUser.email,
-                name: mockUser.name,
-                role: userRole,
-                emailVerified: mockUser.emailVerified,
-              }
-              setAdmin(user)
-            }
-          }
-          if (isMounted) setIsInitialized(true)
-          return
-        }
-        
         // Check for existing session with Supabase
         const { data, error } = await supabase.auth.getSession()
         
@@ -132,7 +101,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      // Use authentication
+      // Use Supabase authentication
       const user = await signInWithEmail(email, password)
       
       // Check if user has admin role

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { ToggleLeft, ToggleRight, Save, RefreshCw, Download, Upload, AlertCircle } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 interface Feature {
   id: string
@@ -32,16 +33,61 @@ export default function AdminFeaturesPage() {
   const [features, setFeatures] = useState<Feature[]>(defaultFeatures)
   const [hasChanges, setHasChanges] = useState(false)
 
+  useEffect(() => {
+    loadFeaturesFromSupabase()
+  }, [])
+
+  const loadFeaturesFromSupabase = async () => {
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .like("key", "feature_%")
+
+      if (error) throw error
+
+      // Merge Supabase settings with default features
+      if (data && data.length > 0) {
+        const loadedFeatures = features.map(feature => {
+          const setting = data.find(d => d.key === `feature_${feature.id}`)
+          return setting ? { ...feature, enabled: setting.value.enabled } : feature
+        })
+        setFeatures(loadedFeatures)
+      }
+    } catch (error) {
+      console.error("[v0] Error loading features from Supabase:", error)
+      // Fall back to default features
+    }
+  }
+
   const toggleFeature = (id: string) => {
     setFeatures(features.map(f => f.id === id ? { ...f, enabled: !f.enabled } : f))
     setHasChanges(true)
   }
 
-  const handleSave = () => {
-    // In a real app, this would save to database
-    localStorage.setItem("titanforce_features", JSON.stringify(features))
-    setHasChanges(false)
-    alert(isBn ? "সেটিংস সংরক্ষিত!" : "Settings saved!")
+  const handleSave = async () => {
+    try {
+      const supabase = createClient()
+      
+      // Save each feature to site_settings table
+      for (const feature of features) {
+        const { error } = await supabase
+          .from("site_settings")
+          .upsert({
+            key: `feature_${feature.id}`,
+            value: { enabled: feature.enabled, ...feature }
+          }, { onConflict: "key" })
+        
+        if (error) throw error
+      }
+      
+      setHasChanges(false)
+      alert(isBn ? "সেটিংস সংরক্ষিত!" : "Settings saved!")
+    } catch (error) {
+      console.error("[v0] Error saving features:", error)
+      alert(isBn ? "ত্রুটি হয়েছে" : "Error saving settings")
+    }
   }
 
   const handleReset = () => {
