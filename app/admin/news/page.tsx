@@ -1,29 +1,29 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, X, Save } from "lucide-react"
-import { getDataService } from "@/lib/data-service"
-import type { NewsItem } from "@/lib/data-service"
+import { useState, useEffect } from 'react'
+import { NewsManager } from '@/components/NewsManager'
+import { useDataService } from '@/lib/data-service'
+import type { NewsItem } from '@/lib/data-service'
 
-export default function AdminNews() {
-  const { language } = useLanguage()
-  const isBn = language === "bn"
-  const [showForm, setShowForm] = useState(false)
-  const [editingNews, setEditingNews] = useState<NewsItem | null>(null)
-  const [news, setNews] = useState<NewsItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  
-  const [formData, setFormData] = useState({
-    title: "",
-    excerpt: "",
-    content: "",
-    author: "",
-    category: "club" as "club" | "player" | "match" | "achievement",
-    status: "draft" as "draft" | "published",
-    featured: false,
-    image: "",
-  })
+interface NewsArticle {
+  id: string
+  title: string
+  category: 'Match Report' | 'Transfer News' | 'Feature' | 'Interview' | 'Club News'
+  summary: string
+  content: string
+  author: string
+  date: string
+  status: 'Draft' | 'Published'
+  views: number
+  clicks: number
+  image?: string
+}
+
+export default function AdminNewsPage() {
+  const { getNewsItems, createNewsItem, updateNewsItem, deleteNewsItem } = useDataService()
+  const [articles, setArticles] = useState<NewsArticle[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadNews()
@@ -31,123 +31,108 @@ export default function AdminNews() {
 
   const loadNews = async () => {
     try {
-      setIsLoading(true)
-      const dataService = getDataService()
-      const data = await dataService.getNewsItems()
-      setNews(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error("[v0] Error:", error)
+      setLoading(true)
+      const newsItems = await getNewsItems()
+      
+      // Convert NewsItem to NewsArticle format
+      const convertedArticles: NewsArticle[] = (newsItems || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        category: (item.category as any) || 'Club News',
+        summary: item.excerpt || item.content?.substring(0, 200) || '',
+        content: item.content || '',
+        author: item.author || 'Admin',
+        date: new Date(item.created_at).toLocaleDateString(),
+        status: (item.status === 'published' ? 'Published' : 'Draft') as 'Draft' | 'Published',
+        views: item.views || 0,
+        clicks: item.clicks || 0,
+        image: item.image || '',
+      }))
+      
+      setArticles(convertedArticles)
+      setError(null)
+    } catch (err) {
+      console.error('[v0] Error loading news:', err)
+      setError('Failed to load news articles')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  const handleSaveNews = async () => {
-    if (!formData.title || !formData.content) {
-      alert(isBn ? "শিরোনাম এবং বিষয়বস্তু প্রয়োজন" : "Title and content required")
-      return
-    }
-
+  const handleAddArticle = async (article: NewsArticle) => {
     try {
-      const dataService = getDataService()
-      const newsData = {
-        title: formData.title,
-        excerpt: formData.excerpt || formData.content.substring(0, 150),
-        content: formData.content,
-        author: formData.author || "Admin",
-        category: formData.category,
-        status: formData.status,
-        featured: formData.featured,
-        image: formData.image,
-      }
-
-      if (editingNews) {
-        await dataService.updateNewsItem(editingNews.id, newsData)
-      } else {
-        await dataService.createNewsItem(newsData)
-      }
-
+      await createNewsItem({
+        title: article.title,
+        excerpt: article.summary,
+        content: article.content,
+        author: article.author,
+        category: article.category.toLowerCase() as any,
+        status: article.status.toLowerCase() as any,
+        image: article.image || null,
+        views: 0,
+        clicks: 0,
+      })
+      
       await loadNews()
-      resetForm()
-    } catch (error) {
-      console.error("[v0] Error:", error)
+    } catch (err) {
+      console.error('[v0] Error adding news:', err)
+      setError('Failed to add news article')
     }
   }
 
-  const handleDeleteNews = async (id: string) => {
-    if (!confirm(isBn ? "নিশ্চিত?" : "Sure?")) return
-
+  const handleUpdateArticle = async (article: NewsArticle) => {
     try {
-      const dataService = getDataService()
-      await dataService.deleteNewsItem(id)
+      await updateNewsItem(article.id, {
+        title: article.title,
+        excerpt: article.summary,
+        content: article.content,
+        author: article.author,
+        category: article.category.toLowerCase() as any,
+        status: article.status.toLowerCase() as any,
+        image: article.image || null,
+        views: article.views,
+        clicks: article.clicks,
+      })
+      
       await loadNews()
-    } catch (error) {
-      console.error("[v0] Error:", error)
+    } catch (err) {
+      console.error('[v0] Error updating news:', err)
+      setError('Failed to update news article')
     }
   }
 
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      excerpt: "",
-      content: "",
-      author: "",
-      category: "club",
-      status: "draft",
-      featured: false,
-      image: "",
-    })
-    setEditingNews(null)
-    setShowForm(false)
+  const handleDeleteArticle = async (articleId: string) => {
+    try {
+      await deleteNewsItem(articleId)
+      await loadNews()
+    } catch (err) {
+      console.error('[v0] Error deleting news:', err)
+      setError('Failed to delete news article')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading news...</div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">{isBn ? "খবর পরিচালনা" : "News"}</h1>
-
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded"
-          >
-            <Plus className="w-4 h-4" /> {isBn ? "নতুন" : "Add"}
-          </button>
+    <div className="p-6">
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+          {error}
         </div>
-
-        {showForm && (
-          <div className="bg-muted p-4 rounded-lg mb-6 space-y-3">
-            <input type="text" placeholder="Title" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <textarea placeholder="Content" value={formData.content} onChange={(e) => setFormData({...formData, content: e.target.value})} rows={5} className="w-full px-3 py-2 border border-border rounded" />
-            <input type="text" placeholder="Author" value={formData.author} onChange={(e) => setFormData({...formData, author: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 border border-border rounded">
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
-            <div className="flex gap-2">
-              <button onClick={handleSaveNews} className="flex-1 bg-green-600 text-white py-2 rounded">Save</button>
-              <button onClick={resetForm} className="flex-1 bg-gray-600 text-white py-2 rounded">Cancel</button>
-            </div>
-          </div>
-        )}
-
-        <div className="space-y-3">
-          {news.map(article => (
-            <div key={article.id} className="border border-border rounded-lg p-4">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="font-bold">{article.title}</h3>
-                  <p className="text-sm text-muted-foreground">{article.status}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => { setEditingNews(article); setFormData({...formData, title: article.title, content: article.content}); setShowForm(true); }} className="bg-blue-600 text-white px-3 py-1 rounded text-sm">Edit</button>
-                  <button onClick={() => handleDeleteNews(article.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
+      
+      <NewsManager
+        articles={articles}
+        onAddArticle={handleAddArticle}
+        onUpdateArticle={handleUpdateArticle}
+        onDeleteArticle={handleDeleteArticle}
+      />
     </div>
   )
 }
