@@ -4,12 +4,12 @@
 
 import { useState, useEffect } from 'react'
 import JerseyStore from '@/components/JerseyStore'
-import { useDataService } from '@/lib/data-service'
+import { getDataService } from '@/lib/data-service'
 import StoreDataService, { JerseyOrder } from '@/lib/store-data-service'
 import type { Player } from '@/lib/data-service'
 
 export default function JerseyStorePage() {
-  const { getPlayers } = useDataService()
+  const dataService = getDataService()
   const storeService = new StoreDataService()
   
   const [players, setPlayers] = useState<Player[]>([])
@@ -25,7 +25,7 @@ export default function JerseyStorePage() {
     try {
       setLoading(true)
       const [playersData, ordersData] = await Promise.all([
-        getPlayers(),
+        dataService.getPlayers(),
         storeService.getJerseyOrders()
       ])
       
