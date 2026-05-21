@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Mail, Phone, MapPin, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube, ArrowLeft } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { dataStore } from '@/lib/data-store'
 
 export default function ContactPage() {
   const router = useRouter()
@@ -18,21 +19,40 @@ export default function ContactPage() {
     message: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, this would send to an API
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
+    setIsSubmitting(true)
+    setError('')
+    
+    try {
+      // Save using dataStore (works with both localStorage fallback and Supabase when connected)
+      dataStore.addContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject,
+        message: formData.message,
+      })
+      
+      setSubmitted(true)
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-    }, 3000)
+      setTimeout(() => {
+        setSubmitted(false)
+      }, 5000)
+    } catch (err) {
+      console.error('[v0] Error submitting contact form:', err)
+      setError(isBn ? 'বার্তা পাঠাতে ত্রুটি হয়েছে। দয়া করে পুনরায় চেষ্টা করুন।' : 'Error sending message. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const contactInfo = [
