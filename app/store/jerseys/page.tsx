@@ -1,19 +1,16 @@
 'use client'
 
-'use client'
-
 import { useState, useEffect } from 'react'
 import JerseyStore from '@/components/JerseyStore'
 import { getDataService } from '@/lib/data-service'
-import StoreDataService, { JerseyOrder } from '@/lib/store-data-service'
+import StoreDataService from '@/lib/store-data-service'
 import type { Player } from '@/lib/data-service'
 
 export default function JerseyStorePage() {
   const dataService = getDataService()
-  const storeService = new StoreDataService()
   
   const [players, setPlayers] = useState<Player[]>([])
-  const [orders, setOrders] = useState<JerseyOrder[]>([])
+  const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,7 +23,7 @@ export default function JerseyStorePage() {
       setLoading(true)
       const [playersData, ordersData] = await Promise.all([
         dataService.getPlayers(),
-        storeService.getJerseyOrders()
+        StoreDataService.getJerseyOrders()
       ])
       
       setPlayers(playersData || [])
@@ -40,12 +37,12 @@ export default function JerseyStorePage() {
     }
   }
 
-  const handleUpdateOrders = async (newOrders: JerseyOrder[]) => {
+  const handleUpdateOrders = async (newOrders: any[]) => {
     try {
       setOrders(newOrders)
       // Save orders to Supabase via store service
       for (const order of newOrders) {
-        await storeService.createJerseyOrder(order)
+        await StoreDataService.createJerseyOrder(order)
       }
     } catch (err) {
       console.error('[v0] Error updating orders:', err)
@@ -54,7 +51,6 @@ export default function JerseyStorePage() {
   }
 
   const handleToast = (message: string) => {
-    // This would integrate with a toast notification system
     console.log('[v0] Toast:', message)
   }
 
