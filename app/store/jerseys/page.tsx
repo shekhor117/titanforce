@@ -1,5 +1,7 @@
 'use client'
 
+'use client'
+
 import { useState, useEffect } from 'react'
 import JerseyStore from '@/components/JerseyStore'
 import { useDataService } from '@/lib/data-service'
