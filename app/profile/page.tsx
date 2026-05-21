@@ -21,10 +21,10 @@ import {
   Edit,
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { mockGetUserById, mockUpdateUserProfile } from "@/lib/mock-auth"
+import { createClient } from "@/lib/supabase/client"
 
 export default function ProfilePage() {
-  const { user, isLoading, logout } = useAuth()
+  const { user, isLoading, logout, profile, updatePlayerProfile } = useAuth()
   const { language } = useLanguage()
   const router = useRouter()
   const isBn = language === "bn"
@@ -33,10 +33,8 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
-  const [mockUserData, setMockUserData] = useState<any>(null)
   const [isClient, setIsClient] = useState(false)
 
-  // Ensure we're on the client before using router
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -65,26 +63,23 @@ export default function ProfilePage() {
       return
     }
 
-    const mockUser = mockGetUserById(user.id)
-    if (mockUser) {
-      setMockUserData(mockUser)
-      setFormData({
-        name: mockUser.name || "",
-        email: mockUser.email || "",
-        phone: mockUser.phone || "",
-        address: mockUser.address || "",
-        bio: mockUser.bio || "",
-        website: mockUser.website || "",
-        dateOfBirth: mockUser.dateOfBirth || "",
-        position: mockUser.position || "",
-        jersey: mockUser.jersey || "",
-        experience: mockUser.experience || "",
-        foot: mockUser.foot || "",
-        height: mockUser.height || "",
-        weight: mockUser.weight || "",
-      })
-    }
-  }, [isClient, user, isLoading, router])
+    // Use real profile data from Supabase
+    setFormData({
+      name: user.name || "",
+      email: user.email || "",
+      phone: profile?.phone || "",
+      address: profile?.address || "",
+      bio: profile?.bio || "",
+      website: profile?.website || "",
+      dateOfBirth: profile?.dateOfBirth || "",
+      position: profile?.position || "",
+      jersey: profile?.jersey || "",
+      experience: profile?.experience || "",
+      foot: profile?.foot || "",
+      height: profile?.height || "",
+      weight: profile?.weight || "",
+    })
+  }, [isClient, user, profile, isLoading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -97,8 +92,30 @@ export default function ProfilePage() {
 
     setIsSubmitting(true)
     try {
-      mockUpdateUserProfile(user.id, {
-        name: formData.name,
+      const supabase = createClient()
+      
+      // Update profile in Supabase
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          phone: formData.phone,
+          address: formData.address,
+          bio: formData.bio,
+          website: formData.website,
+          dateOfBirth: formData.dateOfBirth,
+          position: formData.position,
+          jersey: formData.jersey,
+          experience: formData.experience,
+          foot: formData.foot,
+          height: formData.height,
+          weight: formData.weight,
+        })
+        .eq("id", user.id)
+
+      if (error) throw error
+
+      setSuccessMessage(isBn ? "প্রোফাইল আপডেট হয়েছে" : "Profile updated successfully")
+      await updatePlayerProfile({
         phone: formData.phone,
         address: formData.address,
         bio: formData.bio,
@@ -111,24 +128,13 @@ export default function ProfilePage() {
         height: formData.height,
         weight: formData.weight,
       })
-
-      const updatedUser = mockGetUserById(user.id)
-      if (updatedUser) {
-        setMockUserData(updatedUser)
-      }
-
-      setSuccessMessage(
-        isBn ? "প্রোফাইল সফলভাবে আপডেট হয়েছে!" : "Profile updated successfully!"
-      )
-      setIsEditing(false)
-
-      setTimeout(() => {
-        setSuccessMessage("")
-      }, 3000)
+      
+      setTimeout(() => setSuccessMessage(""), 3000)
     } catch (error) {
-      console.error("Error updating profile:", error)
+      console.error("[v0] Error updating profile:", error)
     } finally {
       setIsSubmitting(false)
+      setIsEditing(false)
     }
   }
 
