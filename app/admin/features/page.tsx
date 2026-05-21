@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { ToggleLeft, ToggleRight, Save, RefreshCw, Download, Upload, AlertCircle } from "lucide-react"
+import { ToggleLeft, ToggleRight, Save, RefreshCw, Download, Upload, AlertCircle, Plus, Trash2, Edit2, X } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
 interface Feature {
@@ -32,10 +32,76 @@ export default function AdminFeaturesPage() {
   const isBn = language === "bn"
   const [features, setFeatures] = useState<Feature[]>(defaultFeatures)
   const [hasChanges, setHasChanges] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [editingFeature, setEditingFeature] = useState<Feature | null>(null)
+  const [formData, setFormData] = useState<Feature>({
+    id: "",
+    name: "",
+    nameBn: "",
+    description: "",
+    descriptionBn: "",
+    enabled: true,
+    category: "tools",
+  })
 
   useEffect(() => {
     loadFeaturesFromSupabase()
   }, [])
+
+  const openCreateModal = () => {
+    setEditingFeature(null)
+    setFormData({
+      id: "",
+      name: "",
+      nameBn: "",
+      description: "",
+      descriptionBn: "",
+      enabled: true,
+      category: "tools",
+    })
+    setShowModal(true)
+  }
+
+  const openEditModal = (feature: Feature) => {
+    setEditingFeature(feature)
+    setFormData(feature)
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+    setEditingFeature(null)
+  }
+
+  const handleSaveFeature = () => {
+    if (!formData.id.trim() || !formData.name.trim() || !formData.nameBn.trim()) {
+      alert(isBn ? "সমস্ত প্রয়োজনীয় ক্ষেত্র পূরণ করুন" : "Please fill in all required fields")
+      return
+    }
+
+    if (editingFeature) {
+      // Update existing feature
+      setFeatures(features.map(f => f.id === editingFeature.id ? formData : f))
+    } else {
+      // Check for duplicate ID
+      if (features.some(f => f.id === formData.id)) {
+        alert(isBn ? "এই আইডি ইতিমধ্যে বিদ্যমান" : "This ID already exists")
+        return
+      }
+      // Create new feature
+      setFeatures([...features, formData])
+    }
+
+    setHasChanges(true)
+    closeModal()
+  }
+
+  const handleDeleteFeature = (id: string) => {
+    if (confirm(isBn ? "এই বৈশিষ্ট্যটি মুছতে নিশ্চিত?" : "Are you sure you want to delete this feature?")) {
+      setFeatures(features.filter(f => f.id !== id))
+      setHasChanges(true)
+    }
+  }
 
   const loadFeaturesFromSupabase = async () => {
     try {
@@ -151,6 +217,13 @@ export default function AdminFeaturesPage() {
         </div>
         <div className="flex gap-2">
           <button
+            onClick={openCreateModal}
+            className={`flex items-center gap-2 px-4 py-2 bg-green-600/10 border-2 border-green-600 text-green-500 rounded hover:bg-green-600/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          >
+            <Plus className="w-4 h-4" />
+            {isBn ? "নতুন বৈশিষ্ট্য" : "New Feature"}
+          </button>
+          <button
             onClick={handleReset}
             className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           >
@@ -205,16 +278,32 @@ export default function AdminFeaturesPage() {
                     {isBn ? feature.descriptionBn : feature.description}
                   </p>
                 </div>
-                <button
-                  onClick={() => toggleFeature(feature.id)}
-                  className={`p-2 rounded transition ${feature.enabled ? "text-green-400 hover:bg-green-500/20" : "text-foreground/40 hover:bg-secondary"}`}
-                >
-                  {feature.enabled ? (
-                    <ToggleRight className="w-8 h-8" />
-                  ) : (
-                    <ToggleLeft className="w-8 h-8" />
-                  )}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openEditModal(feature)}
+                    className="p-2 rounded transition text-blue-400 hover:bg-blue-500/20"
+                    title={isBn ? "সম্পাদনা" : "Edit"}
+                  >
+                    <Edit2 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteFeature(feature.id)}
+                    className="p-2 rounded transition text-red-400 hover:bg-red-500/20"
+                    title={isBn ? "মুছুন" : "Delete"}
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => toggleFeature(feature.id)}
+                    className={`p-2 rounded transition ${feature.enabled ? "text-green-400 hover:bg-green-500/20" : "text-foreground/40 hover:bg-secondary"}`}
+                  >
+                    {feature.enabled ? (
+                      <ToggleRight className="w-8 h-8" />
+                    ) : (
+                      <ToggleLeft className="w-8 h-8" />
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -271,7 +360,123 @@ export default function AdminFeaturesPage() {
           </div>
         </div>
       </div>
-    </div>
-    </FeatureProtectedRoute>
-  )
-}
+      </div>
+
+      {/* Create/Edit Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-lg border-2 border-secondary w-full max-w-md max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-card border-b border-secondary px-6 py-4 flex items-center justify-between">
+              <h2 className={`text-xl font-bold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {editingFeature ? (isBn ? "বৈশিষ্ট্য সম্পাদনা করুন" : "Edit Feature") : (isBn ? "নতুন বৈশিষ্ট্য তৈরি করুন" : "Create New Feature")}
+              </h2>
+              <button onClick={closeModal} className="text-foreground/60 hover:text-foreground">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "আইডি" : "ID"}
+                  {!editingFeature && <span className="text-red-500"> *</span>}
+                </label>
+                <input
+                  type="text"
+                  value={formData.id}
+                  onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                  disabled={!!editingFeature}
+                  placeholder="feature-id"
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground disabled:opacity-50"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "নাম (ইংরেজি)" : "Name (English)"} <span className="text-red-500"> *</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Feature Name"
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "নাম (বাংলা)" : "Name (Bengali)"} <span className="text-red-500"> *</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.nameBn}
+                  onChange={(e) => setFormData({ ...formData, nameBn: e.target.value })}
+                  placeholder="বৈশিষ্ট্য নাম"
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "বিবরণ (ইংরেজি)" : "Description (English)"}
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Feature Description"
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "বিবরণ (বাংলা)" : "Description (Bengali)"}
+                </label>
+                <textarea
+                  value={formData.descriptionBn}
+                  onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
+                  placeholder="বৈশিষ্ট্য বিবরণ"
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={`block text-sm font-medium text-foreground mb-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "বিভাগ" : "Category"}
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value as "tools" | "analytics" | "engagement" })}
+                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                >
+                  <option value="tools">{isBn ? "সরঞ্জাম" : "Tools"}</option>
+                  <option value="analytics">{isBn ? "বিশ্লেষণ" : "Analytics"}</option>
+                  <option value="engagement">{isBn ? "এনগেজমেন্ট" : "Engagement"}</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  checked={formData.enabled}
+                  onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
+                  className="w-4 h-4 rounded"
+                />
+                <label className={`text-sm text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "সক্ষম করা" : "Enabled"}
+                </label>
+              </div>
+              <div className="flex gap-2 pt-4">
+                <button
+                  onClick={handleSaveFeature}
+                  className={`flex-1 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "সংরক্ষণ করুন" : "Save"}
+                </button>
+                <button
+                  onClick={closeModal}
+                  className={`flex-1 px-4 py-2 border border-secondary text-foreground rounded hover:bg-secondary/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {isBn ? "বাতিল" : "Cancel"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
