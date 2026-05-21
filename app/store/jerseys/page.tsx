@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { JerseyStore } from '@/components/JerseyStore'
+import JerseyStore from '@/components/JerseyStore'
 import { useDataService } from '@/lib/data-service'
-import { StoreDataService, JerseyOrder } from '@/lib/store-data-service'
+import StoreDataService, { JerseyOrder } from '@/lib/store-data-service'
 import type { Player } from '@/lib/data-service'
 
 export default function JerseyStorePage() {
