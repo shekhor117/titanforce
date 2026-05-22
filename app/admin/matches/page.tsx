@@ -4,34 +4,7 @@ import { useState, useEffect } from 'react'
 import FixtureManager from '@/components/FixtureManager'
 import { getDataService } from '@/lib/data-service'
 import type { Match } from '@/lib/data-service'
-
-interface Fixture {
-  id: string
-  homeTeam: string
-  awayTeam: string
-  homeLogoColor: string
-  awayLogoColor: string
-  homeScore: number
-  awayScore: number
-  date: string
-  time: string
-  venue: string
-  status: 'Not Started' | 'In Progress' | 'Finished'
-  homeLineup: Array<{ name: string; number: number }>
-  awayLineup: Array<{ name: string; number: number }>
-  events: Array<{
-    player: string
-    type: 'Goal' | 'Yellow Card' | 'Red Card' | 'Substitution'
-    minute: number
-    team: 'Home' | 'Away'
-  }>
-}
-
-interface Player {
-  id: string
-  name: string
-  number: number
-}
+import type { Fixture, Player } from '@/components/types'
 
 export default function AdminMatchesPage() {
   const service = getDataService()
@@ -60,10 +33,9 @@ export default function AdminMatchesPage() {
         awayScore: match.away_score || 0,
         date: match.match_date,
         time: match.match_time,
-        venue: match.venue,
-        status: (match.status as 'Not Started' | 'In Progress' | 'Finished') || 'Not Started',
-        homeLineup: match.home_lineup || [],
-        awayLineup: match.away_lineup || [],
+        stadium: match.venue,
+        referee: 'TBD',
+        status: (match.status === 'live' ? 'Live' : match.status === 'finished' ? 'Finished' : 'Upcoming') as 'Upcoming' | 'Live' | 'Finished',
         events: match.match_events || [],
       }))
       
@@ -86,11 +58,8 @@ export default function AdminMatchesPage() {
         away_score: fixture.awayScore,
         match_date: fixture.date,
         match_time: fixture.time,
-        venue: fixture.venue,
-        status: fixture.status,
-        home_lineup: fixture.homeLineup,
-        away_lineup: fixture.awayLineup,
-        match_events: fixture.events,
+        venue: fixture.stadium,
+        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'finished' : 'upcoming',
       })
       
       await loadMatches()
@@ -102,18 +71,15 @@ export default function AdminMatchesPage() {
 
   const handleUpdateFixture = async (fixture: Fixture) => {
     try {
-      await updateMatch(fixture.id, {
+      await service.updateMatch(fixture.id, {
         home_team: fixture.homeTeam,
         away_team: fixture.awayTeam,
         home_score: fixture.homeScore,
         away_score: fixture.awayScore,
         match_date: fixture.date,
         match_time: fixture.time,
-        venue: fixture.venue,
-        status: fixture.status,
-        home_lineup: fixture.homeLineup,
-        away_lineup: fixture.awayLineup,
-        match_events: fixture.events,
+        venue: fixture.stadium,
+        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'finished' : 'upcoming',
       })
       
       await loadMatches()
@@ -125,7 +91,7 @@ export default function AdminMatchesPage() {
 
   const handleDeleteFixture = async (fixtureId: string) => {
     try {
-      await deleteMatch(fixtureId)
+      await service.deleteMatch(fixtureId)
       await loadMatches()
     } catch (err) {
       console.error('[v0] Error deleting match:', err)
