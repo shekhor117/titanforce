@@ -47,11 +47,10 @@ export function useDataStore() {
           setMediaItems(mediaData)
           setError(null)
         }
-        } catch (err) {
-          if (isMounted) {
-            const error = err instanceof Error ? err : new Error(String(err))
-            setError(error)
-          }
+      } catch (err) {
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
         }
       } finally {
         if (isMounted) setLoading(false)
