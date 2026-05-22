@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { NewsManager } from '@/components/NewsManager'
-import { useDataService } from '@/lib/data-service'
+import NewsManager from '@/components/NewsManager'
+import { getDataService } from '@/lib/data-service'
 import type { NewsItem } from '@/lib/data-service'
 
 interface NewsArticle {
@@ -20,7 +20,7 @@ interface NewsArticle {
 }
 
 export default function AdminNewsPage() {
-  const { getNewsItems, createNewsItem, updateNewsItem, deleteNewsItem } = useDataService()
+  const service = getDataService()
   const [articles, setArticles] = useState<NewsArticle[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -32,7 +32,7 @@ export default function AdminNewsPage() {
   const loadNews = async () => {
     try {
       setLoading(true)
-      const newsItems = await getNewsItems()
+      const newsItems = await service.getNewsItems()
       
       // Convert NewsItem to NewsArticle format
       const convertedArticles: NewsArticle[] = (newsItems || []).map(item => ({
@@ -61,7 +61,7 @@ export default function AdminNewsPage() {
 
   const handleAddArticle = async (article: NewsArticle) => {
     try {
-      await createNewsItem({
+      await service.createNewsItem({
         title: article.title,
         excerpt: article.summary,
         content: article.content,

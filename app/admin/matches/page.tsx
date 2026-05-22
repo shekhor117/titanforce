@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FixtureManager } from '@/components/FixtureManager'
-import { useDataService } from '@/lib/data-service'
+import FixtureManager from '@/components/FixtureManager'
+import { getDataService } from '@/lib/data-service'
 import type { Match } from '@/lib/data-service'
 
 interface Fixture {
@@ -34,7 +34,7 @@ interface Player {
 }
 
 export default function AdminMatchesPage() {
-  const { getMatches, createMatch, updateMatch, deleteMatch } = useDataService()
+  const service = getDataService()
   const [fixtures, setFixtures] = useState<Fixture[]>([])
   const [players] = useState<Player[]>([])
   const [loading, setLoading] = useState(true)
@@ -47,7 +47,7 @@ export default function AdminMatchesPage() {
   const loadMatches = async () => {
     try {
       setLoading(true)
-      const matches = await getMatches()
+      const matches = await service.getMatches()
       
       // Convert Match to Fixture format
       const convertedFixtures: Fixture[] = matches.map(match => ({
@@ -79,7 +79,7 @@ export default function AdminMatchesPage() {
 
   const handleAddFixture = async (fixture: Fixture) => {
     try {
-      await createMatch({
+      await service.createMatch({
         home_team: fixture.homeTeam,
         away_team: fixture.awayTeam,
         home_score: fixture.homeScore,
