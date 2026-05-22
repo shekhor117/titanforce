@@ -34,6 +34,9 @@ export function AdminSidebar() {
     { href: "/admin/store/inventory", label: isBn ? "ইনভেন্টরি" : "Inventory", icon: "📋", restricted: true, category: "store" },
     { href: "/admin/store/analytics", label: isBn ? "বিক্রয় বিশ্লেষণ" : "Sales Analytics", icon: "💹", restricted: true, category: "store" },
     
+    // CMS Management
+    { href: "/admin/cms", label: isBn ? "সিএমএস" : "CMS", icon: "📝", restricted: true, category: "tools" },
+    
     { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤", restricted: true, category: "tools" },
     { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈", restricted: true, category: "tools" },
     { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧", restricted: true, category: "tools" },
