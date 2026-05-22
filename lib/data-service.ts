@@ -47,15 +47,23 @@ export interface Player {
 
 export interface Match {
   id: string
+  home: string
+  away: string
   date: string
-  opponent: string
-  result?: string
-  goals_for?: number
-  goals_against?: number
-  lineup?: string[]
-  mvp?: string
-  status: 'scheduled' | 'live' | 'completed'
-  notes?: string
+  time: string
+  venue: string
+  home_score: number
+  away_score: number
+  status: 'live' | 'completed' | 'upcoming'
+  tournament?: string
+  home_lineup?: Array<{ name: string; number: number }>
+  away_lineup?: Array<{ name: string; number: number }>
+  match_events?: Array<{
+    player: string
+    type: 'Goal' | 'Yellow Card' | 'Red Card' | 'Substitution'
+    minute: number
+    team: 'Home' | 'Away'
+  }>
   created_at: string
   updated_at: string
 }
