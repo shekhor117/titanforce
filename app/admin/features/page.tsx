@@ -478,3 +478,6 @@ export default function AdminFeaturesPage() {
           </div>
         </div>
       )}
+    </FeatureProtectedRoute>
+  )
+}

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { GalleryManager } from '@/components/GalleryManager'
-import { useDataService } from '@/lib/data-service'
+import GalleryManager from '@/components/GalleryManager'
+import { getDataService } from '@/lib/data-service'
 import type { MediaItem as DBMediaItem } from '@/lib/data-service'
 
 interface GalleryItem {
@@ -17,7 +17,7 @@ interface GalleryItem {
 }
 
 export default function AdminGalleryPage() {
-  const { getMediaItems, createMediaItem, deleteMediaItem } = useDataService()
+  const service = getDataService()
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +29,7 @@ export default function AdminGalleryPage() {
   const loadGallery = async () => {
     try {
       setLoading(true)
-      const mediaItems = await getMediaItems()
+      const mediaItems = await service.getMediaItems()
       
       // Convert MediaItem to GalleryItem format
       const convertedItems: GalleryItem[] = (mediaItems || []).map(item => ({
@@ -55,7 +55,7 @@ export default function AdminGalleryPage() {
 
   const handleAddItem = async (item: GalleryItem) => {
     try {
-      await createMediaItem({
+      await service.createMediaItem({
         title: item.title,
         url: item.image,
         category: item.category,
@@ -83,7 +83,7 @@ export default function AdminGalleryPage() {
 
   const handleDeleteItem = async (id: string) => {
     try {
-      await deleteMediaItem(id)
+      await service.deleteMediaItem(id)
       await loadGallery()
     } catch (err) {
       console.error('[v0] Error deleting gallery item:', err)
