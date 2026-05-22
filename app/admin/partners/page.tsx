@@ -33,7 +33,6 @@ export default function AdminPartners() {
       const data = await dataService.getPartners()
       setPartners(Array.isArray(data) ? data : [])
     } catch (error) {
-      console.error("[v0] Error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -64,7 +63,6 @@ export default function AdminPartners() {
       await loadPartners()
       resetForm()
     } catch (error) {
-      console.error("[v0] Error:", error)
     }
   }
 
@@ -76,7 +74,6 @@ export default function AdminPartners() {
       await dataService.deletePartner(id)
       await loadPartners()
     } catch (error) {
-      console.error("[v0] Error:", error)
     }
   }
 

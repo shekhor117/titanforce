@@ -164,12 +164,10 @@ export class DataService {
         .order('num', { ascending: true })
 
       if (error) {
-        console.error("[v0] DataService: getPlayers error:", error)
         return []
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService: getPlayers exception:", error)
       return []
     }
   }
@@ -252,7 +250,6 @@ export class DataService {
               const players = await this.getPlayers()
               callback(players)
             } catch (error) {
-              console.error("[v0] DataService: Error fetching updated players:", error)
               onError?.(error instanceof Error ? error : new Error(String(error)))
             }
           }
@@ -275,7 +272,6 @@ export class DataService {
         this.subscriptions.delete('players')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up players subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -293,13 +289,10 @@ export class DataService {
         .order('date', { ascending: false })
 
       if (error) {
-        console.error("[v0] DataService: getMatches error:", error)
-        console.error("[v0] DataService: Returning empty matches array due to error")
         return []
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService: getMatches exception:", error)
       return []
     }
   }
@@ -387,7 +380,6 @@ export class DataService {
         this.subscriptions.delete('matches')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up matches subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -405,13 +397,10 @@ export class DataService {
         .order('name', { ascending: true })
 
       if (error) {
-        console.error("[v0] DataService: getPartners error:", error)
-        console.error("[v0] DataService: Returning empty partners array due to error")
         return []
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService: getPartners exception:", error)
       return []
     }
   }
@@ -499,7 +488,6 @@ export class DataService {
         this.subscriptions.delete('partners')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up partners subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -520,13 +508,10 @@ export class DataService {
       const { data, error } = await query.order('created_at', { ascending: false })
 
       if (error) {
-        console.error("[v0] DataService: getNewsItems error:", error)
-        console.error("[v0] DataService: Returning empty news items array due to error")
         return []
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService: getNewsItems exception:", error)
       return []
     }
   }
@@ -614,7 +599,6 @@ export class DataService {
         this.subscriptions.delete('news')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up news subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -702,7 +686,6 @@ export class DataService {
         this.subscriptions.delete('media')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up media subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -830,7 +813,6 @@ export class DataService {
         this.subscriptions.delete('contact_messages')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up contact messages subscription:", error)
       onError?.(error as Error)
       return () => {}
     }
@@ -846,12 +828,10 @@ export class DataService {
         .order('year', { ascending: false })
 
       if (error) {
-        console.error("[v0] DataService: getTrophies error:", error)
         return []
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService: getTrophies exception:", error)
       return []
     }
   }
@@ -935,7 +915,6 @@ export class DataService {
         this.subscriptions.delete('trophies')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up trophies subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
@@ -972,11 +951,9 @@ export class DataService {
         { event: '*', schema: 'public', table: 'players' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: Players update detected -", payload.eventType)
             const players = await this.getPlayers()
             onPlayersChange(players)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated players:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
@@ -988,11 +965,9 @@ export class DataService {
         { event: '*', schema: 'public', table: 'matches' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: Matches update detected -", payload.eventType)
             const matches = await this.getMatches()
             onMatchesChange(matches)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated matches:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
@@ -1004,11 +979,9 @@ export class DataService {
         { event: '*', schema: 'public', table: 'partners' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: Partners update detected -", payload.eventType)
             const partners = await this.getPartners()
             onPartnersChange(partners)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated partners:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
@@ -1020,11 +993,9 @@ export class DataService {
         { event: '*', schema: 'public', table: 'news_items' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: News update detected -", payload.eventType)
             const news = await this.getNewsItems()
             onNewsChange(news)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated news:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
@@ -1036,11 +1007,9 @@ export class DataService {
         { event: '*', schema: 'public', table: 'media_items' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: Media update detected -", payload.eventType)
             const media = await this.getMediaItems()
             onMediaChange(media)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated media:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
@@ -1052,18 +1021,15 @@ export class DataService {
         { event: '*', schema: 'public', table: 'trophies' },
         async (payload) => {
           try {
-            console.log("[v0] DataService: Trophies update detected -", payload.eventType)
             const trophies = await this.getTrophies()
             onTrophiesChange(trophies)
           } catch (error) {
-            console.error("[v0] DataService: Error fetching updated trophies:", error)
             onError?.(error instanceof Error ? error : new Error(String(error)))
           }
         }
       )
 
       channel.subscribe((status) => {
-        console.log("[v0] DataService: All-sync channel status:", status)
       })
 
       this.subscriptions.set('all-sync', channel)
@@ -1077,7 +1043,6 @@ export class DataService {
         this.subscriptions.delete('all-sync')
       }
     } catch (error) {
-      console.error("[v0] DataService: Error setting up all-sync subscription:", error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }

@@ -36,7 +36,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           })
         }
       } catch (err) {
-        console.log("[v0] Using default about settings")
+        // Using default about settings
       }
     }
     loadSettings()

@@ -39,10 +39,8 @@ export default function ShopPage() {
 
     // Subscribe to realtime updates from admin panel
     const unsubscribe = StoreDataService.subscribeToProducts((updatedProducts) => {
-      console.log("[v0] Shop: Products realtime update -", updatedProducts.length, "products")
       setProducts(updatedProducts)
     }, (error) => {
-      console.error("[v0] Shop: Subscription error:", error.message)
     })
 
     return () => unsubscribe()

@@ -116,7 +116,6 @@ export default function StoreProductsPage() {
       await loadProducts()
       setShowForm(false)
     } catch (error) {
-      console.error("[v0] Error saving product:", error)
     }
   }
 

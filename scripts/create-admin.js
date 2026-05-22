@@ -17,8 +17,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function createAdminUser() {
   try {
-    console.log("[v0] Creating admin user...");
-
     // Create auth user with admin role
     const { data, error: authError } = await supabase.auth.admin.createUser({
       email: "admin@titanforce.com",
@@ -31,12 +29,10 @@ async function createAdminUser() {
     });
 
     if (authError) {
-      console.error("[v0] Auth error:", authError);
       // If user already exists, that's ok
       if (!authError.message.includes("already exists")) {
         throw authError;
       }
-      console.log("[v0] User already exists");
       
       // Get the existing user
       const { data: existingUser, error: getError } =
@@ -49,27 +45,24 @@ async function createAdminUser() {
       const adminUser = users?.find((u) => u.email === "admin@titanforce.com");
       
       if (adminUser) {
-        console.log("[v0] Found existing admin user:", adminUser.id);
         return adminUser.id;
       }
     } else if (data.user) {
-      console.log("[v0] Admin user created:", data.user.id);
       return data.user.id;
     }
   } catch (error) {
-    console.error("[v0] Error creating admin user:", error);
     throw error;
   }
 }
 
 createAdminUser()
   .then((userId) => {
-    console.log("[v0] Setup complete! Admin user ID:", userId);
-    console.log("[v0] Email: admin@titanforce.com");
-    console.log("[v0] Password: Admin123!");
+    console.log("Setup complete! Admin user ID:", userId);
+    console.log("Email: admin@titanforce.com");
+    console.log("Password: Admin123!");
     process.exit(0);
   })
   .catch((error) => {
-    console.error("[v0] Setup failed:", error);
+    console.error("Setup failed:", error);
     process.exit(1);
   });

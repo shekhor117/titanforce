@@ -81,7 +81,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         subscription = authSubscription
         if (isMounted) setIsInitialized(true)
       } catch (err) {
-        console.error("[v0] Error verifying auth:", err)
         if (isMounted) setIsInitialized(true)
       }
     }
@@ -114,7 +113,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
-      console.error("[v0] Admin login error:", message)
       setError(message)
       setIsLoading(false)
       throw err

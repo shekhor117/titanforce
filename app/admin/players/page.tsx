@@ -38,7 +38,6 @@ export default function AdminPlayers() {
       const data = await dataService.getPlayers()
       setPlayers(Array.isArray(data) ? data : [])
     } catch (error) {
-      console.error("[v0] Error loading players:", error)
     } finally {
       setIsLoading(false)
     }
@@ -74,7 +73,6 @@ export default function AdminPlayers() {
       resetForm()
       alert(isBn ? "সংরক্ষণ সফল" : "Saved successfully")
     } catch (error) {
-      console.error("[v0] Error:", error)
       alert(isBn ? "ত্রুটি হয়েছে" : "Error occurred")
     }
   }
@@ -103,7 +101,6 @@ export default function AdminPlayers() {
       await dataService.deletePlayer(id)
       await loadPlayers()
     } catch (error) {
-      console.error("[v0] Error:", error)
     }
   }
 

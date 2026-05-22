@@ -46,13 +46,11 @@ export function useDataStore() {
           setNewsItems(newsData)
           setMediaItems(mediaData)
           setError(null)
-          console.log("[v0] useDataStore: Loaded initial data:", { players: playersData.length, matches: matchesData.length })
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] useDataStore: Error loading data:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -65,42 +63,35 @@ export function useDataStore() {
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: Players realtime update -", data.length, "players")
           setPlayers(data)
         }
       },
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: Matches realtime update -", data.length, "matches")
           setMatches(data)
         }
       },
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: Partners realtime update -", data.length, "partners")
           setPartners(data)
         }
       },
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: News realtime update -", data.length, "articles")
           setNewsItems(data)
         }
       },
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: Media realtime update -", data.length, "items")
           setMediaItems(data)
         }
       },
       (data) => {
         if (isMounted) {
-          console.log("[v0] useDataStore: Trophies realtime update -", data.length, "trophies")
         }
       },
       (err) => {
         if (isMounted) {
-          console.error("[v0] useDataStore: Realtime subscription error:", err.message)
           setError(err)
         }
       }
@@ -137,17 +128,14 @@ export function usePlayers() {
     const loadPlayers = async () => {
       try {
         setLoading(true)
-        console.log("[v0] usePlayers: Starting to load players")
         const data = await service.getPlayers()
         if (isMounted) {
-          console.log("[v0] usePlayers: Loaded", data.length, "players", data)
           setPlayers(data)
           setError(null)
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
-          console.error("[v0] usePlayers: Load error:", error.message, "Full error:", err)
           setError(error)
         }
       } finally {
@@ -159,12 +147,10 @@ export function usePlayers() {
 
     const unsubscribe = service.subscribeToPlayers((data) => {
       if (isMounted) {
-        console.log("[v0] usePlayers: Real-time update -", data.length, "players")
         setPlayers(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] usePlayers: Subscription error:", err.message)
         setError(err)
       }
     })
@@ -194,13 +180,11 @@ export function useMatches() {
         if (isMounted) {
           setMatches(data)
           setError(null)
-          console.log("[v0] useMatches: Loaded", data.length, "matches")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] useMatches: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -211,12 +195,10 @@ export function useMatches() {
 
     const unsubscribe = service.subscribeToMatches((data) => {
       if (isMounted) {
-        console.log("[v0] useMatches: Real-time update -", data.length, "matches")
         setMatches(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] useMatches: Subscription error:", err.message)
         setError(err)
       }
     })
@@ -246,13 +228,11 @@ export function usePartners() {
         if (isMounted) {
           setPartners(data)
           setError(null)
-          console.log("[v0] usePartners: Loaded", data.length, "partners")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] usePartners: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -263,12 +243,10 @@ export function usePartners() {
 
     const unsubscribe = service.subscribeToPartners((data) => {
       if (isMounted) {
-        console.log("[v0] usePartners: Real-time update -", data.length, "partners")
         setPartners(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] usePartners: Subscription error:", err.message)
         setError(err)
       }
     })
@@ -298,13 +276,11 @@ export function useNewsItems() {
         if (isMounted) {
           setNewsItems(data)
           setError(null)
-          console.log("[v0] useNewsItems: Loaded", data.length, "items")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] useNewsItems: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -315,12 +291,10 @@ export function useNewsItems() {
 
     const unsubscribe = service.subscribeToNewsItems((data) => {
       if (isMounted) {
-        console.log("[v0] useNewsItems: Real-time update -", data.length, "items")
         setNewsItems(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] useNewsItems: Subscription error:", err.message)
         setError(err)
       }
     })
@@ -350,13 +324,11 @@ export function useMediaItems() {
         if (isMounted) {
           setMediaItems(data)
           setError(null)
-          console.log("[v0] useMediaItems: Loaded", data.length, "items")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] useMediaItems: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -367,12 +339,10 @@ export function useMediaItems() {
 
     const unsubscribe = service.subscribeToMediaItems((data) => {
       if (isMounted) {
-        console.log("[v0] useMediaItems: Real-time update -", data.length, "items")
         setMediaItems(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] useMediaItems: Subscription error:", err.message)
         setError(err)
       }
     })
@@ -402,13 +372,11 @@ export function useTrophies() {
         if (isMounted) {
           setTrophies(data)
           setError(null)
-          console.log("[v0] useTrophies: Loaded", data.length, "trophies")
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          console.error("[v0] useTrophies: Load error:", error.message)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -419,12 +387,10 @@ export function useTrophies() {
 
     const unsubscribe = service.subscribeToTrophies((data) => {
       if (isMounted) {
-        console.log("[v0] useTrophies: Real-time update -", data.length, "trophies")
         setTrophies(data)
       }
     }, (err) => {
       if (isMounted) {
-        console.error("[v0] useTrophies: Subscription error:", err.message)
         setError(err)
       }
     })

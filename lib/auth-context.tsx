@@ -170,7 +170,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setUser(newUser)
     } catch (error) {
-      console.error("[v0] Login error:", error)
       throw error
     } finally {
       setIsLoading(false)

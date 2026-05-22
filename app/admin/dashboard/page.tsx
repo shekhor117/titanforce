@@ -39,7 +39,6 @@ export default function AdminDashboard() {
         const stats = await PlayerDataService.getPlayerStats()
         setPlayerStats(stats)
       } catch (err) {
-        console.error("[v0] Error loading player stats:", err)
       }
     }
     loadData()
@@ -52,7 +51,6 @@ export default function AdminDashboard() {
         const stats = await GalleryDataService.getGalleryStats()
         setGalleryStats(stats)
       } catch (err) {
-        console.error("[v0] Error loading gallery stats:", err)
       }
     }
     loadGalleryStats()
@@ -65,7 +63,6 @@ export default function AdminDashboard() {
         const stats = await TrophyDataService.getTrophyStats()
         setTrophyStats(stats)
       } catch (err) {
-        console.error("[v0] Error loading trophy stats:", err)
       }
     }
     loadTrophyStats()
@@ -80,7 +77,6 @@ export default function AdminDashboard() {
         setStoreProducts(products)
         setStoreOrders(orders)
       } catch (err) {
-        console.error("[v0] Error loading store data:", err)
       }
     }
     loadStoreData()

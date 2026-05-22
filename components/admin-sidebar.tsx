@@ -53,7 +53,6 @@ export function AdminSidebar() {
       router.push("/admin/login")
       setMobileOpen(false)
     } catch (err) {
-      console.error("[v0] Logout error:", err)
     }
   }
 

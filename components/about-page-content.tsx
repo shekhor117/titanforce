@@ -30,7 +30,6 @@ export function AboutPageContent() {
           })
         }
       } catch (err) {
-        console.log("[v0] Using default about settings")
       }
     }
     loadSettings()

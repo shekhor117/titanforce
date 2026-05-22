@@ -23,7 +23,6 @@ export default function StoreInventoryPage() {
     try {
       loadInventory()
     } catch (err) {
-      console.error("[v0] Error in inventory page:", err)
       setError(isBn ? "ডেটা লোড করতে ত্রুটি হয়েছে" : "Error loading data")
     }
   }, [])
@@ -37,7 +36,6 @@ export default function StoreInventoryPage() {
       const lowStockData = await StoreDataService.getLowStockProducts(10)
       setLowStockProducts(Array.isArray(lowStockData) ? lowStockData : [])
     } catch (err) {
-      console.error("[v0] Error loading inventory:", err)
       setError(isBn ? "ইনভেন্টরি লোড করতে ব্যর্থ" : "Failed to load inventory")
       setProducts([])
       setLowStockProducts([])
@@ -81,7 +79,6 @@ export default function StoreInventoryPage() {
       await loadInventory()
       setEditingProduct(null)
     } catch (error) {
-      console.error("[v0] Error saving variants:", error)
       setError(isBn ? "ভেরিয়েন্ট আপডেট ব্যর্থ" : "Failed to update variants")
     }
   }

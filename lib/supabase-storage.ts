@@ -63,7 +63,6 @@ export async function uploadFileToSupabase(
       fileName: file.name,
     }
   } catch (error) {
-    console.error("[v0] Upload error:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Upload failed",
@@ -99,7 +98,6 @@ export async function deleteFileFromSupabase(filePath: string) {
 
     return { success: true }
   } catch (error) {
-    console.error("[v0] Delete error:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Delete failed",
@@ -122,7 +120,6 @@ export async function getSignedUrl(filePath: string) {
 
     return { success: true, signedUrl: data.signedUrl }
   } catch (error) {
-    console.error("[v0] Get signed URL error:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to get signed URL",

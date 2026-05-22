@@ -54,7 +54,6 @@ export function MatchVoting() {
           setSelectedPlayer(userVote.playerId)
         }
       } catch (error) {
-        console.error("[v0] Error loading players for voting:", error)
         setPlayers([])
       }
     }
