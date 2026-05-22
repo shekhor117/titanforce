@@ -25,17 +25,17 @@ export default function AdminMatchesPage() {
       // Convert Match to Fixture format
       const convertedFixtures: Fixture[] = matches.map(match => ({
         id: match.id,
-        homeTeam: match.home_team,
-        awayTeam: match.away_team,
+        homeTeam: match.home || 'Home Team',
+        awayTeam: match.away || 'Away Team',
         homeLogoColor: 'bg-emerald-600',
         awayLogoColor: 'bg-indigo-600',
         homeScore: match.home_score || 0,
         awayScore: match.away_score || 0,
-        date: match.match_date,
-        time: match.match_time,
+        date: match.date,
+        time: match.time,
         stadium: match.venue,
         referee: 'TBD',
-        status: (match.status === 'live' ? 'Live' : match.status === 'finished' ? 'Finished' : 'Upcoming') as 'Upcoming' | 'Live' | 'Finished',
+        status: (match.status === 'live' ? 'Live' : match.status === 'completed' ? 'Finished' : 'Upcoming') as 'Upcoming' | 'Live' | 'Finished',
         events: match.match_events || [],
       }))
       
@@ -52,14 +52,14 @@ export default function AdminMatchesPage() {
   const handleAddFixture = async (fixture: Fixture) => {
     try {
       await service.createMatch({
-        home_team: fixture.homeTeam,
-        away_team: fixture.awayTeam,
+        home: fixture.homeTeam,
+        away: fixture.awayTeam,
         home_score: fixture.homeScore,
         away_score: fixture.awayScore,
-        match_date: fixture.date,
-        match_time: fixture.time,
+        date: fixture.date,
+        time: fixture.time,
         venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'finished' : 'upcoming',
+        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
       })
       
       await loadMatches()
@@ -72,14 +72,14 @@ export default function AdminMatchesPage() {
   const handleUpdateFixture = async (fixture: Fixture) => {
     try {
       await service.updateMatch(fixture.id, {
-        home_team: fixture.homeTeam,
-        away_team: fixture.awayTeam,
+        home: fixture.homeTeam,
+        away: fixture.awayTeam,
         home_score: fixture.homeScore,
         away_score: fixture.awayScore,
-        match_date: fixture.date,
-        match_time: fixture.time,
+        date: fixture.date,
+        time: fixture.time,
         venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'finished' : 'upcoming',
+        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
       })
       
       await loadMatches()
