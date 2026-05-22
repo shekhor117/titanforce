@@ -480,13 +480,11 @@ export const dataStore = {
         physical: p.physical,
       })) 
     } catch (err) {
-      console.error("[v0] dataStore.getPlayers error:", err)
       return []
     }
   },
   setPlayers: (players: Player[]) => {
     // Note: This is handled via dataService operations
-    console.log("[v0] Players updated via Supabase")
   },
   addPlayer: async (player: Omit<Player, "id">) => {
     const service = getDataService()
@@ -549,12 +547,10 @@ export const dataStore = {
         result: (m.result as "W" | "L" | "D"),
       }))
     } catch (err) {
-      console.error("[v0] dataStore.getMatches error:", err)
       return []
     }
   },
   setMatches: (matches: Match[]) => {
-    console.log("[v0] Matches updated via Supabase")
   },
   addMatch: async (match: Omit<Match, "id">) => {
     const service = getDataService()

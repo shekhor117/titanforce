@@ -87,12 +87,10 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         sessionStorage.setItem('otp_email', emailAddress)
         // OTP valid for 5 minutes
         sessionStorage.setItem('otp_expiry', (Date.now() + 5 * 60 * 1000).toString())
-        console.log("[v0] Mock OTP sent to", emailAddress, "- Demo OTP:", mockOTP)
       }
       setOtpSentEmail(emailAddress)
       setOtpResendTimer(60) // 60 second cooldown
     } catch (err) {
-      console.error("[v0] Error sending OTP:", err)
       throw err
     }
   }

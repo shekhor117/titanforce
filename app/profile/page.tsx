@@ -131,7 +131,6 @@ export default function ProfilePage() {
       
       setTimeout(() => setSuccessMessage(""), 3000)
     } catch (error) {
-      console.error("[v0] Error updating profile:", error)
     } finally {
       setIsSubmitting(false)
       setIsEditing(false)

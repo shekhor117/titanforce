@@ -39,7 +39,6 @@ export default function StoreOrdersPage() {
     try {
       loadOrders()
     } catch (err) {
-      console.error("[v0] Error in orders page:", err)
       setError(isBn ? "ডেটা লোড করতে ত্রুটি হয়েছে" : "Error loading data")
     }
   }, [])
@@ -51,7 +50,6 @@ export default function StoreOrdersPage() {
       const data = await StoreDataService.getOrders()
       setOrders(Array.isArray(data) ? data : [])
     } catch (err) {
-      console.error("[v0] Error loading orders:", err)
       setError(isBn ? "অর্ডার লোড করতে ব্যর্থ" : "Failed to load orders")
       setOrders([])
     } finally {

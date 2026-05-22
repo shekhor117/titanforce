@@ -19,7 +19,6 @@ export function ThemeToggle() {
   const { theme, setTheme, isDark } = context
 
   const handleToggle = () => {
-    console.log("[v0] Theme toggle clicked. Current isDark:", isDark)
     setTheme(isDark ? "light" : "dark")
   }
 

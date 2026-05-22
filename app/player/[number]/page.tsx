@@ -51,7 +51,6 @@ export default function PlayerProfile() {
         const foundPlayer = players.find(p => p.num === playerNum)
         setPlayer(foundPlayer)
       } catch (err) {
-        console.error("[v0] Error fetching player:", err)
       } finally {
         setLoading(false)
       }

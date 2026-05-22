@@ -39,13 +39,11 @@ export async function getStoreProducts(): Promise<StoreProduct[]> {
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[v0] Error fetching store products:", error)
       return []
     }
 
     return data || []
   } catch (error) {
-    console.error("[v0] Error fetching store products:", error)
     return []
   }
 }
@@ -63,13 +61,11 @@ export async function getStoreProduct(id: string): Promise<StoreProduct | null> 
       .single()
 
     if (error) {
-      console.error("[v0] Error fetching store product:", error)
       return null
     }
 
     return data
   } catch (error) {
-    console.error("[v0] Error fetching store product:", error)
     return null
   }
 }
@@ -100,13 +96,11 @@ export async function getProductsByCategory(
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[v0] Error fetching products by category:", error)
       return []
     }
 
     return data || []
   } catch (error) {
-    console.error("[v0] Error fetching products by category:", error)
     return []
   }
 }

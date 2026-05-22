@@ -31,14 +31,12 @@ export async function POST(request: NextRequest) {
       })
 
     if (error) {
-      console.error("[v0] Error saving contact message:", error)
       // Still return success - localStorage has already saved it
       return NextResponse.json({ success: true, message: "Message received" })
     }
 
     return NextResponse.json({ success: true, message: "Message saved successfully" })
   } catch (error) {
-    console.error("[v0] API error:", error)
     return NextResponse.json(
       { error: "Failed to process message" },
       { status: 500 }

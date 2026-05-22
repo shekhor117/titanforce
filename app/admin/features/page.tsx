@@ -122,7 +122,6 @@ export default function AdminFeaturesPage() {
         setFeatures(loadedFeatures)
       }
     } catch (error) {
-      console.error("[v0] Error loading features from Supabase:", error)
       // Fall back to default features
     }
   }
@@ -151,7 +150,6 @@ export default function AdminFeaturesPage() {
       setHasChanges(false)
       alert(isBn ? "সেটিংস সংরক্ষিত!" : "Settings saved!")
     } catch (error) {
-      console.error("[v0] Error saving features:", error)
       alert(isBn ? "ত্রুটি হয়েছে" : "Error saving settings")
     }
   }
