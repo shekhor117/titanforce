@@ -3,18 +3,31 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, ContactMessage } from "@/lib/data-store"
+import { getDataService } from "@/lib/data-service"
 import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone, Plus, X, Save, CheckCircle } from "lucide-react"
+
+interface ContactMessage {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+  status: "unread" | "read" | "replied"
+  created_at: string
+}
 
 export default function AdminContactsPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const [contacts, setContacts] = useState<ContactMessage[]>([])
-  const [isClient, setIsClient] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,21 +37,28 @@ export default function AdminContactsPage() {
   })
 
   useEffect(() => {
-    setIsClient(true)
     loadContacts()
     
-    // Set up auto-refresh every 3 seconds to catch new messages
+    // Set up auto-refresh every 5 seconds to catch new messages
     const interval = setInterval(() => {
       loadContacts()
-    }, 3000)
+    }, 5000)
     
     return () => clearInterval(interval)
   }, [])
 
-  const loadContacts = () => {
-    const contactsData = dataStore.getContacts()
-    if (Array.isArray(contactsData)) {
+  const loadContacts = async () => {
+    try {
+      setError(null)
+      const service = getDataService()
+      const contactsData = await service.getContactMessages()
+      console.log('[v0] Loaded contacts:', contactsData)
       setContacts(contactsData)
+      setLoading(false)
+    } catch (err) {
+      console.error('[v0] Error loading contacts:', err)
+      setError(err instanceof Error ? err.message : "Failed to load messages")
+      setLoading(false)
     }
   }
 
@@ -50,53 +70,96 @@ export default function AdminContactsPage() {
     return matchesSearch && matchesStatus
   })
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) {
-      dataStore.deleteContact(id)
-      if (selectedMessage?.id === id) setSelectedMessage(null)
+      try {
+        setError(null)
+        const service = getDataService()
+        await service.deleteContactMessage(id)
+        setSuccessMessage(isBn ? "বার্তা মুছে ফেলা হয়েছে" : "Message deleted successfully")
+        if (selectedMessage?.id === id) setSelectedMessage(null)
+        await loadContacts()
+        setTimeout(() => setSuccessMessage(null), 3000)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to delete message")
+      }
     }
   }
 
-  const handleMarkAsRead = (id: string) => {
-    dataStore.updateContact(id, { status: "read" })
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      setError(null)
+      const service = getDataService()
+      await service.updateContactMessage(id, { status: "read" })
+      await loadContacts()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update message")
+    }
   }
 
-  const handleMarkAsReplied = (id: string) => {
-    dataStore.updateContact(id, { status: "replied" })
+  const handleMarkAsReplied = async (id: string) => {
+    try {
+      setError(null)
+      const service = getDataService()
+      await service.updateContactMessage(id, { status: "replied" })
+      setSuccessMessage(isBn ? "বার্তা উত্তর দেওয়া হিসেবে চিহ্নিত করা হয়েছে" : "Message marked as replied")
+      await loadContacts()
+      setTimeout(() => setSuccessMessage(null), 3000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update message")
+    }
   }
 
-  const handleSelectMessage = (contact: ContactMessage) => {
+  const handleSelectMessage = async (contact: ContactMessage) => {
     setSelectedMessage(contact)
     if (contact.status === "unread") {
-      handleMarkAsRead(contact.id)
+      await handleMarkAsRead(contact.id)
     }
   }
 
-  const handleAddContact = () => {
+  const handleAddContact = async () => {
     if (!formData.name || !formData.email || !formData.message) {
-      alert(isBn ? "নাম, ইমেইল এবং বার্তা প্রয়োজন" : "Name, email and message are required")
+      setError(isBn ? "নাম, ইমেইল এবং বার্তা প্রয়োজন" : "Name, email and message are required")
       return
     }
 
-    dataStore.addContact({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || undefined,
-      subject: formData.subject || "General Inquiry",
-      message: formData.message,
-    })
+    try {
+      setError(null)
+      const service = getDataService()
+      await service.createContactMessage({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject || "General Inquiry",
+        message: formData.message,
+        status: "unread",
+      })
 
-    // Refresh the contacts list immediately
-    setTimeout(() => {
-      loadContacts()
-    }, 100)
-
-    resetForm()
+      setSuccessMessage(isBn ? "বার্তা যোগ করা হয়েছে" : "Message added successfully")
+      await loadContacts()
+      resetForm()
+      setTimeout(() => setSuccessMessage(null), 3000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add message")
+    }
   }
 
   const resetForm = () => {
     setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
     setShowAddForm(false)
+  }
+
+  if (loading) {
+    return (
+      <FeatureProtectedRoute featureName="Contacts Management" category="team">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-foreground/60">{isBn ? "বার্তা লোড হচ্ছে..." : "Loading messages..."}</p>
+          </div>
+        </div>
+      </FeatureProtectedRoute>
+    )
   }
 
   const getStatusColor = (status: string) => {
@@ -131,6 +194,24 @@ export default function AdminContactsPage() {
   return (
     <FeatureProtectedRoute featureName="Contacts Management" category="team">
       <div className="space-y-6">
+      {/* Error Alert */}
+      {error && (
+        <div className="bg-red-950 border border-red-900 text-red-200 px-4 py-3 rounded-lg flex items-start gap-3">
+          <span className="text-xl">⚠️</span>
+          <div>
+            <p className="font-semibold">{isBn ? "ত্রুটি" : "Error"}</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Alert */}
+      {successMessage && (
+        <div className="bg-green-950 border border-green-900 text-green-200 px-4 py-3 rounded-lg flex items-start gap-3">
+          <span className="text-xl">✓</span>
+          <p className="font-semibold">{successMessage}</p>
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -286,7 +367,7 @@ export default function AdminContactsPage() {
                 </div>
                 <p className="text-sm font-medium text-foreground/80 mb-1">{contact.subject}</p>
                 <p className="text-xs text-foreground/50 line-clamp-1">{contact.message}</p>
-                <p className="text-xs text-foreground/40 mt-2">{formatDate(contact.createdAt)}</p>
+                <p className="text-xs text-foreground/40 mt-2">{formatDate(contact.created_at)}</p>
               </div>
             ))}
             {filteredContacts.length === 0 && (
@@ -316,7 +397,7 @@ export default function AdminContactsPage() {
                       <span className="text-sm text-foreground/60">{selectedMessage.phone}</span>
                     </div>
                   )}
-                  <p className="text-xs text-foreground/40 mt-2">{formatDate(selectedMessage.createdAt)}</p>
+                  <p className="text-xs text-foreground/40 mt-2">{formatDate(selectedMessage.created_at)}</p>
                 </div>
                 <span className={`px-2 py-1 rounded text-xs uppercase ${getStatusColor(selectedMessage.status)}`}>
                   {getStatusLabel(selectedMessage.status)}
@@ -334,7 +415,7 @@ export default function AdminContactsPage() {
                   className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   <Reply className="w-4 h-4" />
-                  {isBn ? "উত্তর দিন" : "Reply"}
+                  {isBn ? "উত��তর দিন" : "Reply"}
                 </a>
                 {selectedMessage.status !== "replied" && (
                   <button
