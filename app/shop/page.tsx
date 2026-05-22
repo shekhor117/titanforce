@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
-import StoreDataService, { AdminProduct } from "@/lib/store-data-service"
+import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -15,7 +15,7 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "rating">("rating")
-  const [products, setProducts] = useState<AdminProduct[]>([])
+  const [products, setProducts] = useState<StoreProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const categories = [
@@ -169,7 +169,7 @@ export default function ShopPage() {
                     {/* Image */}
                     <div className="relative aspect-square bg-background overflow-hidden">
                       <img
-                        src={product.image}
+                        src={product.imageUrl}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
