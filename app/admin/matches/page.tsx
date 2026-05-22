@@ -12,6 +12,7 @@ export default function AdminMatchesPage() {
   const [players] = useState<Player[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   useEffect(() => {
     loadMatches()
@@ -51,6 +52,8 @@ export default function AdminMatchesPage() {
 
   const handleAddFixture = async (fixture: Fixture) => {
     try {
+      setError(null)
+      console.log('[v0] Creating match:', fixture)
       await service.createMatch({
         home: fixture.homeTeam,
         away: fixture.awayTeam,
@@ -62,15 +65,20 @@ export default function AdminMatchesPage() {
         status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
       })
       
+      setSuccessMessage('Match created successfully')
       await loadMatches()
+      setTimeout(() => setSuccessMessage(null), 3000)
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to add match'
       console.error('[v0] Error adding match:', err)
-      setError('Failed to add match')
+      setError(errorMsg)
     }
   }
 
   const handleUpdateFixture = async (fixture: Fixture) => {
     try {
+      setError(null)
+      console.log('[v0] Updating match:', fixture.id, fixture)
       await service.updateMatch(fixture.id, {
         home: fixture.homeTeam,
         away: fixture.awayTeam,
@@ -80,24 +88,73 @@ export default function AdminMatchesPage() {
         time: fixture.time,
         venue: fixture.stadium,
         status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
+        match_events: fixture.events,
       })
       
+      setSuccessMessage('Match updated successfully')
       await loadMatches()
+      setTimeout(() => setSuccessMessage(null), 3000)
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to update match'
       console.error('[v0] Error updating match:', err)
-      setError('Failed to update match')
+      setError(errorMsg)
     }
   }
 
   const handleDeleteFixture = async (fixtureId: string) => {
     try {
+      setError(null)
+      console.log('[v0] Deleting match:', fixtureId)
       await service.deleteMatch(fixtureId)
+      setSuccessMessage('Match deleted successfully')
       await loadMatches()
+      setTimeout(() => setSuccessMessage(null), 3000)
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete match'
       console.error('[v0] Error deleting match:', err)
-      setError('Failed to delete match')
+      setError(errorMsg)
     }
   }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading matches...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      {error && (
+        <div className="bg-red-950 border border-red-900 text-red-200 px-4 py-3 rounded-lg flex items-start gap-3">
+          <span className="text-xl">⚠️</span>
+          <div>
+            <p className="font-semibold">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        </div>
+      )}
+      
+      {successMessage && (
+        <div className="bg-emerald-950 border border-emerald-900 text-emerald-200 px-4 py-3 rounded-lg flex items-start gap-3">
+          <span className="text-xl">✓</span>
+          <p className="font-semibold">{successMessage}</p>
+        </div>
+      )}
+
+      <FixtureManager
+        fixtures={fixtures}
+        players={players}
+        onAddFixture={handleAddFixture}
+        onUpdateFixture={handleUpdateFixture}
+        onDeleteFixture={handleDeleteFixture}
+      />
+    </div>
+  )
 
   if (loading) {
     return (
