@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { LogOut, Home, Edit, User, ArrowLeft } from "lucide-react"
+import { Dashboard3DWrapper } from "@/components/dashboard-3d-wrapper"
 import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
@@ -33,9 +34,11 @@ export default function PlayerDashboard() {
 
   if (isLoading || !user || user.role !== "player") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
+      <Dashboard3DWrapper>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      </Dashboard3DWrapper>
     )
   }
 
@@ -73,7 +76,8 @@ export default function PlayerDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <Dashboard3DWrapper>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b-2 border-primary bg-card/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
@@ -159,6 +163,7 @@ export default function PlayerDashboard() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </Dashboard3DWrapper>
   )
 }

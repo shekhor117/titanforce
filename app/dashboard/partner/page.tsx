@@ -10,6 +10,7 @@ import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
+import { Dashboard3DWrapper } from "@/components/dashboard-3d-wrapper"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
 
 export default function PartnerDashboard() {

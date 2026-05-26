@@ -10,6 +10,7 @@ import { ProfileCompletion } from "@/components/dashboard/profile-completion"
 import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
+import { Dashboard3DWrapper } from "@/components/dashboard-3d-wrapper"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
 
 export default function FanDashboard() {
@@ -33,9 +34,11 @@ export default function FanDashboard() {
 
   if (isLoading || !user || user.role !== "fan") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
+      <Dashboard3DWrapper>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      </Dashboard3DWrapper>
     )
   }
 
@@ -72,7 +75,8 @@ export default function FanDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <Dashboard3DWrapper>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b-2 border-primary bg-card/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
@@ -157,6 +161,7 @@ export default function FanDashboard() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </Dashboard3DWrapper>
   )
 }

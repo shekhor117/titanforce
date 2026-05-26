@@ -1,13 +1,14 @@
-"use client"
+'use client'
 
-import { Canvas } from "@react-three/fiber"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { AboutPageContent } from "@/components/about-page-content"
-import { useScene3D } from "@/lib/3d/scene-config"
-import { ParticleSystem } from "@/components/3d/particle-system"
+import { Canvas } from '@react-three/fiber'
+import { useScene3D } from '@/lib/3d/scene-config'
+import { ParticleSystem } from '@/components/3d/particle-system'
 
-export default function AboutPage() {
+interface Dashboard3DWrapperProps {
+  children: React.ReactNode
+}
+
+export function Dashboard3DWrapper({ children }: Dashboard3DWrapperProps) {
   const sceneConfig = useScene3D()
 
   return (
@@ -37,11 +38,7 @@ export default function AboutPage() {
 
       {/* 2D Content Overlay */}
       <div className="relative z-10 min-h-screen bg-background">
-        <Navbar />
-        <main>
-          <AboutPageContent />
-        </main>
-        <Footer />
+        {children}
       </div>
     </div>
   )
