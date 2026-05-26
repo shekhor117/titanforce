@@ -2,9 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
+
+const Gallery3DScene = dynamic(() => import('@/components/3d-gallery-scene').then(mod => ({ default: mod.Gallery3DScene })), {
+  loading: () => <div className="w-full h-72 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
+})
 
 const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -63,6 +68,11 @@ export default function GalleryPage() {
 
       {/* Main Content */}
       <main className='container px-4 py-8'>
+        {/* 3D Scene Section */}
+        <div className='w-full h-72 md:h-96 mb-8 rounded-lg overflow-hidden border border-border'>
+          <Gallery3DScene />
+        </div>
+
         {/* Search and Filter */}
         <div className='mb-8 space-y-4'>
           <div className='flex gap-4 flex-col md:flex-row'>

@@ -4,9 +4,14 @@ import { useLanguage } from "@/lib/language-context"
 import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
+
+const Shop3DScene = dynamic(() => import('@/components/3d-shop-scene').then(mod => ({ default: mod.Shop3DScene })), {
+  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
+})
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -91,6 +96,10 @@ export default function ShopPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 3D Scene Section */}
+        <div className="w-full h-72 md:h-96 mb-8 rounded-lg overflow-hidden border border-border">
+          <Shop3DScene />
+        </div>
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

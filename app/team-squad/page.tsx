@@ -1,12 +1,18 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Squad } from "@/components/squad"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft } from "lucide-react"
 import { useEffect } from "react"
+
+const Squad3DScene = dynamic(() => import('@/components/3d-squad-scene').then(mod => ({ default: mod.Squad3DScene })), {
+  ssr: false,
+  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
+})
 
 export default function TeamSquadPage() {
   const router = useRouter()
@@ -50,6 +56,11 @@ export default function TeamSquadPage() {
     <div className="min-h-screen bg-background stripe-bg">
       <Navbar />
       <main>
+        {/* 3D Scene Section */}
+        <div className="w-full h-64 md:h-80 px-4 mb-8">
+          <Squad3DScene />
+        </div>
+
         {/* Hero Section */}
         <section className="hero-gradient relative overflow-hidden py-12 sm:py-16 md:py-24">
           <div className="absolute inset-0 opacity-10"

@@ -1,8 +1,13 @@
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AboutPageContent } from "@/components/about-page-content"
 import { generatePageMetadata, getBreadcrumbSchema } from '@/lib/seo-utils'
+
+const About3DScene = dynamic(() => import('@/components/3d-about-scene').then(mod => ({ default: mod.About3DScene })), {
+  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
+})
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'About Us - Titan Force FC',
@@ -24,6 +29,10 @@ export default function AboutPage() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
+        {/* 3D Scene Section */}
+        <div className="w-full h-64 md:h-96 mb-8">
+          <About3DScene />
+        </div>
         <AboutPageContent />
       </main>
       <Footer />
