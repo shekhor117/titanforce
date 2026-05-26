@@ -1,35 +1,12 @@
-'use client'
+"use client"
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, PerspectiveCamera, OrbitControls, Sphere, MeshWobbleMaterial, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
-// Get CSS variable colors safely
-function getCSSColor(variableName: string): number {
-  if (typeof window === 'undefined') return 0xd91e3f
-  try {
-    const value = getComputedStyle(document.documentElement)
-      .getPropertyValue(variableName)
-      .trim()
-    if (!value) return 0xd91e3f
-    const hex = value.replace('#', '').replace(/\s/g, '')
-    return parseInt(hex, 16) || 0xd91e3f
-  } catch (e) {
-    console.error(`[v0] Failed to parse color ${variableName}:`, e)
-    return 0xd91e3f
-  }
-}
-
 function RotatingSphere() {
   const meshRef = useRef<THREE.Mesh>(null)
-  const [mainColor, setMainColor] = useState(0xd91e3f)
-  const [emissiveColor, setEmissiveColor] = useState(0xa71930)
-
-  useEffect(() => {
-    setMainColor(getCSSColor('--accent'))
-    setEmissiveColor(getCSSColor('--primary'))
-  }, [])
 
   useFrame(() => {
     if (meshRef.current) {
@@ -41,10 +18,10 @@ function RotatingSphere() {
   return (
     <Sphere ref={meshRef} args={[2, 64, 64]}>
       <MeshWobbleMaterial
-        color={mainColor}
+        color="#d91f3f"
         speed={2}
         factor={0.6}
-        emissive={emissiveColor}
+        emissive="#8b1a2e"
         emissiveIntensity={0.5}
       />
     </Sphere>
@@ -53,13 +30,6 @@ function RotatingSphere() {
 
 function FloatingBox() {
   const meshRef = useRef<THREE.Mesh>(null)
-  const [mainColor, setMainColor] = useState(0xd91e3f)
-  const [emissiveColor, setEmissiveColor] = useState(0xa71930)
-
-  useEffect(() => {
-    setMainColor(getCSSColor('--accent'))
-    setEmissiveColor(getCSSColor('--primary'))
-  }, [])
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
@@ -73,10 +43,10 @@ function FloatingBox() {
     <mesh ref={meshRef} position={[4, 0, 0]}>
       <boxGeometry args={[1.5, 1.5, 1.5]} />
       <meshStandardMaterial
-        color={mainColor}
+        color="#2563eb"
         metalness={0.8}
         roughness={0.2}
-        emissive={emissiveColor}
+        emissive="#1e40af"
         emissiveIntensity={0.3}
       />
     </mesh>
@@ -85,13 +55,6 @@ function FloatingBox() {
 
 function FloatingTetrahedron() {
   const meshRef = useRef<THREE.Mesh>(null)
-  const [mainColor, setMainColor] = useState(0xa71930)
-  const [emissiveColor, setEmissiveColor] = useState(0xd91e3f)
-
-  useEffect(() => {
-    setMainColor(getCSSColor('--primary'))
-    setEmissiveColor(getCSSColor('--accent'))
-  }, [])
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
@@ -105,10 +68,10 @@ function FloatingTetrahedron() {
     <mesh ref={meshRef} position={[-4, 0, 0]}>
       <tetrahedronGeometry args={[1, 0]} />
       <meshStandardMaterial
-        color={mainColor}
+        color="#fbbf24"
         metalness={0.6}
         roughness={0.3}
-        emissive={emissiveColor}
+        emissive="#f59e0b"
         emissiveIntensity={0.3}
       />
     </mesh>
@@ -116,12 +79,6 @@ function FloatingTetrahedron() {
 }
 
 export function Scene3D() {
-  const [accentLightColor, setAccentLightColor] = useState(0xd91e3f)
-
-  useEffect(() => {
-    setAccentLightColor(getCSSColor('--accent'))
-  }, [])
-
   return (
     <Canvas
       className="w-full h-full"
@@ -134,8 +91,8 @@ export function Scene3D() {
       {/* Lighting */}
       <ambientLight intensity={0.6} />
       <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffffff" />
-      <pointLight position={[-10, -10, 10]} intensity={0.4} color={accentLightColor} />
-      <pointLight position={[0, 10, 0]} intensity={0.5} color={accentLightColor} />
+      <pointLight position={[-10, -10, 10]} intensity={0.4} color="#d91f3f" />
+      <pointLight position={[0, 10, 0]} intensity={0.5} color="#2563eb" />
 
       {/* Stars background */}
       <Stars radius={100} depth={50} count={500} factor={4} />
