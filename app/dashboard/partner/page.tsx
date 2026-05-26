@@ -34,9 +34,11 @@ export default function PartnerDashboard() {
 
   if (isLoading || !user || user.role !== "partner") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
+      <Dashboard3DWrapper>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      </Dashboard3DWrapper>
     )
   }
 
@@ -73,7 +75,8 @@ export default function PartnerDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <Dashboard3DWrapper>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b-2 border-primary bg-card/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
@@ -158,6 +161,7 @@ export default function PartnerDashboard() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </Dashboard3DWrapper>
   )
 }

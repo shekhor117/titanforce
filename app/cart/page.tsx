@@ -5,37 +5,92 @@ import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { Canvas } from "@react-three/fiber"
 import { Trash2, ShoppingCart, ChevronLeft, Plus, Minus } from "lucide-react"
+import { useScene3D } from "@/lib/3d/scene-config"
+import { ParticleSystem } from "@/components/3d/particle-system"
 
 export default function CartPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const router = useRouter()
   const { items, removeItem, updateQuantity, getTotalPrice, getSubtotal, getTax, getShipping, clearCart } = useCart()
+  const sceneConfig = useScene3D()
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <ShoppingCart className="w-16 h-16 text-foreground/30 mb-4" />
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          {isBn ? "কার্ট খালি" : "Cart is Empty"}
-        </h1>
-        <p className="text-foreground/60 mb-8">
-          {isBn ? "এখনও কোন পণ্য যোগ করেননি" : "You haven't added any jerseys yet"}
-        </p>
-        <Link
-          href="/shop"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
-        >
-          <ChevronLeft className="w-5 h-5 rotate-180" />
-          {isBn ? "শপে ফিরুন" : "Back to Shop"}
-        </Link>
+      <div className="min-h-screen bg-background relative w-full">
+        {/* 3D Background */}
+        <div className="fixed inset-0 w-full h-screen z-0">
+          <Canvas
+            camera={{
+              position: sceneConfig.camera.position,
+              fov: sceneConfig.camera.fov,
+              near: sceneConfig.camera.near,
+              far: sceneConfig.camera.far,
+            }}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <color attach="background" args={[sceneConfig.background]} />
+            {sceneConfig.fog && <fog attach="fog" args={[sceneConfig.fogColor, sceneConfig.fogNear, sceneConfig.fogFar]} />}
+            <ambientLight intensity={0.6} color="#ffffff" />
+            <directionalLight intensity={0.8} color="#ffffff" position={[10, 10, 10]} />
+            <pointLight intensity={0.5} color="#60a5fa" position={[0, 5, 0]} />
+            <ParticleSystem />
+          </Canvas>
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full">
+          <ShoppingCart className="w-16 h-16 text-foreground/30 mb-4" />
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {isBn ? "কার্ট খালি" : "Cart is Empty"}
+          </h1>
+          <p className="text-foreground/60 mb-8">
+            {isBn ? "এখনও কোন পণ্য যোগ করেননি" : "You haven't added any jerseys yet"}
+          </p>
+          <Link
+            href="/shop"
+            className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
+          >
+            <ChevronLeft className="w-5 h-5 rotate-180" />
+            {isBn ? "শপে ফিরুন" : "Back to Shop"}
+          </Link>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative w-full">
+      {/* 3D Background */}
+      <div className="fixed inset-0 w-full h-screen z-0">
+        <Canvas
+          camera={{
+            position: sceneConfig.camera.position,
+            fov: sceneConfig.camera.fov,
+            near: sceneConfig.camera.near,
+            far: sceneConfig.camera.far,
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <color attach="background" args={[sceneConfig.background]} />
+          {sceneConfig.fog && <fog attach="fog" args={[sceneConfig.fogColor, sceneConfig.fogNear, sceneConfig.fogFar]} />}
+          <ambientLight intensity={0.6} color="#ffffff" />
+          <directionalLight intensity={0.8} color="#ffffff" position={[10, 10, 10]} />
+          <pointLight intensity={0.5} color="#60a5fa" position={[0, 5, 0]} />
+          <ParticleSystem />
+        </Canvas>
+      </div>
+
+      {/* Content Overlay */}
+      <div className="relative z-10 min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-secondary bg-background/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -174,6 +229,7 @@ export default function CartPage() {
             </button>
           </motion.div>
         </div>
+      </div>
       </div>
     </div>
   )
