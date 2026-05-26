@@ -9,7 +9,7 @@ import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
 
-const Scene3D = dynamic(() => import("@/components/3d-player-action").then(mod => ({ default: mod.PlayerAction3D })), {
+const Scene3D = dynamic(() => import("@/components/3d-realistic-players").then(mod => ({ default: mod.RealisticPlayers3D })), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950 to-slate-950" />,
 })
