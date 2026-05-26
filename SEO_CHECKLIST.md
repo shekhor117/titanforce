@@ -119,19 +119,19 @@
 ### URLs to Test
 ```
 # Sitemap
-https://titanforcefc.com/sitemap.xml
+https://titanforcemulikandi.vercel.app/sitemap.xml
 
 # Robots
-https://titanforcefc.com/robots.txt
+https://titanforcemulikandi.vercel.app/robots.txt
 
 # PWA Manifest
-https://titanforcefc.com/manifest.json
+https://titanforcemulikandi.vercel.app/manifest.json
 
 # Home page
-https://titanforcefc.com/
+https://titanforcemulikandi.vercel.app/
 
 # About page
-https://titanforcefc.com/about
+https://titanforcemulikandi.vercel.app/about
 ```
 
 ### Tools to Use
