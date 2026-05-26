@@ -1,12 +1,27 @@
-"use client"
+'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, PerspectiveCamera, OrbitControls, Sphere, MeshWobbleMaterial, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
+// Get CSS variable colors
+function getCSSColor(variableName: string): number {
+  if (typeof window === 'undefined') return 0x000000
+  const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
+  return parseInt(value.replace('#', ''), 16)
+}
+
 function RotatingSphere() {
   const meshRef = useRef<THREE.Mesh>(null)
+  const [colors, setColors] = useState({ main: 0xd91e3f, emissive: 0xa71930 })
+
+  useEffect(() => {
+    setColors({
+      main: getCSSColor('--accent'),
+      emissive: getCSSColor('--primary'),
+    })
+  }, [])
 
   useFrame(() => {
     if (meshRef.current) {
@@ -18,10 +33,10 @@ function RotatingSphere() {
   return (
     <Sphere ref={meshRef} args={[2, 64, 64]}>
       <MeshWobbleMaterial
-        color="#d91f3f"
+        color={colors.main}
         speed={2}
         factor={0.6}
-        emissive="#8b1a2e"
+        emissive={colors.emissive}
         emissiveIntensity={0.5}
       />
     </Sphere>
@@ -30,6 +45,15 @@ function RotatingSphere() {
 
 function FloatingBox() {
   const meshRef = useRef<THREE.Mesh>(null)
+  const [colors, setColors] = useState({ main: 0x2563eb, emissive: 0x1e40af })
+
+  useEffect(() => {
+    // Use accent color for the box
+    setColors({
+      main: getCSSColor('--accent'),
+      emissive: getCSSColor('--primary'),
+    })
+  }, [])
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
@@ -43,10 +67,10 @@ function FloatingBox() {
     <mesh ref={meshRef} position={[4, 0, 0]}>
       <boxGeometry args={[1.5, 1.5, 1.5]} />
       <meshStandardMaterial
-        color="#2563eb"
+        color={colors.main}
         metalness={0.8}
         roughness={0.2}
-        emissive="#1e40af"
+        emissive={colors.emissive}
         emissiveIntensity={0.3}
       />
     </mesh>
@@ -55,6 +79,15 @@ function FloatingBox() {
 
 function FloatingTetrahedron() {
   const meshRef = useRef<THREE.Mesh>(null)
+  const [colors, setColors] = useState({ main: 0xfbbf24, emissive: 0xf59e0b })
+
+  useEffect(() => {
+    // Use primary color for tetrahedron
+    setColors({
+      main: getCSSColor('--primary'),
+      emissive: getCSSColor('--accent'),
+    })
+  }, [])
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
@@ -68,10 +101,10 @@ function FloatingTetrahedron() {
     <mesh ref={meshRef} position={[-4, 0, 0]}>
       <tetrahedronGeometry args={[1, 0]} />
       <meshStandardMaterial
-        color="#fbbf24"
+        color={colors.main}
         metalness={0.6}
         roughness={0.3}
-        emissive="#f59e0b"
+        emissive={colors.emissive}
         emissiveIntensity={0.3}
       />
     </mesh>
@@ -79,6 +112,15 @@ function FloatingTetrahedron() {
 }
 
 export function Scene3D() {
+  const [lightColor, setLightColor] = useState({ primary: 0xffffff, accent: 0xd91e3f })
+
+  useEffect(() => {
+    setLightColor({
+      primary: 0xffffff,
+      accent: getCSSColor('--accent'),
+    })
+  }, [])
+
   return (
     <Canvas
       className="w-full h-full"
@@ -91,8 +133,8 @@ export function Scene3D() {
       {/* Lighting */}
       <ambientLight intensity={0.6} />
       <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffffff" />
-      <pointLight position={[-10, -10, 10]} intensity={0.4} color="#d91f3f" />
-      <pointLight position={[0, 10, 0]} intensity={0.5} color="#2563eb" />
+      <pointLight position={[-10, -10, 10]} intensity={0.4} color={lightColor.accent} />
+      <pointLight position={[0, 10, 0]} intensity={0.5} color={lightColor.accent} />
 
       {/* Stars background */}
       <Stars radius={100} depth={50} count={500} factor={4} />
