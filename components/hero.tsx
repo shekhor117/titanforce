@@ -1,12 +1,28 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
+import dynamic from "next/dynamic"
+
+const Logo3DScene = dynamic(() => import("@/components/3d-logo-scene").then(mod => ({ default: mod.Logo3DScene })), {
+  ssr: false,
+  loading: () => (
+    <div className="w-40 md:w-56 h-40 md:h-56 flex items-center justify-center">
+      <Image
+        src="/logo.png"
+        alt="Loading"
+        width={200}
+        height={200}
+        className="w-40 md:w-56 animate-pulse"
+      />
+    </div>
+  ),
+})
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -112,16 +128,22 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         />
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
-              <Image
-                src="/logo.png"
-                alt="Titan Force FC Logo"
-                width={180}
-                height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
-                priority
-              />
+            <div className="relative w-40 md:w-56 h-40 md:h-56">
+              <Suspense
+                fallback={
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Image
+                      src="/logo.png"
+                      alt="Loading"
+                      width={200}
+                      height={200}
+                      className="w-full animate-pulse"
+                    />
+                  </div>
+                }
+              >
+                <Logo3DScene logoImageUrl="/logo.png" />
+              </Suspense>
             </div>
           </div>
           <div className="animate-smoothFadeUp">

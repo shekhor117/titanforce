@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useMediaItems } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import {
   Carousel,
   CarouselContent,
@@ -110,8 +110,11 @@ export function GalleryShowcase() {
                     href="/gallery"
                     className="group/card block"
                   >
-                    <div className="relative overflow-hidden rounded-2xl h-96 bg-muted cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                      {/* Background Image */}
+                    <div className="relative overflow-hidden rounded-2xl h-96 bg-muted cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300 group-hover/card:scale-105 transition-transform" style={{
+                      perspective: '1000px',
+                      transform: 'perspective(1000px) rotateY(0deg)',
+                    }}>
+                      {/* 2D Fallback - Showing by default for stability */}
                       <img
                         src={item.imageUrl}
                         alt={item.title}
