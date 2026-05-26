@@ -39,8 +39,8 @@ function FloatingBall() {
 
 function FootballField() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[3, 2]} />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow position={[0, -1, 0]}>
+      <planeGeometry args={[4, 3]} />
       <meshStandardMaterial color={0x1a472a} />
     </mesh>
   )
@@ -52,14 +52,20 @@ function Lights() {
       <ambientLight intensity={0.6} />
       <pointLight position={[10, 10, 10]} intensity={0.8} castShadow />
       <pointLight position={[-10, -10, 5]} intensity={0.4} color={0xff6b9d} />
+      <pointLight position={[0, 5, 5]} intensity={0.5} color={0xfbbf24} />
     </>
   )
 }
 
 export function About3DScene() {
   return (
-    <Canvas shadows camera={{ position: [0, 0, 3.5], fov: 50 }}>
-      <PerspectiveCamera makeDefault position={[0, 0, 3.5]} />
+    <Canvas 
+      className="w-full h-full"
+      style={{ background: 'transparent' }}
+      dpr={[1, 2]}
+      shadows
+    >
+      <PerspectiveCamera makeDefault position={[0, 0.5, 3.5]} fov={50} />
       <Lights />
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
       <FootballField />
