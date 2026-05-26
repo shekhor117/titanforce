@@ -76,54 +76,54 @@ export function AboutPageContent() {
         </div>
 
         {/* Main Heading */}
-        <h1 className={`mt-6 mb-6 text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+        <h1 className={`mt-6 mb-6 text-5xl md:text-7xl lg:text-8xl leading-none tracking-wide text-white animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
           <span className="block text-white overflow-hidden animate-smoothFadeUp">
           </span>
         </h1>
 
         {/* Tagline */}
-        <p className={`mt-0 mb-4 text-lg text-foreground/70 max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+        <p className={`mt-0 mb-4 text-lg text-white font-semibold max-w-xl mx-auto ml-[205px] animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
         </p>
 
-        {/* About Section */}
-        <div>
-          <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.about.location}
-          </p>
-          <h2 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            {aboutSettings.aboutTitle}
-          </h2>
-          <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {aboutSettings.aboutDescription}
-          </p>
+          {/* About Section */}
+          <div>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {t.about.location}
+            </p>
+            <h2 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-white font-bold ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
+              {aboutSettings.aboutTitle}
+            </h2>
+            <p className={`text-lg leading-relaxed text-white font-medium max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {aboutSettings.aboutDescription}
+            </p>
 
-          {/* Statistics Grid */}
-          <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
-            <div>
-              <div className="font-[var(--font-display)] text-4xl text-primary">
-                {activePlayers.length}
+            {/* Statistics Grid */}
+            <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-accent font-bold">
+                  {activePlayers.length}
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.players}
+                </div>
               </div>
-              <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {t.about.players}
+              <div>
+                <div className="flex justify-center">
+                  <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.spirit}
+                </div>
+              </div>
+              <div>
+                <div className="font-[var(--font-display)] text-4xl text-accent font-bold">
+                  1
+                </div>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {t.about.team}
+                </div>
               </div>
             </div>
-            <div>
-              <div className="flex justify-center">
-                <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
-              </div>
-              <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {t.about.spirit}
-              </div>
-            </div>
-            <div>
-              <div className="font-[var(--font-display)] text-4xl text-primary">
-                1
-              </div>
-              <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {t.about.team}
-              </div>
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">

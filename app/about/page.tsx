@@ -37,10 +37,10 @@ export default function AboutPage() {
 
           {/* Hero Content */}
           <div className="relative max-w-6xl mx-auto px-4 text-center z-10">
-            <h1 className="text-5xl md:text-7xl font-black tracking-wider text-primary mb-4">
+            <h1 className="text-5xl md:text-7xl font-black tracking-wider text-white mb-4">
               ABOUT US
             </h1>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+            <p className="text-lg text-white font-semibold max-w-2xl mx-auto">
               Learn about Titan Force FC&apos;s history, mission, and values
             </p>
           </div>
