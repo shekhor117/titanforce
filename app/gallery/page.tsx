@@ -2,14 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
-
-const Gallery3DScene = dynamic(() => import('@/components/3d-gallery-scene').then(mod => ({ default: mod.Gallery3DScene })), {
-  loading: () => <div className="w-full h-72 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
-})
 
 const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -66,22 +61,17 @@ export default function GalleryPage() {
         </div>
       </header>
 
-      {/* Hero Section with 3D Background */}
+      {/* Hero Section with 3D Background - Simplified */}
       <section className='hero-gradient relative overflow-hidden py-16 md:py-24'>
-        {/* 3D Scene Background */}
-        <div className='absolute inset-0 z-0 opacity-40'>
-          <Gallery3DScene />
-        </div>
-
         {/* Animated Background */}
-        <div className='absolute inset-0 overflow-hidden z-1'>
+        <div className='absolute inset-0 overflow-hidden z-0'>
           <div className='absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse' />
           <div className='absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse' />
           <div className='absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob' />
         </div>
 
         <div
-          className='absolute inset-0 opacity-10 z-1'
+          className='absolute inset-0 opacity-10 z-0'
           style={{
             background: 'radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)',
           }}
@@ -160,39 +150,41 @@ export default function GalleryPage() {
         )}
 
         {/* Gallery Grid */}
-        {!loading && !error && (
+        {!loading && !error && filteredItems.length > 0 && (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {filteredItems.length > 0 ? (
-              filteredItems.map(item => (
-                <div
-                  key={item.id}
-                  onClick={() => handleImageSelect(item)}
-                  className='cursor-pointer group'
-                >
-                  <div className='relative overflow-hidden rounded-lg aspect-square bg-muted'>
-                    <img
-                      src={item.url}
-                      alt={item.title}
-                      className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
-                    />
-                    {item.title && (
-                      <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4'>
-                        <div>
-                          <h3 className='font-semibold text-white'>{item.title}</h3>
-                          {item.description && (
-                            <p className='text-sm text-gray-200'>{item.description}</p>
-                          )}
-                        </div>
+            {filteredItems.map(item => (
+              <div
+                key={item.id}
+                onClick={() => handleImageSelect(item)}
+                className='cursor-pointer group'
+              >
+                <div className='relative overflow-hidden rounded-lg aspect-square bg-muted'>
+                  <img
+                    src={item.url}
+                    alt={item.title}
+                    className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+                  />
+                  {item.title && (
+                    <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4'>
+                      <div>
+                        <h3 className='font-semibold text-white'>{item.title}</h3>
+                        {item.description && (
+                          <p className='text-sm text-gray-200'>{item.description}</p>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
-              ))
-            ) : (
-              <div className='col-span-full text-center py-12'>
-                <p className='text-muted-foreground'>{isBn ? 'কোনো ছবি নেই' : 'No images found'}</p>
               </div>
-            )}
+            ))}
+          </div>
+        )}
+
+        {/* No Data State */}
+        {!loading && !error && filteredItems.length === 0 && (
+          <div className='col-span-full text-center py-12'>
+            <p className='text-muted-foreground'>{isBn ? 'এখনো কোনো ছবি যুক্ত করা হয়নি' : 'No images uploaded yet'}</p>
+            <p className='text-sm text-muted-foreground mt-2'>{isBn ? 'শীঘ্রই আপডেট হবে' : 'Coming soon'}</p>
           </div>
         )}
 
