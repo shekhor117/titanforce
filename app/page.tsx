@@ -8,7 +8,6 @@ import { GalleryShowcase } from "@/components/gallery-showcase"
 import { TrophyTimeline } from "@/components/trophy-timeline"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
-import { Scene3DCanvas } from "@/components/3d/3d-scene-canvas"
 import { ParticleSystem } from "@/components/3d/particle-system"
 import { useScene3D } from "@/lib/3d/scene-config"
 
@@ -16,6 +15,11 @@ export default function Home() {
   // Check if hero animation has been shown this session
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
   const [heroLoading, setHeroLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   useEffect(() => {
     // Add JSON-LD BreadcrumbList
@@ -60,6 +64,21 @@ export default function Home() {
   }
 
   const sceneConfig = useScene3D()
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-background stripe-bg">
+        <Navbar />
+        <main>
+          <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
+          <GalleryShowcase />
+          <TrophyTimeline />
+          <Contact />
+        </main>
+        {!heroLoading && <Footer />}
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background stripe-bg relative w-full">
