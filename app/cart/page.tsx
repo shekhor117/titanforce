@@ -5,17 +5,14 @@ import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Canvas } from "@react-three/fiber"
 import { Trash2, ShoppingCart, ChevronLeft, Plus, Minus } from "lucide-react"
-import { useScene3D } from "@/lib/3d/scene-config"
-import { ParticleSystem } from "@/components/3d/particle-system"
+
 
 export default function CartPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
   const router = useRouter()
   const { items, removeItem, updateQuantity, getTotalPrice, getSubtotal, getTax, getShipping, clearCart } = useCart()
-  const sceneConfig = useScene3D()
 
   if (items.length === 0) {
     return (

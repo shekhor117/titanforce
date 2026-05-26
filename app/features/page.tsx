@@ -1,6 +1,5 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { LineupBuilder } from "@/components/lineup-builder"
@@ -11,11 +10,9 @@ import { TrainingChart } from "@/components/training-chart"
 import { InjuryTracking } from "@/components/injury-tracking"
 import { BackButton } from "@/components/back-button"
 import { TeamStatsOverview } from "@/components/team-stats-overview"
-import { useScene3D } from "@/lib/3d/scene-config"
-import { ParticleSystem } from "@/components/3d/particle-system"
+
 
 export default function FeaturesPage() {
-  const sceneConfig = useScene3D()
 
   return (
     <div className="min-h-screen bg-background stripe-bg relative w-full">

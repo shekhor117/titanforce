@@ -1,15 +1,13 @@
 'use client'
 
-import { Canvas } from '@react-three/fiber'
-import { useScene3D } from '@/lib/3d/scene-config'
-import { ParticleSystem } from '@/components/3d/particle-system'
+import dynamic from 'next/dynamic'
+
 
 interface Dashboard3DWrapperProps {
   children: React.ReactNode
 }
 
 export function Dashboard3DWrapper({ children }: Dashboard3DWrapperProps) {
-  const sceneConfig = useScene3D()
 
   return (
     <div className="min-h-screen bg-background relative w-full">

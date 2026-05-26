@@ -1,14 +1,11 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AboutPageContent } from "@/components/about-page-content"
-import { useScene3D } from "@/lib/3d/scene-config"
-import { ParticleSystem } from "@/components/3d/particle-system"
+
 
 export default function AboutPage() {
-  const sceneConfig = useScene3D()
 
   return (
     <div className="min-h-screen bg-background relative w-full">

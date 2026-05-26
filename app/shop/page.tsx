@@ -6,10 +6,8 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
-import { Canvas } from "@react-three/fiber"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
-import { useScene3D } from "@/lib/3d/scene-config"
-import { ParticleSystem } from "@/components/3d/particle-system"
+
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -20,7 +18,6 @@ export default function ShopPage() {
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "rating">("rating")
   const [products, setProducts] = useState<StoreProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const sceneConfig = useScene3D()
 
   const categories = [
     { id: "all", label: isBn ? "সব" : "All" },

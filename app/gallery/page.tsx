@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
-import { Canvas } from '@react-three/fiber'
-import { useScene3D } from '@/lib/3d/scene-config'
-import { ParticleSystem } from '@/components/3d/particle-system'
+
 
 const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -24,7 +23,6 @@ export default function GalleryPage() {
   const [selectedType, setSelectedType] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedImage, setSelectedImage] = useState<any>(null)
-  const sceneConfig = useScene3D()
 
   // Use realtime hook - automatically syncs when admin uploads new images
   const { mediaItems, loading, error } = useMediaItems()

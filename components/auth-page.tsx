@@ -2,15 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import { Canvas } from '@react-three/fiber'
 import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 import { mockSignUp } from '@/lib/auth-utils'
-import { useScene3D } from '@/lib/3d/scene-config'
-import { ParticleSystem } from '@/components/3d/particle-system'
+
 
 type Role = 'player' | 'fan' | 'partner'
 type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
@@ -28,7 +27,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const { login } = useAuth()
   const { language } = useLanguage()
   const isBn = language === 'bn'
-  const sceneConfig = useScene3D()
   
   const [view, setView] = useState<'login' | 'signup'>(defaultView)
   const [authStep, setAuthStep] = useState<AuthStep>('credentials')
