@@ -96,10 +96,6 @@ export default function ShopPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 3D Scene Section */}
-        <div className="w-full h-72 md:h-96 mb-8 rounded-lg overflow-hidden border border-border">
-          <Shop3DScene />
-        </div>
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -240,6 +236,11 @@ export default function ShopPage() {
             </p>
           </div>
         )}
+
+        {/* 3D Scene Section */}
+        <div className="w-full h-72 md:h-96 mt-12 rounded-lg overflow-hidden border border-border">
+          <Shop3DScene />
+        </div>
       </div>
     </div>
   )

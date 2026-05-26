@@ -68,11 +68,6 @@ export default function GalleryPage() {
 
       {/* Main Content */}
       <main className='container px-4 py-8'>
-        {/* 3D Scene Section */}
-        <div className='w-full h-72 md:h-96 mb-8 rounded-lg overflow-hidden border border-border'>
-          <Gallery3DScene />
-        </div>
-
         {/* Search and Filter */}
         <div className='mb-8 space-y-4'>
           <div className='flex gap-4 flex-col md:flex-row'>
@@ -195,6 +190,11 @@ export default function GalleryPage() {
             </div>
           </div>
         )}
+
+        {/* 3D Scene Section */}
+        <div className='w-full h-72 md:h-96 mt-12 rounded-lg overflow-hidden border border-border'>
+          <Gallery3DScene />
+        </div>
       </main>
     </div>
   )

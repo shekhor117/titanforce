@@ -29,11 +29,11 @@ export default function AboutPage() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
+        <AboutPageContent />
         {/* 3D Scene Section */}
-        <div className="w-full h-64 md:h-96 mb-8">
+        <div className="w-full h-64 md:h-96 mt-12 mb-8">
           <About3DScene />
         </div>
-        <AboutPageContent />
       </main>
       <Footer />
     </div>

@@ -21,11 +21,6 @@ export default function FixturesResultsPage() {
     <div className="min-h-screen bg-background stripe-bg">
       <Navbar />
       <main>
-        {/* 3D Scene Section */}
-        <div className="w-full h-64 md:h-80 px-4 mb-8">
-          <Fixtures3DScene />
-        </div>
-
         {/* Hero Section */}
         <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
           <div className="absolute inset-0 opacity-10"
@@ -51,6 +46,11 @@ export default function FixturesResultsPage() {
 
         {/* Matches Section */}
         <Matches />
+        
+        {/* 3D Scene Section */}
+        <div className="w-full h-64 md:h-80 px-4 mt-12 mb-8">
+          <Fixtures3DScene />
+        </div>
       </main>
       <Footer />
     </div>
