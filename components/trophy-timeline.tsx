@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTrophies } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import {
   Carousel,
   CarouselContent,
@@ -12,6 +13,11 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel'
 import { ArrowRight } from 'lucide-react'
+
+const Trophy3D = dynamic(() => import("@/components/3d-trophy").then(mod => ({ default: mod.Trophy3D })), {
+  ssr: false,
+  loading: () => <div className="w-full h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 export function TrophyTimeline() {
   const { language } = useLanguage()
@@ -85,9 +91,9 @@ export function TrophyTimeline() {
                         <span className="text-sm font-bold text-primary">{trophy.year}</span>
                       </div>
 
-                      {/* Trophy Icon */}
-                      <div className="text-6xl mb-4 group-hover/card:scale-110 transition-transform duration-300">
-                        {trophy.icon}
+                      {/* 3D Trophy Icon */}
+                      <div className="w-full h-24 mb-4 rounded-lg overflow-hidden group-hover/card:scale-110 transition-transform duration-300 origin-bottom">
+                        <Trophy3D />
                       </div>
 
                       {/* Trophy Name */}

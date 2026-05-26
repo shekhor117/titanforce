@@ -7,6 +7,17 @@ import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
+import dynamic from "next/dynamic"
+
+const ThreeDBackground = dynamic(() => import("@/components/3d-background").then(mod => ({ default: mod.ThreeDBackground })), {
+  ssr: false,
+  loading: () => null,
+})
+
+const FloatingCard3D = dynamic(() => import("@/components/3d-card").then(mod => ({ default: mod.FloatingCard3D })), {
+  ssr: false,
+  loading: () => <div className="w-full h-32 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -97,8 +108,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="hero-gradient relative overflow-hidden">
+        {/* Animated 3D Background */}
+        <div className="absolute inset-0 z-0 opacity-50">
+          <ThreeDBackground />
+        </div>
+
         {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden z-0">
           <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
@@ -110,7 +126,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
@@ -153,29 +169,14 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {aboutSettings.aboutDescription}
             </p>
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
-              <div>
-                <div className="font-[var(--font-display)] text-4xl text-primary">
-                  {activePlayers.length}
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.players}
-                </div>
+              <div className="relative h-32 rounded-lg overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 shadow-lg border border-primary/20">
+                <FloatingCard3D number={String(activePlayers.length)} label={t.about.players} color="#A71830" />
               </div>
-              <div>
-                <div className="flex justify-center">
-                  <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.spirit}
-                </div>
+              <div className="flex items-center justify-center">
+                <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
               </div>
-              <div>
-                <div className="font-[var(--font-display)] text-4xl text-primary">
-                  1
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.team}
-                </div>
+              <div className="relative h-32 rounded-lg overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 shadow-lg border border-primary/20">
+                <FloatingCard3D number="1" label={t.about.team} color="#3B82F6" />
               </div>
             </div>
 
