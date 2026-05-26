@@ -9,7 +9,7 @@ import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
 
-const Scene3D = dynamic(() => import("@/components/3d-solar-system").then(mod => ({ default: mod.SolarSystem3D })), {
+const Scene3D = dynamic(() => import("@/components/3d-football-scene").then(mod => ({ default: mod.Football3DScene })), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950 to-slate-950" />,
 })
