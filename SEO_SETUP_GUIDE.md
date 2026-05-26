@@ -307,17 +307,17 @@ The AdSense script is already integrated. For additional analytics:
 ## Keywords for Titan Force FC
 
 Primary keywords:
+- Titan Force Mulikandi
+- Titan Force
 - Titan Force FC
-- Bangladesh football club
-- Sylhet football
-- Football team Bangladesh
+- Titan Force Zakigonj
 - Mulikandi football club
 
 Long-tail keywords:
-- Titan Force FC squad
-- Titan Force FC fixtures
-- Titan Force FC news
-- Titan Force FC players
+- Titan Force Mulikandi squad
+- Titan Force Mulikandi fixtures
+- Titan Force Mulikandi news
+- Titan Force Mulikandi players
 - Mulikandi sports club
 
 ## Useful Resources
