@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTrophies } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
 import Link from 'next/link'
@@ -12,6 +13,11 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel'
 import { ArrowRight } from 'lucide-react'
+
+const Trophy3DScene = dynamic(() => import('@/components/3d-trophy').then(mod => ({ default: mod.Trophy3DScene })), {
+  ssr: false,
+  loading: () => <div className="w-24 h-24 bg-card rounded-lg" />,
+})
 
 export function TrophyTimeline() {
   const { language } = useLanguage()
@@ -86,8 +92,8 @@ export function TrophyTimeline() {
                       </div>
 
                       {/* Trophy Icon */}
-                      <div className="text-6xl mb-4 group-hover/card:scale-110 transition-transform duration-300">
-                        {trophy.icon}
+                      <div className="relative w-24 h-24 mb-4">
+                        <Trophy3DScene />
                       </div>
 
                       {/* Trophy Name */}
