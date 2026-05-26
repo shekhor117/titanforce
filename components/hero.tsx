@@ -2,11 +2,17 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
+
+const Scene3D = dynamic(() => import("@/components/3d-scene").then(mod => ({ default: mod.Scene3D })), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950 to-slate-950" />,
+})
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -97,20 +103,25 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="hero-gradient relative overflow-hidden">
+        {/* 3D Scene Background */}
+        <div className="absolute inset-0 z-0 opacity-40">
+          <Scene3D />
+        </div>
+
         {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden z-1">
           <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
         </div>
 
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-10 z-1"
           style={{
             background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
           }}
         />
-        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
