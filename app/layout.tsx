@@ -7,6 +7,7 @@ import { AdminProvider } from '@/lib/admin-context'
 import { TransitionProvider } from '@/lib/transition-context'
 import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
+import { Scene3DProvider } from '@/lib/3d/scene-provider'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
 import LoaderWrapper from '@/components/loader-wrapper'
@@ -72,22 +73,24 @@ export default function RootLayout({
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
         <ThemeProvider>
-          <TransitionProvider>
-            <PageTransition />
-            <AdminProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <LanguageProvider>
-                    <ErrorBoundary>
-                      <LoaderWrapper>
-                        {children}
-                      </LoaderWrapper>
-                    </ErrorBoundary>
-                  </LanguageProvider>
-                </CartProvider>
-              </AuthProvider>
-            </AdminProvider>
-          </TransitionProvider>
+          <Scene3DProvider>
+            <TransitionProvider>
+              <PageTransition />
+              <AdminProvider>
+                <AuthProvider>
+                  <CartProvider>
+                    <LanguageProvider>
+                      <ErrorBoundary>
+                        <LoaderWrapper>
+                          {children}
+                        </LoaderWrapper>
+                      </ErrorBoundary>
+                    </LanguageProvider>
+                  </CartProvider>
+                </AuthProvider>
+              </AdminProvider>
+            </TransitionProvider>
+          </Scene3DProvider>
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
+import { Canvas } from '@react-three/fiber'
+import { useScene3D } from '@/lib/3d/scene-config'
+import { ParticleSystem } from '@/components/3d/particle-system'
 
 const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -21,6 +24,7 @@ export default function GalleryPage() {
   const [selectedType, setSelectedType] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedImage, setSelectedImage] = useState<any>(null)
+  const sceneConfig = useScene3D()
 
   // Use realtime hook - automatically syncs when admin uploads new images
   const { mediaItems, loading, error } = useMediaItems()
@@ -43,149 +47,175 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className='min-h-screen bg-background'>
-      {/* Header */}
-      <header className='sticky top-0 z-40 border-b border-border/40 backdrop-blur-md'>
-        <div className='container px-4 py-4 flex items-center justify-between'>
-          <button
-            onClick={() => router.back()}
-            className='flex items-center gap-2 text-sm hover:text-foreground/80 transition'
-          >
-            <ArrowLeft className='w-4 h-4' />
-            {isBn ? 'ফিরে যান' : 'Back'}
-          </button>
-          <h1 className='text-xl md:text-2xl font-bold'>
-            {isBn ? 'গ্যালারি' : 'Gallery'}
-          </h1>
-          <div className='w-10' />
-        </div>
-      </header>
+    <div className='min-h-screen bg-background relative w-full'>
+      {/* 3D Background Scene */}
+      <div className='fixed inset-0 w-full h-screen z-0'>
+        <Canvas
+          camera={{
+            position: sceneConfig.camera.position,
+            fov: sceneConfig.camera.fov,
+            near: sceneConfig.camera.near,
+            far: sceneConfig.camera.far,
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <color attach="background" args={[sceneConfig.background]} />
+          {sceneConfig.fog && <fog attach="fog" args={[sceneConfig.fogColor, sceneConfig.fogNear, sceneConfig.fogFar]} />}
+          <ambientLight intensity={0.6} color="#ffffff" />
+          <directionalLight intensity={0.8} color="#ffffff" position={[10, 10, 10]} />
+          <pointLight intensity={0.5} color="#60a5fa" position={[0, 5, 0]} />
+          <ParticleSystem />
+        </Canvas>
+      </div>
 
-      {/* Main Content */}
-      <main className='container px-4 py-8'>
-        {/* Search and Filter */}
-        <div className='mb-8 space-y-4'>
-          <div className='flex gap-4 flex-col md:flex-row'>
-            <div className='flex-1'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-3 w-5 h-5 text-muted-foreground' />
-                <input
-                  type='text'
-                  placeholder={isBn ? 'খুঁজুন...' : 'Search...'}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className='w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background'
-                />
+      {/* 2D Content Overlay */}
+      <div className='relative z-10 min-h-screen bg-background'>
+        {/* Header */}
+        <header className='sticky top-0 z-40 border-b border-border/40 backdrop-blur-md'>
+          <div className='container px-4 py-4 flex items-center justify-between'>
+            <button
+              onClick={() => router.back()}
+              className='flex items-center gap-2 text-sm hover:text-foreground/80 transition'
+            >
+              <ArrowLeft className='w-4 h-4' />
+              {isBn ? 'ফিরে যান' : 'Back'}
+            </button>
+            <h1 className='text-xl md:text-2xl font-bold'>
+              {isBn ? 'গ্যালারি' : 'Gallery'}
+            </h1>
+            <div className='w-10' />
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className='container px-4 py-8'>
+          {/* Search and Filter */}
+          <div className='mb-8 space-y-4'>
+            <div className='flex gap-4 flex-col md:flex-row'>
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search className='absolute left-3 top-3 w-5 h-5 text-muted-foreground' />
+                  <input
+                    type='text'
+                    placeholder={isBn ? 'খুঁজুন...' : 'Search...'}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className='w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background'
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Type Filter */}
-          <div className='flex gap-2 flex-wrap'>
-            <button
-              onClick={() => setSelectedType('all')}
-              className={`px-4 py-2 rounded-lg transition ${
-                selectedType === 'all'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border border-border hover:bg-muted'
-              }`}
-            >
-              {isBn ? 'সব' : 'All'}
-            </button>
-            {GALLERY_TYPES.map(type => (
+            {/* Type Filter */}
+            <div className='flex gap-2 flex-wrap'>
               <button
-                key={type.value}
-                onClick={() => setSelectedType(type.value)}
+                onClick={() => setSelectedType('all')}
                 className={`px-4 py-2 rounded-lg transition ${
-                  selectedType === type.value
+                  selectedType === 'all'
                     ? 'bg-primary text-primary-foreground'
                     : 'border border-border hover:bg-muted'
                 }`}
               >
-                {isBn ? type.labelBn : type.label}
+                {isBn ? 'সব' : 'All'}
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Loading State */}
-        {loading && (
-          <div className='text-center py-12'>
-            <p className='text-muted-foreground'>{isBn ? 'লোড হচ্ছে...' : 'Loading...'}</p>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div className='text-center py-12'>
-            <p className='text-destructive'>{isBn ? 'ত্রুটি হয়েছে' : 'Error loading gallery'}</p>
-          </div>
-        )}
-
-        {/* Gallery Grid */}
-        {!loading && !error && (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {filteredItems.length > 0 ? (
-              filteredItems.map(item => (
-                <div
-                  key={item.id}
-                  onClick={() => handleImageSelect(item)}
-                  className='cursor-pointer group'
+              {GALLERY_TYPES.map(type => (
+                <button
+                  key={type.value}
+                  onClick={() => setSelectedType(type.value)}
+                  className={`px-4 py-2 rounded-lg transition ${
+                    selectedType === type.value
+                      ? 'bg-primary text-primary-foreground'
+                      : 'border border-border hover:bg-muted'
+                  }`}
                 >
-                  <div className='relative overflow-hidden rounded-lg aspect-square bg-muted'>
-                    <img
-                      src={item.url}
-                      alt={item.title}
-                      className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
-                    />
-                    {item.title && (
-                      <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4'>
-                        <div>
-                          <h3 className='font-semibold text-white'>{item.title}</h3>
-                          {item.description && (
-                            <p className='text-sm text-gray-200'>{item.description}</p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className='col-span-full text-center py-12'>
-                <p className='text-muted-foreground'>{isBn ? 'কোনো ছবি নেই' : 'No images found'}</p>
-              </div>
-            )}
+                  {isBn ? type.labelBn : type.label}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
 
-        {/* Image Modal */}
-        {selectedImage && (
-          <div className='fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4'>
-            <div className='relative max-w-4xl w-full'>
-              <button
-                onClick={handleClose}
-                className='absolute -top-10 right-0 text-white hover:text-gray-300'
-              >
-                <X className='w-6 h-6' />
-              </button>
-              <img
-                src={selectedImage.url}
-                alt={selectedImage.title}
-                className='w-full h-auto rounded-lg'
-              />
-              {selectedImage.title && (
-                <div className='mt-4 text-white'>
-                  <h2 className='text-2xl font-bold mb-2'>{selectedImage.title}</h2>
-                  {selectedImage.description && (
-                    <p className='text-gray-300'>{selectedImage.description}</p>
-                  )}
+          {/* Loading State */}
+          {loading && (
+            <div className='text-center py-12'>
+              <p className='text-muted-foreground'>{isBn ? 'লোড হচ্ছে...' : 'Loading...'}</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className='text-center py-12'>
+              <p className='text-destructive'>{isBn ? 'ত্রুটি হয়েছে' : 'Error loading gallery'}</p>
+            </div>
+          )}
+
+          {/* Gallery Grid */}
+          {!loading && !error && (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              {filteredItems.length > 0 ? (
+                filteredItems.map(item => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleImageSelect(item)}
+                    className='cursor-pointer group'
+                  >
+                    <div className='relative overflow-hidden rounded-lg aspect-square bg-muted'>
+                      <img
+                        src={item.url}
+                        alt={item.title}
+                        className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+                      />
+                      {item.title && (
+                        <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4'>
+                          <div>
+                            <h3 className='font-semibold text-white'>{item.title}</h3>
+                            {item.description && (
+                              <p className='text-sm text-gray-200'>{item.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className='col-span-full text-center py-12'>
+                  <p className='text-muted-foreground'>{isBn ? 'কোনো ছবি নেই' : 'No images found'}</p>
                 </div>
               )}
             </div>
-          </div>
-        )}
-      </main>
+          )}
+
+          {/* Image Modal */}
+          {selectedImage && (
+            <div className='fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4'>
+              <div className='relative max-w-4xl w-full'>
+                <button
+                  onClick={handleClose}
+                  className='absolute -top-10 right-0 text-white hover:text-gray-300'
+                >
+                  <X className='w-6 h-6' />
+                </button>
+                <img
+                  src={selectedImage.url}
+                  alt={selectedImage.title}
+                  className='w-full h-auto rounded-lg'
+                />
+                {selectedImage.title && (
+                  <div className='mt-4 text-white'>
+                    <h2 className='text-2xl font-bold mb-2'>{selectedImage.title}</h2>
+                    {selectedImage.description && (
+                      <p className='text-gray-300'>{selectedImage.description}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
