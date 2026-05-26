@@ -1,9 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Trophy, Users, Target, Heart } from 'lucide-react'
 import TeamStatsService, { TeamStats } from '@/lib/team-stats-service'
 import { useLanguage } from '@/lib/language-context'
+
+const Stats3DVisualization = dynamic(() => import("@/components/3d-stats").then(mod => ({ default: mod.Stats3DVisualization })), {
+  ssr: false,
+  loading: () => <div className="w-full h-80 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 export function TeamStatsOverview() {
   const { language } = useLanguage()
@@ -26,6 +32,11 @@ export function TeamStatsOverview() {
         <h2 className="font-[var(--font-display)] text-3xl md:text-5xl tracking-wide mb-12 text-center">
           {isBn ? 'দল পরিসংখ্যান' : 'TEAM STATISTICS'}
         </h2>
+
+        {/* 3D Stats Visualization */}
+        <div className="mb-12 rounded-2xl overflow-hidden border-2 border-primary/20 h-80 bg-gradient-to-br from-slate-900 to-slate-800">
+          <Stats3DVisualization />
+        </div>
 
         {isLoading ? (
           <div className="text-center text-foreground/60">

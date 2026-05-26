@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { useMediaItems } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -12,6 +13,11 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from '@/components/ui/carousel'
+
+const Gallery3DFrame = dynamic(() => import("@/components/3d-gallery-frame").then(mod => ({ default: mod.Gallery3DFrame })), {
+  ssr: false,
+  loading: () => <div className="w-full h-96 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 // Default featured items for display when no Supabase data is available
 const DEFAULT_FEATURED_ITEMS = [
@@ -110,22 +116,14 @@ export function GalleryShowcase() {
                     href="/gallery"
                     className="group/card block"
                   >
-                    <div className="relative overflow-hidden rounded-2xl h-96 bg-muted cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                      {/* Background Image */}
-                      <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=600&fit=crop'
-                        }}
-                      />
+                    <div className="relative overflow-hidden rounded-2xl h-96 bg-gradient-to-br from-slate-900 to-slate-800 cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                      {/* 3D Frame Container */}
+                      <div className="absolute inset-0">
+                        <Gallery3DFrame imageUrl={item.imageUrl} />
+                      </div>
 
-                      {/* Overlay Gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent group-hover/card:from-black/95 transition-all duration-300" />
-
-                      {/* Content */}
-                      <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                      {/* Content Overlay */}
+                      <div className="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/30 to-transparent group-hover/card:from-black/95 transition-all duration-300">
                         <div className="group-hover/card:translate-y-0 transition-transform duration-300">
                           <div className="mb-2">
                             <span className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold mb-2">

@@ -3,9 +3,15 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Player, useDataStore } from "@/lib/data-store"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+
+const Player3DCard = dynamic(() => import("@/components/3d-player-card").then(mod => ({ default: mod.Player3DCard })), {
+  ssr: false,
+  loading: () => <div className="w-full h-80 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 export function FeaturedPlayers() {
   const [isVisible, setIsVisible] = useState(false)
@@ -113,36 +119,14 @@ export function FeaturedPlayers() {
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="rounded-xl overflow-hidden border-2 border-secondary bg-card hover:border-primary transition-all hover:-translate-y-1">
-                {/* Player Image */}
-                <div className="relative w-full aspect-square overflow-hidden bg-secondary/30">
-                  {player.image_url ? (
-                    <Image
-                      src={player.image_url}
-                      alt={player.name}
-                      fill
-                      className="object-cover object-top group-hover/card:scale-110 transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 320px"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                      <span className="text-6xl font-[var(--font-display)] text-primary font-bold">
-                        {player.num}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {/* Jersey Number Badge */}
-                  <div className="absolute top-4 right-4 bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center font-[var(--font-display)] text-lg font-bold shadow-lg">
-                    {player.num}
-                  </div>
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
+              <div className="rounded-xl overflow-hidden border-2 border-secondary bg-card hover:border-primary transition-all hover:-translate-y-1 h-80">
+                {/* 3D Jersey Model Container */}
+                <div className="w-full h-48 bg-gradient-to-br from-slate-900 to-slate-800 relative">
+                  <Player3DCard playerNumber={player.num} name={player.name} />
                 </div>
 
                 {/* Player Info */}
-                <div className="p-4 sm:p-5">
+                <div className="p-4 sm:p-5 bg-gradient-to-br from-card to-card/50">
                   <h3 className="font-[var(--font-display)] text-xl sm:text-2xl tracking-wider text-foreground font-bold mb-1">
                     {player.name.toUpperCase()}
                   </h3>

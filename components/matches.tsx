@@ -1,11 +1,17 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import dynamic from "next/dynamic"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
+
+const Match3DVisualization = dynamic(() => import("@/components/3d-match").then(mod => ({ default: mod.Match3DVisualization })), {
+  ssr: false,
+  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg" />,
+})
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
@@ -72,6 +78,13 @@ export function Matches() {
             {t.matches.title}
           </h2>
         </div>
+
+        {/* 3D Match Visualization Preview */}
+        {matches.length > 0 && (
+          <div className="mb-12 rounded-2xl overflow-hidden border-2 border-primary/20 h-80 bg-gradient-to-br from-slate-900 to-slate-800">
+            <Match3DVisualization />
+          </div>
+        )}
 
         <div className="space-y-4">
           {isLoading ? (
