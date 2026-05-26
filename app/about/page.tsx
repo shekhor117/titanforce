@@ -29,11 +29,40 @@ export default function AboutPage() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
+        {/* Hero Section with 3D Background */}
+        <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
+          {/* 3D Scene Background */}
+          <div className="absolute inset-0 z-0 opacity-40">
+            <About3DScene />
+          </div>
+
+          {/* Animated Background */}
+          <div className="absolute inset-0 overflow-hidden z-1">
+            <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
+          </div>
+
+          <div
+            className="absolute inset-0 opacity-10 z-1"
+            style={{
+              background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
+            }}
+          />
+
+          {/* Hero Content */}
+          <div className="relative max-w-6xl mx-auto px-4 text-center z-10">
+            <h1 className="text-5xl md:text-7xl font-black tracking-wider text-primary mb-4">
+              ABOUT US
+            </h1>
+            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+              Learn about Titan Force FC&apos;s history, mission, and values
+            </p>
+          </div>
+        </section>
+
+        {/* Content Section */}
         <AboutPageContent />
-        {/* 3D Scene Section */}
-        <div className="w-full h-64 md:h-96 mt-12 mb-8">
-          <About3DScene />
-        </div>
       </main>
       <Footer />
     </div>

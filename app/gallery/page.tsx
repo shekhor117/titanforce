@@ -66,6 +66,38 @@ export default function GalleryPage() {
         </div>
       </header>
 
+      {/* Hero Section with 3D Background */}
+      <section className='hero-gradient relative overflow-hidden py-16 md:py-24'>
+        {/* 3D Scene Background */}
+        <div className='absolute inset-0 z-0 opacity-40'>
+          <Gallery3DScene />
+        </div>
+
+        {/* Animated Background */}
+        <div className='absolute inset-0 overflow-hidden z-1'>
+          <div className='absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse' />
+          <div className='absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse' />
+          <div className='absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob' />
+        </div>
+
+        <div
+          className='absolute inset-0 opacity-10 z-1'
+          style={{
+            background: 'radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)',
+          }}
+        />
+
+        {/* Hero Content */}
+        <div className='relative max-w-6xl mx-auto px-4 text-center z-10'>
+          <h2 className='text-5xl md:text-7xl font-black tracking-wider text-primary mb-4'>
+            {isBn ? 'গ্যালারি' : 'GALLERY'}
+          </h2>
+          <p className='text-lg text-foreground/70 max-w-2xl mx-auto'>
+            {isBn ? 'আমাদের দলের বিশেষ মুহূর্ত এবং ঘটনা অন্বেষণ করুন' : 'Explore special moments and events of our team'}
+          </p>
+        </div>
+      </section>
+
       {/* Main Content */}
       <main className='container px-4 py-8'>
         {/* Search and Filter */}
@@ -190,11 +222,6 @@ export default function GalleryPage() {
             </div>
           </div>
         )}
-
-        {/* 3D Scene Section */}
-        <div className='w-full h-72 md:h-96 mt-12 rounded-lg overflow-hidden border border-border'>
-          <Gallery3DScene />
-        </div>
       </main>
     </div>
   )
