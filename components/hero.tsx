@@ -104,25 +104,29 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
 
-        {/* Video Background - Bottom */}
+        {/* Video Background - Bottom with Gradient Blend */}
         <video
           autoPlay
           muted
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-1/3 object-cover z-0 opacity-40"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
+          }}
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-edQgFSwchD6BNrtHBhHaRQfyB2VgPH.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability */}
-        <div className="absolute inset-0 bg-black/20 z-1"></div>
+        <div className="absolute inset-0 bg-black/15 z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
