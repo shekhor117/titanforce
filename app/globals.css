@@ -859,18 +859,18 @@ canvas {
 /* ===== LIGHT THEME HERO OVERLAY ===== */
 
 .light section#home {
-  background: linear-gradient(135deg, rgba(245, 245, 245, 0.4) 0%, rgba(200, 200, 200, 0.2) 100%);
+  background: transparent;
 }
 
 .light section#home > .absolute.inset-0.bg-black {
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(4px);
 }
 
 /* Light theme video overlay adjustment */
 .light video.absolute {
-  opacity: 0.55 !important;
-  mix-blend-mode: screen;
+  opacity: 0.65 !important;
+  mix-blend-mode: normal;
 }
 
 /* ===== LIGHT THEME FOOTER ===== */
