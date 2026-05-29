@@ -4,14 +4,9 @@ import { useLanguage } from "@/lib/language-context"
 import { useCart } from "@/lib/cart-context"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
-
-const Shop3DScene = dynamic(() => import('@/components/3d-shop-scene').then(mod => ({ default: mod.Shop3DScene })), {
-  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
-})
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -95,12 +90,18 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Hero Section with 3D Background */}
+      {/* Hero Section with Video Background */}
       <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
-        {/* 3D Scene Background */}
-        <div className="absolute inset-0 z-0 opacity-40">
-          <Shop3DScene />
-        </div>
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video%202-oXW9XpXlAXTxqLFZzIUur2nfSGubDR.mp4" type="video/mp4" />
+        </video>
 
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-1">
