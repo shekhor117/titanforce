@@ -43,7 +43,7 @@ export default function LoaderWrapper({
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-[9999] bg-gradient-to-br from-slate-950 via-red-950 to-slate-900 flex flex-col items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
             style={{ willChange: "opacity" }}
           >
             {/* Video Background */}
@@ -53,14 +53,13 @@ export default function LoaderWrapper({
               loop
               playsInline
               crossOrigin="anonymous"
-              className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
-              style={{ backgroundColor: "rgb(24, 13, 13)" }}
+              className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
             >
               <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-GKRGrLqIHbrZJqE1QHe1Em1K38VJVU.mp4" type="video/mp4" />
             </video>
 
-            {/* Gradient overlay for burgundy effect */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-red-950/20 to-slate-900/30 pointer-events-none z-1"></div>
+            {/* Subtle overlay to preserve text readability */}
+            <div className="absolute inset-0 bg-black/20 pointer-events-none z-1"></div>
 
             {/* Content */}
             <div className="relative z-10 text-center">
