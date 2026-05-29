@@ -96,7 +96,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-black">
+      <section id="home" className="relative overflow-hidden bg-black dark:bg-black light:bg-slate-900">
         {/* Video Background - Top */}
         <video
           autoPlay
@@ -104,7 +104,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60 dark:opacity-60 light:opacity-50"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60 dark:opacity-60 light:opacity-65"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
@@ -116,7 +116,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70 dark:opacity-70 light:opacity-60"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70 dark:opacity-70 light:opacity-75"
           style={{
             WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
             maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
@@ -126,7 +126,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/20 light:backdrop-blur-sm z-1"></div>
+        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-slate-900/40 light:backdrop-blur-sm z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
