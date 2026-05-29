@@ -74,13 +74,13 @@ export default function LoaderWrapper({
                 style={{ willChange: "transform, opacity" }}
               >
                 <motion.h1
-                  className="text-7xl md:text-8xl font-bold text-white tracking-[0.3em] leading-none"
+                  className="text-6xl md:text-7xl font-bold text-white tracking-[0.15em] leading-none"
                   style={{ 
                     textShadow: "0 0 40px rgba(220, 38, 38, 0.3)",
                     willChange: "transform"
                   }}
                 >
-                  TITAN
+                  TITAN FORCE
                 </motion.h1>
               </motion.div>
 
@@ -93,7 +93,7 @@ export default function LoaderWrapper({
                 style={{ willChange: "opacity" }}
               >
                 <motion.div
-                  className="w-12 h-0.5 bg-gradient-to-r from-transparent to-red-600"
+                  className="w-16 h-1 bg-gradient-to-r from-transparent to-red-600"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
@@ -101,14 +101,7 @@ export default function LoaderWrapper({
                   style={{ willChange: "transform" }}
                 />
                 <motion.div
-                  className="w-2 h-2 bg-red-600 rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                  style={{ willChange: "transform" }}
-                />
-                <motion.div
-                  className="w-12 h-0.5 bg-gradient-to-l from-transparent to-red-600"
+                  className="w-16 h-1 bg-gradient-to-l from-transparent to-red-600"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
@@ -119,53 +112,15 @@ export default function LoaderWrapper({
 
               {/* Subtitle */}
               <motion.p
-                className="text-red-600 text-xs md:text-sm tracking-[0.25em] uppercase font-semibold"
+                className="text-foreground/50 text-xs md:text-sm tracking-[0.15em] uppercase font-light"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
                 style={{ willChange: "opacity, transform" }}
               >
-                Force Football Club
-              </motion.p>
-
-              {/* Tagline */}
-              <motion.p
-                className="text-foreground/40 text-xs md:text-sm tracking-[0.15em] uppercase mt-3 font-light"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                style={{ willChange: "opacity" }}
-              >
-                Pride · Passion · Power
+                Loading Experience
               </motion.p>
             </div>
-
-            {/* Loading Progress Dots */}
-            <motion.div
-              className="flex gap-2 mt-12 relative z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-              style={{ willChange: "opacity" }}
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-2.5 h-2.5 bg-red-600 rounded-full"
-                  animate={{ 
-                    scale: [1, 1.3, 1],
-                    opacity: [0.4, 1, 0.4]
-                  }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                    ease: "easeInOut",
-                  }}
-                  style={{ willChange: "transform, opacity" }}
-                />
-              ))}
-            </motion.div>
 
             {/* Progress Bar */}
             <motion.div
