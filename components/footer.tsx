@@ -25,24 +25,8 @@ export function Footer() {
   ].filter(link => link.href && link.href !== "#") : []
 
   return (
-    <footer className="relative border-t-2 border-primary py-12 px-4 bg-black dark:bg-black light:bg-slate-900 overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        crossOrigin="anonymous"
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-55"
-      >
-        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-wLU6uw8zGiZmAIYTvXIhQQMo4xUH6b.mp4" type="video/mp4" />
-      </video>
-
-      {/* Overlay for content readability - Theme aware */}
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 light:bg-slate-900/50 z-1"></div>
-
-      {/* Content */}
-      <div className="max-w-6xl mx-auto relative z-10">
+    <footer className="border-t-2 border-primary py-12 px-4 bg-black/50">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col items-center">
           {/* Logo and Site Name */}
           <div className="flex justify-center mb-4">

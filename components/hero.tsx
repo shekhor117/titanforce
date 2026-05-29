@@ -63,11 +63,14 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-transparent" />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-primary/30 blur-3xl animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl animate-pulse animation-delay-1000" />
+
               <Image
                 src="/logo.png"
                 alt="Opening Logo"
@@ -93,7 +96,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-black dark:bg-black light:bg-slate-900">
+      <section id="home" className="relative overflow-hidden bg-black">
         {/* Video Background - Top */}
         <video
           autoPlay
@@ -101,34 +104,39 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60 dark:opacity-60 light:opacity-65"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
 
-        {/* Video Background - Bottom */}
+        {/* Video Background - Bottom with Gradient Blend */}
         <video
           autoPlay
           muted
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70 dark:opacity-70 light:opacity-75"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
+          }}
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-edQgFSwchD6BNrtHBhHaRQfyB2VgPH.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-slate-900/40 light:backdrop-blur-sm z-1"></div>
+        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/30 light:backdrop-blur-sm z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
               <Image
                 src="/logo.png"
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
-                className="relative z-10 object-contain drop-shadow-2xl animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
+                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
                 priority
               />
             </div>
@@ -192,7 +200,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
