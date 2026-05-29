@@ -310,8 +310,8 @@ Primary keywords:
 - Titan Force Mulikandi
 - Titan Force
 - Titan Force FC
-- Titan Force Zakigonj
-- Mulikandi football club
+- Titanforcemulikandi
+- titanforcemulikandi
 
 Long-tail keywords:
 - Titan Force Mulikandi squad
