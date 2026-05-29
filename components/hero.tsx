@@ -97,7 +97,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="hero-gradient relative overflow-hidden">
-        {/* Video Background */}
+        {/* Video Background - Top */}
         <video
           autoPlay
           muted
@@ -107,6 +107,18 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
+        </video>
+
+        {/* Video Background - Bottom */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          crossOrigin="anonymous"
+          className="absolute bottom-0 left-0 w-full h-1/3 object-cover z-0 opacity-40"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8-gNUuEHu1blxuBCdwOKhBnkyZmU5zk2.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability */}
