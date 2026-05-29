@@ -90,7 +90,7 @@ export function FeaturedPlayers() {
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
-          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-primary/90 text-primary-foreground hover:bg-primary hover-lift hover-glow transition-all duration-300 opacity-0 group-hover:opacity-100 ${
+          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 opacity-0 group-hover:opacity-100 ${
             scrollPosition === 0 ? "opacity-0 pointer-events-none" : ""
           }`}
           aria-label="Scroll left"
@@ -174,7 +174,7 @@ export function FeaturedPlayers() {
         {/* Right Arrow */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-primary/90 text-primary-foreground hover:bg-primary hover-lift hover-glow transition-all duration-300 opacity-0 group-hover:opacity-100"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 opacity-0 group-hover:opacity-100"
           aria-label="Scroll right"
         >
           <ChevronRight className="w-6 h-6" />
@@ -185,7 +185,7 @@ export function FeaturedPlayers() {
       <div className="flex justify-center mt-8 sm:mt-12">
         <Link
           href="#squad"
-          className="px-6 sm:px-8 py-3 text-sm font-bold uppercase tracking-wider rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground hover-lift hover-glow transition-all duration-300"
+          className="px-6 sm:px-8 py-3 text-sm font-bold uppercase tracking-wider rounded-lg glass-btn-accent text-foreground hover-lift transition-all duration-300"
         >
           {isBn ? "সমস্ত খেলোয়াড় দেখুন" : "View All Players"}
         </Link>
