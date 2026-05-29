@@ -103,9 +103,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           muted
           loop
           playsInline
+          crossOrigin="anonymous"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-QYn0WUMbotQuAYc84eCWI5QXsW9zan.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
 
 
