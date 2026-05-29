@@ -118,7 +118,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           crossOrigin="anonymous"
           className="absolute bottom-0 left-0 w-full h-1/3 object-cover z-0 opacity-40"
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8-gNUuEHu1blxuBCdwOKhBnkyZmU5zk2.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-edQgFSwchD6BNrtHBhHaRQfyB2VgPH.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability */}
