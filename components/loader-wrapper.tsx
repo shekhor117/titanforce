@@ -46,8 +46,19 @@ export default function LoaderWrapper({
             className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
             style={{ willChange: "opacity" }}
           >
+            {/* Video Background */}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
+            >
+              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-CuTDy6CwqRbR09SWUXdXVIEB4400d.mp4" type="video/mp4" />
+            </video>
+
             {/* Simplified background - removed animated blobs for better performance */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black opacity-50 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black opacity-50 pointer-events-none z-1"></div>
 
             {/* Content */}
             <div className="relative z-10 text-center">
