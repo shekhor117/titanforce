@@ -872,3 +872,44 @@ canvas {
   opacity: 0.4 !important;
   mix-blend-mode: screen;
 }
+
+/* ===== LIGHT THEME FOOTER ===== */
+
+.light footer {
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.95) 0%, rgba(230, 230, 230, 0.9) 100%);
+  border-color: var(--primary);
+}
+
+.light footer video {
+  opacity: 0.25 !important;
+  mix-blend-mode: multiply;
+}
+
+.light footer > .absolute.inset-0.bg-white {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Footer contact cards light theme */
+.light footer .glass-btn-primary {
+  background: rgba(167, 25, 48, 0.12);
+  border-color: rgba(167, 25, 48, 0.3);
+}
+
+.light footer .glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.2);
+  border-color: rgba(167, 25, 48, 0.5);
+}
+
+/* Footer text colors in light theme */
+.light footer .text-foreground {
+  color: #1a1a1a;
+}
+
+.light footer .text-foreground\/70 {
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.light footer .text-foreground\/50 {
+  color: rgba(26, 26, 26, 0.5);
+}

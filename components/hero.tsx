@@ -122,7 +122,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
           }}
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-edQgFSwchD6BNrtHBhHaRQfyB2VgPH.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
