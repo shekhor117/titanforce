@@ -50,39 +50,39 @@ export function Footer() {
             {/* Email Card */}
             <a
               href={`mailto:${contactEmail}`}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift hover-glow transition-all duration-300 group"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-                <Mail className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                <Mail className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <div>
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "ইমেল করুন" : "Email Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{contactEmail}</p>
+                <p className="text-foreground font-semibold text-sm hover-color-primary">{contactEmail}</p>
               </div>
             </a>
 
             {/* Phone Card */}
             <a
               href={`tel:${contactPhone}`}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift hover-glow transition-all duration-300 group"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-                <Phone className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                <Phone className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <div>
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "কল করুন" : "Call Us"}
                 </p>
-                <p className="text-foreground font-semibold text-sm">{contactPhone}</p>
+                <p className="text-foreground font-semibold text-sm hover-color-primary">{contactPhone}</p>
               </div>
             </a>
 
             {/* Address Card */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <MapPin className="w-4 h-4 text-primary" />
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift transition-all duration-300 group">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                <MapPin className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
               </div>
               <div>
                 <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -107,9 +107,9 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift hover-accent-glow transition-all duration-300"
                   >
-                    <social.icon className="w-5 h-5" />
+                    <social.icon className="w-5 h-5 hover-scale" />
                   </a>
                 ))}
               </div>

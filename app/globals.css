@@ -220,3 +220,159 @@ canvas {
   position: relative;
   overflow: hidden;
 }
+
+/* ===== HOVER EFFECTS ===== */
+
+/* Lift Effect - adds upward motion and shadow */
+@keyframes lift {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  100% {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(167, 25, 48, 0.25);
+  }
+}
+
+.hover-lift:hover {
+  animation: lift 0.3s ease forwards;
+}
+
+/* Glow Effect - adds primary color glow */
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(167, 25, 48, 0.5), inset 0 0 20px rgba(167, 25, 48, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Accent Glow - adds accent color glow */
+.hover-accent-glow:hover {
+  box-shadow: 0 0 20px rgba(217, 30, 63, 0.6), inset 0 0 15px rgba(217, 30, 63, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Scale Effect - enlarges element */
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Underline Animation */
+@keyframes underlineSlide {
+  from {
+    width: 0;
+    left: 0;
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Color Transition */
+.hover-color-primary {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.hover-color-primary:hover {
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(167, 25, 48, 0.4);
+}
+
+.hover-color-accent {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.hover-color-accent:hover {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(217, 30, 63, 0.4);
+}
+
+/* Background Color Transition */
+.hover-bg-primary:hover {
+  background-color: var(--primary);
+  transition: background-color 0.3s ease;
+}
+
+.hover-bg-accent:hover {
+  background-color: var(--accent);
+  transition: background-color 0.3s ease;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.hover-shimmer:hover {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--accent) 50%,
+    var(--primary) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 0.8s ease;
+}
+
+/* Pulse Effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(167, 25, 48, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(167, 25, 48, 0.6);
+  }
+}
+
+.hover-pulse:hover {
+  animation: pulse-glow 1.5s ease-in-out;
+}
+
+/* Rotate Effect */
+.hover-rotate:hover {
+  transform: rotate(2deg);
+  transition: transform 0.3s ease;
+}
+
+/* Shadow Elevation */
+.hover-shadow-lg:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Border Color Animation */
+.hover-border-primary:hover {
+  border-color: var(--primary);
+  transition: border-color 0.3s ease;
+}
+
+.hover-border-accent:hover {
+  border-color: var(--accent);
+  transition: border-color 0.3s ease;
+}

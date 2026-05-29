@@ -58,7 +58,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-foreground hover:text-primary transition-colors ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`text-foreground/60 hover:text-primary hover-underline transition-colors duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {link.label}
             </Link>
@@ -68,7 +68,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative group"
+            className="flex items-center gap-2 px-4 py-2 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all relative group"
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
@@ -82,7 +82,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300"
             aria-label="Toggle language"
           >
             <Globe className="w-4 h-4" />
@@ -94,7 +94,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 hover-glow transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {language === "bn" ? "লগইন" : "Login"}
             </Link>
@@ -108,7 +108,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-foreground hover:text-primary transition-colors py-2 px-2 rounded ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-2 px-2 rounded duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
@@ -117,7 +117,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all relative"
+            className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300 relative"
             onClick={() => setMobileMenuOpen(false)}
           >
             <ShoppingBag className="w-4 h-4" />
@@ -134,7 +134,7 @@ export function Navbar() {
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex-1 text-xs"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300 flex-1 text-xs"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -147,7 +147,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 hover-glow transition duration-300 text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {language === "bn" ? "লগইন" : "Login"}
