@@ -881,13 +881,13 @@ canvas {
 }
 
 .light footer video {
-  opacity: 0.55 !important;
-  mix-blend-mode: screen;
+  opacity: 0.25 !important;
+  mix-blend-mode: multiply;
 }
 
 .light footer > .absolute.inset-0.bg-white {
-  background: rgba(255, 255, 255, 0.25) !important;
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(8px);
 }
 
 /* Footer contact cards light theme */

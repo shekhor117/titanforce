@@ -33,13 +33,13 @@ export function Footer() {
         loop
         playsInline
         crossOrigin="anonymous"
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-60"
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-30"
       >
         <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-wLU6uw8zGiZmAIYTvXIhQQMo4xUH6b.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay for content readability - Theme aware */}
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 light:bg-white/30 z-1"></div>
+      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 light:bg-white/50 z-1"></div>
 
       {/* Content */}
       <div className="max-w-6xl mx-auto relative z-10">
