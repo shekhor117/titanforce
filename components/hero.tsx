@@ -2,17 +2,11 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
-
-const Scene3D = dynamic(() => import("@/components/3d-realistic-players").then(mod => ({ default: mod.RealisticPlayers3D })), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950 to-slate-950" />,
-})
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -114,10 +108,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-QYn0WUMbotQuAYc84eCWI5QXsW9zan.mp4" type="video/mp4" />
         </video>
 
-        {/* 3D Scene Background */}
-        <div className="absolute inset-0 z-0 opacity-40">
-          <Scene3D />
-        </div>
+
 
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-1">
