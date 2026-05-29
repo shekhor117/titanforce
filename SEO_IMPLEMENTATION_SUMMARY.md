@@ -177,12 +177,12 @@ Created layout files with optimized metadata:
 
 ### Check Sitemap
 ```
-https://titanforcefc.com/sitemap.xml
+https://titanforcemulikandi.vercel.app/sitemap.xml
 ```
 
 ### Check Robots
 ```
-https://titanforcefc.com/robots.txt
+https://titanforcemulikandi.vercel.app/robots.txt
 ```
 
 ### Validate Structured Data
@@ -198,7 +198,7 @@ https://titanforcefc.com/robots.txt
 ### Environment Configuration
 Required environment variable:
 ```env
-NEXT_PUBLIC_SITE_URL=https://titanforcefc.com
+NEXT_PUBLIC_SITE_URL=https://titanforcemulikandi.vercel.app
 ```
 
 ### Metadata Generation Pattern
@@ -207,7 +207,7 @@ NEXT_PUBLIC_SITE_URL=https://titanforcefc.com
 export const metadata = generatePageMetadata({
   title: 'Page Title',
   description: 'Page description',
-  url: 'https://titanforcefc.com/page',
+  url: 'https://titanforcemulikandi.vercel.app/page',
 })
 ```
 
@@ -227,10 +227,10 @@ useEffect(() => {
 ## 🎯 Target Keywords
 
 ### Primary
-- Titan Force FC
-- Bangladesh football club
-- Sylhet football
-- Football team Bangladesh
+- Titan Force Mulikandi
+- Titanforcemulikandi
+- titanforcemulikadi
+- titanforce fc
 
 ### Secondary
 - Squad management
