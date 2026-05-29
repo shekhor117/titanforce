@@ -96,7 +96,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="hero-gradient relative overflow-hidden">
+      <section id="home" className="relative overflow-hidden bg-black">
         {/* Video Background - Top */}
         <video
           autoPlay
