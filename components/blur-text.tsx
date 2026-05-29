@@ -79,20 +79,28 @@ export default function BlurText({ text, className = "" }: BlurTextProps) {
             style={{
               display: "inline-block",
               marginRight: "0.28em",
-              background: "rgba(255, 255, 255, 0.06)",
-              WebkitBackdropFilter: "blur(8px)",
-              backdropFilter: "blur(8px)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              padding: "0.2em 0.4em",
-              borderRadius: "0.4em",
-              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1)",
-              transition: "all 0.3s ease",
+              background: "rgba(255, 255, 255, 0.08)",
+              WebkitBackdropFilter: "blur(12px)",
+              backdropFilter: "blur(12px)",
+              border: "1.5px solid rgba(255, 255, 255, 0.25)",
+              padding: "0.3em 0.5em",
+              borderRadius: "0.5em",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.15)",
+              transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              cursor: "pointer",
+              fontWeight: "500",
+              letterSpacing: "0.5px",
             }}
             whileHover={{
-              background: "rgba(167, 25, 48, 0.15)",
-              border: "1px solid rgba(167, 25, 48, 0.4)",
-              boxShadow: "0 6px 20px rgba(167, 25, 48, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2)",
-              scale: 1.05,
+              background: "rgba(167, 25, 48, 0.22)",
+              border: "1.5px solid rgba(167, 25, 48, 0.55)",
+              boxShadow: "0 12px 48px rgba(167, 25, 48, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.25), 0 0 20px rgba(167, 25, 48, 0.2)",
+              scale: 1.08,
+              y: -4,
+            }}
+            whileTap={{
+              scale: 0.96,
+              y: 0,
             }}
           >
             {word}
