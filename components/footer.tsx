@@ -25,8 +25,24 @@ export function Footer() {
   ].filter(link => link.href && link.href !== "#") : []
 
   return (
-    <footer className="border-t-2 border-primary py-12 px-4 bg-black/50">
-      <div className="max-w-6xl mx-auto">
+    <footer className="relative border-t-2 border-primary py-12 px-4 bg-black overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        crossOrigin="anonymous"
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40"
+      >
+        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-wLU6uw8zGiZmAIYTvXIhQQMo4xUH6b.mp4" type="video/mp4" />
+      </video>
+
+      {/* Overlay for content readability */}
+      <div className="absolute inset-0 bg-black/40 z-1"></div>
+
+      {/* Content */}
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex flex-col items-center">
           {/* Logo and Site Name */}
           <div className="flex justify-center mb-4">
