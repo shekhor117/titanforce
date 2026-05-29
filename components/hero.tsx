@@ -63,8 +63,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950 overflow-hidden">
+          <div className="absolute inset-0 bg-transparent" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
