@@ -54,7 +54,7 @@ export default function LoaderWrapper({
               playsInline
               className="absolute inset-0 w-full h-full object-cover z-0 opacity-40"
             >
-              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-CuTDy6CwqRbR09SWUXdXVIEB4400d.mp4" type="video/mp4" />
+              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-OKvluEW8JNa5pypjnoL6p5TppuczYj.mp4" type="video/mp4" />
             </video>
 
             {/* Gradient overlay for burgundy effect */}
