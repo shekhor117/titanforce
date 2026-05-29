@@ -502,3 +502,20 @@ canvas {
   border-color: rgba(167, 25, 48, 0.25);
   box-shadow: 0 8px 32px rgba(167, 25, 48, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.4);
 }
+
+/* ===== LIGHT THEME HERO OVERLAY ===== */
+
+.light section#home {
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.4) 0%, rgba(200, 200, 200, 0.2) 100%);
+}
+
+.light section#home > .absolute.inset-0.bg-black {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Light theme video overlay adjustment */
+.light video.absolute {
+  opacity: 0.4 !important;
+  mix-blend-mode: screen;
+}
