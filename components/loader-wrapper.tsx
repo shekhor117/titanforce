@@ -46,8 +46,20 @@ export default function LoaderWrapper({
             className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
             style={{ willChange: "opacity" }}
           >
-            {/* Simplified background - removed animated blobs for better performance */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black opacity-50 pointer-events-none"></div>
+            {/* Video Background */}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              crossOrigin="anonymous"
+              className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
+            >
+              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-GKRGrLqIHbrZJqE1QHe1Em1K38VJVU.mp4" type="video/mp4" />
+            </video>
+
+            {/* Subtle overlay to preserve text readability */}
+            <div className="absolute inset-0 bg-black/20 pointer-events-none z-1"></div>
 
             {/* Content */}
             <div className="relative z-10 text-center">
@@ -63,13 +75,13 @@ export default function LoaderWrapper({
                 style={{ willChange: "transform, opacity" }}
               >
                 <motion.h1
-                  className="text-7xl md:text-8xl font-bold text-white tracking-[0.3em] leading-none"
+                  className="text-6xl md:text-7xl font-bold text-white tracking-[0.15em] leading-none"
                   style={{ 
                     textShadow: "0 0 40px rgba(220, 38, 38, 0.3)",
                     willChange: "transform"
                   }}
                 >
-                  TITAN
+                  TITAN FORCE
                 </motion.h1>
               </motion.div>
 
@@ -82,7 +94,7 @@ export default function LoaderWrapper({
                 style={{ willChange: "opacity" }}
               >
                 <motion.div
-                  className="w-12 h-0.5 bg-gradient-to-r from-transparent to-red-600"
+                  className="w-16 h-1 bg-gradient-to-r from-transparent to-red-600"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
@@ -90,14 +102,7 @@ export default function LoaderWrapper({
                   style={{ willChange: "transform" }}
                 />
                 <motion.div
-                  className="w-2 h-2 bg-red-600 rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                  style={{ willChange: "transform" }}
-                />
-                <motion.div
-                  className="w-12 h-0.5 bg-gradient-to-l from-transparent to-red-600"
+                  className="w-16 h-1 bg-gradient-to-l from-transparent to-red-600"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
@@ -108,53 +113,15 @@ export default function LoaderWrapper({
 
               {/* Subtitle */}
               <motion.p
-                className="text-red-600 text-xs md:text-sm tracking-[0.25em] uppercase font-semibold"
+                className="text-foreground/50 text-xs md:text-sm tracking-[0.15em] uppercase font-light"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
                 style={{ willChange: "opacity, transform" }}
               >
-                Force Football Club
-              </motion.p>
-
-              {/* Tagline */}
-              <motion.p
-                className="text-foreground/40 text-xs md:text-sm tracking-[0.15em] uppercase mt-3 font-light"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                style={{ willChange: "opacity" }}
-              >
-                Pride · Passion · Power
+                Loading Experience
               </motion.p>
             </div>
-
-            {/* Loading Progress Dots */}
-            <motion.div
-              className="flex gap-2 mt-12 relative z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-              style={{ willChange: "opacity" }}
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-2.5 h-2.5 bg-red-600 rounded-full"
-                  animate={{ 
-                    scale: [1, 1.3, 1],
-                    opacity: [0.4, 1, 0.4]
-                  }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                    ease: "easeInOut",
-                  }}
-                  style={{ willChange: "transform, opacity" }}
-                />
-              ))}
-            </motion.div>
 
             {/* Progress Bar */}
             <motion.div

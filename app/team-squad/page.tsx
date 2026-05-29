@@ -1,18 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Squad } from "@/components/squad"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft } from "lucide-react"
 import { useEffect } from "react"
-
-const Squad3DScene = dynamic(() => import('@/components/3d-squad-scene').then(mod => ({ default: mod.Squad3DScene })), {
-  ssr: false,
-  loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
-})
 
 export default function TeamSquadPage() {
   const router = useRouter()
@@ -56,12 +50,18 @@ export default function TeamSquadPage() {
     <div className="min-h-screen bg-background stripe-bg">
       <Navbar />
       <main>
-        {/* Hero Section with 3D Background */}
+        {/* Hero Section with Video Background */}
         <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
-          {/* 3D Scene Background */}
-          <div className="absolute inset-0 z-0 opacity-40">
-            <Squad3DScene />
-          </div>
+          {/* Video Background */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+          >
+            <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4-hj89lpYB8NpO4ab5VhZIM5MIHoQSUr.mp4" type="video/mp4" />
+          </video>
 
           {/* Animated Background */}
           <div className="absolute inset-0 overflow-hidden z-1">

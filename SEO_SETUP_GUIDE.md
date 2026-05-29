@@ -266,8 +266,8 @@ The setup supports English and Bengali:
 ```typescript
 alternates: {
   languages: {
-    en: 'https://titanforcefc.com/en',
-    bn: 'https://titanforcefc.com/bn',
+    en: 'https://titanforcemulikandi.vercel.app/en',
+    bn: 'https://titanforcemulikandi.vercel.app/bn',
   },
 }
 ```
@@ -310,8 +310,8 @@ Primary keywords:
 - Titan Force Mulikandi
 - Titan Force
 - Titan Force FC
-- Titan Force Zakigonj
-- Mulikandi football club
+- Titanforcemulikandi
+- titanforcemulikandi
 
 Long-tail keywords:
 - Titan Force Mulikandi squad

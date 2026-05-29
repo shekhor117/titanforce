@@ -220,3 +220,696 @@ canvas {
   position: relative;
   overflow: hidden;
 }
+
+/* ===== HOVER EFFECTS ===== */
+
+/* Lift Effect - adds upward motion and shadow */
+@keyframes lift {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  100% {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(167, 25, 48, 0.25);
+  }
+}
+
+.hover-lift:hover {
+  animation: lift 0.3s ease forwards;
+}
+
+/* Glow Effect - adds primary color glow */
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(167, 25, 48, 0.5), inset 0 0 20px rgba(167, 25, 48, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Accent Glow - adds accent color glow */
+.hover-accent-glow:hover {
+  box-shadow: 0 0 20px rgba(217, 30, 63, 0.6), inset 0 0 15px rgba(217, 30, 63, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Scale Effect - enlarges element */
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Underline Animation */
+@keyframes underlineSlide {
+  from {
+    width: 0;
+    left: 0;
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Color Transition */
+.hover-color-primary {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.hover-color-primary:hover {
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(167, 25, 48, 0.4);
+}
+
+.hover-color-accent {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.hover-color-accent:hover {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(217, 30, 63, 0.4);
+}
+
+/* Background Color Transition */
+.hover-bg-primary:hover {
+  background-color: var(--primary);
+  transition: background-color 0.3s ease;
+}
+
+.hover-bg-accent:hover {
+  background-color: var(--accent);
+  transition: background-color 0.3s ease;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.hover-shimmer:hover {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--accent) 50%,
+    var(--primary) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 0.8s ease;
+}
+
+/* Pulse Effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(167, 25, 48, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(167, 25, 48, 0.6);
+  }
+}
+
+.hover-pulse:hover {
+  animation: pulse-glow 1.5s ease-in-out;
+}
+
+/* Rotate Effect */
+.hover-rotate:hover {
+  transform: rotate(2deg);
+  transition: transform 0.3s ease;
+}
+
+/* Shadow Elevation */
+.hover-shadow-lg:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Border Color Animation */
+.hover-border-primary:hover {
+  border-color: var(--primary);
+  transition: border-color 0.3s ease;
+}
+
+.hover-border-accent:hover {
+  border-color: var(--accent);
+  transition: border-color 0.3s ease;
+}
+
+/* ===== GLASS MORPHISM EFFECTS (Premium Style) ===== */
+
+/* Base Glass Button - Premium */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 48px rgba(167, 25, 48, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Glass Button with Primary Color - Premium */
+.glass-btn-primary {
+  background: rgba(167, 25, 48, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(167, 25, 48, 0.5);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.3);
+  border-color: rgba(167, 25, 48, 0.7);
+  box-shadow: 0 12px 48px rgba(167, 25, 48, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 0 20px rgba(167, 25, 48, 0.25);
+  transform: translateY(-4px);
+}
+
+/* Glass Button with Accent Color - Premium */
+.glass-btn-accent {
+  background: rgba(217, 30, 63, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(217, 30, 63, 0.5);
+  box-shadow: 0 8px 32px rgba(217, 30, 63, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-btn-accent:hover {
+  background: rgba(217, 30, 63, 0.3);
+  border-color: rgba(217, 30, 63, 0.7);
+  box-shadow: 0 12px 48px rgba(217, 30, 63, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 0 20px rgba(217, 30, 63, 0.25);
+  transform: translateY(-4px);
+}
+
+/* Glass Card - Premium */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 48px rgba(167, 25, 48, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Glass Input Field - Premium */
+.glass-input {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(167, 25, 48, 0.6);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 0 20px rgba(167, 25, 48, 0.2);
+  outline: none;
+}
+
+/* Glass Badge - Premium */
+.glass-badge {
+  background: rgba(167, 25, 48, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(167, 25, 48, 0.5);
+  box-shadow: 0 4px 15px rgba(167, 25, 48, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode glass adjustments - Premium */
+.light .glass-btn {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(167, 25, 48, 0.3);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.light .glass-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(167, 25, 48, 0.5);
+  box-shadow: 0 12px 48px rgba(167, 25, 48, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.light .glass-btn-primary {
+  background: rgba(167, 25, 48, 0.15);
+  border-color: rgba(167, 25, 48, 0.4);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.light .glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.25);
+  border-color: rgba(167, 25, 48, 0.6);
+  box-shadow: 0 12px 48px rgba(167, 25, 48, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(167, 25, 48, 0.25);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+/* ===== 3D GLASS MORPHISM EFFECTS ===== */
+
+/* 3D Glass Button Base */
+.glass-3d-btn {
+  position: relative;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.3);
+  border-right: 2px solid rgba(167, 25, 48, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset -2px -2px 8px rgba(167, 25, 48, 0.1),
+    -5px 10px 20px rgba(0, 0, 0, 0.2);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glass-3d-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.5);
+  border-right: 2px solid rgba(167, 25, 48, 0.5);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 12px rgba(167, 25, 48, 0.2),
+    -8px 15px 30px rgba(167, 25, 48, 0.2),
+    0 0 20px rgba(167, 25, 48, 0.15);
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateZ(8px);
+}
+
+.glass-3d-btn:active {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(2px);
+}
+
+/* 3D Glass Button Primary */
+.glass-3d-btn-primary {
+  position: relative;
+  background: rgba(167, 25, 48, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(167, 25, 48, 0.5);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.4);
+  border-right: 2px solid rgba(167, 25, 48, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(167, 25, 48, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 8px rgba(167, 25, 48, 0.15),
+    -5px 10px 25px rgba(167, 25, 48, 0.15);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glass-3d-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.3);
+  border-color: rgba(167, 25, 48, 0.7);
+  border-bottom: 2px solid rgba(217, 30, 63, 0.5);
+  border-right: 2px solid rgba(217, 30, 63, 0.5);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset -2px -2px 12px rgba(167, 25, 48, 0.2),
+    -8px 15px 35px rgba(167, 25, 48, 0.25),
+    0 0 25px rgba(167, 25, 48, 0.2);
+  transform: perspective(1000px) rotateX(6deg) rotateY(-6deg) translateZ(10px);
+}
+
+/* 3D Glass Button Accent */
+.glass-3d-btn-accent {
+  position: relative;
+  background: rgba(217, 30, 63, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(217, 30, 63, 0.5);
+  border-bottom: 2px solid rgba(217, 30, 63, 0.4);
+  border-right: 2px solid rgba(217, 30, 63, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(217, 30, 63, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 8px rgba(217, 30, 63, 0.15),
+    -5px 10px 25px rgba(217, 30, 63, 0.15);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glass-3d-btn-accent:hover {
+  background: rgba(217, 30, 63, 0.3);
+  border-color: rgba(217, 30, 63, 0.7);
+  border-bottom: 2px solid rgba(217, 30, 63, 0.6);
+  border-right: 2px solid rgba(217, 30, 63, 0.6);
+  box-shadow: 
+    0 12px 48px rgba(217, 30, 63, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset -2px -2px 12px rgba(217, 30, 63, 0.2),
+    -8px 15px 35px rgba(217, 30, 63, 0.25),
+    0 0 25px rgba(217, 30, 63, 0.2);
+  transform: perspective(1000px) rotateX(6deg) rotateY(-6deg) translateZ(10px);
+}
+
+/* 3D Glass Card */
+.glass-3d-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.2);
+  border-right: 2px solid rgba(167, 25, 48, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.08),
+    -5px 10px 25px rgba(0, 0, 0, 0.1);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: all 0.3s ease;
+}
+
+.glass-3d-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.3);
+  border-right: 2px solid rgba(167, 25, 48, 0.3);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset -2px -2px 12px rgba(167, 25, 48, 0.1),
+    -8px 15px 35px rgba(167, 25, 48, 0.15),
+    0 0 20px rgba(167, 25, 48, 0.1);
+  transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) translateZ(6px);
+}
+
+/* Light mode 3D glass adjustments */
+.light .glass-3d-btn {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(167, 25, 48, 0.3);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.25);
+  border-right: 2px solid rgba(167, 25, 48, 0.25);
+}
+
+.light .glass-3d-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(167, 25, 48, 0.5);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.4);
+  border-right: 2px solid rgba(167, 25, 48, 0.4);
+}
+
+.light .glass-3d-btn-primary {
+  background: rgba(167, 25, 48, 0.15);
+  border-color: rgba(167, 25, 48, 0.4);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.35);
+  border-right: 2px solid rgba(167, 25, 48, 0.35);
+}
+
+.light .glass-3d-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.25);
+  border-color: rgba(167, 25, 48, 0.6);
+  border-bottom: 2px solid rgba(167, 25, 48, 0.5);
+  border-right: 2px solid rgba(167, 25, 48, 0.5);
+}
+
+/* ===== THEME-AWARE TEXT COLOR UTILITIES ===== */
+
+/* Auto text color based on foreground */
+.text-auto {
+  color: var(--foreground);
+  transition: color 0.3s ease;
+}
+
+/* Primary color text - auto adjusts to foreground and responds to theme */
+.text-primary-auto {
+  color: var(--primary);
+  transition: color 0.3s ease;
+}
+
+.text-primary-auto-subtle {
+  color: var(--primary);
+  opacity: 0.75;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.text-primary-auto-subtle:hover {
+  opacity: 1;
+}
+
+/* Accent color text - auto adjusts to accent */
+.text-accent-auto {
+  color: var(--accent);
+  transition: color 0.3s ease;
+}
+
+.text-accent-auto-subtle {
+  color: var(--accent);
+  opacity: 0.75;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.text-accent-auto-subtle:hover {
+  opacity: 1;
+}
+
+/* Muted text - uses muted-foreground */
+.text-muted-auto {
+  color: var(--muted-foreground);
+  transition: color 0.3s ease;
+}
+
+/* Secondary text color */
+.text-secondary-auto {
+  color: var(--secondary-foreground);
+  transition: color 0.3s ease;
+}
+
+/* Card text color */
+.text-card-auto {
+  color: var(--card-foreground);
+  transition: color 0.3s ease;
+}
+
+/* Heading auto color - primary on dark, darker primary on light */
+.heading-auto {
+  color: var(--foreground);
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+/* Subheading auto color */
+.subheading-auto {
+  color: var(--muted-foreground);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Body text auto color */
+.body-auto {
+  color: var(--foreground);
+  opacity: 0.9;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Caption text auto color */
+.caption-auto {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  opacity: 0.8;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Link text - primary color with hover effect */
+.link-auto {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.link-auto:hover {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(167, 25, 48, 0.3);
+}
+
+/* Gradient text - from primary to accent */
+.text-gradient-auto {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+/* Interactive text - changes on hover to accent */
+.text-interactive-auto {
+  color: var(--foreground);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.text-interactive-auto:hover {
+  color: var(--primary);
+  transform: translateX(2px);
+}
+
+/* Highlighted text - primary background with foreground text */
+.text-highlight-auto {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  transition: all 0.3s ease;
+}
+
+.text-highlight-auto:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Success text */
+.text-success-auto {
+  color: #22c55e;
+  transition: color 0.3s ease;
+}
+
+/* Warning text */
+.text-warning-auto {
+  color: #f59e0b;
+  transition: color 0.3s ease;
+}
+
+/* Error/Danger text */
+.text-error-auto {
+  color: var(--destructive);
+  transition: color 0.3s ease;
+}
+
+/* Info text - uses primary */
+.text-info-auto {
+  color: var(--primary);
+  transition: color 0.3s ease;
+}
+
+/* Dynamic contrast text - adjusts based on theme */
+.text-contrast-auto {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+/* Label text - for form labels */
+.label-auto {
+  color: var(--foreground);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+/* Badge text - inherits theme colors */
+.badge-auto {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.25em 0.6em;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.badge-auto:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* ===== LIGHT THEME HERO OVERLAY ===== */
+
+.light section#home {
+  background: transparent;
+}
+
+.light section#home > .absolute.inset-0.bg-black {
+  background: rgba(30, 30, 30, 0.35) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Light theme video overlay adjustment */
+.light video.absolute {
+  opacity: 0.7 !important;
+  mix-blend-mode: normal;
+}
+
+/* ===== LIGHT THEME FOOTER ===== */
+
+.light footer {
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.95) 0%, rgba(230, 230, 230, 0.9) 100%);
+  border-color: var(--primary);
+}
+
+.light footer video {
+  opacity: 0.55 !important;
+  mix-blend-mode: normal;
+}
+
+.light footer > .absolute.inset-0.bg-white {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Footer contact cards light theme */
+.light footer .glass-btn-primary {
+  background: rgba(167, 25, 48, 0.12);
+  border-color: rgba(167, 25, 48, 0.3);
+}
+
+.light footer .glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.2);
+  border-color: rgba(167, 25, 48, 0.5);
+}
+
+/* Footer text colors in light theme */
+.light footer .text-foreground {
+  color: #1a1a1a;
+}
+
+.light footer .text-foreground\/70 {
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.light footer .text-foreground\/50 {
+  color: rgba(26, 26, 26, 0.5);
+}

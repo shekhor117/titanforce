@@ -2,17 +2,11 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
-
-const Scene3D = dynamic(() => import("@/components/3d-realistic-players").then(mod => ({ default: mod.RealisticPlayers3D })), {
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950 to-slate-950" />,
-})
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -102,25 +96,37 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="hero-gradient relative overflow-hidden">
-        {/* 3D Scene Background */}
-        <div className="absolute inset-0 z-0 opacity-40">
-          <Scene3D />
-        </div>
+      <section id="home" className="relative overflow-hidden bg-black">
+        {/* Video Background - Top */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          crossOrigin="anonymous"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
+        </video>
 
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden z-1">
-          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
-        </div>
-
-        <div
-          className="absolute inset-0 opacity-10 z-1"
+        {/* Video Background - Bottom with Gradient Blend */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          crossOrigin="anonymous"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
           style={{
-            background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
           }}
-        />
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
+        </video>
+
+        {/* Subtle overlay for text readability - Adapts to theme */}
+        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/30 light:backdrop-blur-sm z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">

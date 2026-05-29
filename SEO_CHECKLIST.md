@@ -161,19 +161,19 @@ https://titanforcemulikandi.vercel.app/about
 ## 🎯 Target Keywords
 
 ### Tier 1 (Primary Focus)
-- Titan Force FC
-- Bangladesh football club
-- Sylhet football
+- Titan Force Mulikandi
+- Titanforcemulikandi
+- titanforcemukandi
 
 ### Tier 2 (Secondary Focus)
-- Football team Bangladesh
-- Mulikandi sports club
-- Team squad management
+- Titan Force Mulikandi
+- Titanforcemulikandi
+- titanforcemulikandi
 
 ### Tier 3 (Long-tail)
-- Titan Force FC fixtures
-- Titan Force FC news
-- Bangladesh football news
+- Titan Force Mulikandi fixtures
+- Titan Force Mulukandi news
+- titan force mulikandi news
 
 ## 📞 Support Resources
 
