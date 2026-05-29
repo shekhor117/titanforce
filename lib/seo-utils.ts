@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 const SITE_NAME = 'Titan Force Mulikandi'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcemulikandi.vercel.app/'
+const SITE_URL = 'https://titanforcemulikandi.vercel.app'
 const SITE_DESCRIPTION = 'Official football club website'
 const SITE_IMAGE = `${SITE_URL}/og-image.jpg`
 const SITE_LOCALE = 'en_US'
