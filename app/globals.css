@@ -376,3 +376,124 @@ canvas {
   border-color: var(--accent);
   transition: border-color 0.3s ease;
 }
+
+/* ===== GLASS MORPHISM EFFECTS ===== */
+
+/* Base Glass Button */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Glass Button with Primary Color */
+.glass-btn-primary {
+  background: rgba(167, 25, 48, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(167, 25, 48, 0.4);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.25);
+  border-color: rgba(167, 25, 48, 0.6);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.3), 0 0 20px rgba(167, 25, 48, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Glass Button with Accent Color */
+.glass-btn-accent {
+  background: rgba(217, 30, 63, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(217, 30, 63, 0.4);
+  box-shadow: 0 8px 32px rgba(217, 30, 63, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-btn-accent:hover {
+  background: rgba(217, 30, 63, 0.25);
+  border-color: rgba(217, 30, 63, 0.6);
+  box-shadow: 0 8px 32px rgba(217, 30, 63, 0.3), 0 0 20px rgba(217, 30, 63, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Glass Card - for larger glass components */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Glass Input Field */
+.glass-input {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(167, 25, 48, 0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 20px rgba(167, 25, 48, 0.15);
+  outline: none;
+}
+
+/* Glass Badge */
+.glass-badge {
+  background: rgba(167, 25, 48, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(167, 25, 48, 0.4);
+  box-shadow: 0 4px 15px rgba(167, 25, 48, 0.1);
+}
+
+/* Light mode glass adjustments */
+.light .glass-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(167, 25, 48, 0.2);
+}
+
+.light .glass-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(167, 25, 48, 0.3);
+}
+
+.light .glass-btn-primary {
+  background: rgba(167, 25, 48, 0.12);
+  border-color: rgba(167, 25, 48, 0.3);
+}
+
+.light .glass-btn-primary:hover {
+  background: rgba(167, 25, 48, 0.2);
+  border-color: rgba(167, 25, 48, 0.5);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(167, 25, 48, 0.15);
+}
