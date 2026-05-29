@@ -68,7 +68,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2 rounded glass-btn-primary text-foreground hover-lift transition-all relative group"
+            className="flex items-center gap-2 px-4 py-2 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all relative group"
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
@@ -82,7 +82,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300"
             aria-label="Toggle language"
           >
             <Globe className="w-4 h-4" />
@@ -94,7 +94,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 hover-glow transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {language === "bn" ? "লগইন" : "Login"}
             </Link>
@@ -117,7 +117,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2.5 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative"
+            className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300 relative"
             onClick={() => setMobileMenuOpen(false)}
           >
             <ShoppingBag className="w-4 h-4" />
@@ -134,7 +134,7 @@ export function Navbar() {
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 flex-1 text-xs"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border-2 border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift transition-all duration-300 flex-1 text-xs"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -147,7 +147,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 hover-glow transition duration-300 text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {language === "bn" ? "লগইন" : "Login"}
