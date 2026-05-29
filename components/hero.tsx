@@ -68,9 +68,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-primary/30 blur-3xl animate-pulse" />
-              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl animate-pulse animation-delay-1000" />
-
               <Image
                 src="/logo.png"
                 alt="Opening Logo"
@@ -130,7 +127,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
               <Image
                 src="/logo.png"
                 alt="Titan Force FC Logo"
