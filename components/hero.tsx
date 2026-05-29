@@ -106,7 +106,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
 
-        {/* Video Background - Bottom with Gradient Blend */}
+        {/* Video Background - Bottom */}
         <video
           autoPlay
           muted
@@ -114,10 +114,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           playsInline
           crossOrigin="anonymous"
           className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70 dark:opacity-70 light:opacity-75"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
-          }}
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
         </video>
