@@ -136,7 +136,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
+                className="relative z-10 object-contain drop-shadow-2xl animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500"
                 priority
               />
             </div>
@@ -200,7 +200,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
