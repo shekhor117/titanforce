@@ -103,6 +103,17 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="hero-gradient relative overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-QYn0WUMbotQuAYc84eCWI5QXsW9zan.mp4" type="video/mp4" />
+        </video>
+
         {/* 3D Scene Background */}
         <div className="absolute inset-0 z-0 opacity-40">
           <Scene3D />
