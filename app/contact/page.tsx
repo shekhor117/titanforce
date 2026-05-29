@@ -75,9 +75,34 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="py-20 bg-gradient-to-b from-primary/10 to-background">
-        <div className="container mx-auto px-4">
+      {/* Header with Video Background */}
+      <div className="relative overflow-hidden py-20 hero-gradient">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+        >
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260514_102933_4e8f73b5-775a-4179-b2fb-472f59063dcd-f1kKY6BLUtnOYd6RM2o4IQXoJwdM18.mp4" type="video/mp4" />
+        </video>
+
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden z-1">
+          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
+        </div>
+
+        <div
+          className="absolute inset-0 opacity-10 z-1"
+          style={{
+            background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
+          }}
+        />
+
+        <div className="container mx-auto px-4 relative z-10">
           <button
             onClick={() => router.back()}
             className="mb-8 inline-flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors group"
