@@ -104,7 +104,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60 dark:opacity-60 light:opacity-45"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
@@ -116,17 +116,17 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           loop
           playsInline
           crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70 dark:opacity-70 light:opacity-55"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
           style={{
             WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
             maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
           }}
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-edQgFSwchD6BNrtHBhHaRQfyB2VgPH.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/25 light:backdrop-blur-sm z-1"></div>
+        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/30 light:backdrop-blur-sm z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
