@@ -23,7 +23,7 @@ export default function Home() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: 'https://titanforcefc.com',
+          item: 'https://titanforcemulikandi.vercel.app',
         },
       ],
     }
