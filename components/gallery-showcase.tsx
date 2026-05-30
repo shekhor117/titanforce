@@ -14,44 +14,7 @@ import {
 } from '@/components/ui/carousel'
 
 // Default featured items for display when no Supabase data is available
-const DEFAULT_FEATURED_ITEMS = [
-  {
-    id: '1',
-    title: 'Champions League Victory',
-    description: 'Historic win against rivals in the final match',
-    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
-    type: 'match',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '2',
-    title: 'Team Celebration',
-    description: 'Players celebrating after winning the trophy',
-    imageUrl: '',
-    type: 'team-events',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '3',
-    title: 'Training Session',
-    description: 'Intense tactical training with the coaching staff',
-    imageUrl: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
-    type: 'training',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '4',
-    title: 'Official Jersey Launch',
-    description: 'New season merchandise collection unveiled',
-    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
-    type: 'merchandise',
-    isFeatured: true,
-    createdAt: new Date()
-  }
-]
+const DEFAULT_FEATURED_ITEMS: any[] = []
 
 export function GalleryShowcase() {
   const { language } = useLanguage()
