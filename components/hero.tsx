@@ -159,7 +159,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </p>
 
           {/* About the Club Section */}
-          <div>
+          <div className="light:opacity-90">
             <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
