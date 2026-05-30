@@ -110,7 +110,7 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-            <div className="rounded-2xl border-2 border-card bg-card/50 backdrop-blur-sm p-8">
+            <div className="rounded-2xl bg-card/50 backdrop-blur-sm p-8">
               {showSuccess ? (
                 <div className="text-center py-12">
                   <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
