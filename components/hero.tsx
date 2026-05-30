@@ -122,7 +122,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
           }}
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260325_120549_0cd82c36-56b3-4dd9-b190-069cfc3a623f~2-xYofFXH3nviw6OptAWwKKuhtiAgdi6.mp4" type="video/mp4" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0-XHs6l69r0GYnt6qoA3uhPw22BuCYct.mp4" type="video/mp4" />
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
@@ -200,13 +200,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded bg-primary text-primary-foreground hover:opacity-90 transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(255,0,0,0.5)] ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary-foreground hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`px-8 py-3 font-bold text-sm uppercase tracking-wider rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 hover:scale-110 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>

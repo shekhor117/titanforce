@@ -14,44 +14,7 @@ import {
 } from '@/components/ui/carousel'
 
 // Default featured items for display when no Supabase data is available
-const DEFAULT_FEATURED_ITEMS = [
-  {
-    id: '1',
-    title: 'Champions League Victory',
-    description: 'Historic win against rivals in the final match',
-    imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=600&fit=crop',
-    type: 'match',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '2',
-    title: 'Team Celebration',
-    description: 'Players celebrating after winning the trophy',
-    imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&h=600&fit=crop',
-    type: 'team-events',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '3',
-    title: 'Training Session',
-    description: 'Intense tactical training with the coaching staff',
-    imageUrl: 'https://images.unsplash.com/photo-1516156064457-6f5bc43e4f73?w=800&h=600&fit=crop',
-    type: 'training',
-    isFeatured: true,
-    createdAt: new Date()
-  },
-  {
-    id: '4',
-    title: 'Official Jersey Launch',
-    description: 'New season merchandise collection unveiled',
-    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=600&fit=crop',
-    type: 'merchandise',
-    isFeatured: true,
-    createdAt: new Date()
-  }
-]
+const DEFAULT_FEATURED_ITEMS: any[] = []
 
 export function GalleryShowcase() {
   const { language } = useLanguage()
@@ -112,14 +75,16 @@ export function GalleryShowcase() {
                   >
                     <div className="relative overflow-hidden rounded-2xl h-96 bg-muted cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
                       {/* Background Image */}
-                      <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=600&fit=crop'
-                        }}
-                      />
+                      {item.imageUrl && (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=600&fit=crop'
+                          }}
+                        />
+                      )}
 
                       {/* Overlay Gradient */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent group-hover/card:from-black/95 transition-all duration-300" />

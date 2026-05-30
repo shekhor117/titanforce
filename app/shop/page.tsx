@@ -253,7 +253,7 @@ export default function ShopPage() {
                       </div>
 
                       {/* Button */}
-                      <button className="mt-4 w-full px-4 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors">
+                      <button className="mt-4 w-full px-4 py-2 glass-btn-primary text-foreground font-medium rounded-lg hover:scale-105 transition-all">
                         {isBn ? "দেখুন" : "View"}
                       </button>
                     </div>

@@ -239,7 +239,7 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-4 font-bold text-sm uppercase tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center justify-center gap-3 group ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`w-full py-4 font-bold text-sm uppercase tracking-wider rounded-xl glass-btn-primary text-primary-foreground hover:scale-105 disabled:opacity-50 transition-all flex items-center justify-center gap-3 group ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                   >
                     {isSubmitting ? (
                       <>
