@@ -13,7 +13,7 @@ export default function FixturesResultsPage() {
   const isBn = language === "bn"
 
   return (
-    <div className="min-h-screen bg-background stripe-bg">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <main>
         {/* Hero Section with Video Background */}

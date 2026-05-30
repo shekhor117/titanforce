@@ -16,7 +16,7 @@ export const metadata = {
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-background stripe-bg">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <main>
         {/* Hero */}
