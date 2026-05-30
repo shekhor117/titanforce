@@ -192,13 +192,7 @@ html {
 
 /* Stripe background */
 .stripe-bg {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 40px,
-    rgba(167, 25, 48, 0.05) 40px,
-    rgba(167, 25, 48, 0.05) 80px
-  );
+  background-color: var(--background);
 }
 
 /* Card glow effect */
