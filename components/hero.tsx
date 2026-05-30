@@ -126,7 +126,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </video>
 
         {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/15 light:backdrop-blur-sm z-1"></div>
+        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/85 light:backdrop-blur-sm z-1"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-[111px] md:py-36 pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
