@@ -111,14 +111,15 @@ html {
   * {
     @apply border-border outline-ring/50;
   }
-  html {
+  html, body {
     border: none !important;
+    border-left: none !important;
     border-right: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
   }
   body {
     @apply bg-background text-foreground;
-    border: none !important;
-    border-right: none !important;
   }
 }
 
