@@ -4,7 +4,7 @@ import { generatePageMetadata } from '@/lib/seo-utils'
 export const metadata: Metadata = generatePageMetadata({
   title: 'Gallery - Titan Force FC',
   description: 'Browse Titan Force FC photo gallery. View team photos, match highlights, and club events.',
-  url: 'https://titanforcefc.com/gallery',
+  url: 'https://titanforcemulikandi.vercel.app/gallery',
 })
 
 export default function GalleryLayout({
