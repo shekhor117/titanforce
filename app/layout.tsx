@@ -9,8 +9,9 @@ import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { OrganizationSchema } from '@/components/schema-script'
 import LoaderWrapper from '@/components/loader-wrapper'
-import { generatePageMetadata, getOrganizationSchema } from '@/lib/seo-utils'
+import { generatePageMetadata } from '@/lib/seo-utils'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -68,20 +69,12 @@ export default function RootLayout({
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         
-        {/* Organization Schema */}
-        <script
-          type="application/ld+json"
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getOrganizationSchema()),
-          }}
-        />
-        
         {/* Theme Color */}
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
+        <OrganizationSchema />
         <ThemeProvider>
           <TransitionProvider>
             <PageTransition />
