@@ -44,7 +44,7 @@ Reusable functions for consistent metadata generation:
 generatePageMetadata({
   title: 'Page Title',
   description: 'Page description',
-  url: 'https://titanforcefc.com/page'
+  url: 'https://titanforcemulikandi.vercel.app/page'
 })
 
 // Generate player profile metadata
@@ -73,7 +73,7 @@ getProductSchema(product)
 ```
 
 ### 4. ✅ Dynamic Sitemap (`app/sitemap.ts`)
-- Automatically generates sitemap.xml at `https://titanforcefc.com/sitemap.xml`
+- Automatically generates sitemap.xml at `https://titanforcemulikandi.vercel.app/sitemap.xml`
 - Includes all public routes with priorities:
   - Home page: priority 1.0
   - Key pages: priority 0.8-0.9
@@ -92,7 +92,7 @@ getProductSchema(product)
 - Generates `robots.txt` file automatically
 - Allows crawling of all public pages
 - Blocks admin (/admin), auth (/auth), and dashboard routes
-- Points to sitemap: `https://titanforcefc.com/sitemap.xml`
+- Points to sitemap: `https://titanforcemulikandi.vercel.app/sitemap.xml`
 - Crawl delay: 1 second for politeness
 
 ### 6. ✅ PWA Manifest (`public/manifest.json`)
@@ -133,7 +133,7 @@ import { generatePageMetadata } from '@/lib/seo-utils'
 export const metadata: Metadata = generatePageMetadata({
   title: 'Page Title - Titan Force FC',
   description: 'Detailed page description for search engines.',
-  url: 'https://titanforcefc.com/new-section',
+  url: 'https://titanforcemulikandi.vercel.app/new-section',
 })
 
 export default function Layout({ children }) {
@@ -192,19 +192,19 @@ export async function generateMetadata({ params }) {
 ## Testing Your SEO
 
 ### 1. Check Sitemap
-Visit: `https://titanforcefc.com/sitemap.xml`
+Visit: `https://titanforcemulikandi.vercel.app/sitemap.xml`
 - Should show all public routes
 - Verify priorities and change frequencies
 
 ### 2. Check Robots.txt
-Visit: `https://titanforcefc.com/robots.txt`
+Visit: `https://titanforcemulikandi.vercel.app/robots.txt`
 - Verify public routes are allowed
 - Confirm admin routes are disallowed
 
 ### 3. Test with Google Search Console
 1. Go to Google Search Console
 2. Add your domain
-3. Submit sitemap: `https://titanforcefc.com/sitemap.xml`
+3. Submit sitemap: `https://titanforcemulikandi.vercel.app/sitemap.xml`
 4. Check for any indexing issues
 5. Monitor coverage and indexing status
 
@@ -219,7 +219,7 @@ npm run start
 ### 5. Validate Structured Data
 Use Google's Rich Results Test:
 - Go to: https://search.google.com/test/rich-results
-- Enter: https://titanforcefc.com
+- Enter: https://titanforcemulikandi.vercel.app
 - Check for rich results (SportsTeam, SportsEvent, etc.)
 
 ### 6. Check Open Graph Tags
@@ -232,7 +232,7 @@ Use: https://www.opengraphcheck.com/
 
 Make sure these are set:
 ```env
-NEXT_PUBLIC_SITE_URL=https://titanforcefc.com
+NEXT_PUBLIC_SITE_URL=https://titanforcemulikandi.vercel.app
 ```
 
 This is used in:
