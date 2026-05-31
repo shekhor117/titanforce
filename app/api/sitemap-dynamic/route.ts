@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcemulikandi.vercel.app'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcefc.com'
 
 /**
  * Dynamic sitemap that includes player pages, matches, news, and products

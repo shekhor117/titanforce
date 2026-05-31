@@ -23,13 +23,13 @@ export default function TeamSquadPage() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: 'https://titanforcefc.com',
+          item: 'https://titanforcemulikandi.vercel.app',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Squad',
-          item: 'https://titanforcefc.com/squad',
+          item: 'https://titanforcemulikandi.vercel.app/squad',
         },
       ],
     }
