@@ -53,6 +53,21 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
+        {/* Consent Framework */}
+        <script
+          data-cfasync="false"
+          type="text/javascript"
+          src="https://cache.consentframework.com/js/pa/52004/c/QJPzh/stub?source=google-tag"
+          strategy="beforeInteractive"
+        />
+        <script
+          data-cfasync="false"
+          type="text/javascript"
+          src="https://choices.consentframework.com/js/pa/52004/c/QJPzh/cmp?source=google-tag"
+          async
+          strategy="beforeInteractive"
+        />
+
         {/* Google tag (gtag.js) */}
         <Script
           async
