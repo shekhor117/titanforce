@@ -47,7 +47,7 @@ export function Footer() {
           {/* Logo and Site Name */}
           <div className="flex justify-center mb-4">
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt={`${siteName} Logo`}
               width={60}
               height={60}

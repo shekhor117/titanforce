@@ -72,7 +72,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl animate-pulse animation-delay-1000" />
 
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Opening Logo"
                 width={160}
                 height={160}
@@ -132,7 +132,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
