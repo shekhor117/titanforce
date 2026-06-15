@@ -385,19 +385,8 @@ export function useTrophies() {
 
     loadTrophies()
 
-    const unsubscribe = service.subscribeTrophies((data) => {
-      if (isMounted) {
-        setTrophies(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        setError(err)
-      }
-    })
-
     return () => {
       isMounted = false
-      unsubscribe()
     }
   }, [])
 
