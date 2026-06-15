@@ -385,6 +385,84 @@ export function useTrophies() {
 
     loadTrophies()
 
+    const unsubscribe = service.subscribeTrophies((data) => {
+      if (isMounted) {
+        setTrophies(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        setError(err)
+      }
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
+
+  return { trophies, loading, error, service }
+}
+
+export function useInjuries() {
+  const service = getDataService()
+  const [injuries, setInjuries] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadInjuries = async () => {
+      try {
+        setLoading(true)
+        const data = await service.getInjuries()
+        if (isMounted) {
+          setInjuries(data)
+          setError(null)
+        }
+      } catch (err) {
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+        }
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadInjuries()
+
+    const unsubscribe = service.subscribeToInjuries((data) => {
+      if (isMounted) {
+        setInjuries(data)
+      }
+    }, (err) => {
+      if (isMounted) {
+        setError(err)
+      }
+    })
+
+    return () => {
+      isMounted = false
+      unsubscribe()
+    }
+  }, [])
+
+  return { injuries, loading, error, service }
+}
+      } catch (err) {
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+        }
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadTrophies()
+
     const unsubscribe = service.subscribeToTrophies((data) => {
       if (isMounted) {
         setTrophies(data)

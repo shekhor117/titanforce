@@ -145,6 +145,22 @@ export interface Trophy {
   updated_at: string
 }
 
+export interface Injury {
+  id: string
+  player_id: string
+  player_name: string
+  player_number: number
+  injury_type: string
+  body_part: string
+  status: 'active' | 'recovering' | 'recovered'
+  date_injured: string
+  expected_return: string
+  recovery_percent: number
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
 // Callback types
 type DataCallback<T> = (data: T[]) => void
 type ErrorCallback = (error: Error) => void
@@ -921,6 +937,108 @@ export class DataService {
           console.warn("[v0] DataService: Error removing trophies channel:", error)
         }
         this.subscriptions.delete('trophies')
+      }
+    } catch (error) {
+      onError?.(error instanceof Error ? error : new Error(String(error)))
+      return () => {}
+    }
+  }
+
+  // Injuries
+  async getInjuries(): Promise<Injury[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('injuries')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        return []
+      }
+      return data || []
+    } catch (error) {
+      return []
+    }
+  }
+
+  async createInjury(injury: Omit<Injury, 'id' | 'created_at' | 'updated_at'>): Promise<Injury> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('injuries')
+      .insert([injury])
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async updateInjury(id: string, updates: Partial<Injury>): Promise<Injury> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('injuries')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async deleteInjury(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase
+      .from('injuries')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  }
+
+  subscribeToInjuries(callback: DataCallback<Injury>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) return () => {}
+    
+    try {
+      const existingChannel = this.subscriptions.get('injuries')
+      if (existingChannel) {
+        try {
+          this.supabase.removeChannel(existingChannel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing old injuries channel:", error)
+        }
+      }
+      
+      const channel = this.supabase
+        .channel(`injuries-changes-${Date.now()}-${Math.random()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'injuries',
+          },
+          async () => {
+            try {
+              const injuries = await this.getInjuries()
+              callback(injuries)
+            } catch (error) {
+              onError?.(error instanceof Error ? error : new Error(String(error)))
+            }
+          }
+        )
+        .subscribe()
+
+      this.subscriptions.set('injuries', channel)
+
+      return () => {
+        try {
+          this.supabase.removeChannel(channel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing injuries channel:", error)
+        }
+        this.subscriptions.delete('injuries')
       }
     } catch (error) {
       onError?.(error instanceof Error ? error : new Error(String(error)))
