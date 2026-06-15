@@ -35,6 +35,9 @@ const notoSansBengali = Noto_Sans_Bengali({
 export const metadata: Metadata = generatePageMetadata({
   title: 'Titan Force Mulikandi | Official Football Club Website',
   description: 'Official football club website',
+  icons: {
+    icon: '/favicon.svg',
+  },
   alternates: {
     languages: {
       en: 'https://titanforcemulikandi.vercel.app/en',
