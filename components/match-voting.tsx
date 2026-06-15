@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react"
 import { ThumbsUp, Trophy, Star, Users, ChevronDown, ChevronUp } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore } from "@/lib/data-store"
+import { useMatches } from "@/lib/use-data-store"
+import type { Match } from "@/lib/data-service"
 
 interface Player {
   id: string
@@ -13,18 +15,44 @@ interface Player {
   votes: number
 }
 
-const MATCH_ID = "latest_match" // For demo purposes
-
 export function MatchVoting() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useRef<HTMLSection>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null)
   const [hasVoted, setHasVoted] = useState(false)
   const [players, setPlayers] = useState<Player[]>([])
   const [showResults, setShowResults] = useState(false)
   const [matchRating, setMatchRating] = useState<number>(0)
+  const [lastMatch, setLastMatch] = useState<Match | null>(null)
+
+  // Fetch latest match from useMatches hook
+  const { matches } = useMatches()
+
+  useEffect(() => {
+    if (matches && matches.length > 0) {
+      // Get the most recent match (completed matches preferred)
+      const completedMatches = matches.filter(m => m.status !== "upcoming")
+      const mostRecentMatch = completedMatches.length > 0 ? completedMatches[0] : matches[0]
+      setLastMatch(mostRecentMatch)
+      
+      // Update MATCH_ID to use the actual match ID
+      const matchId = mostRecentMatch?.id || "latest_match"
+      
+      // Check if user already voted for this match
+      const existingVotes = dataStore.getPlayerVotes() ?? []
+      const visitorId = dataStore.getVisitorId()
+      const userVote = (existingVotes ?? []).find(v => 
+        v?.visitorId === visitorId && v?.voteType === "motm" && v?.matchId === matchId
+      )
+      if (userVote) {
+        setHasVoted(true)
+        setShowResults(true)
+        setSelectedPlayer(userVote.playerId)
+      }
+    }
+  }, [matches])
 
   // Load players from data store
   useEffect(() => {
@@ -41,18 +69,6 @@ export function MatchVoting() {
           votes: dataStore.getPlayerVoteCount(p.id, "motm") ?? 0
         }))
         setPlayers(playersWithVotes)
-        
-        // Check if user already voted
-        const existingVotes = dataStore.getPlayerVotes() ?? []
-        const visitorId = dataStore.getVisitorId()
-        const userVote = (existingVotes ?? []).find(v => 
-          v?.visitorId === visitorId && v?.voteType === "motm" && v?.matchId === MATCH_ID
-        )
-        if (userVote) {
-          setHasVoted(true)
-          setShowResults(true)
-          setSelectedPlayer(userVote.playerId)
-        }
       } catch (error) {
         setPlayers([])
       }
@@ -73,10 +89,10 @@ export function MatchVoting() {
   }, [])
 
   const handleVote = () => {
-    if (selectedPlayer === null) return
+    if (selectedPlayer === null || !lastMatch) return
 
     // Save vote to data store
-    dataStore.voteForPlayer(selectedPlayer, "motm", MATCH_ID)
+    dataStore.voteForPlayer(selectedPlayer, "motm", lastMatch.id)
     
     // Update local state
     setPlayers(prev =>
@@ -92,6 +108,13 @@ export function MatchVoting() {
   const sortedPlayers = [...players].sort((a, b) => b.votes - a.votes)
   const topPlayer = sortedPlayers[0]
 
+  const getMatchScore = () => {
+    if (lastMatch?.home_score !== null && lastMatch?.away_score !== null) {
+      return `${lastMatch.home_score} - ${lastMatch.away_score}`
+    }
+    return "vs"
+  }
+
   return (
     <section ref={sectionRef} className="py-16 px-4 bg-card/50">
       <div className="max-w-4xl mx-auto">
@@ -105,12 +128,18 @@ export function MatchVoting() {
         </div>
 
         {/* Match Info */}
-        <div className={`text-center mb-8 p-4 rounded-xl bg-card border-2 border-secondary transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <div className="font-[var(--font-display)] text-2xl tracking-wider text-foreground mb-1">
-            TITAN FORCE <span className="text-primary">3 - 1</span> RIVAL FC
+        {lastMatch ? (
+          <div className={`text-center mb-8 p-4 rounded-xl bg-card border-2 border-secondary transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="font-[var(--font-display)] text-2xl tracking-wider text-foreground mb-1">
+              {lastMatch.home} <span className="text-primary">{getMatchScore()}</span> {lastMatch.away}
+            </div>
+            <p className="text-sm text-foreground/60">{isBn ? "সর্বশেষ ম্যাচ" : "Latest Match"} • {lastMatch.date} {lastMatch.time && `• ${lastMatch.time}`}</p>
           </div>
-          <p className="text-sm text-foreground/60">{isBn ? "সর্বশেষ ম্যাচ" : "Latest Match"} • 28 Apr 2025</p>
-        </div>
+        ) : (
+          <div className={`text-center mb-8 p-4 rounded-xl bg-card border-2 border-secondary transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <p className="text-sm text-foreground/60">{isBn ? "কোন ম্যাচ পাওয়া যায়নি" : "No matches available"}</p>
+          </div>
+        )}
 
         {/* Match Rating */}
         <div className={`mb-8 p-4 rounded-xl bg-card border-2 border-secondary transition-all duration-600 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -167,9 +196,9 @@ export function MatchVoting() {
             {/* Vote Button */}
             <button
               onClick={handleVote}
-              disabled={selectedPlayer === null}
+              disabled={selectedPlayer === null || !lastMatch}
               className={`w-full py-4 rounded-xl font-bold uppercase tracking-wider transition ${
-                selectedPlayer !== null
+                selectedPlayer !== null && lastMatch
                   ? "bg-primary text-primary-foreground hover:opacity-90"
                   : "bg-secondary/50 text-foreground/50 cursor-not-allowed"
               } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
@@ -189,11 +218,11 @@ export function MatchVoting() {
                   {isBn ? "বর্তমান নেতৃত্বে" : "Currently Leading"}
                 </p>
                 <h3 className="font-[var(--font-display)] text-3xl tracking-wider text-foreground">
-                  {topPlayer.name.toUpperCase()}
+                  {topPlayer?.name.toUpperCase() || "-"}
                 </h3>
                 <div className="flex items-center justify-center gap-1 mt-2 text-foreground/60">
                   <Users className="w-4 h-4" />
-                  <span className="text-sm">{topPlayer.votes} {isBn ? "ভোট" : "votes"}</span>
+                  <span className="text-sm">{topPlayer?.votes || 0} {isBn ? "ভোট" : "votes"}</span>
                 </div>
               </div>
 

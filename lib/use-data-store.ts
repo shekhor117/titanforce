@@ -385,9 +385,46 @@ export function useTrophies() {
 
     loadTrophies()
 
-    const unsubscribe = service.subscribeToTrophies((data) => {
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  return { trophies, loading, error, service }
+}
+
+export function useInjuries() {
+  const service = getDataService()
+  const [injuries, setInjuries] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadInjuries = async () => {
+      try {
+        setLoading(true)
+        const data = await service.getInjuries()
+        if (isMounted) {
+          setInjuries(data)
+          setError(null)
+        }
+      } catch (err) {
+        if (isMounted) {
+          const error = err instanceof Error ? err : new Error(String(err))
+          setError(error)
+        }
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadInjuries()
+
+    const unsubscribe = service.subscribeToInjuries((data) => {
       if (isMounted) {
-        setTrophies(data)
+        setInjuries(data)
       }
     }, (err) => {
       if (isMounted) {
@@ -401,5 +438,5 @@ export function useTrophies() {
     }
   }, [])
 
-  return { trophies, loading, error, service }
+  return { injuries, loading, error, service }
 }
