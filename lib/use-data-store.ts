@@ -451,33 +451,3 @@ export function useInjuries() {
 
   return { injuries, loading, error, service }
 }
-      } catch (err) {
-        if (isMounted) {
-          const error = err instanceof Error ? err : new Error(String(err))
-          setError(error)
-        }
-      } finally {
-        if (isMounted) setLoading(false)
-      }
-    }
-
-    loadTrophies()
-
-    const unsubscribe = service.subscribeToTrophies((data) => {
-      if (isMounted) {
-        setTrophies(data)
-      }
-    }, (err) => {
-      if (isMounted) {
-        setError(err)
-      }
-    })
-
-    return () => {
-      isMounted = false
-      unsubscribe()
-    }
-  }, [])
-
-  return { trophies, loading, error, service }
-}
