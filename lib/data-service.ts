@@ -188,6 +188,23 @@ export class DataService {
         .order('num', { ascending: true })
 
       if (error) {
+        console.error("[v0] DataService getPlayers error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getPlayers caught error:", err)
+      return []
+    }
+  }
+    try {
+      const { data, error } = await this.supabase
+        .from('players')
+        .select('*')
+        .order('num', { ascending: true })
+
+      if (error) {
         return []
       }
       return data || []
@@ -210,37 +227,61 @@ export class DataService {
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at' | 'updated_at'>): Promise<Player> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('players')
-      .insert([player])
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('players')
+        .insert([player])
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService createPlayer error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService createPlayer caught error:", err)
+      throw err
+    }
   }
 
   async updatePlayer(id: string, updates: Partial<Player>): Promise<Player> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('players')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('players')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService updatePlayer error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updatePlayer caught error:", err)
+      throw err
+    }
   }
 
   async deletePlayer(id: string): Promise<void> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { error } = await this.supabase
-      .from('players')
-      .delete()
-      .eq('id', id)
+    try {
+      const { error } = await this.supabase
+        .from('players')
+        .delete()
+        .eq('id', id)
 
-    if (error) throw error
+      if (error) {
+        console.error("[v0] DataService deletePlayer error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deletePlayer caught error:", err)
+      throw err
+    }
   }
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {
@@ -323,37 +364,61 @@ export class DataService {
 
   async createMatch(match: Omit<Match, 'id' | 'created_at' | 'updated_at'>): Promise<Match> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('matches')
-      .insert([match])
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('matches')
+        .insert([match])
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService createMatch error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService createMatch caught error:", err)
+      throw err
+    }
   }
 
   async updateMatch(id: string, updates: Partial<Match>): Promise<Match> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('matches')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('matches')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService updateMatch error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updateMatch caught error:", err)
+      throw err
+    }
   }
 
   async deleteMatch(id: string): Promise<void> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { error } = await this.supabase
-      .from('matches')
-      .delete()
-      .eq('id', id)
+    try {
+      const { error } = await this.supabase
+        .from('matches')
+        .delete()
+        .eq('id', id)
 
-    if (error) throw error
+      if (error) {
+        console.error("[v0] DataService deleteMatch error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deleteMatch caught error:", err)
+      throw err
+    }
   }
 
   subscribeToMatches(callback: DataCallback<Match>, onError?: ErrorCallback): () => void {
@@ -964,37 +1029,61 @@ export class DataService {
 
   async createInjury(injury: Omit<Injury, 'id' | 'created_at' | 'updated_at'>): Promise<Injury> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('injuries')
-      .insert([injury])
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('injuries')
+        .insert([injury])
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService createInjury error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService createInjury caught error:", err)
+      throw err
+    }
   }
 
   async updateInjury(id: string, updates: Partial<Injury>): Promise<Injury> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('injuries')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
+    try {
+      const { data, error } = await this.supabase
+        .from('injuries')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] DataService updateInjury error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updateInjury caught error:", err)
+      throw err
+    }
   }
 
   async deleteInjury(id: string): Promise<void> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { error } = await this.supabase
-      .from('injuries')
-      .delete()
-      .eq('id', id)
+    try {
+      const { error } = await this.supabase
+        .from('injuries')
+        .delete()
+        .eq('id', id)
 
-    if (error) throw error
+      if (error) {
+        console.error("[v0] DataService deleteInjury error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deleteInjury caught error:", err)
+      throw err
+    }
   }
 
   subscribeToInjuries(callback: DataCallback<Injury>, onError?: ErrorCallback): () => void {
