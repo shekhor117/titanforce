@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, type FormEvent } from "react"
 import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { getDataService } from "@/lib/data-service"
 
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
@@ -19,15 +19,13 @@ export function Contact() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get settings from data store
-  const settings = useDataStore(dataStore.getSettings, "settings")
-  
-  const socialLinks = settings && settings.socialLinks ? [
-    { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
-    { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
-    { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
-    { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
-  ].filter(link => link.href && link.href !== "#") : []
+  // Default social links
+  const socialLinks = [
+    { icon: Facebook, href: "https://facebook.com/titanforce", label: "Facebook" },
+    { icon: Instagram, href: "https://instagram.com/titanforce", label: "Instagram" },
+    { icon: Youtube, href: "https://youtube.com/@titanforce", label: "YouTube" },
+    { icon: Twitter, href: "https://twitter.com/titanforce", label: "Twitter" },
+  ]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,13 +49,15 @@ export function Contact() {
     
     setIsSubmitting(true)
     try {
-      // Save using dataStore (works with both localStorage fallback and Supabase when connected)
-      dataStore.addContact({
+      // Save using DataService which connects to Supabase
+      const dataService = getDataService()
+      await dataService.createContactMessage({
         name,
         email,
         phone: phone || undefined,
         subject: isBn ? "ওয়েবসাইট থেকে বার্তা" : "Message from Website",
         message,
+        status: "unread",
       })
       
       setShowSuccess(true)
@@ -67,6 +67,9 @@ export function Contact() {
       setMessage("")
       formRef.current?.reset()
       setTimeout(() => setShowSuccess(false), 5000)
+    } catch (err) {
+      console.error("[v0] Error submitting contact form:", err)
+      alert(isBn ? "বার্তা পাঠাতে ত্রুটি হয়েছে" : "Error submitting message")
     } finally {
       setIsSubmitting(false)
     }

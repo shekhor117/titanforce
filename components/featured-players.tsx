@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, Player, useDataStore } from "@/lib/data-store"
+import { usePlayers } from "@/lib/use-data-store"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export function FeaturedPlayers() {
@@ -15,9 +15,8 @@ export function FeaturedPlayers() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get top players by rating
-  const fallbackPlayers = useDataStore(dataStore.getPlayers, "players")
-  const players = Array.isArray(fallbackPlayers) ? fallbackPlayers : []
+  // Get top players by rating using the realtime hook
+  const { players } = usePlayers()
   const topPlayers = (players ?? [])
     .filter((p) => p?.status?.toLowerCase() === "active")
     .slice(0, 6)
