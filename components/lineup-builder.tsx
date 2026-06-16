@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { Users, RotateCcw, Save, Trash2 } from "lucide-react"
+import { useState, useCallback, useRef } from "react"
+import { Users, RotateCcw, Save, Trash2, Download } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 interface Player {
@@ -131,6 +131,35 @@ export function LineupBuilder() {
     }
   }
 
+  const handleDownloadLineup = () => {
+    const lineupData = {
+      formation: selectedFormation,
+      players: fieldPositions
+        .filter(p => p.player)
+        .map(p => ({
+          position: { x: p.x, y: p.y },
+          player: {
+            id: p.player!.id,
+            name: p.player!.name,
+            number: p.player!.number,
+            position: p.player!.position,
+          },
+        })),
+      timestamp: new Date().toISOString(),
+    }
+
+    const jsonString = JSON.stringify(lineupData, null, 2)
+    const blob = new Blob([jsonString], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `lineup-${selectedFormation}-${new Date().getTime()}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   const assignedPlayerIds = fieldPositions
     .filter(p => p.player)
     .map(p => p.player!.id)
@@ -219,6 +248,13 @@ export function LineupBuilder() {
               >
                 <Save className="w-4 h-4" />
                 {isBn ? "সংরক্ষণ" : "Save"}
+              </button>
+              <button
+                onClick={handleDownloadLineup}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-accent text-accent-foreground hover:opacity-90 transition text-sm font-semibold"
+              >
+                <Download className="w-4 h-4" />
+                {isBn ? "ডাউনলোড" : "Download"}
               </button>
             </div>
           </div>
