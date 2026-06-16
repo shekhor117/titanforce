@@ -3,26 +3,24 @@
 import Image from "next/image"
 import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, useDataStore } from "@/lib/data-store"
 
 export function Footer() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
   
-  // Get settings from data store
-  const settings = useDataStore(dataStore.getSettings, "settings")
-  const siteName = settings?.siteName || "Titan Force"
-  const tagline = settings?.tagline || "Pride · Passion · Power"
-  const contactEmail = settings?.contactEmail || "contact@titanforce.com"
-  const contactPhone = settings?.contactPhone || "+880"
-  const address = settings?.address || "Mulikandi, Sylhet"
+  // Default footer settings
+  const siteName = "Titan Force"
+  const tagline = "Pride · Passion · Power"
+  const contactEmail = "contact@titanforcemulikandi.com"
+  const contactPhone = "+880 1800-123456"
+  const address = "Mulikandi, Sylhet, Bangladesh"
   
-  const socialLinks = settings && settings.socialLinks ? [
-    { icon: Facebook, href: settings.socialLinks.facebook || "#", label: "Facebook" },
-    { icon: Instagram, href: settings.socialLinks.instagram || "#", label: "Instagram" },
-    { icon: Youtube, href: settings.socialLinks.youtube || "#", label: "YouTube" },
-    { icon: Twitter, href: settings.socialLinks.twitter || "#", label: "Twitter" },
-  ].filter(link => link.href && link.href !== "#") : []
+  const socialLinks = [
+    { icon: Facebook, href: "https://facebook.com/titanforce", label: "Facebook" },
+    { icon: Instagram, href: "https://instagram.com/titanforce", label: "Instagram" },
+    { icon: Youtube, href: "https://youtube.com/@titanforce", label: "YouTube" },
+    { icon: Twitter, href: "https://twitter.com/titanforce", label: "Twitter" },
+  ]
 
   return (
     <footer className="relative border-t-2 border-primary py-12 px-4 bg-black dark:bg-black light:bg-gray-50 overflow-hidden">

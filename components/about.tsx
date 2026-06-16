@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { dataStore, useDataStore } from "@/lib/data-store"
+import { usePlayers } from "@/lib/use-data-store"
 import { Zap } from "lucide-react"
 
 export function About() {
@@ -11,12 +11,11 @@ export function About() {
   const { language, t } = useLanguage()
   const isBn = language === "bn"
 
-  // Get settings and players from data store
-  const settings = useDataStore(dataStore.getSettings, "settings")
-  const players = useDataStore(dataStore.getPlayers, "players")
+  // Get players from realtime hook
+  const { players } = usePlayers()
   const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
-  const aboutTitle = settings?.aboutTitle || t.about.title
-  const aboutDescription = settings?.aboutDescription || t.about.description
+  const aboutTitle = t.about.title
+  const aboutDescription = t.about.description
 
   const stats = [
     { value: activePlayers.length.toString(), label: t.about.players },
