@@ -198,32 +198,6 @@ export class DataService {
       return []
     }
   }
-    try {
-      const { data, error } = await this.supabase
-        .from('players')
-        .select('*')
-        .order('num', { ascending: true })
-
-      if (error) {
-        return []
-      }
-      return data || []
-    } catch (error) {
-      return []
-    }
-  }
-
-  async getPlayer(id: string): Promise<Player | null> {
-    if (!this.supabase) return null
-    const { data, error } = await this.supabase
-      .from('players')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (error && error.code !== 'PGRST116') throw error
-    return data || null
-  }
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at' | 'updated_at'>): Promise<Player> {
     if (!this.supabase) throw new Error('Supabase not configured')
