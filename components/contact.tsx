@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, Database, Shield } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, Database, Shield, AlertCircle } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { getDataService } from "@/lib/data-service"
 import Link from "next/link"
@@ -9,6 +9,7 @@ import Link from "next/link"
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
@@ -48,16 +49,31 @@ export function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
+    // Validate form
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setError(isBn ? "অনুগ্রহ করে সমস্ত প্রয়োজনীয় ক্ষেত্র পূরণ করুন" : "Please fill in all required fields")
+      return
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError(isBn ? "অনুগ্রহ করে একটি বৈধ ইমেল ঠিকানা লিখুন" : "Please enter a valid email address")
+      return
+    }
+    
     setIsSubmitting(true)
+    setError(null)
+    
     try {
       // Save using DataService which connects to Supabase
       const dataService = getDataService()
       await dataService.createContactMessage({
-        name,
-        email,
-        phone: phone || undefined,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone?.trim() || undefined,
         subject: isBn ? "ওয়েবসাইট থেকে বার্তা" : "Message from Website",
-        message,
+        message: message.trim(),
         status: "unread",
       })
       
@@ -66,11 +82,16 @@ export function Contact() {
       setEmail("")
       setPhone("")
       setMessage("")
+      setError(null)
       formRef.current?.reset()
       setTimeout(() => setShowSuccess(false), 5000)
     } catch (err) {
       console.error("[v0] Error submitting contact form:", err)
-      alert(isBn ? "বার্তা পাঠাতে ত্রুটি হয়েছে" : "Error submitting message")
+      const errorMessage = err instanceof Error ? err.message : "unknown error"
+      setError(isBn 
+        ? `বার্তা পাঠাতে ত্রুটি হয়েছে: ${errorMessage}` 
+        : `Error submitting message: ${errorMessage}`
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -151,6 +172,15 @@ export function Contact() {
                 </div>
               ) : (
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                  {/* Error Message Display */}
+                  {error && (
+                    <div className="p-4 rounded-xl bg-red-500/10 border-2 border-red-500/50 flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className={`text-sm text-red-400 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {error}
+                      </p>
+                    </div>
+                  )}
                   {/* Name & Email Row */}
                   <div className="grid md:grid-cols-2 gap-5">
                     {/* Name */}
