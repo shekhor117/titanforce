@@ -86,7 +86,16 @@ export function Contact() {
       setTimeout(() => setShowSuccess(false), 5000)
     } catch (err) {
       console.error("[v0] Error submitting contact form:", err)
-      const errorMessage = err instanceof Error ? err.message : "unknown error"
+      let errorMessage = "unknown error"
+      
+      if (err instanceof Error) {
+        errorMessage = err.message
+      } else if (typeof err === 'object' && err !== null) {
+        errorMessage = JSON.stringify(err)
+      } else if (typeof err === 'string') {
+        errorMessage = err
+      }
+      
       setError(isBn 
         ? `বার্তা পাঠাতে ত্রুটি হয়েছে: ${errorMessage}` 
         : `Error submitting message: ${errorMessage}`

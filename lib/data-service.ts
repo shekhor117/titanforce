@@ -805,14 +805,23 @@ export class DataService {
 
   async createContactMessage(message: Omit<ContactMessage, 'id' | 'created_at' | 'updated_at'>): Promise<ContactMessage> {
     if (!this.supabase) throw new Error('Supabase not configured')
-    const { data, error } = await this.supabase
-      .from('contact_messages')
-      .insert([message])
-      .select()
-      .single()
+    
+    try {
+      const { data, error } = await this.supabase
+        .from('contact_messages')
+        .insert([message])
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      if (error) {
+        console.error("[v0] Supabase error creating contact message:", error)
+        throw new Error(`Failed to save message: ${error.message || JSON.stringify(error)}`)
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] Exception in createContactMessage:", err)
+      throw err
+    }
   }
 
   async updateContactMessage(id: string, updates: Partial<ContactMessage>): Promise<ContactMessage> {
