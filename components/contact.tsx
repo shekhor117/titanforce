@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, Database, Shield } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, AlertCircle } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { getDataService } from "@/lib/data-service"
-import Link from "next/link"
 
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
@@ -48,16 +48,31 @@ export function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
+    // Validate form
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setError(isBn ? "অনুগ্রহ করে সমস্ত প্রয়োজনীয় ক্ষেত্র পূরণ করুন" : "Please fill in all required fields")
+      return
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError(isBn ? "অনুগ্রহ করে একটি বৈধ ইমেল ঠিকানা লিখুন" : "Please enter a valid email address")
+      return
+    }
+    
     setIsSubmitting(true)
+    setError(null)
+    
     try {
       // Save using DataService which connects to Supabase
       const dataService = getDataService()
       await dataService.createContactMessage({
-        name,
-        email,
-        phone: phone || undefined,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone?.trim() || undefined,
         subject: isBn ? "ওয়েবসাইট থেকে বার্তা" : "Message from Website",
-        message,
+        message: message.trim(),
         status: "unread",
       })
       
@@ -66,11 +81,16 @@ export function Contact() {
       setEmail("")
       setPhone("")
       setMessage("")
+      setError(null)
       formRef.current?.reset()
       setTimeout(() => setShowSuccess(false), 5000)
     } catch (err) {
       console.error("[v0] Error submitting contact form:", err)
-      alert(isBn ? "বার্তা পাঠাতে ত্রুটি হয়েছে" : "Error submitting message")
+      const errorMessage = err instanceof Error ? err.message : "unknown error"
+      setError(isBn 
+        ? `বার্তা পাঠাতে ত্রুটি হয়েছে: ${errorMessage}` 
+        : `Error submitting message: ${errorMessage}`
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -114,28 +134,6 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-            {/* Supabase Integration Badge */}
-            <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border-2 border-primary/20 flex items-start gap-3">
-              <div className="flex items-center gap-2 flex-1">
-                <Database className="w-5 h-5 text-primary flex-shrink-0" />
-                <div>
-                  <p className={`text-sm font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "সুপাবেস সংযুক্ত" : "Supabase Connected"}
-                  </p>
-                  <p className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "আপনার বার্তা নিরাপদে সংরক্ষিত এবং পরিচালিত হয়" : "Messages are securely stored and managed"}
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/admin/contacts"
-                className="ml-auto px-3 py-1 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition text-xs font-semibold whitespace-nowrap flex items-center gap-1"
-              >
-                <Shield className="w-3 h-3" />
-                {isBn ? "প্যানেল" : "Panel"}
-              </Link>
-            </div>
-
             <div className="rounded-2xl border-2 border-card bg-card/30 backdrop-blur-2xl p-8">
               {showSuccess ? (
                 <div className="text-center py-12">
@@ -151,6 +149,15 @@ export function Contact() {
                 </div>
               ) : (
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                  {/* Error Message Display */}
+                  {error && (
+                    <div className="p-4 rounded-xl bg-red-500/10 border-2 border-red-500/50 flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className={`text-sm text-red-400 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {error}
+                      </p>
+                    </div>
+                  )}
                   {/* Name & Email Row */}
                   <div className="grid md:grid-cols-2 gap-5">
                     {/* Name */}
