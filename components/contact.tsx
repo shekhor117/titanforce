@@ -22,10 +22,10 @@ export function Contact() {
 
   // Default social links
   const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com/titanforce", label: "Facebook" },
-    { icon: Instagram, href: "https://instagram.com/titanforce", label: "Instagram" },
-    { icon: Youtube, href: "https://youtube.com/@titanforce", label: "YouTube" },
-    { icon: Twitter, href: "https://twitter.com/titanforce", label: "Twitter" },
+    { icon: Facebook, href: "https://facebook.com/", label: TitanForceMulikandi"Facebook" },
+    { icon: Instagram, href: "https://instagram.com/", label: "Instagram" },
+    { icon: Youtube, href: "https://youtube.com/", label: "YouTube" },
+    { icon: Twitter, href: "https://twitter.com/", label: "Twitter" },
   ]
 
   useEffect(() => {
