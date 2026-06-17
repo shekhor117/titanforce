@@ -1,10 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, Database, Shield, AlertCircle } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, AlertCircle } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { getDataService } from "@/lib/data-service"
-import Link from "next/link"
 
 export function Contact() {
   const [isVisible, setIsVisible] = useState(false)
@@ -135,28 +134,6 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-            {/* Supabase Integration Badge */}
-            <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border-2 border-primary/20 flex items-start gap-3">
-              <div className="flex items-center gap-2 flex-1">
-                <Database className="w-5 h-5 text-primary flex-shrink-0" />
-                <div>
-                  <p className={`text-sm font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "সুপাবেস সংযুক্ত" : "Supabase Connected"}
-                  </p>
-                  <p className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "আপনার বার্তা নিরাপদে সংরক্ষিত এবং পরিচালিত হয়" : "Messages are securely stored and managed"}
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/admin/contacts"
-                className="ml-auto px-3 py-1 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition text-xs font-semibold whitespace-nowrap flex items-center gap-1"
-              >
-                <Shield className="w-3 h-3" />
-                {isBn ? "প্যানেল" : "Panel"}
-              </Link>
-            </div>
-
             <div className="rounded-2xl border-2 border-card bg-card/30 backdrop-blur-2xl p-8">
               {showSuccess ? (
                 <div className="text-center py-12">
