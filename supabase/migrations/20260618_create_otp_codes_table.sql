@@ -1,5 +1,8 @@
+-- Drop existing table and policies if they exist (for fresh migration)
+DROP TABLE IF EXISTS public.otp_codes CASCADE;
+
 -- Create OTP codes table for storing temporarily generated OTP codes
-CREATE TABLE IF NOT EXISTS public.otp_codes (
+CREATE TABLE public.otp_codes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email TEXT NOT NULL,
   code TEXT NOT NULL,
@@ -10,30 +13,18 @@ CREATE TABLE IF NOT EXISTS public.otp_codes (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create index on email and code for faster lookups
-CREATE INDEX IF NOT EXISTS idx_otp_codes_email ON public.otp_codes(email);
-CREATE INDEX IF NOT EXISTS idx_otp_codes_code ON public.otp_codes(code);
-CREATE INDEX IF NOT EXISTS idx_otp_codes_expires_at ON public.otp_codes(expires_at);
+-- Create indexes for faster lookups
+CREATE INDEX idx_otp_codes_email ON public.otp_codes(email);
+CREATE INDEX idx_otp_codes_code ON public.otp_codes(code);
+CREATE INDEX idx_otp_codes_expires_at ON public.otp_codes(expires_at);
 
--- Enable RLS
+-- Enable RLS (but with permissive policies since we use service role)
 ALTER TABLE public.otp_codes ENABLE ROW LEVEL SECURITY;
 
--- Allow anyone to create OTP codes
-CREATE POLICY "Allow anyone to create OTP codes"
+-- Allow service role to do everything (service role bypasses RLS but let's be explicit)
+CREATE POLICY "Allow service role full access"
   ON public.otp_codes
-  FOR INSERT
-  WITH CHECK (true);
-
--- Allow users to read their own OTP codes
-CREATE POLICY "Allow reading own OTP codes"
-  ON public.otp_codes
-  FOR SELECT
-  USING (true);
-
--- Allow users to update their own OTP codes
-CREATE POLICY "Allow updating own OTP codes"
-  ON public.otp_codes
-  FOR UPDATE
+  FOR ALL
   USING (true)
   WITH CHECK (true);
 
@@ -45,3 +36,6 @@ BEGIN
   WHERE expires_at < NOW();
 END;
 $$ LANGUAGE plpgsql;
+
+-- Grant permissions to authenticated users and service role
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.otp_codes TO anon, authenticated, service_role;

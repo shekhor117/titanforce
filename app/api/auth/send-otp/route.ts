@@ -148,6 +148,8 @@ export async function POST(request: NextRequest) {
     console.log('[v0] Generated OTP:', otp, 'for email:', email)
 
     // Store OTP in database
+    console.log('[v0] Storing OTP in database for email:', email)
+    
     const { data: otpData, error: dbError } = await supabase
       .from('otp_codes')
       .insert([
@@ -160,12 +162,27 @@ export async function POST(request: NextRequest) {
       .select()
 
     if (dbError) {
-      console.error('[v0] Error storing OTP in database:', dbError)
+      console.error('[v0] Error storing OTP in database:')
+      console.error('[v0] - Error code:', dbError.code)
+      console.error('[v0] - Error message:', dbError.message)
+      console.error('[v0] - Full error:', dbError)
+      
+      // Check if it's a table not found error
+      if (dbError.code === 'PGRST116' || dbError.message?.includes('relation') || dbError.message?.includes('does not exist')) {
+        console.error('[v0] OTP table does not exist. Please run migrations: npx supabase db push')
+        return NextResponse.json(
+          { error: 'Database not configured. Please run migrations.' },
+          { status: 500 }
+        )
+      }
+      
       return NextResponse.json(
-        { error: 'Failed to store OTP' },
+        { error: `Failed to store OTP: ${dbError.message}` },
         { status: 500 }
       )
     }
+    
+    console.log('[v0] OTP stored successfully in database')
 
     // Send OTP email
     const emailSent = await sendOTPEmail(email, otp)
