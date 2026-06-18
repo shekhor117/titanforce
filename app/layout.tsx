@@ -80,7 +80,12 @@ export default function RootLayout({
         <meta name="google-site-verification" content="S1BRuvXJo49oWBcV9tvlLDn2gIiL75tp0MvejZ_CLbQ" />
         
         {/* Google AdSense */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7799270522656846" crossOrigin="anonymous"></script>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7799270522656846"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
