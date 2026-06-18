@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
-import { LogOut, Home, User, ArrowLeft, Users, Zap, Award, Calendar } from "lucide-react"
+import { LogOut, Home, User, ArrowLeft, Users, Zap, Award, Calendar, FileText, TrendingUp, MessageSquare, Trophy } from "lucide-react"
 
 export default function UserDashboard() {
   const router = useRouter()
@@ -63,25 +63,32 @@ export default function UserDashboard() {
 
   const quickLinks = [
     {
-      title: isBn ? "খেলোয়াড় ব্রাউজ করুন" : "Browse Players",
-      description: isBn ? "দলের খেলোয়াড়দের আবিষ্কার করুন" : "Discover team players",
+      title: isBn ? "আসন্ন ম্যাচ" : "Upcoming Matches",
+      description: isBn ? "পরবর্তী ম্যাচের সময়সূচী দেখুন" : "Check next match schedule",
+      href: "/matches",
+      icon: Calendar,
+      color: "from-red-600 to-red-500"
+    },
+    {
+      title: isBn ? "দলের খেলোয়াড়" : "Team Squad",
+      description: isBn ? "সমস্ত খেলোয়াড় এবং পরিসংখ্যান" : "View all players & stats",
       href: "/squad",
       icon: Users,
-      color: "from-blue-600 to-blue-400"
+      color: "from-blue-600 to-blue-500"
     },
     {
-      title: isBn ? "ম্যাচ দেখুন" : "Watch Matches",
-      description: isBn ? "সাম্প্রতিক ম্যাচ এবং হাইলাইট" : "Recent matches & highlights",
-      href: "/matches",
-      icon: Award,
-      color: "from-purple-600 to-purple-400"
-    },
-    {
-      title: isBn ? "সম্প্রদায়ে যোগ দিন" : "Join Community",
-      description: isBn ? "অনুরাগী এবং খেলোয়াড়দের সাথে সংযোগ করুন" : "Connect with fans & players",
+      title: isBn ? "সম্প্রদায় ফোরাম" : "Community Forum",
+      description: isBn ? "ফ্যান এবং খেলোয়াড়দের সাথে আলোচনা করুন" : "Discuss with fans & players",
       href: "/users",
       icon: Users,
-      color: "from-green-600 to-green-400"
+      color: "from-gold-500 to-yellow-500"
+    },
+    {
+      title: isBn ? "খবর ও আপডেট" : "News & Updates",
+      description: isBn ? "সর্বশেষ দল সংবাদ পান" : "Get latest team news",
+      href: "/news",
+      icon: FileText,
+      color: "from-purple-600 to-purple-500"
     },
   ]
 
@@ -194,6 +201,98 @@ export default function UserDashboard() {
                 </Link>
               )
             })}
+          </div>
+        </div>
+
+        {/* Featured News Section */}
+        <div className="mb-8">
+          <h3 className={`text-xl font-semibold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "সর্বশেষ খবর" : "Latest News"}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Featured News Item */}
+            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 hover:border-primary transition">
+              <div className="flex items-start gap-4">
+                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-10 h-10 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-primary font-semibold">{isBn ? "ক্রীড়া" : "SPORTS"}</span>
+                  <h4 className={`text-lg font-semibold text-foreground mt-1 line-clamp-2 group-hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "টিটান ফোর্স নতুন স্ট্যাডিয়াম উদ্বোধন করল" : "Titan Force Opens New Stadium"}
+                  </h4>
+                  <p className={`text-sm text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "আজকের দুপুরে নতুন সুবিধা সম্প্রদায়ের জন্য খোলা হয়েছে।" : "New facilities opened today for the community."}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Highlight */}
+            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 hover:border-primary transition">
+              <div className="flex items-start gap-4">
+                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center flex-shrink-0">
+                  <Trophy className="w-10 h-10 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-primary font-semibold">{isBn ? "পরিসংখ্যান" : "STATISTICS"}</span>
+                  <h4 className={`text-lg font-semibold text-foreground mt-1 line-clamp-2 group-hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "মৌসুমে ১৫ জয় অর্জন করা হয়েছে" : "15 Wins Recorded This Season"}
+                  </h4>
+                  <p className={`text-sm text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "দল এই মৌসুমে দুর্দান্ত কর্মক্ষমতা প্রদর্শন করছে।" : "Team performing excellently this season."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Upcoming Events Section */}
+        <div className="mb-8">
+          <h3 className={`text-xl font-semibold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "আসন্ন ইভেন্ট" : "Upcoming Events"}
+          </h3>
+          <div className="space-y-3">
+            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 hover:border-primary transition">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className={`font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "পরবর্তী ম্যাচ: TF vs রাজ ক্লাব" : "Next Match: TF vs Raj Club"}
+                </h4>
+                <p className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "২৫ জুন, সন্ধ্যা ৬:০০ PM" : "June 25, 6:00 PM"}
+                </p>
+              </div>
+              <Link 
+                href="/matches"
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition text-sm font-semibold"
+              >
+                {isBn ? "বিস্তারিত" : "Details"}
+              </Link>
+            </div>
+
+            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 hover:border-primary transition">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center flex-shrink-0">
+                <MessageSquare className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className={`font-semibold text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "সম্প্রদায় মিটআপ" : "Community Meetup"}
+                </h4>
+                <p className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {isBn ? "প্রশিক্ষণ কেন্দ্রে - ২৭ জুন" : "Training Center - June 27"}
+                </p>
+              </div>
+              <Link 
+                href="/users"
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition text-sm font-semibold"
+              >
+                {isBn ? "যোগ দিন" : "Join"}
+              </Link>
+            </div>
           </div>
         </div>
 

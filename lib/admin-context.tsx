@@ -50,7 +50,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 }
                 setAdmin(user)
               } else {
-                // User lost admin role
+                // User lost admin role or is not an admin
                 setAdmin(null)
               }
             } else {
@@ -76,6 +76,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 emailVerified: data.session.user.email_confirmed_at ? true : false,
               }
               setAdmin(user)
+            } else {
+              setAdmin(null)
             }
           }
         }).catch(() => {
@@ -84,11 +86,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         // Mark as initialized after a short delay or when session check completes
         const timeoutId = setTimeout(() => {
-          if (isMounted) setIsInitialized(true)
+          if (isMounted) {
+            setIsInitialized(true)
+          }
         }, 100)
         
         return () => clearTimeout(timeoutId)
       } catch (err) {
+        // Handle initialization error silently
         if (isMounted) setIsInitialized(true)
       }
     }
@@ -114,7 +119,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
         await signOut()
-        throw new Error("Your account does not have admin access")
+        throw new Error("Your account does not have admin access. Contact the administrator to grant access.")
       }
 
       // Immediately set admin state without waiting for subscription update
