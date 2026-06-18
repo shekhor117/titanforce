@@ -737,7 +737,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                   className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {isBn ? 'অ্যাকাউন্ট তৈরি করুন' : 'Create Account'}
+                  {isBn ? 'অ্যাকাউন���ট তৈরি করুন' : 'Create Account'}
                 </button>
               </div>
             </>
@@ -877,7 +877,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isAppleLoading ? (isBn ? 'অপেক্ষা করুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
+              {isAppleLoading ? (isBn ? '��পেক্ষা করুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
             </span>
           </button>
 
