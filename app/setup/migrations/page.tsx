@@ -17,7 +17,8 @@ export default function MigrationsSetupPage() {
     setStatus('loading')
 
     try {
-      const response = await fetch('/api/admin/apply-migrations', {
+      console.log('[v0] Starting migration process...')
+      const response = await fetch('/api/setup/run-migration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,15 +26,22 @@ export default function MigrationsSetupPage() {
       })
 
       const data = await response.json()
+      console.log('[v0] Migration response:', data)
 
       if (response.ok) {
-        setMessage(data.message)
+        setMessage(data.message || 'Database migrations applied successfully! The OTP table is now ready.')
         setStatus('success')
+        
+        // Wait a moment, then suggest testing the login
+        setTimeout(() => {
+          setMessage(data.message + ' You can now test the OTP login at /login')
+        }, 2000)
       } else {
-        setError(data.error || data.message)
+        setError(data.error || data.message || 'Failed to apply migrations')
         setStatus('error')
       }
     } catch (err) {
+      console.error('[v0] Migration error:', err)
       setError(err instanceof Error ? err.message : 'Failed to apply migrations')
       setStatus('error')
     } finally {
