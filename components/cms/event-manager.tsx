@@ -7,12 +7,18 @@ import * as eventService from '@/lib/services/event-service'
 import { Plus, Trash2, Edit2, Save, X, Calendar } from 'lucide-react'
 
 export function EventManager() {
+  const [isClient, setIsClient] = useState(false)
   const [events, setEvents] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [currentEvent, setCurrentEvent] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+
+  // Ensure client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -30,11 +36,13 @@ export function EventManager() {
   })
 
   useEffect(() => {
+    if (!isClient) return
+    
     const timer = setTimeout(() => {
       loadEvents()
     }, 0)
     return () => clearTimeout(timer)
-  }, [])
+  }, [isClient])
 
   const loadEvents = async () => {
     setIsLoading(true)
@@ -120,6 +128,14 @@ export function EventManager() {
       opponent_name: '',
       match_time: '',
     })
+  }
+
+  if (!isClient) {
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto"></div>
+      </div>
+    )
   }
 
   return (

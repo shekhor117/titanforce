@@ -15,6 +15,7 @@ interface ArticleManagerProps {
 }
 
 export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
+  const [isClient, setIsClient] = useState(false)
   const [articles, setArticles] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [formMode, setFormMode] = useState<ArticleFormMode>('create')
@@ -23,6 +24,11 @@ export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
   const [statusFilter, setStatusFilter] = useState<string>('published')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+
+  // Ensure client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -39,13 +45,15 @@ export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
     seo_keywords: [] as string[],
   })
 
-  // Load articles
+  // Load articles (only after client is ready)
   useEffect(() => {
+    if (!isClient) return
+    
     const timer = setTimeout(() => {
       loadArticles()
     }, 0)
     return () => clearTimeout(timer)
-  }, [statusFilter, searchTerm])
+  }, [statusFilter, searchTerm, isClient])
 
   const loadArticles = async () => {
     setIsLoading(true)
@@ -169,6 +177,14 @@ export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
         setError('Failed to remove image')
       }
     }
+  }
+
+  if (!isClient) {
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto"></div>
+      </div>
+    )
   }
 
   return (
