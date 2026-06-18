@@ -63,14 +63,6 @@ export default function RootLayout({
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         
-        {/* Organization Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getOrganizationSchema()),
-          }}
-        />
-        
         {/* Theme Color */}
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
