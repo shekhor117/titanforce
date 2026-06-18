@@ -79,36 +79,63 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   // Store OTP in session (in production, send via email)
   const sendOTPEmail = async (emailAddress: string) => {
     try {
-      const mockOTP = generateMockOTP()
-      // In production, send via email service
-      // For now, store in sessionStorage for demo
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('otp_code', mockOTP)
-        sessionStorage.setItem('otp_email', emailAddress)
-        // OTP valid for 5 minutes
-        sessionStorage.setItem('otp_expiry', (Date.now() + 5 * 60 * 1000).toString())
+      console.log('[v0] Calling send-otp API for:', emailAddress)
+      
+      // Call the API route to send OTP via Supabase
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: emailAddress }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to send OTP')
       }
+
+      const data = await response.json()
+      console.log('[v0] OTP sent successfully:', data)
+
       setOtpSentEmail(emailAddress)
       setOtpResendTimer(60) // 60 second cooldown
     } catch (err) {
+      console.error('[v0] Error sending OTP:', err)
       throw err
     }
   }
 
-  // Verify OTP code
-  const verifyOTPCode = (code: string): boolean => {
-    if (typeof window === 'undefined') return false
-    
-    const storedOTP = sessionStorage.getItem('otp_code')
-    const otpExpiry = sessionStorage.getItem('otp_expiry')
-    
-    if (!storedOTP || !otpExpiry) return false
-    if (Date.now() > parseInt(otpExpiry)) {
-      setError(isBn ? 'OTP এর মেয়াদ শেষ হয়েছে' : 'OTP has expired')
+  // Verify OTP code via Supabase
+  const verifyOTPCode = async (code: string): Promise<boolean> => {
+    try {
+      console.log('[v0] Verifying OTP code for:', otpSentEmail)
+      
+      // Use Supabase's verifyOtp method
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: otpSentEmail,
+        token: code,
+        type: 'email',
+      })
+
+      if (error) {
+        console.error('[v0] OTP verification error:', error.message)
+        setError(isBn ? 'ভুল OTP কোড' : 'Invalid OTP code')
+        return false
+      }
+
+      if (!data.user) {
+        setError(isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed')
+        return false
+      }
+
+      console.log('[v0] OTP verified successfully')
+      return true
+    } catch (err) {
+      console.error('[v0] Error verifying OTP:', err)
+      setError(isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed')
       return false
     }
-    
-    return code === storedOTP
   }
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -146,18 +173,13 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
           router.push('/profile')
         } else if (authStep === 'otp') {
           // Verify OTP
-          if (!verifyOTPCode(otp)) {
+          const isOtpValid = await verifyOTPCode(otp)
+          if (!isOtpValid) {
             throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
           }
 
           // OTP verified, complete login
           await login(email, password, selectedRole)
-          // Clear OTP data
-          if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('otp_code')
-            sessionStorage.removeItem('otp_email')
-            sessionStorage.removeItem('otp_expiry')
-          }
           router.push('/profile')
         }
       } else {
@@ -191,16 +213,12 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
           router.push('/auth/sign-up-success')
         } else if (authStep === 'otp') {
           // Verify OTP for signup
-          if (!verifyOTPCode(otp)) {
+          const isOtpValid = await verifyOTPCode(otp)
+          if (!isOtpValid) {
             throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
           }
 
           // OTP verified, complete signup
-          if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('otp_code')
-            sessionStorage.removeItem('otp_email')
-            sessionStorage.removeItem('otp_expiry')
-          }
           router.push('/auth/sign-up-success')
         }
       }
