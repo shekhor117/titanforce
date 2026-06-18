@@ -131,6 +131,23 @@ export interface ContactMessage {
   updated_at: string
 }
 
+export interface AppUser {
+  id: string
+  auth_id?: string
+  name: string
+  email: string
+  role: 'admin' | 'player' | 'fan' | 'partner' | 'user'
+  status: 'active' | 'inactive' | 'banned'
+  avatar_url?: string
+  bio?: string
+  phone?: string
+  location?: string
+  joined_at: string
+  last_login?: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Trophy {
   id: string
   name: string
@@ -1242,6 +1259,120 @@ export class DataService {
     } catch (error) {
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
+    }
+  }
+
+  // App Users
+  async getAppUsers(filters?: { role?: string; status?: string }): Promise<AppUser[]> {
+    if (!this.supabase) return []
+    try {
+      let query = this.supabase.from('app_users').select('*')
+
+      if (filters?.role) {
+        query = query.eq('role', filters.role)
+      }
+      if (filters?.status) {
+        query = query.eq('status', filters.status)
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false })
+
+      if (error) {
+        console.error("[v0] DataService getAppUsers error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getAppUsers caught error:", err)
+      return []
+    }
+  }
+
+  async getAppUser(id: string): Promise<AppUser | null> {
+    if (!this.supabase) return null
+    try {
+      const { data, error } = await this.supabase
+        .from('app_users')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService getAppUser error:", error)
+        return null
+      }
+
+      return data
+    } catch (err) {
+      console.error("[v0] DataService getAppUser caught error:", err)
+      return null
+    }
+  }
+
+  async createAppUser(user: Omit<AppUser, 'id' | 'created_at' | 'updated_at' | 'joined_at'>): Promise<AppUser> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+
+    console.log("[v0] DataService: Creating app user:", user)
+
+    const { data, error } = await this.supabase
+      .from('app_users')
+      .insert([{ ...user, joined_at: new Date().toISOString() }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error("[v0] DataService: Error creating app user:", error)
+      throw new Error(`Failed to create user: ${error.message || JSON.stringify(error)}`)
+    }
+
+    console.log("[v0] DataService: App user created successfully:", data)
+    return data
+  }
+
+  async updateAppUser(id: string, updates: Partial<AppUser>): Promise<AppUser> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+
+    const { data, error } = await this.supabase
+      .from('app_users')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  }
+
+  async deleteAppUser(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+
+    const { error } = await this.supabase
+      .from('app_users')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  }
+
+  async searchAppUsers(query: string): Promise<AppUser[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('app_users')
+        .select('*')
+        .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error("[v0] DataService searchAppUsers error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService searchAppUsers caught error:", err)
+      return []
     }
   }
 

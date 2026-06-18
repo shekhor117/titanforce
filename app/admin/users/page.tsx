@@ -2,363 +2,434 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
+import { getDataService, AppUser } from "@/lib/data-service"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
-import { dataStore, AdminUser } from "@/lib/data-store"
-import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock } from "lucide-react"
+import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock, Loader2, AlertCircle } from "lucide-react"
 
 export default function AdminUsersPage() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const [users, setUsers] = useState<AdminUser[]>([])
-  const [isClient, setIsClient] = useState(false)
+  const [users, setUsers] = useState<AppUser[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterRole, setFilterRole] = useState<string>("all")
+  const [filterStatus, setFilterStatus] = useState<string>("all")
   const [showModal, setShowModal] = useState(false)
-  const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
+  const [editingUser, setEditingUser] = useState<AppUser | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    role: "fan" as AdminUser["role"],
-    status: "active" as AdminUser["status"],
+    role: "user" as AppUser["role"],
+    status: "active" as AppUser["status"],
+    phone: "",
+    location: "",
+    bio: "",
   })
 
+  const loadUsers = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const dataService = getDataService()
+      const filters: any = {}
+      if (filterRole !== "all") filters.role = filterRole
+      if (filterStatus !== "all") filters.status = filterStatus
+      
+      const usersData = await dataService.getAppUsers(filters)
+      setUsers(usersData)
+    } catch (err) {
+      console.error("[v0] Error loading users:", err)
+      setError(isBn ? "ব্যবহারকারী লোড করতে ব্যর্থ" : "Failed to load users")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
-    setIsClient(true)
-    const usersData = dataStore.getAdminUsers()
-    setUsers(Array.isArray(usersData) ? usersData : [])
-  }, [])
+    loadUsers()
+  }, [filterRole, filterStatus])
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesRole = filterRole === "all" || user.role === filterRole
-    return matchesSearch && matchesRole
+    return matchesSearch
   })
 
-  const handleDelete = (id: string) => {
-    if (confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) {
-      dataStore.deleteAdminUser(id)
+  const handleDelete = async (id: string) => {
+    if (!confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) return
+
+    try {
+      const dataService = getDataService()
+      await dataService.deleteAppUser(id)
+      setUsers(users.filter(u => u.id !== id))
+    } catch (err) {
+      console.error("[v0] Error deleting user:", err)
+      alert(isBn ? "ব্যবহারকারী মুছতে ব্যর্থ" : "Failed to delete user")
     }
   }
 
-  const handleEdit = (user: AdminUser) => {
+  const handleEdit = (user: AppUser) => {
     setEditingUser(user)
     setFormData({
       name: user.name,
       email: user.email,
       role: user.role,
       status: user.status,
+      phone: user.phone || "",
+      location: user.location || "",
+      bio: user.bio || "",
     })
     setShowModal(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name || !formData.email) {
       alert(isBn ? "নাম এবং ইমেইল প্রয়োজন" : "Name and email are required")
       return
     }
 
-    if (editingUser) {
-      dataStore.updateAdminUser(editingUser.id, formData)
-    } else {
-      dataStore.addAdminUser({
-        ...formData,
-        joinedAt: new Date().toISOString().split("T")[0],
-      })
-    }
+    setIsSaving(true)
+    try {
+      const dataService = getDataService()
 
-    resetForm()
+      if (editingUser) {
+        const updated = await dataService.updateAppUser(editingUser.id, formData)
+        setUsers(users.map(u => u.id === editingUser.id ? updated : u))
+      } else {
+        const newUser = await dataService.createAppUser({
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          status: formData.status,
+          phone: formData.phone || undefined,
+          location: formData.location || undefined,
+          bio: formData.bio || undefined,
+        })
+        setUsers([newUser, ...users])
+      }
+
+      resetForm()
+    } catch (err) {
+      console.error("[v0] Error saving user:", err)
+      alert(isBn ? "ব্যবহারকারী সংরক্ষণ করতে ব্যর্থ" : "Failed to save user")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const resetForm = () => {
-    setFormData({ name: "", email: "", role: "fan", status: "active" })
+    setFormData({
+      name: "",
+      email: "",
+      role: "user",
+      status: "active",
+      phone: "",
+      location: "",
+      bio: "",
+    })
     setShowModal(false)
     setEditingUser(null)
   }
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "admin": return "bg-red-500/20 text-red-400"
-      case "player": return "bg-green-500/20 text-green-400"
-      case "fan": return "bg-blue-500/20 text-blue-400"
-      case "partner": return "bg-yellow-500/20 text-yellow-400"
+      case "admin": return "bg-red-500/20 text-red-400 border-red-500/30"
+      case "player": return "bg-green-500/20 text-green-400 border-green-500/30"
+      case "fan": return "bg-blue-500/20 text-blue-400 border-blue-500/30"
+      case "partner": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+      default: return "bg-gray-500/20 text-gray-400 border-gray-500/30"
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active": return "bg-green-500/20 text-green-400"
+      case "inactive": return "bg-yellow-500/20 text-yellow-400"
+      case "banned": return "bg-red-500/20 text-red-400"
       default: return "bg-gray-500/20 text-gray-400"
     }
   }
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case "admin": return <Shield className="w-4 h-4" />
-      case "player": return <User className="w-4 h-4" />
-      case "fan": return <Users className="w-4 h-4" />
-      case "partner": return <Users className="w-4 h-4" />
-      default: return <User className="w-4 h-4" />
-    }
-  }
-
-  const getRoleLabel = (role: string) => {
-    const labels: Record<string, { en: string; bn: string }> = {
-      admin: { en: "Admin", bn: "অ্যাডমিন" },
-      player: { en: "Player", bn: "খেলোয়াড়" },
-      fan: { en: "Fan", bn: "ভক্ত" },
-      partner: { en: "Partner", bn: "অংশীদার" },
-    }
-    return labels[role]?.[isBn ? "bn" : "en"] || role
-  }
-
   return (
-    <FeatureProtectedRoute featureName="User Management" category="tools">
-      <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management"}
-          </h1>
-          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {users.length} {isBn ? "জন ব্যবহারকারী" : "users"}
-          </p>
-        </div>
-        <button
-          onClick={() => { resetForm(); setShowModal(true) }}
-          className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-        >
-          <UserPlus className="w-4 h-4" />
-          {isBn ? "নতুন ব্যবহারকারী" : "Add User"}
-        </button>
-      </div>
+    <FeatureProtectedRoute requiredRole="admin" fallback="You don't have permission to access this page">
+      <main className="min-h-screen bg-background">
+        {/* Header */}
+        <section className="py-12 px-4 border-b border-secondary/20">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              {isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management"}
+            </h1>
+            <p className="text-foreground/60">
+              {isBn ? "সমস্ত ব্যবহারকারী পরিচালনা করুন এবং তাদের ভূমিকা আপডেট করুন" : "Manage all users and update their roles"}
+            </p>
+          </div>
+        </section>
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
-          <input
-            type="text"
-            placeholder={isBn ? "ব্যবহারকারী খুঁজুন..." : "Search users..."}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:border-primary outline-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-          />
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {(["all", "admin", "player", "fan", "partner"] as const).map((role) => (
-            <button
-              key={role}
-              onClick={() => setFilterRole(role)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                filterRole === role
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/30 text-foreground/60 hover:bg-secondary/50"
-              } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {role === "all" ? (isBn ? "সব" : "All") : getRoleLabel(role)}
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* Content */}
+        <section className="py-8 px-4">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* Error Alert */}
+            {error && (
+              <div className="p-4 rounded-lg bg-red-500/10 border-2 border-red-500/30 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-red-300">{error}</p>
+              </div>
+            )}
 
-      {/* Add/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-xl border-2 border-primary p-6 max-w-md w-full">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className={`font-[var(--font-display)] text-xl tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {editingUser 
-                  ? (isBn ? "ব্যবহারকারী সম্পাদনা" : "Edit User")
-                  : (isBn ? "নতুন ব্যবহারকারী" : "New User")
-                }
-              </h3>
-              <button onClick={resetForm} className="p-2 hover:bg-secondary/20 rounded">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "নাম" : "Name"}
-                </label>
+            {/* Controls */}
+            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+              <div className="flex-1 relative w-full lg:w-auto">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/40" />
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                  placeholder={isBn ? "নাম লিখুন" : "Enter name"}
+                  placeholder={isBn ? "নাম বা ইমেইল দ্বারা অনুসন্ধান করুন..." : "Search by name or email..."}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary"
                 />
               </div>
-              <div>
-                <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "ইমেইল" : "Email"}
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
-                  placeholder={isBn ? "ইমেইল লিখুন" : "Enter email"}
-                />
+
+              <div className="flex gap-3 w-full lg:w-auto flex-wrap lg:flex-nowrap">
+                <select
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value="all">{isBn ? "সব ভূমিকা" : "All Roles"}</option>
+                  <option value="admin">{isBn ? "প্রশাসক" : "Admin"}</option>
+                  <option value="player">{isBn ? "খেলোয়াড়" : "Player"}</option>
+                  <option value="fan">{isBn ? "ভক্ত" : "Fan"}</option>
+                  <option value="partner">{isBn ? "অংশীদার" : "Partner"}</option>
+                  <option value="user">{isBn ? "ব্যবহারকারী" : "User"}</option>
+                </select>
+
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value="all">{isBn ? "সব স্ট্যাটাস" : "All Status"}</option>
+                  <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
+                  <option value="inactive">{isBn ? "নিষ্ক্রিয়" : "Inactive"}</option>
+                  <option value="banned">{isBn ? "নিষিদ্ধ" : "Banned"}</option>
+                </select>
+
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-foreground hover:opacity-90 transition font-semibold"
+                >
+                  <UserPlus className="w-5 h-5" />
+                  {isBn ? "নতুন ব্যবহারকারী" : "Add User"}
+                </button>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+            </div>
+
+            {/* Users Table */}
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              </div>
+            ) : filteredUsers.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="w-16 h-16 text-foreground/30 mx-auto mb-4" />
+                <p className="text-foreground/60">{isBn ? "কোন ব্যবহারকারী পাওয়া যায়নি" : "No users found"}</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto border-2 border-secondary/30 rounded-lg">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b-2 border-secondary/30 bg-secondary/10">
+                      <th className="px-4 py-3 text-left font-bold text-foreground">{isBn ? "নাম" : "Name"}</th>
+                      <th className="px-4 py-3 text-left font-bold text-foreground">{isBn ? "ইমেইল" : "Email"}</th>
+                      <th className="px-4 py-3 text-left font-bold text-foreground">{isBn ? "ভূমিকা" : "Role"}</th>
+                      <th className="px-4 py-3 text-left font-bold text-foreground">{isBn ? "স্ট্যাটাস" : "Status"}</th>
+                      <th className="px-4 py-3 text-left font-bold text-foreground">{isBn ? "যোগ দিয়েছেন" : "Joined"}</th>
+                      <th className="px-4 py-3 text-right font-bold text-foreground">{isBn ? "ক্রিয়া" : "Actions"}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id} className="border-b border-secondary/30 hover:bg-secondary/10 transition">
+                        <td className="px-4 py-3 font-medium text-foreground">{user.name}</td>
+                        <td className="px-4 py-3 text-foreground/60 text-sm">{user.email}</td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${getRoleColor(user.role)}`}>
+                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
+                            {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-foreground/60">
+                          {new Date(user.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleEdit(user)}
+                              className="p-1.5 rounded hover:bg-blue-500/20 text-blue-400 transition"
+                              title={isBn ? "সম্পাদনা করুন" : "Edit"}
+                            >
+                              <Edit className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(user.id)}
+                              className="p-1.5 rounded hover:bg-red-500/20 text-red-400 transition"
+                              title={isBn ? "মুছুন" : "Delete"}
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-secondary rounded-lg p-6 max-w-md w-full border-2 border-primary/30">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-foreground">
+                  {editingUser ? (isBn ? "ব্যবহারকারী সম্পাদনা করুন" : "Edit User") : (isBn ? "নতুন ব্যবহারকারী যোগ করুন" : "Add New User")}
+                </h3>
+                <button onClick={resetForm} className="text-foreground/60 hover:text-foreground">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4 mb-6">
                 <div>
-                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "নাম" : "Name"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "ইমেইল" : "Email"}
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
                     {isBn ? "ভূমিকা" : "Role"}
                   </label>
                   <select
                     value={formData.role}
-                    onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as AdminUser["role"] }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value as AppUser["role"] })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
                   >
-                    <option value="admin">{isBn ? "অ্যাডমিন" : "Admin"}</option>
+                    <option value="user">{isBn ? "ব্যবহারকারী" : "User"}</option>
                     <option value="player">{isBn ? "খেলোয়াড়" : "Player"}</option>
                     <option value="fan">{isBn ? "ভক্ত" : "Fan"}</option>
                     <option value="partner">{isBn ? "অংশীদার" : "Partner"}</option>
+                    <option value="admin">{isBn ? "প্রশাসক" : "Admin"}</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className={`block text-sm font-semibold mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "অবস্থা" : "Status"}
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "স্ট্যাটাস" : "Status"}
                   </label>
                   <select
                     value={formData.status}
-                    onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as AdminUser["status"] }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as AppUser["status"] })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
                   >
                     <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
                     <option value="inactive">{isBn ? "নিষ্ক্রিয়" : "Inactive"}</option>
+                    <option value="banned">{isBn ? "নিষিদ্ধ" : "Banned"}</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "ফোন" : "Phone"}
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "অবস্থান" : "Location"}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1">
+                    {isBn ? "জীবনী" : "Bio"}
+                  </label>
+                  <textarea
+                    value={formData.bio}
+                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary resize-none"
+                    rows={3}
+                  />
+                </div>
               </div>
-              <div className="flex gap-2 pt-4">
-                <button
-                  onClick={handleSave}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  <Save className="w-4 h-4" />
-                  {editingUser ? (isBn ? "আপডেট করুন" : "Update") : (isBn ? "সংরক্ষণ করুন" : "Save")}
-                </button>
+
+              <div className="flex gap-2">
                 <button
                   onClick={resetForm}
-                  className={`px-4 py-2 rounded border-2 border-secondary hover:bg-secondary/10 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                  className="flex-1 px-4 py-2 rounded-lg bg-secondary/50 text-foreground hover:bg-secondary transition font-semibold"
                 >
-                  {isBn ? "বাতিল" : "Cancel"}
+                  {isBn ? "বাতিল করুন" : "Cancel"}
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-foreground hover:opacity-90 transition font-semibold disabled:opacity-50"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {isBn ? "সংরক্ষণ করছি..." : "Saving..."}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {isBn ? "সংরক্ষণ করুন" : "Save"}
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Users Table */}
-      <div className="rounded-xl border-2 border-secondary bg-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-secondary/50">
-              <tr>
-                <th className={`text-left px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "নাম" : "Name"}
-                </th>
-                <th className={`text-left px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "ইমেইল" : "Email"}
-                </th>
-                <th className={`text-left px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "ভূমিকা" : "Role"}
-                </th>
-                <th className={`text-left px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "অবস্থা" : "Status"}
-                </th>
-                <th className={`text-left px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "যোগদান" : "Joined"}
-                </th>
-                <th className={`text-right px-4 py-3 text-sm uppercase tracking-wider text-foreground/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "কার্যক্রম" : "Actions"}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-secondary">
-              {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-secondary/30 transition">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
-                        {user.name.charAt(0)}
-                      </div>
-                      <span className="font-medium text-foreground">{user.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-foreground/70">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      {user.email}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs uppercase ${getRoleColor(user.role)}`}>
-                      {getRoleIcon(user.role)}
-                      {getRoleLabel(user.role)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs uppercase ${user.status === "active" ? "bg-green-500/20 text-green-400" : "bg-gray-500/20 text-gray-400"}`}>
-                      {user.status === "active" ? (isBn ? "সক্রিয়" : "Active") : (isBn ? "নিষ্ক্রিয়" : "Inactive")}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-foreground/70">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {user.joinedAt}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => handleEdit(user)}
-                        className="p-2 rounded hover:bg-primary/20 text-primary transition"
-                        title={isBn ? "সম্পাদনা করুন" : "Edit"}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        className="p-2 rounded hover:bg-red-500/20 text-red-400 transition"
-                        title={isBn ? "মুছুন" : "Delete"}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {filteredUsers.length === 0 && (
-          <div className="text-center py-12 text-foreground/60">
-            <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "কোন ব্যবহারকারী পাওয়া যায়নি" : "No users found"}
-            </p>
-            <p className={`text-sm mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "নতুন ব্যবহারকারী যোগ করতে উপরের বোতাম ক্লিক করুন" : "Click the button above to add a new user"}
-            </p>
-          </div>
         )}
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: isBn ? "মোট ব্যবহারকারী" : "Total Users", value: users.length, color: "text-primary" },
-          { label: isBn ? "অ্যাডমিন" : "Admins", value: users.filter(u => u.role === "admin").length, color: "text-red-400" },
-          { label: isBn ? "খেলোয়াড়" : "Players", value: users.filter(u => u.role === "player").length, color: "text-green-400" },
-          { label: isBn ? "ভক্ত" : "Fans", value: users.filter(u => u.role === "fan").length, color: "text-blue-400" },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-lg border-2 border-secondary bg-card p-4 text-center">
-            <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
-            <div className={`text-xs text-foreground/60 uppercase ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{stat.label}</div>
-          </div>
-        ))}
-      </div>
-      </div>
+      </main>
     </FeatureProtectedRoute>
   )
 }
