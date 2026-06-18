@@ -106,30 +106,32 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
     }
   }
 
-  // Verify OTP code via Supabase
+  // Verify OTP code via API
   const verifyOTPCode = async (code: string): Promise<boolean> => {
     try {
       console.log('[v0] Verifying OTP code for:', otpSentEmail)
       
-      // Use Supabase's verifyOtp method
-      const { data, error } = await supabase.auth.verifyOtp({
-        email: otpSentEmail,
-        token: code,
-        type: 'email',
+      // Call the verify-otp API route
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: otpSentEmail,
+          code 
+        }),
       })
 
-      if (error) {
-        console.error('[v0] OTP verification error:', error.message)
-        setError(isBn ? 'ভুল OTP কোড' : 'Invalid OTP code')
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('[v0] OTP verification error:', errorData)
+        setError(errorData.error || (isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed'))
         return false
       }
 
-      if (!data.user) {
-        setError(isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed')
-        return false
-      }
-
-      console.log('[v0] OTP verified successfully')
+      const data = await response.json()
+      console.log('[v0] OTP verified successfully:', data)
       return true
     } catch (err) {
       console.error('[v0] Error verifying OTP:', err)
