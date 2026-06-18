@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { RichTextEditor } from './rich-text-editor'
+import { RichTextEditorDynamic } from './rich-text-editor-dynamic'
 import { ImageUploader } from './image-uploader'
 import { uploadMedia, deleteMedia, generateSlug } from '@/lib/services/media-service'
 import * as pageService from '@/lib/services/page-service'
@@ -28,7 +28,10 @@ export function PageManager() {
   })
 
   useEffect(() => {
-    loadPages()
+    const timer = setTimeout(() => {
+      loadPages()
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const loadPages = async () => {
@@ -178,7 +181,7 @@ export function PageManager() {
 
           <div>
             <label className="block text-sm font-medium mb-2">Content</label>
-            <RichTextEditor
+            <RichTextEditorDynamic
               content={formData.content}
               onChange={(content) => setFormData({ ...formData, content })}
               onImageUpload={handleImageUpload}

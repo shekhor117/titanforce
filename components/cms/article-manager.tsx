@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { RichTextEditor } from './rich-text-editor'
+import { RichTextEditorDynamic } from './rich-text-editor-dynamic'
 import { ImageUploader } from './image-uploader'
 import { uploadMedia, deleteMedia, generateSlug } from '@/lib/services/media-service'
 import * as articleService from '@/lib/services/article-service'
@@ -41,7 +41,10 @@ export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
 
   // Load articles
   useEffect(() => {
-    loadArticles()
+    const timer = setTimeout(() => {
+      loadArticles()
+    }, 0)
+    return () => clearTimeout(timer)
   }, [statusFilter, searchTerm])
 
   const loadArticles = async () => {
@@ -299,12 +302,12 @@ export function ArticleManager({ onArticleChange }: ArticleManagerProps) {
           {/* Content */}
           <div>
             <label className="block text-sm font-medium mb-2">Content *</label>
-            <RichTextEditor
-              content={formData.content}
-              onChange={(content) => setFormData({ ...formData, content })}
-              onImageUpload={handleImageUpload}
-              placeholder="Write your article content here..."
-            />
+              <RichTextEditorDynamic
+                content={formData.content}
+                onChange={(content) => setFormData({ ...formData, content })}
+                onImageUpload={handleImageUpload}
+                placeholder="Write your article content here..."
+              />
           </div>
 
           {/* SEO Fields */}
