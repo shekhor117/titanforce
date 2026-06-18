@@ -1,15 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { ArticleManager } from '@/components/cms/article-manager'
-import { PageManager } from '@/components/cms/page-manager'
-import { EventManager } from '@/components/cms/event-manager'
+import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { FileText, BookOpen, Calendar } from 'lucide-react'
+
+const ArticleManager = dynamic(() => import('@/components/cms/article-manager').then(mod => ({ default: mod.ArticleManager })), { ssr: false })
+const PageManager = dynamic(() => import('@/components/cms/page-manager').then(mod => ({ default: mod.PageManager })), { ssr: false })
+const EventManager = dynamic(() => import('@/components/cms/event-manager').then(mod => ({ default: mod.EventManager })), { ssr: false })
 
 type TabType = 'articles' | 'pages' | 'events'
 
 export default function CMSAdminPage() {
+  const [isClient, setIsClient] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('articles')
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const tabs = [
     {
@@ -67,9 +74,17 @@ export default function CMSAdminPage() {
 
       {/* Content */}
       <div className="bg-white rounded-lg p-6">
-        {activeTab === 'articles' && <ArticleManager />}
-        {activeTab === 'pages' && <PageManager />}
-        {activeTab === 'events' && <EventManager />}
+        {!isClient ? (
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+          </div>
+        ) : (
+          <>
+            {activeTab === 'articles' && <ArticleManager />}
+            {activeTab === 'pages' && <PageManager />}
+            {activeTab === 'events' && <EventManager />}
+          </>
+        )}
       </div>
     </div>
   )
