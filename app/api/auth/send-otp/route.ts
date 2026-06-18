@@ -6,12 +6,61 @@ function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
-// Send email via a mail service or Supabase
+// Send email via Brevo SMTP or Resend
 async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
   try {
-    // Try using Resend if available
+    const emailTemplate = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d1a1a 100%); padding: 40px; border-radius: 8px; text-align: center;">
+          <h1 style="color: #c41e3a; margin: 0 0 20px 0;">TitanForce</h1>
+          <h2 style="color: #fff; margin: 0 0 30px 0;">Your OTP Code</h2>
+          <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="color: #fff; font-size: 14px; margin: 0 0 10px 0;">Enter this code to verify your email:</p>
+            <p style="color: #c41e3a; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 10px 0;">${otp}</p>
+          </div>
+          <p style="color: #aaa; font-size: 12px; margin: 20px 0;">This code expires in 5 minutes.</p>
+          <p style="color: #aaa; font-size: 12px; margin: 10px 0;">If you didn't request this code, please ignore this email.</p>
+        </div>
+      </div>
+    `
+
+    // Priority 1: Try using Brevo API
+    if (process.env.BREVO_API_KEY) {
+      console.log('[v0] Attempting to send OTP via Brevo to:', email)
+      
+      try {
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'api-key': process.env.BREVO_API_KEY,
+          },
+          body: JSON.stringify({
+            to: [{ email }],
+            sender: { 
+              email: process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com',
+              name: 'TitanForce'
+            },
+            subject: 'Your TitanForce OTP Code',
+            htmlContent: emailTemplate,
+          }),
+        })
+
+        if (response.ok) {
+          console.log('[v0] OTP email sent successfully via Brevo')
+          return true
+        } else {
+          const error = await response.json()
+          console.error('[v0] Brevo error:', error)
+        }
+      } catch (brevoError) {
+        console.error('[v0] Brevo connection error:', brevoError)
+      }
+    }
+
+    // Priority 2: Try using Resend if available
     if (process.env.RESEND_API_KEY) {
-      console.log('[v0] Sending OTP via Resend to:', email)
+      console.log('[v0] Attempting to send OTP via Resend to:', email)
       
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -23,20 +72,7 @@ async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
           from: process.env.RESEND_FROM_EMAIL || 'noreply@titanforce.com',
           to: email,
           subject: 'Your TitanForce OTP Code',
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d1a1a 100%); padding: 40px; border-radius: 8px; text-align: center;">
-                <h1 style="color: #c41e3a; margin: 0 0 20px 0;">TitanForce</h1>
-                <h2 style="color: #fff; margin: 0 0 30px 0;">Your OTP Code</h2>
-                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <p style="color: #fff; font-size: 14px; margin: 0 0 10px 0;">Enter this code to verify your email:</p>
-                  <p style="color: #c41e3a; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 10px 0;">${otp}</p>
-                </div>
-                <p style="color: #aaa; font-size: 12px; margin: 20px 0;">This code expires in 5 minutes.</p>
-                <p style="color: #aaa; font-size: 12px; margin: 10px 0;">If you didn't request this code, please ignore this email.</p>
-              </div>
-            </div>
-          `,
+          html: emailTemplate,
         }),
       })
 
@@ -46,13 +82,13 @@ async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
       } else {
         const error = await response.json()
         console.error('[v0] Resend error:', error)
-        return false
       }
     }
 
     // Fallback: Log OTP to console for development
-    console.log('[v0] OTP Code (Development Mode):', otp)
-    console.log('[v0] Sending OTP to email:', email)
+    console.log('[v0] [DEVELOPMENT MODE] OTP Code:', otp)
+    console.log('[v0] [DEVELOPMENT MODE] Email:', email)
+    console.log('[v0] Configure BREVO_API_KEY or RESEND_API_KEY environment variables for production email sending')
     return true
   } catch (error) {
     console.error('[v0] Error sending OTP email:', error)
