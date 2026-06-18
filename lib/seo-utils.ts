@@ -152,7 +152,7 @@ export function getOrganizationSchema() {
     alternateName: 'টাইটান ফোর্স এফসি',
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    logo: `${SITE_URL}/logos/titanforce-logo.svg`,
     image: SITE_IMAGE,
     sameAs: [
       'https://facebook.com/titanforcefc',
@@ -223,7 +223,7 @@ export function getArticleSchema(props: {
       name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/logo.png`,
+        url: `${SITE_URL}/logos/titanforce-logo.svg`,
       },
     },
     datePublished: datePublished.toISOString(),

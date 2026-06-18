@@ -408,7 +408,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         {/* Logo */}
         <div className="mb-2">
           <img
-            src="/logo.svg"
+            src="/logos/titanforce-logo.svg"
             alt="Titan Force Logo"
             className="w-20 h-20 object-contain"
           />
