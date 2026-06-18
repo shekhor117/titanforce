@@ -56,56 +56,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
-        {/* Consent Framework */}
-        <script
-          data-cfasync="false"
-          type="text/javascript"
-          src="https://cache.consentframework.com/js/pa/52004/c/QJPzh/stub?source=google-tag"
-          strategy="beforeInteractive"
-        />
-        <script
-          data-cfasync="false"
-          type="text/javascript"
-          src="https://choices.consentframework.com/js/pa/52004/c/QJPzh/cmp?source=google-tag"
-          async
-          strategy="beforeInteractive"
-        />
-
-        {/* Google tag (gtag.js) */}
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-X32RM7QEQS"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-X32RM7QEQS');
-            `,
-          }}
-        />
 
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="S1BRuvXJo49oWBcV9tvlLDn2gIiL75tp0MvejZ_CLbQ" />
         
-        {/* Google AdSense */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7799270522656846" crossOrigin="anonymous"></script>
-        
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
-        
-        {/* Organization Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getOrganizationSchema()),
-          }}
-        />
         
         {/* Theme Color */}
         <meta name="theme-color" content="#1a1a1a" />
