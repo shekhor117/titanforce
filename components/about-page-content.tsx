@@ -59,7 +59,7 @@ export function AboutPageContent() {
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
             <Image
-              src="/logo.png"
+              src="/logos/titanforce-logo.svg"
               alt="Titan Force FC Logo"
               width={180}
               height={180}

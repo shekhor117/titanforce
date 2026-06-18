@@ -32,7 +32,7 @@ export function Navbar() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
-            src="/logo.svg"
+            src="/logos/titanforce-logo.svg"
             alt="Titan Force FC Logo"
             width={50}
             height={50}

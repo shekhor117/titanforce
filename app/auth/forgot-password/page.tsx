@@ -121,7 +121,7 @@ export default function ForgotPasswordPage() {
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
-              src="/logo.png"
+              src="/logos/titanforce-logo.svg"
               alt="Titan Force Logo"
               className="w-16 h-16 object-contain"
             />
