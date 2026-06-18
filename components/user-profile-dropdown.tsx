@@ -45,6 +45,7 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
       player: { en: "Player", bn: "খেলোয়াড়" },
       fan: { en: "Fan", bn: "ফ্যান" },
       partner: { en: "Partner", bn: "পার্টনার" },
+      user: { en: "User", bn: "ব্যবহারকারী" },
     }
     return labels[role]?.[language] || role
   }
