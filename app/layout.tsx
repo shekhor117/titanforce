@@ -36,7 +36,12 @@ export const metadata: Metadata = generatePageMetadata({
   title: 'Titan Force Mulikandi | Official Football Club Website',
   description: 'Official football club website',
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
   alternates: {
     languages: {
@@ -61,7 +66,11 @@ export default function RootLayout({
         <meta name="google-site-verification" content="S1BRuvXJo49oWBcV9tvlLDn2gIiL75tp0MvejZ_CLbQ" />
         
         {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/site.webmanifest" />
+        
+        {/* Favicon Links */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         
         {/* Theme Color */}
         <meta name="theme-color" content="#1a1a1a" />
