@@ -60,23 +60,32 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
     onClose?.()
   }
 
-  const menuItems = [
-    {
-      href: `/dashboard/${user.role}`,
-      icon: LayoutDashboard,
-      label: isBn ? "ড্যাশবোর্ড" : "Dashboard",
-    },
-    {
-      href: `/dashboard/${user.role}/profile`,
-      icon: UserCircle,
-      label: isBn ? "প্রোফাইল" : "My Profile",
-    },
-    {
-      href: `/dashboard/${user.role}/settings`,
-      icon: Settings,
-      label: isBn ? "সেটিংস" : "Settings",
-    },
-  ]
+  const menuItems = user.role
+    ? [
+        {
+          href: `/dashboard/${user.role}`,
+          icon: LayoutDashboard,
+          label: isBn ? "ড্যাশবোর্ড" : "Dashboard",
+        },
+        {
+          href: `/dashboard/${user.role}/profile`,
+          icon: UserCircle,
+          label: isBn ? "প্রোফাইল" : "My Profile",
+        },
+        {
+          href: `/dashboard/${user.role}/settings`,
+          icon: Settings,
+          label: isBn ? "সেটিংস" : "Settings",
+        },
+      ]
+    : [
+        {
+          href: "#",
+          icon: LayoutDashboard,
+          label: isBn ? "ড্যাশবোর্ড (সেটআপ প্রয়োজন)" : "Dashboard (Setup Required)",
+          disabled: true,
+        },
+      ]
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -134,15 +143,23 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
           {/* Menu Items */}
           <div className="py-2">
             {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={handleLinkClick}
-                className={`flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-secondary/50 transition-colors ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                <item.icon className="w-5 h-5 text-foreground/60" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </Link>
+              <div key={item.label}>
+                {(item as any).disabled ? (
+                  <div className={`flex items-center gap-3 px-4 py-2.5 text-foreground/40 cursor-not-allowed opacity-50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    <item.icon className="w-5 h-5 text-foreground/40" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className={`flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-secondary/50 transition-colors ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                  >
+                    <item.icon className="w-5 h-5 text-foreground/60" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
 
