@@ -1,12 +1,31 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import nodemailer from 'nodemailer'
 
 // Generate a random 6-digit OTP
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
-// Send email via Brevo SMTP or Resend
+// Create Brevo SMTP transporter
+function createBrevoTransporter() {
+  if (!process.env.BREVO_SMTP_HOST || !process.env.BREVO_SMTP_PORT || !process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
+    console.warn('[v0] Brevo SMTP credentials not configured')
+    return null
+  }
+
+  return nodemailer.createTransport({
+    host: process.env.BREVO_SMTP_HOST,
+    port: parseInt(process.env.BREVO_SMTP_PORT),
+    secure: process.env.BREVO_SMTP_PORT === '465', // true for 465, false for other ports like 587
+    auth: {
+      user: process.env.BREVO_SMTP_USER,
+      pass: process.env.BREVO_SMTP_PASS,
+    },
+  })
+}
+
+// Send email via Brevo SMTP or Brevo API or Resend
 async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
   try {
     const emailTemplate = `
@@ -24,49 +43,29 @@ async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
       </div>
     `
 
-    // Priority 1: Try using Brevo API
-    if (process.env.BREVO_API_KEY) {
-      console.log('[v0] Attempting to send OTP via Brevo to:', email)
+    // Priority 1: Try using Brevo SMTP (most reliable)
+    const brevoTransporter = createBrevoTransporter()
+    if (brevoTransporter) {
+      console.log('[v0] Attempting to send OTP via Brevo SMTP to:', email)
       
       try {
-        const brevoPayload = {
-          to: [{ email }],
-          sender: { 
-            email: process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com',
-            name: 'TitanForce'
-          },
+        const senderEmail = process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com'
+        const mailOptions = {
+          from: `TitanForce <${senderEmail}>`,
+          to: email,
           subject: 'Your TitanForce OTP Code',
-          htmlContent: emailTemplate,
-          replyTo: {
-            email: process.env.BREVO_REPLY_TO || (process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com'),
-          },
+          html: emailTemplate,
         }
 
-        console.log('[v0] Brevo payload:', { ...brevoPayload, htmlContent: '...(truncated)' })
+        console.log('[v0] Sending via Brevo SMTP:', { from: mailOptions.from, to: mailOptions.to })
 
-        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'api-key': process.env.BREVO_API_KEY,
-          },
-          body: JSON.stringify(brevoPayload),
-        })
-
-        const responseData = await response.json()
-
-        if (response.ok) {
-          console.log('[v0] OTP email sent successfully via Brevo. Message ID:', responseData.messageId)
-          return true
-        } else {
-          console.error('[v0] Brevo API error (status:', response.status, '):', responseData)
-          // Log more detailed error info
-          if (responseData.code === 'invalid_sender') {
-            console.error('[v0] Sender email not verified in Brevo. Add', process.env.BREVO_SENDER_EMAIL, 'to verified senders.')
-          }
-        }
+        const info = await brevoTransporter.sendMail(mailOptions)
+        
+        console.log('[v0] OTP email sent successfully via Brevo SMTP. Message ID:', info.messageId)
+        return true
       } catch (brevoError) {
-        console.error('[v0] Brevo connection error:', brevoError instanceof Error ? brevoError.message : brevoError)
+        console.error('[v0] Brevo SMTP error:', brevoError instanceof Error ? brevoError.message : brevoError)
+        // Fall through to next option
       }
     }
 
