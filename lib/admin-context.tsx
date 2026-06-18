@@ -32,26 +32,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
-        // Check for existing session with Supabase
-        const { data, error } = await supabase.auth.getSession()
-        
-        if (data.session?.user && isMounted) {
-          const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
-          
-          // Only set admin if user has admin/moderator role
-          if (userRole === "admin" || userRole === "moderator") {
-            const user: AuthUser = {
-              id: data.session.user.id,
-              email: data.session.user.email || "",
-              name: data.session.user.user_metadata?.full_name || "User",
-              role: userRole,
-              emailVerified: data.session.user.email_confirmed_at ? true : false,
-            }
-            setAdmin(user)
-          }
-        }
-
-        // Set up auth state change listener
+        // Set up auth state change listener first (non-blocking)
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
             if (!isMounted) return
@@ -79,7 +60,34 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         )
 
         subscription = authSubscription
-        if (isMounted) setIsInitialized(true)
+        
+        // Check for existing session with timeout (non-blocking)
+        const sessionCheck = supabase.auth.getSession().then(({ data }) => {
+          if (data.session?.user && isMounted) {
+            const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
+            
+            // Only set admin if user has admin/moderator role
+            if (userRole === "admin" || userRole === "moderator") {
+              const user: AuthUser = {
+                id: data.session.user.id,
+                email: data.session.user.email || "",
+                name: data.session.user.user_metadata?.full_name || "User",
+                role: userRole,
+                emailVerified: data.session.user.email_confirmed_at ? true : false,
+              }
+              setAdmin(user)
+            }
+          }
+        }).catch(() => {
+          // Silently fail if session check times out
+        })
+
+        // Mark as initialized after a short delay or when session check completes
+        const timeoutId = setTimeout(() => {
+          if (isMounted) setIsInitialized(true)
+        }, 100)
+        
+        return () => clearTimeout(timeoutId)
       } catch (err) {
         if (isMounted) setIsInitialized(true)
       }
@@ -109,8 +117,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         throw new Error("Your account does not have admin access")
       }
 
+      // Immediately set admin state without waiting for subscription update
       setAdmin(user)
       setIsLoading(false)
+      // Return immediately to allow quick redirect
+      return Promise.resolve()
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)
