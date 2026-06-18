@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { Loader } from 'lucide-react'
+import { Suspense } from 'react'
 
 const RichTextEditorContent = dynamic(
   () => import('./rich-text-editor').then((mod) => ({ default: mod.RichTextEditor })),
@@ -13,6 +14,12 @@ const RichTextEditorContent = dynamic(
     ),
     ssr: false,
   }
+)
+
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center p-8 border border-slate-200 rounded">
+    <Loader className="w-5 h-5 animate-spin" />
+  </div>
 )
 
 interface RichTextEditorDynamicProps {
@@ -29,11 +36,13 @@ export function RichTextEditorDynamic({
   placeholder,
 }: RichTextEditorDynamicProps) {
   return (
-    <RichTextEditorContent
-      content={content}
-      onChange={onChange}
-      onImageUpload={onImageUpload}
-      placeholder={placeholder}
-    />
+    <Suspense fallback={<LoadingFallback />}>
+      <RichTextEditorContent
+        content={content}
+        onChange={onChange}
+        onImageUpload={onImageUpload}
+        placeholder={placeholder}
+      />
+    </Suspense>
   )
 }

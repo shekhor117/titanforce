@@ -9,12 +9,18 @@ import * as pageService from '@/lib/services/page-service'
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
 
 export function PageManager() {
+  const [isClient, setIsClient] = useState(false)
   const [pages, setPages] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [currentPage, setCurrentPage] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+
+  // Ensure client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -28,11 +34,13 @@ export function PageManager() {
   })
 
   useEffect(() => {
+    if (!isClient) return
+    
     const timer = setTimeout(() => {
       loadPages()
     }, 0)
     return () => clearTimeout(timer)
-  }, [])
+  }, [isClient])
 
   const loadPages = async () => {
     setIsLoading(true)
@@ -115,6 +123,14 @@ export function PageManager() {
       featured_image_alt: '',
       status: 'draft',
     })
+  }
+
+  if (!isClient) {
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto"></div>
+      </div>
+    )
   }
 
   return (

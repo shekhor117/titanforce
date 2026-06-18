@@ -24,29 +24,39 @@ export function RichTextEditor({
   onImageUpload,
   placeholder = 'Write your content here...',
 }: RichTextEditorProps) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [2, 3],
-        },
-      }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-      }),
-      Image.configure({
-        allowBase64: true,
-      }),
-      Placeholder.configure({
-        placeholder,
-      }),
-    ],
-    content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
-    },
-  })
+  let editor
+  try {
+    editor = useEditor({
+      extensions: [
+        StarterKit.configure({
+          heading: {
+            levels: [2, 3],
+          },
+        }),
+        Link.configure({
+          openOnClick: false,
+          autolink: true,
+        }),
+        Image.configure({
+          allowBase64: true,
+        }),
+        Placeholder.configure({
+          placeholder,
+        }),
+      ],
+      content,
+      onUpdate: ({ editor }) => {
+        onChange(editor.getHTML())
+      },
+    })
+  } catch (err) {
+    console.error('[v0] Failed to initialize TipTap editor:', err)
+    return (
+      <div className="p-4 border border-red-300 bg-red-50 rounded">
+        <p className="text-red-700">Failed to load editor</p>
+      </div>
+    )
+  }
 
   if (!editor) {
     return null
