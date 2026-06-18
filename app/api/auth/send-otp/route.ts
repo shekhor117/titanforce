@@ -29,32 +29,44 @@ async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
       console.log('[v0] Attempting to send OTP via Brevo to:', email)
       
       try {
+        const brevoPayload = {
+          to: [{ email }],
+          sender: { 
+            email: process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com',
+            name: 'TitanForce'
+          },
+          subject: 'Your TitanForce OTP Code',
+          htmlContent: emailTemplate,
+          replyTo: {
+            email: process.env.BREVO_REPLY_TO || (process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com'),
+          },
+        }
+
+        console.log('[v0] Brevo payload:', { ...brevoPayload, htmlContent: '...(truncated)' })
+
         const response = await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'api-key': process.env.BREVO_API_KEY,
           },
-          body: JSON.stringify({
-            to: [{ email }],
-            sender: { 
-              email: process.env.BREVO_SENDER_EMAIL || 'noreply@titanforce.com',
-              name: 'TitanForce'
-            },
-            subject: 'Your TitanForce OTP Code',
-            htmlContent: emailTemplate,
-          }),
+          body: JSON.stringify(brevoPayload),
         })
 
+        const responseData = await response.json()
+
         if (response.ok) {
-          console.log('[v0] OTP email sent successfully via Brevo')
+          console.log('[v0] OTP email sent successfully via Brevo. Message ID:', responseData.messageId)
           return true
         } else {
-          const error = await response.json()
-          console.error('[v0] Brevo error:', error)
+          console.error('[v0] Brevo API error (status:', response.status, '):', responseData)
+          // Log more detailed error info
+          if (responseData.code === 'invalid_sender') {
+            console.error('[v0] Sender email not verified in Brevo. Add', process.env.BREVO_SENDER_EMAIL, 'to verified senders.')
+          }
         }
       } catch (brevoError) {
-        console.error('[v0] Brevo connection error:', brevoError)
+        console.error('[v0] Brevo connection error:', brevoError instanceof Error ? brevoError.message : brevoError)
       }
     }
 
