@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
@@ -11,7 +11,7 @@ import { CartProvider } from '@/lib/cart-context'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
 import LoaderWrapper from '@/components/loader-wrapper'
-import { generatePageMetadata, getOrganizationSchema } from '@/lib/seo-utils'
+import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -31,6 +31,8 @@ const notoSansBengali = Noto_Sans_Bengali({
   subsets: ['bengali'],
   variable: '--font-bengali',
 })
+
+export const viewport: Viewport = defaultViewport
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Titan Force Mulikandi | Official Football Club Website',

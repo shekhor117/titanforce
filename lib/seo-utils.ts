@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 
 const SITE_NAME = 'Titan Force Mulikandi'
 const SITE_URL = 'https://titanforcemulikandi.vercel.app'
@@ -17,6 +17,15 @@ export interface SEOMetadataProps {
   alternates?: {
     languages?: Record<string, string>
   }
+}
+
+/**
+ * Standard viewport configuration for all pages
+ */
+export const defaultViewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 }
 
 /**
@@ -48,11 +57,6 @@ export function generatePageMetadata(props: SEOMetadataProps): Metadata {
       'Titan Force FC',
     ],
     robots: noindex ? 'noindex, nofollow' : 'index, follow',
-    viewport: {
-      width: 'device-width',
-      initialScale: 1,
-      maximumScale: 5,
-    },
     icons: {
       icon: '/favicon.ico',
       shortcut: '/favicon.ico',
