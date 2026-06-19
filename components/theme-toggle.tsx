@@ -20,10 +20,10 @@ export function ThemeToggle() {
   const { theme, setTheme, isDark } = context
 
   return (
-    <div className="relative">
+    <div className="relative w-full md:w-auto">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="p-2 rounded-lg border border-primary/30 hover:bg-primary/10 transition-colors duration-300"
+        className="w-full md:w-auto p-2 rounded-lg border border-primary/30 hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center md:justify-start"
         aria-label="Toggle theme menu"
         title={`Current theme: ${theme}`}
       >
@@ -35,7 +35,7 @@ export function ThemeToggle() {
       </button>
       
       {showMenu && (
-        <div className="absolute right-0 mt-2 w-40 bg-card border border-primary/30 rounded-lg shadow-lg overflow-hidden z-50">
+        <div className="absolute right-0 mt-2 w-full md:w-40 bg-card border border-primary/30 rounded-lg shadow-lg overflow-hidden z-50">
           <button
             onClick={() => {
               setTheme('light')
