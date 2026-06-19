@@ -97,38 +97,16 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="relative overflow-hidden bg-black">
-        {/* Video Background - Top */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
-        >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
-        </video>
+        {/* Neon Hero Background Image */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: 'url(/images/hero-bg-neon.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }} />
 
-        {/* Video Background - Bottom with Gradient Blend */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
-          }}
-        >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0-XHs6l69r0GYnt6qoA3uhPw22BuCYct.mp4" type="video/mp4" />
-        </video>
-
-        {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/85 light:backdrop-blur-sm z-1"></div>
+        {/* Overlay for text readability and depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/50 z-1"></div>
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
@@ -144,55 +122,55 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
           <div className="animate-smoothFadeUp">
-            <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.subtitle}
             </p>
           </div>
-          <h2 className={`mt-4 sm:mt-6 mb-4 sm:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-tight sm:leading-none tracking-wide text-foreground animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`mt-4 sm:mt-6 mb-4 sm:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-tight sm:leading-none tracking-wide text-white animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             <span className="block text-white overflow-hidden animate-smoothFadeUp">
               {t.hero.welcome}
             </span>
-            <span className="block text-primary mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
+            <span className="block text-white mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
               {t.hero.clubName}
             </span>
           </h2>
-          <p className={`mt-3 sm:mt-4 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg text-foreground/70 max-w-xl mx-auto px-3 sm:px-4 animate-smoothFadeUp animation-delay-200 text-center leading-relaxed ${isBn ? "font-[var(--font-bengali)]" : "font-[\"Inter\", sans-serif]"}`}>
+          <p className={`mt-3 sm:mt-4 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg text-white max-w-xl mx-auto px-3 sm:px-4 animate-smoothFadeUp animation-delay-200 text-center leading-relaxed ${isBn ? "font-[var(--font-bengali)]" : "font-[\"Inter\", sans-serif]"}`}>
             {t.hero.tagline}
           </p>
 
           {/* About the Club Section */}
           <div className="light:bg-white/10">
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
-            <h3 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            <h3 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-white ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               {aboutSettings.aboutTitle}
             </h3>
-            <p className={`text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-lg leading-relaxed text-white max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {aboutSettings.aboutDescription}
             </p>
             <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-lg mx-auto px-2 sm:px-0">
               <div className="p-2 sm:p-4 rounded-lg">
-                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-primary">
+                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-white">
                   {activePlayers.length}
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.players}
                 </div>
               </div>
               <div className="p-2 sm:p-4 rounded-lg">
                 <div className="flex justify-center">
-                  <Zap className="w-6 sm:w-8 h-6 sm:h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
+                  <Zap className="w-6 sm:w-8 h-6 sm:h-8 text-white animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.spirit}
                 </div>
               </div>
               <div className="p-2 sm:p-4 rounded-lg">
-                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-primary">
+                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-white">
                   1
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.team}
                 </div>
               </div>
@@ -202,13 +180,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`glass-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary-foreground hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded text-white hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`glass-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded text-white hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>

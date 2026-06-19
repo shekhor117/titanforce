@@ -1,16 +1,8 @@
-import { Suspense } from 'react'
-import { Search, Users, Shield, Users2 } from 'lucide-react'
-import { getDataService, AppUser } from '@/lib/data-service'
+'use client'
 
-async function getUsersList() {
-  const dataService = getDataService()
-  try {
-    return await dataService.getAppUsers({ status: 'active' })
-  } catch (error) {
-    console.error('[v0] Error fetching users:', error)
-    return []
-  }
-}
+import { useEffect, useState } from 'react'
+import { Search, Users, Shield, Users2 } from 'lucide-react'
+import { getDataService, type AppUser } from '@/lib/data-service'
 
 function UserCard({ user }: { user: AppUser }) {
   const roleColors: Record<string, string> = {
@@ -99,8 +91,30 @@ function UserGridSkeleton() {
   )
 }
 
-export async function UsersContent() {
-  const users = await getUsersList()
+function UsersContent() {
+  const [users, setUsers] = useState<AppUser[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const dataService = getDataService()
+        const fetchedUsers = await dataService.getAppUsers({ status: 'active' })
+        setUsers(fetchedUsers)
+      } catch (error) {
+        console.error('[v0] Error fetching users:', error)
+        setUsers([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
+  }, [])
+
+  if (loading) {
+    return <UserGridSkeleton />
+  }
 
   if (users.length === 0) {
     return (
@@ -121,7 +135,7 @@ export async function UsersContent() {
   )
 }
 
-export default async function UsersPage() {
+export default function UsersPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
@@ -158,9 +172,7 @@ export default async function UsersPage() {
       {/* Users Grid */}
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <Suspense fallback={<UserGridSkeleton />}>
-            <UsersContent />
-          </Suspense>
+          <UsersContent />
         </div>
       </section>
     </main>

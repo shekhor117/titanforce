@@ -34,7 +34,7 @@ export function Footer() {
         crossOrigin="anonymous"
         className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-30"
       >
-        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video-wLU6uw8zGiZmAIYTvXIhQQMo4xUH6b.mp4" type="video/mp4" />
+        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/52177-467701518_medium-NHHZMX0waW7Vl9MVhVGsYsklvDeifE.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay for content readability - Theme aware */}
