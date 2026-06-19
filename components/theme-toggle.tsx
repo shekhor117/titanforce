@@ -4,6 +4,12 @@ import { useTheme } from "@/lib/theme-context"
 import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 
+function getThemeIcon(themeValue: "light" | "dark" | "system") {
+  if (themeValue === "light") return <Sun className="w-4 h-4" />
+  if (themeValue === "dark") return <Moon className="w-4 h-4" />
+  return <Moon className="w-4 h-4" />
+}
+
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -20,9 +26,9 @@ export function ThemeToggle() {
   const { theme, setTheme, isDark } = context
 
   const themeOptions = [
-    { value: "light" as const, label: "Light", icon: Sun },
-    { value: "dark" as const, label: "Dark", icon: Moon },
-    { value: "system" as const, label: "System", icon: Moon },
+    { value: "light" as const, label: "Light" },
+    { value: "dark" as const, label: "Dark" },
+    { value: "system" as const, label: "System" },
   ]
 
   return (
@@ -42,7 +48,7 @@ export function ThemeToggle() {
       
       {showMenu && (
         <div className="absolute right-0 mt-2 w-40 bg-card border border-primary/30 rounded-lg shadow-lg overflow-hidden z-50">
-          {themeOptions.map(({ value, label, icon: Icon }) => (
+          {themeOptions.map(({ value, label }) => (
             <button
               key={value}
               onClick={() => {
@@ -55,7 +61,7 @@ export function ThemeToggle() {
                   : "hover:bg-primary/10 text-foreground"
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <span className="text-primary">{getThemeIcon(value)}</span>
               <span className="text-sm">{label}</span>
               {theme === value && <span className="ml-auto text-xs">✓</span>}
             </button>
