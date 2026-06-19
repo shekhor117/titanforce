@@ -7,7 +7,7 @@ import TrophyDataService from "@/lib/trophy-data-service"
 import PlayerDataService from "@/lib/player-data-service"
 import Link from "next/link"
 import { 
-  Users, Trophy, Handshake, Newspaper, Image, Settings, ArrowRight, 
+  Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown
 } from "lucide-react"
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
       label: isBn ? "সিস্টেম কন্ট্রোল" : "System Control", 
       description: isBn ? "ব্যাকআপ, এক্সপোর্ট এবং ইম্পোর্ট" : "Backup, export and import data",
       href: "/admin/system", 
-      icon: <Settings className="w-5 h-5" /> 
+      icon: <Cog className="w-5 h-5" /> 
     },
   ]
 
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
       label: isBn ? "সিস্টেম সেটিংস" : "System Settings", 
       description: isBn ? "উন্নত সিস্টেম কনফিগারেশন" : "Advanced system configuration",
       href: "/admin/system", 
-      icon: <Settings className="w-5 h-5" />,
+      icon: <Cog className="w-5 h-5" />,
       color: "text-green-300",
       bgColor: "bg-green-500/10"
     },
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
       label: isBn ? "সেটিংস এবং কনফিগ" : "Settings & Config", 
       description: isBn ? "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন" : "Configure application settings",
       href: "/admin/settings", 
-      icon: <Settings className="w-5 h-5" />,
+      icon: <Cog className="w-5 h-5" />,
       color: "text-pink-400",
       bgColor: "bg-pink-500/10"
     },
