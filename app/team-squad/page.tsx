@@ -50,33 +50,18 @@ export default function TeamSquadPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        {/* Hero Section with Video Background */}
-        <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
-          {/* Video Background */}
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
-          >
-            <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4-hj89lpYB8NpO4ab5VhZIM5MIHoQSUr.mp4" type="video/mp4" />
-          </video>
+        {/* Hero Section with Neon Squad Background */}
+        <section className="relative overflow-hidden py-16 md:py-24 bg-black">
+          {/* Squad Neon Background Image */}
+          <div className="absolute inset-0 z-0" style={{
+            backgroundImage: 'url(/images/squad-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+          }} />
 
-          {/* Animated Background */}
-          <div className="absolute inset-0 overflow-hidden z-1">
-            <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
-          </div>
-
-          <div
-            className="absolute inset-0 opacity-10 z-1"
-            style={{
-              background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
-            }}
-          />
+          {/* Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60 z-1"></div>
 
           {/* Hero Content */}
           <div className="relative max-w-6xl mx-auto px-3 sm:px-4 text-center z-10">
