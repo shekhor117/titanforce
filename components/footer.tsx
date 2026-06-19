@@ -30,6 +30,7 @@ export function Footer() {
         muted
         loop
         playsInline
+        preload="metadata"
         crossOrigin="anonymous"
         className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-30"
       >

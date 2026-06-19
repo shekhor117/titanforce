@@ -67,21 +67,21 @@ export default function ShopPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-secondary bg-background/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors">
-              <ChevronRight className="w-5 h-5 rotate-180" />
-              <span>{isBn ? "ফিরে যান" : "Back"}</span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <Link href="/" className="flex items-center gap-1.5 text-foreground/60 hover:text-foreground transition-colors min-h-[44px] px-2 sm:px-3 rounded hover:bg-muted/50">
+              <ChevronRight className="w-4 sm:w-5 h-4 sm:h-5 rotate-180 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">{isBn ? "ফিরে যান" : "Back"}</span>
             </Link>
-            <h1 className="text-3xl font-bold text-foreground">{isBn ? "জার্সি স্টোর" : "Jersey Store"}</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground flex-1 text-center">{isBn ? "জার্সি স্টোর" : "Jersey Store"}</h1>
             <Link
               href="/cart"
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative min-h-[44px] flex-shrink-0"
             >
-              <ShoppingCart className="w-5 h-5" />
-              <span className="hidden sm:inline">{isBn ? "কার্ট" : "Cart"}</span>
+              <ShoppingCart className="w-4 sm:w-5 h-4 sm:h-5" />
+              <span className="hidden sm:inline text-xs sm:text-sm font-medium">{isBn ? "কার্ট" : "Cart"}</span>
               {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">
                   {getTotalItems()}
                 </span>
               )}
@@ -91,13 +91,14 @@ export default function ShopPage() {
       </div>
 
       {/* Hero Section with Video Background */}
-      <section className="hero-gradient relative overflow-hidden py-16 md:py-24">
+      <section className="hero-gradient relative overflow-hidden py-8 sm:py-12 md:py-16 lg:py-24">
         {/* Video Background */}
         <video
           autoPlay
           muted
           loop
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video%202-oXW9XpXlAXTxqLFZzIUur2nfSGubDR.mp4" type="video/mp4" />
@@ -105,9 +106,9 @@ export default function ShopPage() {
 
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-1">
-          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
+          <div className="absolute top-[-100px] left-[-100px] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-150px] right-[-100px] w-[250px] sm:w-[450px] h-[250px] sm:h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/2 left-1/3 w-[200px] sm:w-[300px] h-[200px] sm:h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
         </div>
 
         <div
@@ -118,27 +119,27 @@ export default function ShopPage() {
         />
 
         {/* Hero Content */}
-        <div className="relative max-w-6xl mx-auto px-4 text-center z-10">
-          <h2 className="text-5xl md:text-7xl font-black tracking-wider text-primary mb-4">
+        <div className="relative max-w-6xl mx-auto px-3 sm:px-4 md:px-6 text-center z-10">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black tracking-wider text-primary mb-3 sm:mb-4">
             {isBn ? "জার্সি স্টোর" : "JERSEY STORE"}
           </h2>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-base md:text-lg text-foreground/70 max-w-2xl mx-auto">
             {isBn ? "আমাদের অফিসিয়াল জার্সি এবং মার্চেন্ডাইজ কালেকশন দেখুন" : "Explore our official jerseys and merchandise collection"}
           </p>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-secondary rounded-lg p-6 mb-8"
+          className="bg-secondary rounded-lg p-4 sm:p-6 mb-6 sm:mb-8"
         >
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">
                 <Search className="w-4 h-4 inline mr-2" />
                 {isBn ? "খুঁজুন" : "Search"}
               </label>
@@ -147,13 +148,13 @@ export default function ShopPage() {
                 placeholder={isBn ? "জার্সি খুঁজুন..." : "Search jerseys..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors text-xs sm:text-sm min-h-[44px]"
               />
             </div>
 
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-3">
+              <label className="block text-xs sm:text-sm font-medium text-foreground mb-3">
                 <Filter className="w-4 h-4 inline mr-2" />
                 {isBn ? "ক্যাটাগরি" : "Category"}
               </label>

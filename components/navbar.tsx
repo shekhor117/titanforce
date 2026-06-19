@@ -103,12 +103,13 @@ export function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary">
-          {navLinks.map((link) => (
+        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary animate-in slide-in-from-top-2 duration-300">
+          {navLinks.map((link, index) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-2 px-2 rounded duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-3 px-3 rounded min-h-[44px] flex items-center duration-300 animate-in fade-in slide-in-from-left-4 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              style={{ animationDelay: `${index * 50}ms` }}
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
@@ -117,7 +118,8 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2.5 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative"
+            className="flex items-center gap-2 px-4 py-3 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
+            style={{ animationDelay: '300ms' }}
             onClick={() => setMobileMenuOpen(false)}
           >
             <ShoppingBag className="w-4 h-4" />
@@ -129,12 +131,12 @@ export function Navbar() {
             )}
           </Link>
           
-          <div className="border-t border-secondary pt-3 mt-2 flex flex-col gap-3">
+          <div className="border-t border-secondary pt-4 mt-2 flex flex-col gap-3">
             <div className="w-full flex items-center gap-2">
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 flex-1 text-xs"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 flex-1 text-xs min-h-[44px]"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -147,7 +149,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-4 py-2.5 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 text-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-4 py-3 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 text-center min-h-[44px] flex items-center justify-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {language === "bn" ? "লগইন" : "Login"}
