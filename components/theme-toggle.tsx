@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "@/lib/theme-context"
-import { Moon, Sun, Monitor } from "lucide-react"
+import { Moon, Sun, Settings } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
@@ -22,7 +22,7 @@ export function ThemeToggle() {
   const themeOptions = [
     { value: "light" as const, label: "Light", icon: Sun },
     { value: "dark" as const, label: "Dark", icon: Moon },
-    { value: "system" as const, label: "System", icon: Monitor },
+    { value: "system" as const, label: "System", icon: Settings },
   ]
 
   return (
@@ -34,7 +34,7 @@ export function ThemeToggle() {
         title={`Current theme: ${theme}`}
       >
         {theme === "system" ? (
-          <Monitor className="w-5 h-5 text-primary" />
+          <Settings className="w-5 h-5 text-primary" />
         ) : isDark ? (
           <Sun className="w-5 h-5 text-primary" />
         ) : (
