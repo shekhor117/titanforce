@@ -106,10 +106,9 @@ export default function LoaderWrapper({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Use requestAnimationFrame to defer state updates
-    const rafId = requestAnimationFrame(() => {
-      setMounted(true)
-      
+    setMounted(true)
+    
+    try {
       // Check sessionStorage only after mount
       const alreadyVisited = sessionStorage.getItem("titan-visited")
 
@@ -123,22 +122,21 @@ export default function LoaderWrapper({
 
         return () => clearTimeout(timer)
       }
-    })
-
-    return () => cancelAnimationFrame(rafId)
+    } catch (error) {
+      console.log("[v0] SessionStorage error:", error)
+      // Continue without loader if sessionStorage fails
+    }
   }, [])
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch - render children immediately
   if (!mounted) {
     return <>{children}</>
   }
 
-  const loaderContent = useMemo(() => showLoader ? <Loader /> : null, [showLoader])
-
   return (
     <>
       <AnimatePresence mode="wait">
-        {loaderContent}
+        {showLoader && <Loader />}
       </AnimatePresence>
 
       {children}
