@@ -98,6 +98,7 @@ export default function ShopPage() {
           muted
           loop
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video%202-oXW9XpXlAXTxqLFZzIUur2nfSGubDR.mp4" type="video/mp4" />

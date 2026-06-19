@@ -103,6 +103,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           muted
           loop
           playsInline
+          preload="metadata"
           crossOrigin="anonymous"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
         >
@@ -115,6 +116,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           muted
           loop
           playsInline
+          preload="metadata"
           crossOrigin="anonymous"
           className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
           style={{

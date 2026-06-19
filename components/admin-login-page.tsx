@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useAdmin } from "@/lib/admin-context"
 import { useLanguage } from "@/lib/language-context"
 import { Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"
@@ -81,9 +82,11 @@ export function AdminLoginPage() {
         <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
           {/* Logo */}
           <div className="flex justify-center mb-6">
-            <img
+            <Image
               src="/logos/titanforce-logo.svg"
               alt="Titan Force Logo"
+              width={64}
+              height={64}
               className="w-16 h-16 object-contain"
             />
           </div>

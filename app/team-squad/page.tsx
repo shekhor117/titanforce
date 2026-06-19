@@ -58,6 +58,7 @@ export default function TeamSquadPage() {
             muted
             loop
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
           >
             <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4-hj89lpYB8NpO4ab5VhZIM5MIHoQSUr.mp4" type="video/mp4" />

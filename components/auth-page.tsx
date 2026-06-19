@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -407,9 +408,11 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       >
         {/* Logo */}
         <div className="mb-2">
-          <img
+          <Image
             src="/logos/titanforce-logo.svg"
             alt="Titan Force Logo"
+            width={80}
+            height={80}
             className="w-20 h-20 object-contain"
           />
         </div>

@@ -51,8 +51,6 @@ export const metadata: Metadata = generatePageMetadata({
   },
 })
 
-export const dynamic = "force-dynamic"
-
 export default function RootLayout({
   children,
 }: Readonly<{

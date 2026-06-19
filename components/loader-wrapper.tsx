@@ -52,6 +52,7 @@ export default function LoaderWrapper({
               muted
               loop
               playsInline
+              preload="metadata"
               crossOrigin="anonymous"
               className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
             >

@@ -24,6 +24,7 @@ export default function FixturesResultsPage() {
             muted
             loop
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
           >
             <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video%203-w32iIRzTDPsT2QMQG0U9xuY8e1c4YY.mp4" type="video/mp4" />

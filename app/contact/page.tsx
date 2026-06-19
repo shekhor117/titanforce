@@ -83,6 +83,7 @@ export default function ContactPage() {
           muted
           loop
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260514_102933_4e8f73b5-775a-4179-b2fb-472f59063dcd-f1kKY6BLUtnOYd6RM2o4IQXoJwdM18.mp4" type="video/mp4" />

@@ -27,6 +27,7 @@ export default function FeaturesPage() {
             muted
             loop
             playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
           >
             <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260422_112520_ee819691-f2e8-4c54-bb77-3fb72c84eaa5-LVCrNS2l5ZBP2HgZJecZ81pM0cyMRZ.mp4" type="video/mp4" />

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useMediaItems } from '@/lib/use-data-store'
 import { useLanguage } from '@/lib/language-context'
@@ -76,13 +77,15 @@ export function GalleryShowcase() {
                     <div className="relative overflow-hidden rounded-2xl h-96 bg-muted cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
                       {/* Background Image */}
                       {item.imageUrl && (
-                        <img
+                        <Image
                           src={item.imageUrl}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
-                          onError={(e) => {
+                          fill
+                          className="object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
+                          onError={(e: any) => {
                             e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=600&fit=crop'
                           }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       )}
 
