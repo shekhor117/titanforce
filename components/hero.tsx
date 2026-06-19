@@ -96,33 +96,17 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
-        {/* Neon Grid Background */}
-        <div className="absolute inset-0 z-0 opacity-30" style={{
-          backgroundImage: `linear-gradient(45deg, transparent 48%, rgba(239, 0, 102, 0.1) 49%, rgba(239, 0, 102, 0.1) 51%, transparent 52%),
-                            linear-gradient(-45deg, transparent 48%, rgba(0, 150, 255, 0.1) 49%, rgba(0, 150, 255, 0.1) 51%, transparent 52%)`,
-          backgroundSize: '60px 60px'
+      <section id="home" className="relative overflow-hidden bg-black">
+        {/* Neon Hero Background Image */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: 'url(/images/hero-bg-neon.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
         }} />
 
-        {/* Animated Neon Lines */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute top-1/4 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-40 blur-sm" style={{
-            animation: 'slideRight 8s linear infinite'
-          }} />
-          <div className="absolute top-1/3 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-transparent to-transparent opacity-30 blur-sm" style={{
-            animation: 'slideLeft 10s linear infinite'
-          }} />
-          <div className="absolute top-2/3 right-0 w-full h-1 bg-gradient-to-l from-transparent via-red-600 to-transparent opacity-35 blur-sm" style={{
-            animation: 'slideLeft 7s linear infinite'
-          }} />
-        </div>
-
-        {/* Radial Glow Effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/20 rounded-full blur-3xl opacity-30 animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }} />
-
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/40 z-1"></div>
+        {/* Overlay for text readability and depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/50 z-1"></div>
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
