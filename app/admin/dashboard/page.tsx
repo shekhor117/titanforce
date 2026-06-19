@@ -443,47 +443,7 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Secondary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-        {additionalStats.map((stat) => (
-          <Link
-            key={stat.label}
-            href={stat.href}
-            className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-secondary bg-card hover:border-primary/50 transition min-h-[80px] sm:min-h-[100px]"
-          >
-            <div className={`p-2 sm:p-3 rounded-lg bg-secondary/50 flex-shrink-0 ${stat.color}`}>
-              {stat.icon}
-            </div>
-        <div className="flex items-center gap-3">
-          {contactList.filter((c: any) => c.status === "unread").length > 0 && (
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">
-              {contactList.filter((c: any) => c.status === "unread").length}
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <Link
-            key={stat.label}
-            href={stat.href}
-            className={`rounded-xl p-6 border ${stat.borderColor} ${stat.bgColor} hover:scale-105 transition-transform`}
-          >
-            <div className={`${stat.color} mb-3`}>{stat.icon}</div>
-            <div className={`text-3xl font-[var(--font-display)] ${stat.color}`}>{stat.value}</div>
-            <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {stat.label}
-            </div>
-            {stat.subtext && (
-              <div className="text-xs text-foreground/40 mt-1">
-                {stat.subtext}
-              </div>
-            )}
-          </Link>
-        ))}
-      </div>
 
       {/* Secondary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
