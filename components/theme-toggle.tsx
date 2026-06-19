@@ -1,14 +1,8 @@
-"use client"
+'use client'
 
-import { useTheme } from "@/lib/theme-context"
-import { Moon, Sun } from "lucide-react"
-import { useEffect, useState } from "react"
-
-function getThemeIcon(themeValue: "light" | "dark" | "system") {
-  if (themeValue === "light") return <Sun className="w-4 h-4" />
-  if (themeValue === "dark") return <Moon className="w-4 h-4" />
-  return <Moon className="w-4 h-4" />
-}
+import { useTheme } from '@/lib/theme-context'
+import { Moon, Sun } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
@@ -24,12 +18,6 @@ export function ThemeToggle() {
   }
 
   const { theme, setTheme, isDark } = context
-
-  const themeOptions = [
-    { value: "light" as const, label: "Light" },
-    { value: "dark" as const, label: "Dark" },
-    { value: "system" as const, label: "System" },
-  ]
 
   return (
     <div className="relative">
@@ -48,24 +36,53 @@ export function ThemeToggle() {
       
       {showMenu && (
         <div className="absolute right-0 mt-2 w-40 bg-card border border-primary/30 rounded-lg shadow-lg overflow-hidden z-50">
-          {themeOptions.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => {
-                setTheme(value)
-                setShowMenu(false)
-              }}
-              className={`w-full px-4 py-2 flex items-center gap-2 transition-colors ${
-                theme === value
-                  ? "bg-primary/20 text-primary"
-                  : "hover:bg-primary/10 text-foreground"
-              }`}
-            >
-              <span className="text-primary">{getThemeIcon(value)}</span>
-              <span className="text-sm">{label}</span>
-              {theme === value && <span className="ml-auto text-xs">✓</span>}
-            </button>
-          ))}
+          <button
+            onClick={() => {
+              setTheme('light')
+              setShowMenu(false)
+            }}
+            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+              theme === 'light'
+                ? 'bg-primary/20 text-primary'
+                : 'hover:bg-primary/10 text-foreground'
+            }`}
+          >
+            <Sun className="w-4 h-4" />
+            <span className="text-sm">Light</span>
+            {theme === 'light' && <span className="ml-auto text-xs">✓</span>}
+          </button>
+
+          <button
+            onClick={() => {
+              setTheme('dark')
+              setShowMenu(false)
+            }}
+            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+              theme === 'dark'
+                ? 'bg-primary/20 text-primary'
+                : 'hover:bg-primary/10 text-foreground'
+            }`}
+          >
+            <Moon className="w-4 h-4" />
+            <span className="text-sm">Dark</span>
+            {theme === 'dark' && <span className="ml-auto text-xs">✓</span>}
+          </button>
+
+          <button
+            onClick={() => {
+              setTheme('system')
+              setShowMenu(false)
+            }}
+            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+              theme === 'system'
+                ? 'bg-primary/20 text-primary'
+                : 'hover:bg-primary/10 text-foreground'
+            }`}
+          >
+            <Moon className="w-4 h-4" />
+            <span className="text-sm">System</span>
+            {theme === 'system' && <span className="ml-auto text-xs">✓</span>}
+          </button>
         </div>
       )}
     </div>
