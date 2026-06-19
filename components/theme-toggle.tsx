@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "@/lib/theme-context"
-import { Moon, Sun, Settings } from "lucide-react"
+import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
@@ -22,7 +22,7 @@ export function ThemeToggle() {
   const themeOptions = [
     { value: "light" as const, label: "Light", icon: Sun },
     { value: "dark" as const, label: "Dark", icon: Moon },
-    { value: "system" as const, label: "System", icon: Settings },
+    { value: "system" as const, label: "System", icon: Moon },
   ]
 
   return (
@@ -33,9 +33,7 @@ export function ThemeToggle() {
         aria-label="Toggle theme menu"
         title={`Current theme: ${theme}`}
       >
-        {theme === "system" ? (
-          <Settings className="w-5 h-5 text-primary" />
-        ) : isDark ? (
+        {isDark ? (
           <Sun className="w-5 h-5 text-primary" />
         ) : (
           <Moon className="w-5 h-5 text-primary" />
