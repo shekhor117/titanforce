@@ -13,58 +13,143 @@ function Loader() {
       className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
       style={{ willChange: "opacity", contain: "layout" }}
     >
-      {/* Optimized Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="none"
-        crossOrigin="anonymous"
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-70"
-        style={{ 
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
-          contain: "strict"
-        }}
-      >
-        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4-GKRGrLqIHbrZJqE1QHe1Em1K38VJVU.mp4" type="video/mp4" />
-      </video>
-
-      {/* Subtle overlay */}
-      <div className="absolute inset-0 bg-black/20 pointer-events-none z-1"></div>
-
-      {/* Content - Minimal animations */}
-      <div className="relative z-10 text-center">
-        {/* Logo - Fade only */}
-        <h1
-          className="text-6xl md:text-7xl font-bold text-white tracking-[0.15em] leading-none animate-in fade-in duration-600 delay-100"
-          style={{ 
-            textShadow: "0 0 40px rgba(220, 38, 38, 0.3)",
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(167, 25, 48, 0.05) 25%, rgba(167, 25, 48, 0.05) 26%, transparent 27%, transparent 74%, rgba(167, 25, 48, 0.05) 75%, rgba(167, 25, 48, 0.05) 76%, transparent 77%, transparent),
+                            linear-gradient(90deg, transparent 24%, rgba(167, 25, 48, 0.05) 25%, rgba(167, 25, 48, 0.05) 26%, transparent 27%, transparent 74%, rgba(167, 25, 48, 0.05) 75%, rgba(167, 25, 48, 0.05) 76%, transparent 77%, transparent)`,
+          backgroundSize: '60px 60px'
+        }} />
+        
+        {/* Animated scan lines */}
+        <motion.div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, rgba(167, 25, 48, 0.3) 0px, rgba(167, 25, 48, 0.3) 2px, transparent 2px, transparent 4px)',
+            backgroundSize: '100% 4px'
           }}
-        >
-          TITAN FORCE
-        </h1>
-
-        {/* Divider Lines - Simple fade */}
-        <div className="flex items-center justify-center gap-4 my-6 animate-in fade-in duration-500 delay-300">
-          <div className="w-16 h-1 bg-gradient-to-r from-transparent to-red-600" />
-          <div className="w-16 h-1 bg-gradient-to-l from-transparent to-red-600" />
-        </div>
-
-        {/* Subtitle - Fade only */}
-        <p className="text-foreground/50 text-xs md:text-sm tracking-[0.15em] uppercase font-light animate-in fade-in duration-500 delay-500">
-          Loading Experience
-        </p>
+          animate={{ backgroundPosition: ['0px 0px', '0px 4px'] }}
+          transition={{ duration: 0.3, repeat: Infinity, ease: "linear" }}
+        />
       </div>
 
-      {/* Progress Bar */}
+      {/* Floating neon lines decoration */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <motion.div
+          className="absolute w-96 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent"
+          style={{ filter: 'blur(8px)', boxShadow: '0 0 20px rgba(220, 38, 38, 0.6)' }}
+          animate={{ 
+            opacity: [0.3, 0.8, 0.3],
+            scaleX: [0.8, 1, 0.8]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute w-96 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent rotate-90"
+          style={{ filter: 'blur(8px)', boxShadow: '0 0 20px rgba(220, 38, 38, 0.6)' }}
+          animate={{ 
+            opacity: [0.3, 0.6, 0.3],
+            scaleY: [0.8, 1, 0.8]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 text-center">
+        {/* Neon border effect */}
+        <div className="relative mb-8">
+          <motion.div
+            className="absolute inset-0 rounded-lg"
+            style={{
+              border: '2px solid',
+              borderColor: 'rgba(167, 25, 48, 0.5)',
+              boxShadow: '0 0 30px rgba(167, 25, 48, 0.3), inset 0 0 20px rgba(167, 25, 48, 0.1)',
+              filter: 'blur(0.5px)'
+            }}
+            animate={{
+              boxShadow: [
+                '0 0 30px rgba(167, 25, 48, 0.3), inset 0 0 20px rgba(167, 25, 48, 0.1)',
+                '0 0 40px rgba(167, 25, 48, 0.5), inset 0 0 30px rgba(167, 25, 48, 0.2)',
+                '0 0 30px rgba(167, 25, 48, 0.3), inset 0 0 20px rgba(167, 25, 48, 0.1)'
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          
+          {/* Logo with neon glow */}
+          <h1
+            className="text-6xl md:text-7xl font-bold text-white tracking-[0.15em] leading-none px-8 py-6 relative z-10"
+            style={{ 
+              textShadow: '0 0 10px rgba(220, 38, 38, 0.3), 0 0 30px rgba(167, 25, 48, 0.4), 0 0 50px rgba(167, 25, 48, 0.2)',
+              letterSpacing: '0.15em'
+            }}
+          >
+            TITAN
+            <br />
+            FORCE
+          </h1>
+        </div>
+
+        {/* Animated corner brackets */}
+        <div className="relative flex items-center justify-center gap-8 my-8">
+          <motion.svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            style={{ filter: 'drop-shadow(0 0 8px rgba(167, 25, 48, 0.6))' }}
+          >
+            <path d="M10 10 L20 20 L10 30" stroke="rgba(167, 25, 48, 0.8)" strokeWidth="2" strokeLinecap="round" />
+          </motion.svg>
+          
+          <motion.div
+            className="w-12 h-1 bg-gradient-to-r from-red-600 to-transparent"
+            style={{ boxShadow: '0 0 15px rgba(220, 38, 38, 0.6)' }}
+            animate={{ scaleX: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
+          
+          <motion.svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+            style={{ filter: 'drop-shadow(0 0 8px rgba(167, 25, 48, 0.6))' }}
+          >
+            <path d="M30 10 L20 20 L30 30" stroke="rgba(167, 25, 48, 0.8)" strokeWidth="2" strokeLinecap="round" />
+          </motion.svg>
+        </div>
+
+        {/* Subtitle with glow */}
+        <motion.p
+          className="text-xs md:text-sm tracking-[0.15em] uppercase font-light"
+          style={{
+            color: 'rgba(167, 25, 48, 0.8)',
+            textShadow: '0 0 10px rgba(167, 25, 48, 0.4)'
+          }}
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2.5, repeat: Infinity }}
+        >
+          Initializing System
+        </motion.p>
+      </div>
+
+      {/* Neon progress bar */}
       <motion.div
-        className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-600 to-red-500"
+        className="absolute bottom-0 left-0 h-1"
+        style={{
+          background: 'linear-gradient(90deg, transparent, rgba(167, 25, 48, 0.8), transparent)',
+          boxShadow: '0 0 20px rgba(220, 38, 38, 0.8)',
+          filter: 'blur(0.5px)'
+        }}
         initial={{ width: "0%" }}
         animate={{ width: "100%" }}
-        transition={{ duration: 1.6, ease: "easeInOut" }}
-        style={{ willChange: "width", contain: "layout" }}
+        transition={{ duration: 1.8, ease: "easeInOut" }}
       />
     </motion.div>
   )
