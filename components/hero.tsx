@@ -63,8 +63,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
@@ -96,7 +96,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-black">
+      <section id="home" className="relative overflow-hidden bg-gradient-to-br from-background via-card to-background">
         {/* Video Background - Top */}
         <video
           autoPlay
@@ -105,7 +105,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           playsInline
           preload="metadata"
           crossOrigin="anonymous"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-60"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-30"
         >
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video_1780087342599-SsubDAlaIAbfc4nvMz7B4jhwFIVHdb.mp4" type="video/mp4" />
         </video>
@@ -118,7 +118,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           playsInline
           preload="metadata"
           crossOrigin="anonymous"
-          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-70"
+          className="absolute bottom-0 left-0 w-full h-2/5 object-cover z-0 opacity-40"
           style={{
             WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
             maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0) 100%)',
@@ -127,8 +127,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260402_143803_f635b644-d959-4f16-9d29-cedaeb5c6de0-XHs6l69r0GYnt6qoA3uhPw22BuCYct.mp4" type="video/mp4" />
         </video>
 
-        {/* Subtle overlay for text readability - Adapts to theme */}
-        <div className="absolute inset-0 bg-black/15 dark:bg-black/15 light:bg-white/85 light:backdrop-blur-sm z-1"></div>
+        {/* Glass frosted overlay for text readability */}
+        <div className="absolute inset-0 backdrop-blur-[2px] bg-gradient-to-b from-transparent via-background/20 to-background/40 z-1"></div>
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
@@ -202,13 +202,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`glass-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary-foreground hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-3d-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-primary-foreground transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`glass-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded text-primary hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-3d-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-foreground transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>
