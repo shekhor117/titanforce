@@ -28,7 +28,7 @@ export function Navbar() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 glass-card border-b border-primary/20">
+    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
@@ -39,7 +39,7 @@ export function Navbar() {
             className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #8b5cf6 0%, #ec4899 100%)' }}>
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #a71930 0%, #465fb1 100%)' }}>
             TITAN FORCE
           </h1>
         </Link>
@@ -68,12 +68,12 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg glass-3d-btn text-foreground transition-all relative group"
+            className="flex items-center gap-2 px-4 py-2 rounded glass-btn-primary text-foreground hover-lift transition-all relative group"
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
             {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-accent text-accent-foreground text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {cartItemCount}
               </span>
             )}
@@ -82,7 +82,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-3d-btn text-foreground transition-all duration-300"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300"
             aria-label="Toggle language"
           >
             <Globe className="w-4 h-4" />
@@ -94,7 +94,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded-lg glass-3d-btn-primary text-foreground transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {language === "bn" ? "লগইন" : "Login"}
             </Link>
@@ -118,25 +118,25 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-3 rounded-lg glass-3d-btn text-foreground transition-all duration-300 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
+            className="flex items-center gap-2 px-4 py-3 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
             style={{ animationDelay: '300ms' }}
             onClick={() => setMobileMenuOpen(false)}
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
             {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-accent text-accent-foreground text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {cartItemCount}
               </span>
             )}
           </Link>
           
-          <div className="border-t border-border/30 pt-4 mt-2 flex flex-col gap-3">
+          <div className="border-t border-secondary pt-4 mt-2 flex flex-col gap-3">
             <div className="w-full flex items-center gap-2">
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-3d-btn text-foreground transition-all duration-300 flex-1 text-xs min-h-[44px]"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 flex-1 text-xs min-h-[44px]"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -149,7 +149,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-4 py-3 font-bold text-xs uppercase tracking-wider rounded-lg glass-3d-btn-primary text-foreground transition duration-300 text-center min-h-[44px] flex items-center justify-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                className={`px-4 py-3 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 text-center min-h-[44px] flex items-center justify-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {language === "bn" ? "লগইন" : "Login"}
