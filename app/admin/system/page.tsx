@@ -6,7 +6,7 @@ import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { dataStore, ActivityLog } from "@/lib/data-store"
 import { 
   Download, Upload, RefreshCw, Trash2, Database, HardDrive, 
-  Clock, Activity, Shield, AlertTriangle, CheckCircle, X, FileJson, Settings
+  Clock, Activity, Shield, AlertTriangle, CheckCircle, X, FileJson, Cog
 } from "lucide-react"
 
 export default function AdminSystemPage() {

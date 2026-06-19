@@ -1,5 +1,7 @@
-import { Metadata } from 'next'
-import { generatePageMetadata } from '@/lib/seo-utils'
+import { Metadata, Viewport } from 'next'
+import { generatePageMetadata, defaultViewport } from '@/lib/seo-utils'
+
+export const viewport: Viewport = defaultViewport
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Contact Us - Titan Force FC',
