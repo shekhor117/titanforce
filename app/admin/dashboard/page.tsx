@@ -401,15 +401,59 @@ export default function AdminDashboard() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <div>
-          <h1 className={`font-[var(--font-display)] text-4xl tracking-wider text-foreground mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <h1 className={`font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl tracking-wider text-foreground mb-1 sm:mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
           </h1>
-          <p className={`text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "ট���ইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
+          <p className={`text-xs sm:text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "ট্রাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
           </p>
         </div>
+        <div className="flex items-center gap-3">
+          {contactList.filter((c: any) => c.status === "unread").length > 0 && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">
+              {contactList.filter((c: any) => c.status === "unread").length}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        {stats.map((stat) => (
+          <Link
+            key={stat.label}
+            href={stat.href}
+            className={`rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border ${stat.borderColor} ${stat.bgColor} hover:scale-105 transition-transform min-h-[140px] sm:min-h-[160px] flex flex-col justify-between`}
+          >
+            <div className={`${stat.color} mb-2 sm:mb-3`}>{stat.icon}</div>
+            <div>
+              <div className={`text-xl sm:text-2xl md:text-3xl font-[var(--font-display)] ${stat.color}`}>{stat.value}</div>
+              <div className={`text-xs uppercase tracking-wider text-foreground/60 mt-1 sm:mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                {stat.label}
+              </div>
+              {stat.subtext && (
+                <div className="text-xs text-foreground/40 mt-1 line-clamp-1">
+                  {stat.subtext}
+                </div>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Secondary Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+        {additionalStats.map((stat) => (
+          <Link
+            key={stat.label}
+            href={stat.href}
+            className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-secondary bg-card hover:border-primary/50 transition min-h-[80px] sm:min-h-[100px]"
+          >
+            <div className={`p-2 sm:p-3 rounded-lg bg-secondary/50 flex-shrink-0 ${stat.color}`}>
+              {stat.icon}
+            </div>
         <div className="flex items-center gap-3">
           {contactList.filter((c: any) => c.status === "unread").length > 0 && (
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">
