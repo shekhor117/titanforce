@@ -19,9 +19,9 @@ export function HomeShopLatest() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              NEW HOME KIT
+              LATEST JERSEY
               <br />
-              2024/25
+              FROM STORE
             </h2>
 
             <p className="text-foreground leading-relaxed mb-6 text-lg">
