@@ -54,9 +54,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
         
         {/* Two Column Layout - Mobile shows image as background, desktop shows side-by-side */}
-        <div className="relative w-full h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10 flex">
+        <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10">
           {/* Left Column - Text Content - Positioned on top on mobile, left side on desktop */}
-          <div className="relative w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center">
+          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
@@ -112,9 +112,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
 
           {/* Right Column - Team Image with Stadium Effect - Full background on mobile, side column on desktop */}
-          <div className="hidden lg:flex relative flex-1 h-full min-h-[85vh] items-center justify-end overflow-hidden z-5">
+          <div className="absolute lg:absolute w-full lg:w-1/2 lg:right-0 lg:top-0 h-full lg:h-full min-h-[85vh] sm:min-h-[75vh] flex items-center justify-center lg:justify-end inset-0 lg:inset-auto overflow-hidden z-0 lg:z-5">
             {/* Team background image container */}
-            <div className="absolute inset-0 w-full h-full">
+            <div className="absolute inset-0">
               {/* Background image */}
               <img 
                 src="/images/hero-team-huddle.png" 
@@ -122,8 +122,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               
-              {/* Primary overlay - gradient blend - Dark theme */}
-              <div className="absolute inset-0 dark:bg-gradient-to-r dark:from-black dark:via-black/60 dark:to-black/30 bg-gradient-to-r from-white/40 via-white/20 to-white/10"></div>
+              {/* Primary overlay - gradient blend */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/30"></div>
               
               {/* Secondary overlay - stadium lighting effect */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70"></div>
