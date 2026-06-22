@@ -96,8 +96,8 @@ const translations: Record<Language, Translations> = {
       welcome: "TITAN FORCE",
       clubName: "MULIKANDI",
       tagline: "Building champions on the field and leaders in life. Proud of our roots. Driven by passion. United as one.",
-      viewSquad: "Discover Our Club",
-      matches: "Join Our Family",
+      viewSquad: "our squad",
+      matches: "matches",
     },
     about: {
       location: "Est.2025 Mulikandi, Zakigonj, Sylhet",
@@ -173,8 +173,8 @@ const translations: Record<Language, Translations> = {
       welcome: "টাইটান ফোর্স",
       clubName: "মুলিকান্দি",
       tagline: "মাঠে চ্যাম্পিয়ন এবং জীবনে নেতা তৈরি করা। আমাদের শিকড়ের জন্য গর্বিত। আবেগ দ্বারা চালিত। একসাথে একীভূত।",
-      viewSquad: "আমাদের ক্লাব আবিষ্কার করুন",
-      matches: "আমাদের পরিবারে যোগ দিন",
+      viewSquad: "আমাদের দল",
+      matches: "ম্যাচ",
     },
     about: {
       location: "প্রতিষ্ঠা:২০২৫ মুলিকান্দি, জাকিগঞ্জ, সিলেট",
@@ -217,7 +217,7 @@ const translations: Record<Language, Translations> = {
       message: "বার্তা",
       messagePlaceholder: "আপনার বার্তা",
       send: "বার্তা পাঠান",
-      success: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
+      success: "বার্তা পাঠা��ো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
       followUs: "আমাদের অনুসরণ করুন",
     },
     join: {
