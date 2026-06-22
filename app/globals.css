@@ -659,44 +659,41 @@ canvas {
 
 @keyframes intro-logo {
   0% {
-    transform: scale(0.6) translateZ(0);
+    transform: scale(0.6);
     opacity: 0;
-    filter: blur(4px);
   }
   45% {
-    transform: scale(1.15) translateZ(0);
+    transform: scale(1.15);
     opacity: 1;
-    filter: blur(0);
   }
   100% {
-    transform: scale(1) translateZ(0);
+    transform: scale(1);
     opacity: 1;
-    filter: blur(0);
   }
 }
 
 @keyframes intro-text {
   0% {
     opacity: 0;
-    transform: translateY(30px) translateZ(0);
+    transform: translateY(30px);
   }
   50% {
     opacity: 0;
-    transform: translateY(30px) translateZ(0);
+    transform: translateY(30px);
   }
   85% {
     opacity: 1;
-    transform: translateY(0) translateZ(0);
+    transform: translateY(0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) translateZ(0);
+    transform: translateY(0);
   }
 }
 
 @keyframes intro-bar {
   0% {
-    width: 0;
+    transform: scaleX(0);
     opacity: 0;
   }
   35% {
@@ -706,7 +703,7 @@ canvas {
     opacity: 1;
   }
   100% {
-    width: 100%;
+    transform: scaleX(1);
     opacity: 1;
   }
 }
@@ -769,7 +766,8 @@ canvas {
 
 .animate-intro-bar {
   animation: intro-bar 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  will-change: width, opacity;
+  will-change: transform, opacity;
+  transform-origin: left center;
 }
 
 .animate-intro-loading {
