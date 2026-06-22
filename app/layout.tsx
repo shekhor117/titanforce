@@ -11,6 +11,7 @@ import { CartProvider } from '@/lib/cart-context'
 import { ErrorBoundary } from '@/components/error-boundary'
 
 import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
+import { IntroSplash } from '@/components/intro-splash'
 import './globals.css'
 
 const bebasNeue = Bebas_Neue({
@@ -95,6 +96,7 @@ export default function RootLayout({
         />
         <ThemeProvider>
           <TransitionProvider>
+            <IntroSplash />
             <AdminProvider>
               <AuthProvider>
                 <CartProvider>
