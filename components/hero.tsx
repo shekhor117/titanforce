@@ -112,7 +112,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
 
           {/* Right Column - Team Image with Stadium Effect - Full background on mobile, side column on desktop */}
-          <div className="hidden lg:flex relative w-0 lg:w-1/2 h-full min-h-[85vh] lg:min-h-[85vh] items-center justify-end overflow-hidden z-5">
+          <div className="hidden lg:flex relative flex-1 h-full min-h-[85vh] items-center justify-end overflow-hidden z-5">
             {/* Team background image container */}
             <div className="absolute inset-0 w-full h-full">
               {/* Background image */}
@@ -122,8 +122,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               
-              {/* Primary overlay - gradient blend */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/30"></div>
+              {/* Primary overlay - gradient blend - Dark theme */}
+              <div className="absolute inset-0 dark:bg-gradient-to-r dark:from-black dark:via-black/60 dark:to-black/30 bg-gradient-to-r from-white/40 via-white/20 to-white/10"></div>
               
               {/* Secondary overlay - stadium lighting effect */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70"></div>
