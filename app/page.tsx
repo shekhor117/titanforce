@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
+import { HomeClubStats } from "@/components/home-club-stats"
+import { HomeNextFixture } from "@/components/home-next-fixture"
+import { HomeCommunitySection } from "@/components/home-community-section"
+import { HomeClubAchievements } from "@/components/home-club-achievements"
 import { GalleryShowcase } from "@/components/gallery-showcase"
-import { TrophyTimeline } from "@/components/trophy-timeline"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -60,8 +63,13 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
+        <HomeClubStats />
+        <div className="border-t border-foreground/10">
+          <HomeNextFixture />
+        </div>
+        <HomeCommunitySection />
+        <HomeClubAchievements />
         <GalleryShowcase />
-        <TrophyTimeline />
         <Contact />
       </main>
       {!heroLoading && <Footer />}
