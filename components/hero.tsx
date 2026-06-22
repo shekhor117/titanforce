@@ -71,7 +71,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-black min-h-screen md:min-h-[90vh]">
+      <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
         {/* Stadium Background */}
         <div className="absolute inset-0 z-0">
           <div 
@@ -89,9 +89,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
         
         {/* Two Column Layout */}
-        <div className="relative max-w-7xl mx-auto h-full min-h-screen flex flex-col lg:flex-row items-center justify-between z-10">
+        <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] flex flex-col lg:flex-row items-center justify-between z-10">
           {/* Left Column - Text Content */}
-          <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-32 z-5">
+          <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-5">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
@@ -147,7 +147,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
 
           {/* Right Column - Team Image with Stadium Effect */}
-          <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-full min-h-96 lg:min-h-screen flex items-center justify-center lg:justify-end relative overflow-hidden">
+          <div className="w-full lg:w-1/2 h-60 sm:h-72 lg:h-full min-h-80 lg:min-h-[85vh] sm:lg:min-h-[75vh] flex items-center justify-center lg:justify-end relative overflow-hidden">
             {/* Team background image container */}
             <div className="absolute inset-0">
               {/* Background image */}
