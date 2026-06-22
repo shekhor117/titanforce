@@ -36,42 +36,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <>
-      {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
-
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-primary/30 blur-3xl animate-pulse" />
-              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl animate-pulse animation-delay-1000" />
-
-              <Image
-                src="/logos/titanforce-logo.svg"
-                alt="Opening Logo"
-                width={160}
-                height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(167,25,48,0.9)]"
-                priority
-              />
-            </div>
-
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2.2s_cubic-bezier(0.25,0.46,0.45,0.94)] font-[var(--font-display)]">
-              TITAN FORCE
-            </h1>
-
-            <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-primary to-accent animate-[loadingBar_3s_cubic-bezier(0.42,0,0.58,1)_forwards]" />
-            </div>
-
-            <p className="mt-4 text-gray-400 tracking-[6px] text-sm animate-pulse">
-              LOADING EXPERIENCE
-            </p>
-          </div>
-        </div>
-      )}
-
-      <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
+    <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
         {/* Stadium Background */}
         <div className="absolute inset-0 z-0">
           <div 
@@ -181,79 +146,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
         </div>
 
-        {/* Feature Boxes Section */}
-        <div className="relative z-10 bg-black py-12 md:py-16 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-4">
-              {/* Founded */}
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-                  </svg>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Founded</p>
-                <p className="text-lg md:text-xl font-black text-white">2024</p>
-              </div>
 
-              {/* Home Ground */}
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                  </svg>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Home Ground</p>
-                <p className="text-lg md:text-xl font-black text-white">Mulikandi</p>
-              </div>
-
-              {/* Colors */}
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <div className="flex gap-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-accent"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                  </div>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Colors</p>
-                <p className="text-lg md:text-xl font-black text-white">Red & Black</p>
-              </div>
-
-              {/* Motto */}
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Motto</p>
-                <p className="text-lg md:text-xl font-black text-white">One Team, One Dream</p>
-              </div>
-
-              {/* Community */}
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                  </svg>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Community</p>
-                <p className="text-lg md:text-xl font-black text-white">Stronger Together</p>
-              </div>
-
-              {/* Vision */}
-              <div className="flex flex-col items-center text-center col-span-2 md:col-span-1">
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
-                  </svg>
-                </div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">Vision</p>
-                <p className="text-lg md:text-xl font-black text-white">Excellence</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <style jsx>{`
           @keyframes float {
@@ -473,6 +366,5 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           }
         `}</style>
       </section>
-    </>
   )
 }

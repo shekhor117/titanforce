@@ -7,11 +7,9 @@ import { ClubInfoSection } from "@/components/club-info-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
-import { HomeCommunitySection } from "@/components/home-community-section"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { HomeShopLatest } from "@/components/home-shop-latest"
-import { HomeNewsletter } from "@/components/home-newsletter"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
@@ -90,13 +88,11 @@ export default function Home() {
           </div>
         </section>
 
-        <HomeCommunitySection />
         <HomeAboutGallery />
         <HomeStatsShowcase />
         <HomeShopLatest />
-        <HomeNewsletter />
-        <Contact />
         <GalleryShowcase />
+        <Contact />
       </main>
       {!heroLoading && <Footer />}
     </div>
