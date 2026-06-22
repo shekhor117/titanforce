@@ -6,7 +6,7 @@ const clubInfoData = [
   {
     icon: Users,
     label: 'FOUNDED',
-    value: '2024',
+    value: '2025',
   },
   {
     icon: MapPin,
