@@ -166,13 +166,21 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Image (Hidden on mobile, shown on md+) */}
-          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative">
-            <div className="absolute inset-0 opacity-30" style={{
+          {/* Right Column - Team Image (Hidden on mobile, shown on md+) */}
+          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden">
+            {/* Team Image Background */}
+            <div className="absolute inset-0" style={{
               backgroundImage: 'url(/images/hero-bg-soccer.jpg)',
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundPosition: 'center right',
+              backgroundAttachment: 'fixed'
             }} />
+            
+            {/* Overlay gradient to blend with left side */}
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/60" />
+            
+            {/* Lighting effect for team visibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
           </div>
         </div>
 
