@@ -82,9 +82,6 @@ export function GalleryShowcase() {
                           alt={item.title}
                           fill
                           className="object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
-                          onError={(e: any) => {
-                            e.currentTarget.src = 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=600&fit=crop'
-                          }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       )}
