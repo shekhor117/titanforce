@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useIntroStore } from '@/lib/stores/intro-store'
 
@@ -8,10 +8,10 @@ export function IntroSplash() {
   const { hasShown, setShown } = useIntroStore()
   const [show, setShow] = useState(false)
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     setShown()
     setShow(false)
-  }
+  }, [setShown])
 
   // Timer effect
   useEffect(() => {
