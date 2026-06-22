@@ -130,7 +130,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <span className="block text-white overflow-hidden animate-smoothFadeUp">
               {t.hero.welcome}
             </span>
-            <span className="block text-white mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
+            <span className="block text-accent mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
               {t.hero.clubName}
             </span>
           </h2>

@@ -93,11 +93,11 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       subtitle: "Mulikandi Football Team",
-      welcome: "WELCOME TO",
-      clubName: "TITAN FORCE",
-      tagline: "Pride · Passion · Power",
-      viewSquad: "View Squad",
-      matches: "Matches",
+      welcome: "TITAN FORCE",
+      clubName: "MULIKANDI",
+      tagline: "Building champions on the field and leaders in life. Proud of our roots. Driven by passion. United as one.",
+      viewSquad: "Discover Our Club",
+      matches: "Join Our Family",
     },
     about: {
       location: "Est.2025 Mulikandi, Zakigonj, Sylhet",
@@ -170,11 +170,11 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       subtitle: "মুলিকান্দি ফুটবল ক্লাব",
-      welcome: "স্বাগতম",
-      clubName: "টাইটান ফোর্স",
-      tagline: "গর্ব · আবেগ · শক্তি",
-      viewSquad: "স্কোয়াড দেখুন",
-      matches: "ম্যাচসমূহ",
+      welcome: "টাইটান ফোর্স",
+      clubName: "মুলিকান্দি",
+      tagline: "মাঠে চ্যাম্পিয়ন এবং জীবনে নেতা তৈরি করা। আমাদের শিকড়ের জন্য গর্বিত। আবেগ দ্বারা চালিত। একসাথে একীভূত।",
+      viewSquad: "আমাদের ক্লাব আবিষ্কার করুন",
+      matches: "আমাদের পরিবারে যোগ দিন",
     },
     about: {
       location: "প্রতিষ্ঠা:২০২৫ মুলিকান্দি, জাকিগঞ্জ, সিলেট",
@@ -223,7 +223,7 @@ const translations: Record<Language, Translations> = {
     join: {
       subtitle: "ঐতিহ্যের অংশ হন",
       title: "টাইটান ফোর্সে যোগ দিন",
-      description: "ফুটবল সম্পর্কে আপনার আবেগ কী? সিলেটের সবচেয়ে রোমাঞ্চকর দলে যোগ দিতে আগ্রহী? আমরা সর্বদা নিবেদিত খেলোয়াড় এবং সমর্থক খুঁজছি।",
+      description: "ফুটবল সম্পর্কে আপ��ার আবেগ কী? সিলেটের সবচেয়ে রোমাঞ্চকর দলে যোগ দিতে আগ্রহী? আমরা সর্বদা নিবেদিত খেলোয়াড় এবং সমর্থক খুঁজছি।",
       card1Title: "খেলোয়াড়দের জন্য",
       card1Desc: "আপনার দক্ষতা প্রদর্শন করুন এবং টাইটান ফোর্সের প্রতিনিধিত্ব করুন। একটি দলের সাথে সর্বোচ্চ স্তরে খেলুন যা কঠোর পরিশ্রম মূল্য দেয়।",
       card2Title: "সমর্থকদের জন্য",
