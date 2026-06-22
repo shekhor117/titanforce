@@ -55,11 +55,7 @@ export function HomeAboutGallery() {
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors" />
                   </div>
                 ))
-              ) : (
-                <div className="col-span-2 h-48 rounded-lg bg-muted/30 flex items-center justify-center">
-                  <p className="text-muted-foreground">No gallery images available</p>
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
