@@ -97,9 +97,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="relative overflow-hidden bg-black">
-        {/* Neon Hero Background Image */}
+        {/* Soccer Hero Background Image */}
         <div className="absolute inset-0 z-0" style={{
-          backgroundImage: 'url(/images/hero-bg-neon.jpg)',
+          backgroundImage: 'url(/images/hero-bg-soccer.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
