@@ -106,11 +106,11 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         }} />
 
         {/* Overlay for text readability and depth */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30 z-1"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/60 to-black/30 z-1"></div>
         
         {/* Two Column Layout */}
-        <div className="relative max-w-7xl mx-auto h-full min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center z-10">
-          {/* Left Column - Text Content */}
+        <div className="relative max-w-7xl mx-auto h-full min-h-screen md:min-h-[80vh] flex flex-col-reverse md:flex-row-reverse items-center z-10">
+          {/* Right Column - Text Content */}
           <div className="w-full md:w-1/2 px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
@@ -166,18 +166,18 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Team Image (Hidden on mobile, shown on md+) */}
-          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden">
+          {/* Left Column - Team Image (Hidden on mobile, shown on md+) */}
+          <div className="hidden md:flex w-1/2 h-full items-center justify-start relative overflow-hidden">
             {/* Team Image Background */}
             <div className="absolute inset-0" style={{
               backgroundImage: 'url(/images/hero-bg-soccer.jpg)',
               backgroundSize: 'cover',
-              backgroundPosition: 'center right',
+              backgroundPosition: 'center left',
               backgroundAttachment: 'fixed'
             }} />
             
-            {/* Overlay gradient to blend with left side */}
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/60" />
+            {/* Overlay gradient to blend with right side */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-black/60" />
             
             {/* Lighting effect for team visibility */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
