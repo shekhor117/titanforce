@@ -45,7 +45,7 @@ export function WebsiteIntro() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center space-y-8">
+      <div className="relative z-10 flex flex-col items-center justify-center space-y-6">
         {/* Logo Container */}
         <div className="animate-fade-up">
           <div className="relative w-32 h-32 flex items-center justify-center">
@@ -73,14 +73,7 @@ export function WebsiteIntro() {
           <p className="text-muted-foreground text-lg">Unleash Your Potential</p>
         </div>
 
-        {/* Loading indicator */}
-        <div className="animate-fade-up animation-delay-200">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-          </div>
-        </div>
+
       </div>
 
       {/* Click to skip text */}
