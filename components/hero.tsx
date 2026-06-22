@@ -150,36 +150,33 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-full min-h-96 lg:min-h-screen flex items-center justify-center lg:justify-end relative overflow-hidden">
             {/* Team background image container */}
             <div className="absolute inset-0">
-              {/* Placeholder team image area with gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-950/40 via-black/60 to-black/90"></div>
+              {/* Background image */}
+              <img 
+                src="/images/hero-team-huddle.png" 
+                alt="Team huddle" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
               
-              {/* Stadium lighting effect - top */}
-              <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-gradient-radial from-red-600/30 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
+              {/* Primary overlay - gradient blend */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/30"></div>
               
-              {/* Stadium lighting effect - center right */}
-              <div className="absolute top-1/3 right-0 w-40 sm:w-56 lg:w-80 h-40 sm:h-56 lg:h-80 bg-gradient-radial from-accent/40 via-accent/10 to-transparent rounded-full blur-3xl sm:-mr-10 lg:-mr-20"></div>
+              {/* Secondary overlay - stadium lighting effect */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70"></div>
               
-              {/* Team players silhouette area */}
-              <div className="absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-12">
-                <div className="relative w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 flex flex-col items-center justify-center">
-                  {/* Glow behind team */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-accent/20 to-transparent blur-2xl"></div>
-                  
-                  {/* Team huddle representation */}
-                  <div className="relative z-5 text-center">
-                    <svg className="w-80 h-80 text-gray-300 opacity-20 drop-shadow-[0_0_40px_rgba(167,25,48,0.7)]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"/>
-                    </svg>
-                    <p className="text-sm font-bold text-white/60 mt-4 tracking-wider">UNITED FORCE</p>
-                  </div>
-                </div>
-              </div>
+              {/* Red ambient light from top right */}
+              <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-red-600/40 via-red-500/20 to-transparent blur-3xl"></div>
+              
+              {/* Red accent from center right */}
+              <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-l from-accent/30 via-accent/10 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Top bright lighting effect */}
+              <div className="absolute top-0 left-1/2 w-96 h-64 bg-gradient-radial from-yellow-400/20 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
               
               {/* Red accent edge lighting */}
-              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/10 via-transparent to-transparent pointer-events-none"></div>
               
-              {/* Bottom dark gradient */}
-              <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+              {/* Bottom dark vignette */}
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
             </div>
           </div>
         </div>
