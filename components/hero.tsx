@@ -36,42 +36,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <>
-      {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
-
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-primary/30 blur-3xl animate-pulse" />
-              <div className="absolute inset-0 rounded-full bg-accent/20 blur-3xl animate-pulse animation-delay-1000" />
-
-              <Image
-                src="/logos/titanforce-logo.svg"
-                alt="Opening Logo"
-                width={160}
-                height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(167,25,48,0.9)]"
-                priority
-              />
-            </div>
-
-            <h1 className="mt-8 text-4xl md:text-6xl font-black tracking-[10px] text-white animate-[openingText_2.2s_cubic-bezier(0.25,0.46,0.45,0.94)] font-[var(--font-display)]">
-              TITAN FORCE
-            </h1>
-
-            <div className="mt-6 w-64 h-1 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-primary to-accent animate-[loadingBar_3s_cubic-bezier(0.42,0,0.58,1)_forwards]" />
-            </div>
-
-            <p className="mt-4 text-gray-400 tracking-[6px] text-sm animate-pulse">
-              LOADING EXPERIENCE
-            </p>
-          </div>
-        </div>
-      )}
-
-      <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
+    <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
         {/* Stadium Background */}
         <div className="absolute inset-0 z-0">
           <div 
@@ -401,6 +366,5 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           }
         `}</style>
       </section>
-    </>
   )
 }
