@@ -130,16 +130,16 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </p>
 
             {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 animate-buttonSlideIn">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`bg-accent hover:bg-accent/90 px-6 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`bg-accent hover:bg-accent/90 px-6 sm:px-6 py-3 sm:py-3 font-bold text-sm sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center sm:justify-start ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`border-2 border-white hover:bg-white/10 px-6 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`border-2 border-white hover:bg-white/10 px-6 sm:px-6 py-3 sm:py-3 font-bold text-sm sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center sm:justify-start ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>
