@@ -122,8 +122,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
           <div className="animate-smoothFadeUp">
-            <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.hero.subtitle}
+            <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
             </p>
           </div>
           <h2 className={`mt-4 sm:mt-6 mb-4 sm:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-tight sm:leading-none tracking-wide text-white animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
