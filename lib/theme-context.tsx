@@ -40,16 +40,16 @@ function applyTheme(effectiveTheme: "dark" | "light") {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system")
+  const [theme, setThemeState] = useState<Theme>("dark")
   const [isDark, setIsDark] = useState(true)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     
-    // Load saved theme preference or default to "system"
+    // Load saved theme preference or default to "dark"
     const savedTheme = localStorage.getItem("titanforce_theme") as Theme | null
-    const initialTheme = savedTheme || "system"
+    const initialTheme = savedTheme || "dark"
     setThemeState(initialTheme)
     
     // Get effective theme and apply it

@@ -3,8 +3,16 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
+import { ClubInfoSection } from "@/components/club-info-section"
+import { HomeNextFixture } from "@/components/home-next-fixture"
+import { HomeLatestNews } from "@/components/home-latest-news"
+import { HomeLeagueStandings } from "@/components/home-league-standings"
+import { HomeCommunitySection } from "@/components/home-community-section"
+import { HomeAboutGallery } from "@/components/home-about-gallery"
+import { HomeStatsShowcase } from "@/components/home-stats-showcase"
+import { HomeShopLatest } from "@/components/home-shop-latest"
+import { HomeNewsletter } from "@/components/home-newsletter"
 import { GalleryShowcase } from "@/components/gallery-showcase"
-import { TrophyTimeline } from "@/components/trophy-timeline"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -60,9 +68,26 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <GalleryShowcase />
-        <TrophyTimeline />
+        <ClubInfoSection />
+        
+        {/* Three Column Section */}
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <HomeNextFixture />
+              <HomeLatestNews />
+              <HomeLeagueStandings />
+            </div>
+          </div>
+        </section>
+
+        <HomeCommunitySection />
+        <HomeAboutGallery />
+        <HomeStatsShowcase />
+        <HomeShopLatest />
+        <HomeNewsletter />
         <Contact />
+        <GalleryShowcase />
       </main>
       {!heroLoading && <Footer />}
     </div>
