@@ -47,10 +47,6 @@ export function HomeShopLatest() {
                   alt="Titan Force Mulikandi Home Kit 2024/25"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => {
-                    // Fallback if image not found
-                    e.currentTarget.style.display = 'none'
-                  }}
                 />
                 {/* Fallback gradient when image not available */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-accent/60 flex items-center justify-center">

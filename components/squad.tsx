@@ -135,8 +135,6 @@ export function Squad() {
                         fill
                         className="object-cover object-top"
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                        onError={(e) => {
-                        }}
                       />
                       <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 font-[var(--font-display)] text-lg sm:text-2xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                         {player.num}
