@@ -146,37 +146,40 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Team Image */}
-          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden group">
-            {/* Team Players Visual */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-full h-full">
-                {/* Animated gradient for team area */}
-                <div className="absolute inset-0 bg-gradient-to-l from-accent/5 via-transparent to-black/90 z-10"></div>
-                
-                {/* Team silhouettes with accent glow */}
-                <div className="absolute inset-0 flex items-center justify-center z-5">
-                  <div className="relative w-96 h-96">
-                    {/* Central glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent blur-3xl group-hover:from-accent/50 transition-all duration-500"></div>
-                    
-                    {/* Team figure placeholder with dynamic styling */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
-                      <svg className="w-64 h-64 text-accent drop-shadow-[0_0_30px_rgba(167,25,48,0.6)]" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="6" r="3"/>
-                        <path d="M12 9c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0-8C6.48 7 2 9.24 2 12c0 2.85 2.92 7.21 10 11.88 7.05-4.67 10-9.03 10-11.88 0-2.76-4.48-5-10-5z"/>
-                      </svg>
-                      <p className="text-xs font-bold text-accent mt-4 tracking-wider">PLAYERS UNITED</p>
-                    </div>
-                    
-                    {/* Accent border effect */}
-                    <div className="absolute inset-0 border-2 border-accent/20 rounded-lg group-hover:border-accent/40 transition-all duration-500"></div>
+          {/* Right Column - Team Image with Stadium Effect */}
+          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden">
+            {/* Team background image container */}
+            <div className="absolute inset-0">
+              {/* Placeholder team image area with gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-950/40 via-black/60 to-black/90"></div>
+              
+              {/* Stadium lighting effect - top */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-red-600/30 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
+              
+              {/* Stadium lighting effect - center right */}
+              <div className="absolute top-1/3 right-0 w-80 h-80 bg-gradient-radial from-accent/40 via-accent/10 to-transparent rounded-full blur-3xl -mr-20"></div>
+              
+              {/* Team players silhouette area */}
+              <div className="absolute inset-0 flex items-center justify-end pr-12">
+                <div className="relative w-96 h-96 flex flex-col items-center justify-center">
+                  {/* Glow behind team */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-accent/20 to-transparent blur-2xl"></div>
+                  
+                  {/* Team huddle representation */}
+                  <div className="relative z-5 text-center">
+                    <svg className="w-80 h-80 text-gray-300 opacity-20 drop-shadow-[0_0_40px_rgba(167,25,48,0.7)]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"/>
+                    </svg>
+                    <p className="text-sm font-bold text-white/60 mt-4 tracking-wider">UNITED FORCE</p>
                   </div>
                 </div>
-                
-                {/* Bottom lighting effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
               </div>
+              
+              {/* Red accent edge lighting */}
+              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/5 via-transparent to-transparent pointer-events-none"></div>
+              
+              {/* Bottom dark gradient */}
+              <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             </div>
           </div>
         </div>
