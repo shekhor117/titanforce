@@ -49,23 +49,23 @@
 }
 
 .light {
-  --background: #f5f5f5;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #f5f5f5;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --popover-foreground: #0a0a0a;
   --primary: #a71930;
   --primary-foreground: #ffffff;
   --secondary: #f0f0f0;
   --secondary-foreground: #5a1220;
-  --muted: #e8e8e8;
+  --muted: #e0e0e0;
   --muted-foreground: #4a4a4a;
   --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e8e8e8;
+  --border: #e0e0e0;
   --input: #f5f5f5;
   --ring: #a71930;
 }
@@ -100,6 +100,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 * {
@@ -187,7 +189,7 @@ html {
 }
 
 .light .hero-gradient {
-  background: linear-gradient(135deg, #f5f5f5 0%, #fce8ec 30%, #f3d5dd 60%, #f5f5f5 100%);
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #f0f0f0 100%);
 }
 
 /* Card glow effect */
