@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Shield } from 'lucide-react'
 
 export function HomeCommunitySection() {
@@ -34,7 +35,16 @@ export function HomeCommunitySection() {
             </Link>
           </div>
 
-
+          {/* Right Side - Image */}
+          <div className="relative h-96 rounded-lg overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20" />
+            <Image
+              src="/images/hero-bg-soccer.jpg"
+              alt="Community"
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>
