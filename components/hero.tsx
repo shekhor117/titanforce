@@ -89,9 +89,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
         
         {/* Two Column Layout */}
-        <div className="relative max-w-7xl mx-auto h-full min-h-screen md:min-h-[90vh] flex flex-col md:flex-row items-center z-10">
+        <div className="relative max-w-7xl mx-auto h-full min-h-screen flex flex-col lg:flex-row items-center justify-between z-10">
           {/* Left Column - Text Content */}
-          <div className="w-full md:w-1/2 px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-32">
+          <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-32 z-5">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
@@ -147,21 +147,21 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
 
           {/* Right Column - Team Image with Stadium Effect */}
-          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden">
+          <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-full min-h-96 lg:min-h-screen flex items-center justify-center lg:justify-end relative overflow-hidden">
             {/* Team background image container */}
             <div className="absolute inset-0">
               {/* Placeholder team image area with gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-red-950/40 via-black/60 to-black/90"></div>
               
               {/* Stadium lighting effect - top */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-red-600/30 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-gradient-radial from-red-600/30 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
               
               {/* Stadium lighting effect - center right */}
-              <div className="absolute top-1/3 right-0 w-80 h-80 bg-gradient-radial from-accent/40 via-accent/10 to-transparent rounded-full blur-3xl -mr-20"></div>
+              <div className="absolute top-1/3 right-0 w-40 sm:w-56 lg:w-80 h-40 sm:h-56 lg:h-80 bg-gradient-radial from-accent/40 via-accent/10 to-transparent rounded-full blur-3xl sm:-mr-10 lg:-mr-20"></div>
               
               {/* Team players silhouette area */}
-              <div className="absolute inset-0 flex items-center justify-end pr-12">
-                <div className="relative w-96 h-96 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-12">
+                <div className="relative w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 flex flex-col items-center justify-center">
                   {/* Glow behind team */}
                   <div className="absolute inset-0 bg-gradient-to-b from-accent/20 to-transparent blur-2xl"></div>
                   
