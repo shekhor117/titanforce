@@ -5,8 +5,6 @@ import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
-import { Zap } from "lucide-react"
-import { getDataService } from "@/lib/data-service"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -18,29 +16,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   const isBn = language === "bn"
   const [loading, setLoading] = useState(!skipAnimation)
   const { players } = usePlayers()
-  const [aboutSettings, setAboutSettings] = useState({
-    aboutTitle: t.about.title,
-    aboutDescription: t.about.description
-  })
-
-  useEffect(() => {
-    // Fetch settings from data service
-    const loadSettings = async () => {
-      try {
-        const service = getDataService()
-        const settings = await service.getSettings?.()
-        if (settings) {
-          setAboutSettings({
-            aboutTitle: settings.aboutTitle || t.about.title,
-            aboutDescription: settings.aboutDescription || t.about.description
-          })
-        }
-      } catch (err) {
-        // Using default about settings
-      }
-    }
-    loadSettings()
-  }, [])
 
   const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
 
