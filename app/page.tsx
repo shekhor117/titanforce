@@ -7,7 +7,6 @@ import { ClubInfoSection } from "@/components/club-info-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
-import { HomeCommunitySection } from "@/components/home-community-section"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { HomeShopLatest } from "@/components/home-shop-latest"
@@ -90,7 +89,6 @@ export default function Home() {
           </div>
         </section>
 
-        <HomeCommunitySection />
         <HomeAboutGallery />
         <HomeStatsShowcase />
         <HomeShopLatest />
