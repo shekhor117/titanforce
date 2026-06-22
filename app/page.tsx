@@ -10,6 +10,7 @@ import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeCommunitySection } from "@/components/home-community-section"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
+import { HomeShopLatest } from "@/components/home-shop-latest"
 import { HomeNewsletter } from "@/components/home-newsletter"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
@@ -83,6 +84,7 @@ export default function Home() {
         <HomeCommunitySection />
         <HomeAboutGallery />
         <HomeStatsShowcase />
+        <HomeShopLatest />
         <HomeNewsletter />
         <GalleryShowcase />
         <Contact />
