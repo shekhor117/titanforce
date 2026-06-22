@@ -108,24 +108,24 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
 
             {/* Tagline */}
-            <div className="animate-smoothFadeUp mb-8">
-              <p className={`text-lg md:text-xl uppercase tracking-[0.2em] font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <div className="animate-smoothFadeUp mb-6">
+              <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
               </p>
             </div>
 
             {/* Title */}
-            <h2 className={`mb-8 text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-tight tracking-wider text-white animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+            <h2 className={`mb-4 md:mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wider text-white animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
               <span className="block text-white animate-smoothFadeUp">
                 {t.hero.welcome}
               </span>
-              <span className="block text-accent mt-4 animate-smoothFadeUp animation-delay-200">
+              <span className="block text-accent mt-2 md:mt-3 animate-smoothFadeUp animation-delay-200">
                 {t.hero.clubName}
               </span>
             </h2>
 
             {/* Description */}
-            <p className={`mt-8 mb-8 text-lg md:text-xl text-white leading-relaxed max-w-2xl animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`mt-4 md:mt-6 mb-6 md:mb-8 text-sm sm:text-base text-white leading-relaxed max-w-lg animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.tagline}
             </p>
 
