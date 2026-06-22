@@ -10,7 +10,6 @@ import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
-import LoaderWrapper from '@/components/loader-wrapper'
 import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
 import './globals.css'
 
@@ -85,9 +84,7 @@ export default function RootLayout({
                 <CartProvider>
                   <LanguageProvider>
                     <ErrorBoundary>
-                      <LoaderWrapper>
-                        {children}
-                      </LoaderWrapper>
+                      {children}
                     </ErrorBoundary>
                   </LanguageProvider>
                 </CartProvider>
