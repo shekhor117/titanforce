@@ -88,10 +88,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-5 mix-blend-screen"></div>
         </div>
         
-        {/* Two Column Layout */}
-        <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] flex flex-col lg:flex-row items-center justify-between z-10">
-          {/* Left Column - Text Content */}
-          <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-5">
+        {/* Two Column Layout - Mobile shows image as background, desktop shows side-by-side */}
+        <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10">
+          {/* Left Column - Text Content - Positioned on top on mobile, left side on desktop */}
+          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
@@ -146,8 +146,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Team Image with Stadium Effect */}
-          <div className="w-full lg:w-1/2 h-60 sm:h-72 lg:h-full min-h-80 lg:min-h-[85vh] sm:lg:min-h-[75vh] flex items-center justify-center lg:justify-end relative overflow-hidden">
+          {/* Right Column - Team Image with Stadium Effect - Full background on mobile, side column on desktop */}
+          <div className="absolute lg:absolute w-full lg:w-1/2 lg:right-0 lg:top-0 h-full lg:h-full min-h-[85vh] sm:min-h-[75vh] flex items-center justify-center lg:justify-end inset-0 lg:inset-auto overflow-hidden z-0 lg:z-5">
             {/* Team background image container */}
             <div className="absolute inset-0">
               {/* Background image */}
