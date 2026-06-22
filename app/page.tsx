@@ -86,8 +86,8 @@ export default function Home() {
         <HomeStatsShowcase />
         <HomeShopLatest />
         <HomeNewsletter />
-        <GalleryShowcase />
         <Contact />
+        <GalleryShowcase />
       </main>
       {!heroLoading && <Footer />}
     </div>
