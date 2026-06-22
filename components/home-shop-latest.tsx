@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 
 export function HomeShopLatest() {
@@ -40,19 +39,11 @@ export function HomeShopLatest() {
           {/* Right Side - Product Image */}
           <div className="order-1 md:order-2">
             <div className="relative h-96 md:h-full min-h-96 rounded-lg overflow-hidden group bg-gradient-to-br from-accent/20 to-accent/5">
-              {/* Placeholder for product image - Replace with actual product image */}
               <div className="w-full h-full flex items-center justify-center relative">
-                <Image
-                  src="/images/kit-2024-25.jpg"
-                  alt="Titan Force Mulikandi Home Kit 2024/25"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {/* Fallback gradient when image not available */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-accent/60 flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-accent/60 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                   <div className="text-center">
                     <div className="text-6xl font-bold text-white mb-2">TF</div>
-                    <p className="text-white/80 uppercase tracking-wider">Home Kit</p>
+                    <p className="text-white/80 uppercase tracking-wider">Home Kit 2024/25</p>
                   </div>
                 </div>
               </div>

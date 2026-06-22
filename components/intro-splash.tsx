@@ -13,21 +13,22 @@ export function IntroSplash() {
     setShow(false)
   }
 
+  // Timer effect
   useEffect(() => {
     if (!hasShown) {
       setShow(true)
       const timer = setTimeout(() => {
         setShown()
         // Fade out smoothly before removing
-        const fadeTimer = setTimeout(() => {
+        setTimeout(() => {
           setShow(false)
         }, 300)
-        return () => clearTimeout(fadeTimer)
       }, 2650)
       return () => clearTimeout(timer)
     }
   }, [hasShown, setShown])
 
+  // Keyboard handler effect
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === ' ') {
@@ -39,7 +40,7 @@ export function IntroSplash() {
       window.addEventListener('keydown', handleKeyDown)
       return () => window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [show])
+  }, [show, handleDismiss])
 
   return (
     <div 
