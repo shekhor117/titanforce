@@ -81,12 +81,15 @@ export default function RootLayout({
           id="error-handler"
           dangerouslySetInnerHTML={{
             __html: `
-              window.addEventListener('error', function(event) {
-                if (event.filename && event.filename.includes('localhost') && event.message) {
-                  // Suppress console output for error events that don't have proper error messages
-                  event.preventDefault()
+              const originalError = console.error;
+              console.error = function(...args) {
+                // Suppress error event objects that only have isTrusted property
+                if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null && 
+                    Object.keys(args[0]).length === 1 && args[0].isTrusted === true) {
+                  return;
                 }
-              }, true)
+                originalError.apply(console, args);
+              };
             `,
           }}
         />
