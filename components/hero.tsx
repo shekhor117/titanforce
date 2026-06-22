@@ -72,10 +72,20 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
       )}
 
       <section id="home" className="relative overflow-hidden bg-black min-h-screen md:min-h-[90vh]">
-        {/* Background with overlay */}
+        {/* Stadium Background */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-20"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-20"></div>
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-30"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 100%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(139,0,0);stop-opacity:0.4" /><stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0.8" /></linearGradient></defs><rect width="1920" height="1080" fill="url(%23grad1)"/><circle cx="500" cy="300" r="200" fill="rgba(200,0,0,0.2)"/><circle cx="1400" cy="400" r="250" fill="rgba(255,200,0,0.15)"/></svg>')`,
+              backgroundAttachment: 'fixed'
+            }}
+          />
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40 z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-10"></div>
+          {/* Red accent glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-5 mix-blend-screen"></div>
         </div>
         
         {/* Two Column Layout */}
@@ -137,21 +147,35 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           </div>
 
           {/* Right Column - Team Image */}
-          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden">
-            {/* Team image background */}
+          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative overflow-hidden group">
+            {/* Team Players Visual */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative w-full h-full">
-                {/* Dark gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-l from-black/20 via-black/40 to-black/80 z-10"></div>
-                {/* Placeholder for team image - using a semi-transparent accent area */}
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-black/60 flex items-center justify-center">
-                  <div className="text-center opacity-20">
-                    <svg className="w-48 h-48 mx-auto text-accent mb-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-                    </svg>
-                    <p className="text-sm font-bold">TEAM UNITY</p>
+                {/* Animated gradient for team area */}
+                <div className="absolute inset-0 bg-gradient-to-l from-accent/5 via-transparent to-black/90 z-10"></div>
+                
+                {/* Team silhouettes with accent glow */}
+                <div className="absolute inset-0 flex items-center justify-center z-5">
+                  <div className="relative w-96 h-96">
+                    {/* Central glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent blur-3xl group-hover:from-accent/50 transition-all duration-500"></div>
+                    
+                    {/* Team figure placeholder with dynamic styling */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
+                      <svg className="w-64 h-64 text-accent drop-shadow-[0_0_30px_rgba(167,25,48,0.6)]" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="6" r="3"/>
+                        <path d="M12 9c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0-8C6.48 7 2 9.24 2 12c0 2.85 2.92 7.21 10 11.88 7.05-4.67 10-9.03 10-11.88 0-2.76-4.48-5-10-5z"/>
+                      </svg>
+                      <p className="text-xs font-bold text-accent mt-4 tracking-wider">PLAYERS UNITED</p>
+                    </div>
+                    
+                    {/* Accent border effect */}
+                    <div className="absolute inset-0 border-2 border-accent/20 rounded-lg group-hover:border-accent/40 transition-all duration-500"></div>
                   </div>
                 </div>
+                
+                {/* Bottom lighting effect */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
               </div>
             </div>
           </div>
