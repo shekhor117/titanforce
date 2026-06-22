@@ -96,101 +96,83 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         </div>
       )}
 
-      <section id="home" className="relative overflow-hidden bg-black">
+      <section id="home" className="relative overflow-hidden bg-black min-h-screen md:min-h-[80vh]">
         {/* Soccer Hero Background Image */}
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: 'url(/images/hero-bg-soccer.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center right',
           backgroundAttachment: 'fixed'
         }} />
 
         {/* Overlay for text readability and depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/50 z-1"></div>
-        <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
-          <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
-              <Image
-                src="/logos/titanforce-logo.svg"
-                alt="Titan Force FC Logo"
-                width={180}
-                height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500 w-24 sm:w-32 md:w-[180px] h-24 sm:h-32 md:h-[180px]"
-                priority
-              />
-            </div>
-          </div>
-          <div className="animate-smoothFadeUp">
-            <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
-            </p>
-          </div>
-          <h2 className={`mt-4 sm:mt-6 mb-4 sm:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-tight sm:leading-none tracking-wide text-white animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            <span className="block text-white overflow-hidden animate-smoothFadeUp">
-              {t.hero.welcome}
-            </span>
-            <span className="block text-accent mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
-              {t.hero.clubName}
-            </span>
-          </h2>
-          <p className={`mt-3 sm:mt-4 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg text-white max-w-xl mx-auto px-3 sm:px-4 animate-smoothFadeUp animation-delay-200 text-center leading-relaxed ${isBn ? "font-[var(--font-bengali)]" : "font-[\"Inter\", sans-serif]"}`}>
-            {t.hero.tagline}
-          </p>
-
-          {/* About the Club Section */}
-          <div className="light:bg-white/10">
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.about.location}
-            </p>
-            <h3 className={`mt-2 text-4xl md:text-5xl tracking-wide mb-2 text-white ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-              {aboutSettings.aboutTitle}
-            </h3>
-            <p className={`text-lg leading-relaxed text-white max-w-2xl mx-auto mb-[25px] ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {aboutSettings.aboutDescription}
-            </p>
-            <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-lg mx-auto px-2 sm:px-0">
-              <div className="p-2 sm:p-4 rounded-lg">
-                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-white">
-                  {activePlayers.length}
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.players}
-                </div>
-              </div>
-              <div className="p-2 sm:p-4 rounded-lg">
-                <div className="flex justify-center">
-                  <Zap className="w-6 sm:w-8 h-6 sm:h-8 text-white animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.spirit}
-                </div>
-              </div>
-              <div className="p-2 sm:p-4 rounded-lg">
-                <div className="font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-white">
-                  1
-                </div>
-                <div className={`text-xs uppercase tracking-wider text-white mt-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {t.about.team}
-                </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30 z-1"></div>
+        
+        {/* Two Column Layout */}
+        <div className="relative max-w-7xl mx-auto h-full min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center z-10">
+          {/* Left Column - Text Content */}
+          <div className="w-full md:w-1/2 px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24">
+            {/* Logo */}
+            <div className="animate-fade-up mb-6 md:mb-8">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 rounded-full bg-primary/20 blur-2xl animate-pulse" />
+                <Image
+                  src="/logos/titanforce-logo.svg"
+                  alt="Titan Force FC Logo"
+                  width={80}
+                  height={80}
+                  className="relative z-10 object-contain drop-shadow-xl w-16 md:w-20"
+                  priority
+                />
               </div>
             </div>
 
-            {/* Buttons at Bottom */}
-            <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
+            {/* Tagline */}
+            <div className="animate-smoothFadeUp mb-6">
+              <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
+              </p>
+            </div>
+
+            {/* Title */}
+            <h2 className={`mb-4 md:mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wider text-white animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+              <span className="block text-white animate-smoothFadeUp">
+                {t.hero.welcome}
+              </span>
+              <span className="block text-accent mt-2 md:mt-3 animate-smoothFadeUp animation-delay-200">
+                {t.hero.clubName}
+              </span>
+            </h2>
+
+            {/* Description */}
+            <p className={`mt-4 md:mt-6 mb-6 md:mb-8 text-sm sm:text-base text-white leading-relaxed max-w-lg animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {t.hero.tagline}
+            </p>
+
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`glass-btn-primary px-6 py-3 font-bold text-sm uppercase tracking-wider rounded text-white hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn-primary px-6 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`glass-btn px-8 py-3 font-bold text-sm uppercase tracking-wider rounded text-white hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`glass-btn px-6 py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>
             </div>
+          </div>
+
+          {/* Right Column - Image (Hidden on mobile, shown on md+) */}
+          <div className="hidden md:flex w-1/2 h-full items-center justify-end relative">
+            <div className="absolute inset-0 opacity-30" style={{
+              backgroundImage: 'url(/images/hero-bg-soccer.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }} />
           </div>
         </div>
 
