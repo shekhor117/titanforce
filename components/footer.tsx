@@ -23,7 +23,7 @@ export function Footer() {
   ]
 
   return (
-    <footer className="relative border-t-2 border-primary py-12 px-4 bg-black dark:bg-black light:bg-gray-50 overflow-hidden">
+    <footer className="relative border-t-2 border-primary/30 py-12 px-4 bg-gradient-to-b from-background via-primary/5 to-background dark:bg-black light:bg-gray-50 overflow-hidden shadow-lg shadow-primary/10">
       {/* Video Background */}
       <video
         autoPlay

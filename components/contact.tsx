@@ -109,11 +109,11 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" ref={sectionRef} className="py-20 px-4 relative overflow-hidden bg-white/20 backdrop-blur-lg dark:bg-black/20">
+    <section id="contact" ref={sectionRef} className="py-20 px-4 relative overflow-hidden bg-gradient-to-b from-background to-primary/5 backdrop-blur-lg border-t border-primary/20">
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/8 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-6xl mx-auto relative">
@@ -129,7 +129,7 @@ export function Contact() {
               {isBn ? "আমাদের সাথে যোগাযোগ করুন" : "Get In Touch"}
             </span>
           </div>
-          <h2 className={`text-4xl md:text-5xl tracking-wide mb-4 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`text-4xl md:text-5xl tracking-wide mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.contact.title}
           </h2>
           <p className={`text-foreground/60 max-w-xl mx-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -146,7 +146,7 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-            <div className="rounded-2xl border-2 border-card bg-card/30 backdrop-blur-2xl p-8">
+            <div className="rounded-2xl border-2 border-primary/30 bg-card/50 backdrop-blur-2xl p-8 shadow-lg shadow-primary/10">
               {showSuccess ? (
                 <div className="text-center py-12">
                   <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">

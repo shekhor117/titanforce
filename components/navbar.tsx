@@ -28,7 +28,7 @@ export function Navbar() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
+    <nav className="sticky top-0 z-50 border-b border-primary/20 backdrop-blur-xl bg-background/80 shadow-lg shadow-primary/10">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
@@ -39,7 +39,7 @@ export function Navbar() {
             className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #a71930 0%, #465fb1 100%)' }}>
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #9d00ff 0%, #ff00ff 100%)' }}>
             TITAN FORCE
           </h1>
         </Link>

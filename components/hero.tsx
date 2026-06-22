@@ -63,8 +63,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" />
 
           <div className="relative z-10 flex flex-col items-center">
             <div className="relative">
@@ -76,7 +76,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 alt="Opening Logo"
                 width={160}
                 height={160}
-                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(167,25,48,0.9)]"
+                className="w-40 md:w-56 animate-[openingLogo_2.5s_cubic-bezier(0.34,1.56,0.64,1)] drop-shadow-[0_0_40px_rgba(157,0,255,0.9)]"
                 priority
               />
             </div>
@@ -110,13 +110,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-125 animate-pulse" />
               <Image
                 src="/logos/titanforce-logo.svg"
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500 w-24 sm:w-32 md:w-[180px] h-24 sm:h-32 md:h-[180px]"
+                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(157,0,255,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500 w-24 sm:w-32 md:w-[180px] h-24 sm:h-32 md:h-[180px]"
                 priority
               />
             </div>
@@ -244,15 +244,15 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
           @keyframes glow {
             0% {
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+              box-shadow: 0 0 20px rgba(157, 0, 255, 0.5);
             }
 
             50% {
-              box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+              box-shadow: 0 0 40px rgba(157, 0, 255, 0.8);
             }
 
             100% {
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+              box-shadow: 0 0 20px rgba(157, 0, 255, 0.5);
             }
           }
 

@@ -21,10 +21,10 @@ export function TrophyTimeline() {
   const { trophies, loading: isLoading } = useTrophies()
 
   const categoryColors = {
-    league: 'from-primary to-red-600',
-    cup: 'from-blue-500 to-purple-600',
-    championship: 'from-yellow-500 to-orange-600',
-    tournament: 'from-green-500 to-emerald-600',
+    league: 'from-primary to-accent',
+    cup: 'from-accent to-primary',
+    championship: 'from-primary/80 to-accent/80',
+    tournament: 'from-accent/80 to-primary/80',
   }
 
   const categoryLabels = {
@@ -36,7 +36,7 @@ export function TrophyTimeline() {
 
   if (isLoading) {
     return (
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-gradient-to-b from-background via-accent/5 to-background border-b border-primary/10">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-muted-foreground">{isBn ? 'লোড হচ্ছে...' : 'Loading...'}</p>
         </div>
@@ -45,12 +45,12 @@ export function TrophyTimeline() {
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-gradient-to-b from-background via-accent/5 to-background border-b border-primary/10">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h2 className="text-4xl font-bold text-foreground mb-2">
+            <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-2">
               {isBn ? 'ট্রফি রেকর্ড' : 'Trophy Record'}
             </h2>
             <p className="text-muted-foreground">
