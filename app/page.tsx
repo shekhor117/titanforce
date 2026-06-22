@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
-import { Hero } from "@/components/hero"
-import { GalleryShowcase } from "@/components/gallery-showcase"
+import { HeroModern } from "@/components/hero-modern"
+import { GalleryShowcaseModern } from "@/components/gallery-showcase-modern"
 import { TrophyTimeline } from "@/components/trophy-timeline"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
@@ -59,8 +59,8 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <GalleryShowcase />
+        <HeroModern onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
+        <GalleryShowcaseModern />
         <TrophyTimeline />
         <Contact />
       </main>

@@ -23,22 +23,12 @@ export function Footer() {
   ]
 
   return (
-    <footer className="relative border-t-2 border-primary py-12 px-4 bg-black dark:bg-black light:bg-gray-50 overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        crossOrigin="anonymous"
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-30"
-      >
-        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/52177-467701518_medium-NHHZMX0waW7Vl9MVhVGsYsklvDeifE.mp4" type="video/mp4" />
-      </video>
-
-      {/* Overlay for content readability - Theme aware */}
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 light:bg-white/50 z-1"></div>
+    <footer className="relative border-t border-border/40 py-16 px-4 bg-gradient-to-b from-background to-background/95 overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      </div>
 
       {/* Content */}
       <div className="max-w-6xl mx-auto relative z-10">

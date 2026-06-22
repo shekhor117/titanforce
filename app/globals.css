@@ -4,26 +4,29 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
+  --background: #050505;
+  --foreground: #f8f8f8;
+  --card: #0f0f0f;
   --card-foreground: #f0f0f0;
   --popover: #1a1a1a;
   --popover-foreground: #f0f0f0;
-  --primary: #a71930;
+  --primary: #d91e3f;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
+  --secondary: #1f2937;
   --secondary-foreground: #f5f5f5;
-  --muted: #2a2a2a;
-  --muted-foreground: #999999;
-  --accent: #d91e3f;
+  --muted: #2d2d2d;
+  --muted-foreground: #888888;
+  --accent: #3b82f6;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #2a2a2a;
-  --input: #1a1a1a;
-  --ring: #a71930;
+  --border: #1f1f1f;
+  --input: #0f0f0f;
+  --ring: #d91e3f;
   --radius: 0.625rem;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .dark {
@@ -128,8 +131,53 @@ html {
   }
 }
 
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-fade-up {
   animation: fadeUp 0.6s ease both;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease both;
 }
 
 .animation-delay-100 {
@@ -183,11 +231,32 @@ html {
 
 /* Hero gradient */
 .hero-gradient {
-  background: linear-gradient(135deg, #0a0a0a 0%, #2a0f18 30%, #3d1425 60%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #050505 0%, #1a0f15 30%, #2d1420 60%, #050505 100%);
 }
 
 .light .hero-gradient {
   background: linear-gradient(135deg, #f5f5f5 0%, #fce8ec 30%, #f3d5dd 60%, #f5f5f5 100%);
+}
+
+/* Gradient Radial */
+.bg-gradient-radial {
+  background: radial-gradient(circle at var(--gradient-position-x, 50%) var(--gradient-position-y, 50%), var(--gradient-color-start, rgba(217, 30, 63, 0.15)) 0%, transparent 65%);
+}
+
+/* Premium gradient text */
+.text-gradient-premium {
+  background: linear-gradient(135deg, #d91e3f 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient border */
+.border-gradient {
+  position: relative;
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(135deg, var(--primary), var(--accent)) border-box;
+  border: 2px solid transparent;
 }
 
 /* Card glow effect */
