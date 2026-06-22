@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
 import { PageTransition } from '@/components/page-transition'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { WebsiteIntro } from '@/components/website-intro'
 import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
 import './globals.css'
 
@@ -78,6 +79,7 @@ export default function RootLayout({
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
         <ThemeProvider>
           <TransitionProvider>
+            <WebsiteIntro />
             <PageTransition />
             <AdminProvider>
               <AuthProvider>
