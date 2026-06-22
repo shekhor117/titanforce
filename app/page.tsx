@@ -10,6 +10,7 @@ import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { HomeShopLatest } from "@/components/home-shop-latest"
+import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -90,6 +91,7 @@ export default function Home() {
         <HomeAboutGallery />
         <HomeStatsShowcase />
         <HomeShopLatest />
+        <GalleryShowcase />
         <Contact />
       </main>
       {!heroLoading && <Footer />}
