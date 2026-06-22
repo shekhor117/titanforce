@@ -110,28 +110,28 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 py-16 sm:py-24 md:py-36 pb-8 sm:pb-12 md:pb-[48px] text-center z-10">
           <div className="animate-fade-up flex justify-center mb-4 sm:mb-6 animate-[float_5s_ease-in-out_infinite]">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-3xl scale-125 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-125 animate-pulse" />
               <Image
                 src="/logos/titanforce-logo.svg"
                 alt="Titan Force FC Logo"
                 width={180}
                 height={180}
-                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(59,130,246,0.8)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500 w-24 sm:w-32 md:w-[180px] h-24 sm:h-32 md:h-[180px]"
+                className="relative z-10 object-contain drop-shadow-2xl drop-shadow-[0_0_35px_rgba(167,25,48,0.9)] animate-[logoIntro_1.5s_ease] hover:scale-110 transition duration-500 w-24 sm:w-32 md:w-[180px] h-24 sm:h-32 md:h-[180px]"
                 priority
               />
             </div>
           </div>
           <div className="animate-smoothFadeUp">
             <p className={`text-xs sm:text-sm uppercase tracking-[0.3em] mb-0 font-semibold text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.hero.subtitle}
+              More Than A Club, We Are A Force
             </p>
           </div>
           <h2 className={`mt-4 sm:mt-6 mb-4 sm:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-tight sm:leading-none tracking-wide text-white animate-fade-up animation-delay-100 ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             <span className="block text-white overflow-hidden animate-smoothFadeUp">
-              {t.hero.welcome}
+              TITAN FORCE
             </span>
-            <span className="block text-white mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
-              {t.hero.clubName}
+            <span className="block text-primary mt-2 sm:mt-3 md:mt-4 animate-smoothFadeUp animation-delay-200">
+              MULIKANDI
             </span>
           </h2>
           <p className={`mt-3 sm:mt-4 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg text-white max-w-xl mx-auto px-3 sm:px-4 animate-smoothFadeUp animation-delay-200 text-center leading-relaxed ${isBn ? "font-[var(--font-bengali)]" : "font-[\"Inter\", sans-serif]"}`}>
