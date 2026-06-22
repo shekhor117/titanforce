@@ -18,8 +18,12 @@ export function IntroSplash() {
       setShow(true)
       const timer = setTimeout(() => {
         setShown()
-        setShow(false)
-      }, 2800)
+        // Fade out smoothly before removing
+        const fadeTimer = setTimeout(() => {
+          setShow(false)
+        }, 300)
+        return () => clearTimeout(fadeTimer)
+      }, 2650)
       return () => clearTimeout(timer)
     }
   }, [hasShown, setShown])
@@ -38,7 +42,12 @@ export function IntroSplash() {
   }, [show])
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden" onClick={handleDismiss}>
+    <div 
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 overflow-hidden transition-opacity duration-300 ${
+        show ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+      onClick={handleDismiss}
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 via-transparent to-accent/20" />
 
       <div className="relative z-10 flex flex-col items-center cursor-pointer">
