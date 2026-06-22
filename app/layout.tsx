@@ -79,6 +79,7 @@ export default function RootLayout({
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
         <Script
           id="error-handler"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               const originalError = console.error;
