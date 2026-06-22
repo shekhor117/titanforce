@@ -77,6 +77,19 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
+        <Script
+          id="error-handler"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('error', function(event) {
+                if (event.filename && event.filename.includes('localhost') && event.message) {
+                  // Suppress console output for error events that don't have proper error messages
+                  event.preventDefault()
+                }
+              }, true)
+            `,
+          }}
+        />
         <ThemeProvider>
           <TransitionProvider>
             <PageTransition />
