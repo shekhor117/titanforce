@@ -59,8 +59,8 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
       </div>
 
-      {/* Content container */}
-      <div className="absolute inset-0 z-10 flex items-center">
+      {/* Content container with full background */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/50 to-black/20 flex items-center">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           
           {/* Text Content */}
