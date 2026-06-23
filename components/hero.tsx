@@ -36,27 +36,28 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
+    <section id="home" className="relative overflow-hidden bg-secondary min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
         {/* Stadium Background */}
         <div className="absolute inset-0 z-0">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30"
+            className="absolute inset-0 bg-cover bg-center opacity-25"
             style={{
-              backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 100%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(139,0,0);stop-opacity:0.4" /><stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0.8" /></linearGradient></defs><rect width="1920" height="1080" fill="url(%23grad1)"/><circle cx="500" cy="300" r="200" fill="rgba(200,0,0,0.2)"/><circle cx="1400" cy="400" r="250" fill="rgba(255,200,0,0.15)"/></svg>')`,
+              backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.4) 100%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(193,18,31);stop-opacity:0.3" /><stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0.8" /></linearGradient></defs><rect width="1920" height="1080" fill="url(%23grad1)"/><circle cx="500" cy="300" r="200" fill="rgba(193,18,31,0.15)"/><circle cx="1400" cy="400" r="250" fill="rgba(255,27,61,0.1)"/></svg>')`,
               backgroundAttachment: 'fixed'
             }}
           />
           {/* Gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40 z-10"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80 z-10"></div>
           {/* Red accent glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-5 mix-blend-screen"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl z-5 mix-blend-screen"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-accent/10 rounded-full blur-3xl z-5 mix-blend-multiply"></div>
         </div>
         
         {/* Two Column Layout - Mobile shows image as background, desktop shows side-by-side */}
         <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10">
           {/* Left Column - Text Content - Positioned on top on mobile, left side on desktop */}
-          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center bg-black">
+          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-10 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center lg:bg-gradient-to-r lg:from-black lg:via-black/80 lg:to-transparent">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
@@ -74,39 +75,39 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
             {/* Tagline */}
             <div className="animate-smoothFadeUp mb-6">
-              <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-bold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
+              <p className={`text-xs sm:text-sm uppercase tracking-[0.15em] font-bold text-primary border-l-2 border-accent pl-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                THE 2024/25 SEASON
               </p>
             </div>
 
             {/* Title */}
-            <h2 className={`mb-4 md:mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wider text-white font-black animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-              <span className="block text-white animate-smoothFadeUp">
-                {t.hero.welcome}
+            <h2 className={`mb-4 md:mb-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight tracking-tighter text-white font-black animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+              <span className="block text-white animate-smoothFadeUp uppercase">
+                FOREVER
               </span>
-              <span className="block text-accent mt-2 md:mt-3 animate-smoothFadeUp animation-delay-200">
-                {t.hero.clubName}
+              <span className="block text-accent mt-2 md:mt-3 animate-smoothFadeUp animation-delay-200 uppercase">
+                UNITED
               </span>
             </h2>
 
             {/* Description */}
-            <p className={`mt-4 md:mt-6 mb-6 md:mb-8 text-sm sm:text-base text-white leading-relaxed max-w-lg font-bold animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.hero.tagline}
+            <p className={`mt-6 md:mt-8 mb-8 md:mb-10 text-sm sm:text-base text-white/90 leading-relaxed max-w-md font-medium animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              A new era begins. United face every challenge with pride, passion and the belief that together, we can achieve anything.
             </p>
 
             {/* Buttons */}
-            <div className="flex flex-row gap-3 sm:gap-4 animate-buttonSlideIn">
+            <div className="flex flex-row gap-4 sm:gap-5 animate-buttonSlideIn">
               <TransitionLink
-                href="/team-squad"
-                className={`bg-accent hover:bg-accent/90 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                href="/contact"
+                className={`bg-accent hover:bg-primary px-6 sm:px-8 py-3 sm:py-3.5 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center shadow-lg hover:shadow-accent/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
-                {t.hero.viewSquad}
+                GET TICKETS
               </TransitionLink>
               <TransitionLink
-                href="/fixtures-results"
-                className={`border-2 border-white hover:bg-white/10 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                href="/shop"
+                className={`border-2 border-white/60 hover:border-white bg-white/5 hover:bg-white/10 px-6 sm:px-8 py-3 sm:py-3.5 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
-                {t.hero.matches}
+                SHOP NOW
               </TransitionLink>
             </div>
           </div>
