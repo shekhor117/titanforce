@@ -998,16 +998,6 @@ canvas {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Hide scrollbar while keeping functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
 .backdrop-blur-medium {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
