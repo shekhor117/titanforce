@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
+    <html lang="en" className="scroll-smooth bg-gradient-to-br from-red-900 via-red-800 to-black min-h-screen" data-scroll-behavior="smooth">
       <head>
 
         {/* Google Search Console Verification */}
@@ -72,10 +72,10 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         
         {/* Theme Color */}
-        <meta name="theme-color" content="#1a1a1a" />
-        <meta name="msapplication-TileColor" content="#1a1a1a" />
+        <meta name="theme-color" content="#7f1d1d" />
+        <meta name="msapplication-TileColor" content="#7f1d1d" />
       </head>
-      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
         <Script
           id="error-handler"
           strategy="beforeInteractive"
