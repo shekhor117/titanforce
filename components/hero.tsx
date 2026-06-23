@@ -69,10 +69,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
       {/* Content container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full py-12 md:py-20">
+        <div className="h-full py-12 md:py-20">
           
-          {/* Left Column - Text Content */}
-          <div className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1">
+          {/* Text Content */}
+          <div className="flex flex-col justify-center space-y-6 md:space-y-8 max-w-2xl">
             {/* Logo */}
             <div className="animate-fade-up">
               <div className="relative inline-block">
@@ -138,28 +138,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Hero Image */}
-          <div className="relative h-[400px] sm:h-[500px] md:h-[600px] order-1 lg:order-2">
-            {/* Curved frame background */}
-            <div className="absolute inset-0">
-              {/* Main image container with clip path */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden group">
-                <img 
-                  src="/images/hero-team-huddle.png" 
-                  alt="Team action" 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-              </div>
 
-              {/* Curved accent shape - bottom right */}
-              <svg className="absolute -bottom-1 -right-1 w-64 h-64 text-accent opacity-20 pointer-events-none" viewBox="0 0 300 300" preserveAspectRatio="none">
-                <path d="M 300,0 Q 200,100 0,200 L 0,300 L 300,300 Z" fill="currentColor" />
-              </svg>
-            </div>
-          </div>
         </div>
       </div>
 
