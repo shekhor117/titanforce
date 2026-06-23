@@ -59,9 +59,9 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
       </div>
 
-      {/* Content container with full background */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/50 to-black/20 flex items-center">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+      {/* Content container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
+        <div className="h-full py-12 md:py-20">
           
           {/* Text Content */}
           <div className="flex flex-col justify-center space-y-6 md:space-y-8 max-w-2xl">
@@ -129,8 +129,12 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
+
+
 
       <style jsx>{`
         @keyframes float {
