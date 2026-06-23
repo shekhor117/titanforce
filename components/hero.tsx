@@ -57,14 +57,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         {/* Gradient orbs */}
         <div className="absolute top-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob"></div>
         <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(90deg, white 1px, transparent 1px), linear-gradient(white 1px, transparent 1px)',
-            backgroundSize: '50px 50px'
-          }}></div>
-        </div>
       </div>
 
       {/* Content container */}
