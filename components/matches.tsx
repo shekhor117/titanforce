@@ -65,10 +65,10 @@ export function Matches() {
           className={`text-center mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
-          <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 stadium-announcement ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {t.matches.subtitle}
           </p>
-          <h2 className={`text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
+          <h2 className={`text-4xl md:text-5xl tracking-[0.1em] uppercase text-foreground match-title ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.matches.title}
           </h2>
         </div>
@@ -87,7 +87,7 @@ export function Matches() {
               <button
                 key={match.id}
                 onClick={() => setSelectedMatch(match)}
-                className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                className={`rounded-xl p-6 border-2 border-primary/30 bg-gradient-to-r from-card/60 via-card/40 to-card/60 match-card-hover cursor-pointer w-full text-left field-pattern ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >

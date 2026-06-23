@@ -92,6 +92,15 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  
+  /* Football/Sports Theme Colors */
+  --color-stadium-gold: #F59E0B;
+  --color-field-green: #10B981;
+  --color-trophy-gold: #FCD34D;
+  --color-navy: #1e3a8a;
+  --color-team-red: #a71930;
+  --color-victory: #34D399;
+  
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -1010,4 +1019,168 @@ canvas {
 
 .interactive-feedback:active {
   transform: scale(0.98);
+}
+
+/* ===== FOOTBALL/SPORTS THEME ===== */
+
+/* Jersey Number / Scoreboard Style */
+.jersey-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+/* Match Title - ALL CAPS with letter spacing */
+.match-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.875rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--foreground);
+}
+
+/* Score display - large and bold */
+.score-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  line-height: 1;
+}
+
+/* Stadium announcement style */
+.stadium-announcement {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--stadium-gold);
+}
+
+/* Trophy highlight */
+.trophy-badge {
+  background: linear-gradient(135deg, var(--stadium-gold) 0%, var(--trophy-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Field green accent */
+.field-accent {
+  color: var(--field-green);
+  font-weight: 600;
+}
+
+/* Goal celebration animation */
+@keyframes goalCelebration {
+  0% {
+    transform: scale(0.8) rotateZ(-5deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotateZ(5deg);
+  }
+  100% {
+    transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-goal-celebration {
+  animation: goalCelebration 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Field entrance slide */
+@keyframes fieldEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px) skewY(2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+}
+
+.animate-field-entrance {
+  animation: fieldEntrance 0.5s ease-out;
+}
+
+/* Score flip animation */
+@keyframes scoreFlip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+.animate-score-flip {
+  animation: scoreFlip 0.6s ease-in-out;
+  transform-style: preserve-3d;
+}
+
+/* Badge pop animation */
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-badge-pop {
+  animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Stadium field pattern */
+.field-pattern {
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(16, 185, 129, 0.05) 10px,
+      rgba(16, 185, 129, 0.05) 20px
+    );
+}
+
+/* Team color highlight */
+.team-highlight {
+  background-color: rgba(167, 25, 48, 0.1);
+  border-left: 4px solid var(--primary);
+  padding-left: 1rem;
+}
+
+/* Victory glow effect */
+.victory-glow {
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.5), inset 0 0 20px rgba(52, 211, 153, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Match card hover effect */
+.match-card-hover {
+  transition: all 0.3s ease;
+  border-color: var(--primary);
+}
+
+.match-card-hover:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 25px rgba(167, 25, 48, 0.3);
+  transform: translateY(-4px);
 }

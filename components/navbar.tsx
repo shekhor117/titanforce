@@ -28,18 +28,20 @@ export function Navbar() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
+    <nav className="sticky top-0 z-50 border-b border-primary/20 backdrop-blur-xl bg-background/70 field-pattern">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
+        <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group relative">
+          {/* Team Crest Glow */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 to-accent/20 rounded-full blur-lg group-hover:blur-xl transition-all opacity-0 group-hover:opacity-100" />
           <Image
             src="/logos/titanforce-logo.svg"
             alt="Titan Force FC Logo"
             width={50}
             height={50}
-            className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
+            className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform relative z-10"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #a71930 0%, #465fb1 100%)' }}>
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-[0.15em] uppercase font-bold text-primary relative z-10 stadium-announcement">
             TITAN FORCE
           </h1>
         </Link>

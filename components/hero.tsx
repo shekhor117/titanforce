@@ -109,6 +109,44 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 {t.hero.matches}
               </TransitionLink>
             </div>
+
+            {/* Stadium Badges Section */}
+            <div className="mt-8 md:mt-12 pt-8 border-t border-white/10">
+              <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-4 stadium-announcement">
+                STATS
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Players Badge */}
+                <div className="animate-badge-pop" style={{ animationDelay: '0.2s' }}>
+                  <div className="bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/50 rounded-lg p-3 backdrop-blur-sm">
+                    <div className="text-2xl md:text-3xl font-bold text-accent jersey-number">
+                      {activePlayers.length || 0}
+                    </div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Active Players</p>
+                  </div>
+                </div>
+
+                {/* Matches Badge */}
+                <div className="animate-badge-pop" style={{ animationDelay: '0.4s' }}>
+                  <div className="bg-gradient-to-br from-field-green/20 to-field-green/10 border border-field-green/50 rounded-lg p-3 backdrop-blur-sm">
+                    <div className="score-display text-2xl md:text-3xl font-bold text-field-green">
+                      0
+                    </div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Victories</p>
+                  </div>
+                </div>
+
+                {/* Trophy Badge */}
+                <div className="animate-badge-pop" style={{ animationDelay: '0.6s' }}>
+                  <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-400/10 border border-yellow-500/50 rounded-lg p-3 backdrop-blur-sm">
+                    <div className="text-2xl md:text-3xl font-bold trophy-badge">
+                      5
+                    </div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">Trophies</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Dynamic Soccer Player Illustration - Full background on mobile, side column on desktop */}
