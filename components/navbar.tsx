@@ -103,24 +103,19 @@ export function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden pb-4 text-sm font-semibold uppercase tracking-wide border-t border-secondary animate-in slide-in-from-top-2 duration-300">
-          <div className="overflow-x-auto scrollbar-hide scroll-smooth">
-            <div className="flex gap-3 px-3 sm:px-4 py-4 min-w-min">
-              {navLinks.map((link, index) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-3 px-4 rounded min-h-[44px] flex items-center flex-shrink-0 duration-300 animate-in fade-in slide-in-from-left-4 whitespace-nowrap ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary animate-in slide-in-from-top-2 duration-300">
+          {navLinks.map((link, index) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-3 px-3 rounded min-h-[44px] flex items-center duration-300 animate-in fade-in slide-in-from-left-4 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              style={{ animationDelay: `${index * 50}ms` }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
           
-          <div className="px-3 sm:px-4 pb-4 flex flex-col gap-3">
           <Link
             href="/shop"
             className="flex items-center gap-2 px-4 py-3 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
