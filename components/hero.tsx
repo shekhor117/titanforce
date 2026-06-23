@@ -36,335 +36,218 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden bg-black min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh]">
-        {/* Stadium Background */}
-        <div className="absolute inset-0 z-0">
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 100%), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(139,0,0);stop-opacity:0.4" /><stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0.8" /></linearGradient></defs><rect width="1920" height="1080" fill="url(%23grad1)"/><circle cx="500" cy="300" r="200" fill="rgba(200,0,0,0.2)"/><circle cx="1400" cy="400" r="250" fill="rgba(255,200,0,0.15)"/></svg>')`,
-              backgroundAttachment: 'fixed'
-            }}
-          />
-          {/* Gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40 z-10"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-10"></div>
-          {/* Red accent glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-5 mix-blend-screen"></div>
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Background animated elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Top left curved accent */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 800" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a71930" stopOpacity="0.15"/>
+                <stop offset="100%" stopColor="#d91e3f" stopOpacity="0.08"/>
+              </linearGradient>
+            </defs>
+            {/* Curved wave pattern */}
+            <path d="M 0,200 Q 360,100 720,200 T 1440,200 L 1440,0 L 0,0 Z" fill="url(#purpleGrad)" />
+            <path d="M 0,400 Q 360,300 720,400 T 1440,400 L 1440,150 Q 720,200 0,150 Z" fill="#d91e3f" opacity="0.1" />
+          </svg>
         </div>
+
+        {/* Gradient orbs */}
+        <div className="absolute top-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
         
-        {/* Two Column Layout - Mobile shows image as background, desktop shows side-by-side */}
-        <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10">
-          {/* Left Column - Text Content - Positioned on top on mobile, left side on desktop */}
-          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center bg-black">
+        {/* Grid overlay */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'linear-gradient(90deg, white 1px, transparent 1px), linear-gradient(white 1px, transparent 1px)',
+            backgroundSize: '50px 50px'
+          }}></div>
+        </div>
+      </div>
+
+      {/* Content container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full py-12 md:py-20">
+          
+          {/* Left Column - Text Content */}
+          <div className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1">
             {/* Logo */}
-            <div className="animate-fade-up mb-6 md:mb-8">
+            <div className="animate-fade-up">
               <div className="relative inline-block">
-                <div className="absolute inset-0 rounded-full bg-primary/20 blur-2xl animate-pulse" />
                 <Image
                   src="/logos/titanforce-logo.svg"
                   alt="Titan Force FC Logo"
-                  width={80}
-                  height={80}
-                  className="relative z-10 object-contain drop-shadow-xl w-16 md:w-20"
+                  width={60}
+                  height={60}
+                  className="object-contain drop-shadow-xl w-14 md:w-16"
                   priority
                 />
               </div>
             </div>
 
             {/* Tagline */}
-            <div className="animate-smoothFadeUp mb-6">
-              <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-bold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                MORE THAN A CLUB, WE ARE <span className="text-white">A FORCE</span>
+            <div className="animate-smoothFadeUp">
+              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                MORE THAN A CLUB
               </p>
             </div>
 
-            {/* Title */}
-            <h2 className={`mb-4 md:mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wider text-white font-black animate-fade-up ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-              <span className="block text-white animate-smoothFadeUp">
-                {t.hero.welcome}
-              </span>
-              <span className="block text-accent mt-2 md:mt-3 animate-smoothFadeUp animation-delay-200">
-                {t.hero.clubName}
-              </span>
-            </h2>
+            {/* Main Title */}
+            <h1 className={`text-5xl sm:text-6xl md:text-7xl font-black leading-tight tracking-wider animate-smoothFadeUp animation-delay-100 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
+              <span className="block text-white">{t.hero.welcome}</span>
+              <span className="block text-accent mt-2">{t.hero.clubName}</span>
+            </h1>
 
             {/* Description */}
-            <p className={`mt-4 md:mt-6 mb-6 md:mb-8 text-sm sm:text-base text-white leading-relaxed max-w-lg font-bold animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-base sm:text-lg text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.tagline}
             </p>
 
-            {/* Buttons */}
-            <div className="flex flex-row gap-3 sm:gap-4 animate-buttonSlideIn">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`bg-accent hover:bg-accent/90 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`bg-accent hover:bg-accent/90 px-8 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-white hover:scale-105 transition-all duration-300 text-center flex items-center justify-center group shadow-lg hover:shadow-2xl hover:shadow-accent/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.viewSquad}
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`border-2 border-white hover:bg-white/10 px-5 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-sm uppercase tracking-wider rounded text-white hover:scale-105 transition-all duration-300 whitespace-nowrap flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`border-2 border-white hover:border-accent hover:bg-white/10 px-8 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-white hover:scale-105 transition-all duration-300 text-center flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {t.hero.matches}
               </TransitionLink>
             </div>
-          </div>
 
-          {/* Right Column - Team Image with Stadium Effect - Full background on mobile, side column on desktop */}
-          <div className="absolute lg:absolute w-full lg:w-1/2 lg:right-0 lg:top-0 h-full lg:h-full min-h-[85vh] sm:min-h-[75vh] flex items-center justify-center lg:justify-end inset-0 lg:inset-auto overflow-hidden z-0 lg:z-5">
-            {/* Team background image container */}
-            <div className="absolute inset-0">
-              {/* Background image */}
-              <img 
-                src="/images/hero-team-huddle.png" 
-                alt="Team huddle" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              
-              {/* Primary overlay - gradient blend */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/30"></div>
-              
-              {/* Secondary overlay - stadium lighting effect */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70"></div>
-              
-              {/* Red ambient light from top right */}
-              <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-red-600/40 via-red-500/20 to-transparent blur-3xl"></div>
-              
-              {/* Red accent from center right */}
-              <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-l from-accent/30 via-accent/10 to-transparent rounded-full blur-3xl"></div>
-              
-              {/* Top bright lighting effect */}
-              <div className="absolute top-0 left-1/2 w-96 h-64 bg-gradient-radial from-yellow-400/20 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
-              
-              {/* Red accent edge lighting */}
-              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/10 via-transparent to-transparent pointer-events-none"></div>
-              
-              {/* Bottom dark vignette */}
-              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
+              <div className="animate-smoothFadeUp animation-delay-300">
+                <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}+</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Active Players</p>
+              </div>
+              <div className="animate-smoothFadeUp animation-delay-300">
+                <p className="text-2xl sm:text-3xl font-bold text-accent">15+</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Seasons</p>
+              </div>
+              <div className="animate-smoothFadeUp animation-delay-300">
+                <p className="text-2xl sm:text-3xl font-bold text-accent">1000+</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
+              </div>
             </div>
           </div>
+
+          {/* Right Column - Hero Image */}
+          <div className="relative h-[400px] sm:h-[500px] md:h-[600px] order-1 lg:order-2">
+            {/* Curved frame background */}
+            <div className="absolute inset-0">
+              {/* Main image container with clip path */}
+              <div className="relative w-full h-full rounded-3xl overflow-hidden group">
+                <img 
+                  src="/images/hero-team-huddle.png" 
+                  alt="Team action" 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
+                
+                {/* Accent glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+
+              {/* Curved accent shape - bottom right */}
+              <svg className="absolute -bottom-1 -right-1 w-64 h-64 text-accent opacity-20 pointer-events-none" viewBox="0 0 300 300" preserveAspectRatio="none">
+                <path d="M 300,0 Q 200,100 0,200 L 0,300 L 300,300 Z" fill="currentColor" />
+              </svg>
+
+              {/* Curved accent shape - top left */}
+              <svg className="absolute -top-1 -left-1 w-48 h-48 text-primary opacity-15 pointer-events-none" viewBox="0 0 200 200" preserveAspectRatio="none">
+                <path d="M 0,200 Q 100,100 200,0 L 200,0 L 0,0 Z" fill="currentColor" />
+              </svg>
+            </div>
+
+            {/* Floating accent circles */}
+            <div className="absolute top-10 right-10 w-20 h-20 border-2 border-accent/50 rounded-full animate-float"></div>
+            <div className="absolute bottom-20 left-10 w-16 h-16 bg-accent/10 rounded-full blur-xl animate-float animation-delay-300"></div>
+          </div>
         </div>
+      </div>
 
 
 
-        <style jsx>{`
-          @keyframes float {
-            0%,
-            100% {
-              transform: translateY(0px);
-            }
-
-            50% {
-              transform: translateY(-20px);
-            }
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
           }
-
-          @keyframes fadeIn {
-            0% {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-
-            100% {
-              opacity: 1;
-              transform: translateY(0);
-            }
+          50% {
+            transform: translateY(-20px);
           }
+        }
 
-          @keyframes smoothFadeUp {
-            0% {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-
-            100% {
-              opacity: 1;
-              transform: translateY(0);
-            }
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
-
-          @keyframes smoothScale {
-            0% {
-              transform: scale(0.8);
-              opacity: 0;
-            }
-
-            100% {
-              transform: scale(1);
-              opacity: 1;
-            }
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
+        }
 
-          @keyframes glow {
-            0% {
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-            }
-
-            50% {
-              box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-            }
-
-            100% {
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-            }
+        @keyframes smoothFadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
-
-          @keyframes slide {
-            0% {
-              transform: translateX(0);
-            }
-
-            100% {
-              transform: translateX(-50%);
-            }
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
+        }
 
-          @keyframes logoIntro {
-            0% {
-              opacity: 0;
-              transform: scale(0.5) rotate(-15deg);
-              filter: blur(8px);
-            }
-
-            100% {
-              opacity: 1;
-              transform: scale(1) rotate(0deg);
-              filter: blur(0px);
-            }
+        @keyframes buttonSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
-
-          @keyframes smoothLogoIntro {
-            0% {
-              opacity: 0;
-              transform: scale(0.4) rotate(-20deg);
-              filter: blur(15px);
-            }
-
-            50% {
-              transform: scale(1.05) rotate(5deg);
-            }
-
-            100% {
-              opacity: 1;
-              transform: scale(1) rotate(0deg);
-              filter: blur(0px);
-            }
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
+        }
 
-          @keyframes openingLogo {
-            0% {
-              opacity: 0;
-              transform: scale(0.2) rotate(-30deg);
-              filter: blur(20px);
-            }
+        .animate-fade-up {
+          animation: fadeUp 0.6s ease-out forwards;
+        }
 
-            50% {
-              opacity: 0.8;
-            }
+        .animate-smoothFadeUp {
+          animation: smoothFadeUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
 
-            100% {
-              opacity: 1;
-              transform: scale(1) rotate(0deg);
-              filter: blur(0px);
-            }
-          }
+        .animate-buttonSlideIn {
+          animation: buttonSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
 
-          @keyframes openingText {
-            0% {
-              opacity: 0;
-              letter-spacing: 30px;
-              transform: translateY(40px);
-            }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
 
-            60% {
-              opacity: 0.9;
-            }
+        .animation-delay-100 {
+          animation-delay: 0.1s;
+        }
 
-            100% {
-              opacity: 1;
-              letter-spacing: 10px;
-              transform: translateY(0px);
-            }
-          }
+        .animation-delay-200 {
+          animation-delay: 0.2s;
+        }
 
-          @keyframes loadingBar {
-            0% {
-              width: 0%;
-              opacity: 0.3;
-            }
-
-            50% {
-              opacity: 1;
-            }
-
-            100% {
-              width: 100%;
-              opacity: 1;
-            }
-          }
-
-          @keyframes buttonSlideIn {
-            0% {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-
-            100% {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          @keyframes pulseGlow {
-            0%,
-            100% {
-              opacity: 0.5;
-              filter: blur(30px);
-            }
-
-            50% {
-              opacity: 1;
-              filter: blur(20px);
-            }
-          }
-
-          .animate-fadeIn {
-            animation: fadeIn 1s ease-out forwards;
-          }
-
-          .animate-smoothFadeUp {
-            animation: smoothFadeUp 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-          }
-
-          .animate-smoothScale {
-            animation: smoothScale 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-          }
-
-          .animate-buttonSlideIn {
-            animation: buttonSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-          }
-
-          .delay-300 {
-            animation-delay: 0.3s;
-          }
-
-          .delay-500 {
-            animation-delay: 0.5s;
-          }
-
-          .animation-delay-100 {
-            animation-delay: 0.1s;
-          }
-
-          .animation-delay-200 {
-            animation-delay: 0.2s;
-          }
-
-          .transition-smooth {
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          }
-        `}</style>
+        .animation-delay-300 {
+          animation-delay: 0.3s;
+        }
+      `}</style>
       </section>
   )
 }
