@@ -72,8 +72,8 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         
         {/* Theme Color */}
-        <meta name="theme-color" content="#1a1a1a" />
-        <meta name="msapplication-TileColor" content="#1a1a1a" />
+        <meta name="theme-color" content="#1a0f2e" />
+        <meta name="msapplication-TileColor" content="#1a0f2e" />
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
         <Script
