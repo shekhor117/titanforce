@@ -36,7 +36,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-r from-slate-950 via-purple-900 to-pink-600">
       {/* Background animated elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Top left curved accent */}
@@ -61,10 +61,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
       {/* Content container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
-        <div className="h-full py-12 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full py-12 md:py-20">
           
           {/* Text Content */}
-          <div className="flex flex-col justify-center space-y-6 md:space-y-8 max-w-2xl">
+          <div className="flex flex-col justify-center space-y-6 md:space-y-8 max-w-2xl order-2 lg:order-1">
             {/* Logo */}
             <div className="animate-fade-up">
               <div className="relative inline-block">
@@ -130,7 +130,14 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-
+          {/* Right Column - Hero Image */}
+          <div className="relative h-[400px] sm:h-[500px] md:h-[600px] order-1 lg:order-2 flex items-center justify-center">
+            <img 
+              src="/images/hero-player-illustration.jpg" 
+              alt="Player illustration" 
+              className="w-full h-full object-contain drop-shadow-2xl"
+            />
+          </div>
         </div>
       </div>
 
