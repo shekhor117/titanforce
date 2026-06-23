@@ -152,9 +152,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-                
-                {/* Accent glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
 
               {/* Curved accent shape - bottom right */}
