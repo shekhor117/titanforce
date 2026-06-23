@@ -117,7 +117,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="absolute inset-0">
               {/* Background image - dynamic soccer player */}
               <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picsart_26-06-23_19-46-43-466-k3ZPs4leRYxfFz4mkOR3Iq5lSxZ7O8.jpg" 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picsart_26-06-23_19-46-43-466-X58TAjqm9PT8tU34hduzSWLMNgiDJu.jpg" 
                 alt="Dynamic soccer player in action" 
                 className="absolute inset-0 w-full h-full object-cover"
               />
