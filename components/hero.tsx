@@ -56,7 +56,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
         {/* Two Column Layout - Mobile shows image as background, desktop shows side-by-side */}
         <div className="relative max-w-7xl mx-auto h-full min-h-[85vh] sm:min-h-[75vh] lg:min-h-[85vh] z-10">
           {/* Left Column - Text Content - Positioned on top on mobile, left side on desktop */}
-          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center bg-black">
+          <div className="relative lg:absolute lg:left-0 lg:top-0 lg:w-1/2 lg:h-full w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-20 z-10 flex flex-col justify-center">
             {/* Logo */}
             <div className="animate-fade-up mb-6 md:mb-8">
               <div className="relative inline-block">
