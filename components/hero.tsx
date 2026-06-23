@@ -161,11 +161,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               <svg className="absolute -bottom-1 -right-1 w-64 h-64 text-accent opacity-20 pointer-events-none" viewBox="0 0 300 300" preserveAspectRatio="none">
                 <path d="M 300,0 Q 200,100 0,200 L 0,300 L 300,300 Z" fill="currentColor" />
               </svg>
-
-              {/* Curved accent shape - top left */}
-              <svg className="absolute -top-1 -left-1 w-48 h-48 text-primary opacity-15 pointer-events-none" viewBox="0 0 200 200" preserveAspectRatio="none">
-                <path d="M 0,200 Q 100,100 200,0 L 200,0 L 0,0 Z" fill="currentColor" />
-              </svg>
             </div>
 
             {/* Floating accent circles */}
