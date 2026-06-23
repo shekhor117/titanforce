@@ -111,37 +111,31 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column - Team Image with Stadium Effect - Full background on mobile, side column on desktop */}
+          {/* Right Column - Dynamic Soccer Player Illustration - Full background on mobile, side column on desktop */}
           <div className="absolute lg:absolute w-full lg:w-1/2 lg:right-0 lg:top-0 h-full lg:h-full min-h-[85vh] sm:min-h-[75vh] flex items-center justify-center lg:justify-end inset-0 lg:inset-auto overflow-hidden z-0 lg:z-5">
-            {/* Team background image container */}
+            {/* Dynamic player illustration container */}
             <div className="absolute inset-0">
-              {/* Background image */}
+              {/* Background image - dynamic soccer player */}
               <img 
-                src="/images/hero-team-huddle.png" 
-                alt="Team huddle" 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picsart_26-06-23_19-46-43-466-k3ZPs4leRYxfFz4mkOR3Iq5lSxZ7O8.jpg" 
+                alt="Dynamic soccer player in action" 
                 className="absolute inset-0 w-full h-full object-cover"
               />
               
-              {/* Primary overlay - gradient blend */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-black/30"></div>
+              {/* Primary overlay - subtle gradient blend to enhance text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
               
-              {/* Secondary overlay - stadium lighting effect */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70"></div>
+              {/* Secondary overlay - slight darkening at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"></div>
               
-              {/* Red ambient light from top right */}
-              <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-red-600/40 via-red-500/20 to-transparent blur-3xl"></div>
+              {/* Enhanced magenta/pink glow from the illustration */}
+              <div className="absolute top-0 right-1/3 w-80 h-96 bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-transparent blur-3xl"></div>
               
-              {/* Red accent from center right */}
-              <div className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-l from-accent/30 via-accent/10 to-transparent rounded-full blur-3xl"></div>
+              {/* Red accent from center */}
+              <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-l from-red-500/15 via-red-400/5 to-transparent rounded-full blur-3xl"></div>
               
-              {/* Top bright lighting effect */}
-              <div className="absolute top-0 left-1/2 w-96 h-64 bg-gradient-radial from-yellow-400/20 via-red-500/10 to-transparent rounded-full blur-3xl"></div>
-              
-              {/* Red accent edge lighting */}
-              <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/10 via-transparent to-transparent pointer-events-none"></div>
-              
-              {/* Bottom dark vignette */}
-              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+              {/* Bottom dark vignette for footer transition */}
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
             </div>
           </div>
         </div>
