@@ -1,12 +1,12 @@
 'use client'
 
-import { ArrowRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 const standingsData = [
   {
     position: 1,
-    team: 'Titan Force Mulikandi',
+    team: 'Titan Force',
     played: 6,
     goalDifference: '+12',
     points: 16,
@@ -44,21 +44,23 @@ const standingsData = [
 
 export function HomeLeagueStandings() {
   return (
-    <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
+    <div className="group rounded-lg border border-border bg-card/50 backdrop-blur-sm hover:border-accent/30 transition-all duration-300 overflow-hidden h-full flex flex-col shadow-sm hover:shadow-md">
       {/* Header */}
-      <div className="p-6 border-b border-accent/10 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-4 bg-accent rounded-full" />
-          <h3 className="text-lg font-bold text-foreground uppercase tracking-wider">
-            LEAGUE STANDINGS
+      <div className="px-5 pt-5 pb-4 border-b border-border/50 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+            Local Championship
+          </p>
+          <h3 className="text-base font-bold text-foreground">
+            Standings
           </h3>
         </div>
         <Link
           href="/league-standings"
-          className="text-accent hover:text-primary text-sm font-semibold flex items-center gap-1 transition-colors"
+          className="text-sm font-semibold text-accent hover:text-primary transition-colors flex items-center gap-0.5"
         >
-          View all
-          <ArrowRight className="w-4 h-4" />
+          View
+          <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
 
@@ -66,40 +68,48 @@ export function HomeLeagueStandings() {
       <div className="flex-1 overflow-x-auto">
         <table className="w-full text-sm">
           {/* Table Header */}
-          <thead className="border-b border-accent/10 bg-muted/30 sticky top-0">
+          <thead className="border-b border-border/50 bg-muted/20">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground">#</th>
-              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground">TEAM</th>
-              <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-muted-foreground">P</th>
-              <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-muted-foreground">GD</th>
-              <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-muted-foreground">PTS</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold text-muted-foreground w-10">Pos</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold text-muted-foreground">Club</th>
+              <th className="px-2 py-2.5 text-center text-xs font-semibold text-muted-foreground w-12">P</th>
+              <th className="px-2 py-2.5 text-center text-xs font-semibold text-muted-foreground w-12">GD</th>
+              <th className="px-2 py-2.5 text-center text-xs font-semibold text-muted-foreground w-12">Pts</th>
             </tr>
           </thead>
 
           {/* Table Body */}
           <tbody>
-            {standingsData.map((row) => (
+            {standingsData.map((row, index) => (
               <tr
                 key={row.position}
-                className={`border-b border-accent/10 transition-colors ${
+                className={`border-b border-border/30 transition-colors last:border-0 ${
                   row.highlighted
-                    ? 'bg-primary/10 hover:bg-primary/20'
-                    : 'hover:bg-muted/30'
+                    ? 'bg-accent/5 hover:bg-accent/10'
+                    : 'hover:bg-muted/20'
                 }`}
               >
-                <td className={`px-4 py-4 font-bold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
-                  {row.position}
+                <td className="px-4 py-3">
+                  <div className={`flex items-center justify-center w-6 h-6 rounded text-xs font-bold ${
+                    row.highlighted ? 'bg-accent text-white' : 'text-muted-foreground'
+                  }`}>
+                    {row.position}
+                  </div>
                 </td>
-                <td className={`px-4 py-4 font-semibold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
+                <td className={`px-4 py-3 font-semibold text-sm ${row.highlighted ? 'text-foreground' : 'text-foreground/90'}`}>
                   {row.team}
                 </td>
-                <td className={`px-4 py-4 text-center ${row.highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
+                <td className="px-2 py-3 text-center text-sm text-muted-foreground font-medium">
                   {row.played}
                 </td>
-                <td className={`px-4 py-4 text-center ${row.highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
+                <td className={`px-2 py-3 text-center text-sm font-medium ${
+                  row.goalDifference.startsWith('+') ? 'text-green-500' : 
+                  row.goalDifference.startsWith('-') ? 'text-red-500' : 
+                  'text-muted-foreground'
+                }`}>
                   {row.goalDifference}
                 </td>
-                <td className={`px-4 py-4 text-center font-bold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
+                <td className={`px-2 py-3 text-center text-sm font-bold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
                   {row.points}
                 </td>
               </tr>
@@ -109,12 +119,13 @@ export function HomeLeagueStandings() {
       </div>
 
       {/* Footer CTA */}
-      <div className="p-4 border-t border-accent/10">
+      <div className="px-5 py-4 border-t border-border/50 bg-muted/10">
         <Link
           href="/league-standings"
-          className="w-full text-center text-sm font-bold text-accent hover:text-primary uppercase tracking-wider transition-colors"
+          className="w-full text-center text-sm font-semibold text-accent hover:text-primary transition-colors flex items-center justify-center gap-1"
         >
-          VIEW FULL TABLE
+          View Full Table
+          <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
     </div>
