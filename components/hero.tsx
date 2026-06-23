@@ -162,10 +162,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 <path d="M 300,0 Q 200,100 0,200 L 0,300 L 300,300 Z" fill="currentColor" />
               </svg>
             </div>
-
-            {/* Floating accent circles */}
-            <div className="absolute top-10 right-10 w-20 h-20 border-2 border-accent/50 rounded-full animate-float"></div>
-            <div className="absolute bottom-20 left-10 w-16 h-16 bg-accent/10 rounded-full blur-xl animate-float animation-delay-300"></div>
           </div>
         </div>
       </div>
