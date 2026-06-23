@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
+    <html lang="en" className="scroll-smooth bg-gradient-to-r from-slate-950 via-purple-900 to-pink-600 min-h-screen" data-scroll-behavior="smooth">
       <head>
 
         {/* Google Search Console Verification */}
@@ -75,7 +75,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
-      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased bg-background`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
         <Script
           id="error-handler"
           strategy="beforeInteractive"

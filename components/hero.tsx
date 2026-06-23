@@ -36,7 +36,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-r from-slate-950 via-purple-900 to-pink-600">
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-r from-indigo-950 via-fuchsia-800 to-pink-500">
       {/* Background animated elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Top left curved accent */}
