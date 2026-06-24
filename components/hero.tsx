@@ -37,13 +37,13 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-black via-red-900 to-pink-600">
       {/* Background animated elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Animated gradient orbs */}
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-blob"></div>
-        <div className="absolute top-40 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 right-32 w-80 h-80 bg-cyan-500/15 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-pink-500/25 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute top-40 left-10 w-72 h-72 bg-red-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 right-32 w-80 h-80 bg-pink-400/15 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
         
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -142,7 +142,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <div className="lg:col-span-3 flex items-center justify-center relative">
             <div className="relative w-full h-[400px] md:h-[600px] flex items-center justify-center">
               {/* Decorative background circle */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-blue-500/10 rounded-3xl blur-2xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-red-600/20 rounded-3xl blur-2xl"></div>
               
               {/* Football illustration */}
               <div className="relative z-10 animate-float">
