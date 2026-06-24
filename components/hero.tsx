@@ -144,11 +144,11 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {/* Decorative background circle */}
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-red-600/20 rounded-3xl blur-2xl"></div>
               
-              {/* Football players illustration */}
+              {/* Football action illustration */}
               <div className="relative z-10 animate-float">
                 <Image
-                  src="/images/hero-football-players.png"
-                  alt="Football players playing together"
+                  src="/images/hero-football-action.png"
+                  alt="Football players attacking and defending"
                   width={500}
                   height={600}
                   className="object-contain drop-shadow-2xl"
