@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
 import { usePlayers } from "@/lib/use-data-store"
+import { ButtonModern } from "@/components/button-modern"
 
 interface HeroProps {
   onLoadingChange?: (loading: boolean) => void
@@ -101,15 +102,27 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
-                className={`bg-accent hover:bg-accent/90 px-8 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-white hover:scale-105 transition-all duration-300 text-center flex items-center justify-center group shadow-lg hover:shadow-2xl hover:shadow-accent/50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className="no-underline"
               >
-                {t.hero.viewSquad}
+                <ButtonModern
+                  variant="primary"
+                  size="lg"
+                  className={`w-full sm:w-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {t.hero.viewSquad}
+                </ButtonModern>
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
-                className={`border-2 border-white hover:border-accent hover:bg-white/10 px-8 py-3 font-bold text-sm uppercase tracking-wider rounded-lg text-white hover:scale-105 transition-all duration-300 text-center flex items-center justify-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className="no-underline"
               >
-                {t.hero.matches}
+                <ButtonModern
+                  variant="outline"
+                  size="lg"
+                  className={`w-full sm:w-auto border-white text-white hover:text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {t.hero.matches}
+                </ButtonModern>
               </TransitionLink>
             </div>
 
