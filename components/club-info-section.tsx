@@ -40,13 +40,13 @@ export function ClubInfoSection() {
             return (
               <div
                 key={index}
-                className="flex flex-col items-center justify-center p-4 md:p-6 rounded-lg border border-accent/20 bg-card/30 hover:bg-card/50 hover:border-accent/40 transition-all duration-300 group"
+                className="flex flex-col items-center justify-center p-4 md:p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-slate-100/60 to-slate-50/40 hover:from-slate-100/80 hover:to-slate-50/60 transition-all duration-300 group shadow-lg hover:shadow-xl active:scale-95 cursor-pointer neumorphic-card"
               >
-                <Icon className="w-6 h-6 md:w-8 md:h-8 text-accent mb-3 group-hover:text-primary transition-colors" />
-                <p className="text-xs md:text-sm uppercase tracking-[0.15em] font-semibold text-muted-foreground mb-2">
+                <Icon className="w-6 h-6 md:w-8 md:h-8 text-red-600 mb-3 group-hover:text-red-700 transition-colors" />
+                <p className="text-xs md:text-sm uppercase tracking-[0.15em] font-semibold text-gray-600 mb-2">
                   {item.label}
                 </p>
-                <p className="text-sm md:text-base font-bold text-foreground text-center">
+                <p className="text-sm md:text-base font-bold text-gray-900 text-center">
                   {item.value}
                 </p>
               </div>

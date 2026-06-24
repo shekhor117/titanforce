@@ -98,31 +98,23 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               {t.hero.tagline}
             </p>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons with Neumorphic Effect */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-buttonSlideIn">
               <TransitionLink
                 href="/team-squad"
                 className="no-underline"
               >
-                <ButtonModern
-                  variant="primary"
-                  size="lg"
-                  className={`w-full sm:w-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
+                <button className={`w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl active:scale-95 bg-gradient-to-br from-red-600 to-red-700 text-white hover:from-red-500 hover:to-red-600 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.hero.viewSquad}
-                </ButtonModern>
+                </button>
               </TransitionLink>
               <TransitionLink
                 href="/fixtures-results"
                 className="no-underline"
               >
-                <ButtonModern
-                  variant="outline"
-                  size="lg"
-                  className={`w-full sm:w-auto border-white text-white hover:text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
+                <button className={`w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 bg-gradient-to-br from-white/20 to-white/10 text-white border-2 border-white/40 hover:border-white/60 hover:from-white/30 hover:to-white/20 backdrop-blur-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.hero.matches}
-                </ButtonModern>
+                </button>
               </TransitionLink>
             </div>
 

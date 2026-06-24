@@ -626,6 +626,100 @@ canvas {
   transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) translateZ(6px);
 }
 
+/* ===== NEUMORPHIC DESIGN EFFECTS ===== */
+
+/* Base Neumorphic Style - Convex/Raised Effect */
+.neumorphic {
+  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
+  box-shadow: 9px 9px 16px #d1d1d1, -9px -9px 16px #ffffff;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neumorphic:hover {
+  box-shadow: 9px 9px 20px #d1d1d1, -9px -9px 20px #ffffff;
+  transform: translateY(-2px);
+}
+
+.neumorphic:active {
+  box-shadow: inset 9px 9px 16px #d1d1d1, inset -9px -9px 16px #ffffff;
+  transform: translateY(2px);
+}
+
+/* Neumorphic Button - Premium Light */
+.neumorphic-btn {
+  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
+  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #333;
+}
+
+.neumorphic-btn:hover {
+  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+  transform: translateY(-3px);
+}
+
+.neumorphic-btn:active {
+  box-shadow: inset 6px 6px 12px #d1d1d1, inset -6px -6px 12px #ffffff;
+  transform: translateY(1px);
+}
+
+/* Neumorphic Card - Convex */
+.neumorphic-card {
+  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
+  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-card:hover {
+  box-shadow: 12px 12px 24px #d1d1d1, -12px -12px 24px #ffffff;
+  transform: translateY(-4px);
+}
+
+/* Neumorphic Dark Mode */
+.dark .neumorphic {
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  box-shadow: 9px 9px 16px #0a0a0a, -9px -9px 16px #4a4a4a;
+}
+
+.dark .neumorphic:hover {
+  box-shadow: 9px 9px 20px #0a0a0a, -9px -9px 20px #4a4a4a;
+}
+
+.dark .neumorphic:active {
+  box-shadow: inset 9px 9px 16px #0a0a0a, inset -9px -9px 16px #4a4a4a;
+}
+
+.dark .neumorphic-btn {
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  box-shadow: 6px 6px 12px #0a0a0a, -6px -6px 12px #4a4a4a;
+  color: #f5f5f5;
+}
+
+.dark .neumorphic-btn:hover {
+  box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #4a4a4a;
+}
+
+.dark .neumorphic-btn:active {
+  box-shadow: inset 6px 6px 12px #0a0a0a, inset -6px -6px 12px #4a4a4a;
+}
+
+.dark .neumorphic-card {
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #4a4a4a;
+}
+
+.dark .neumorphic-card:hover {
+  box-shadow: 12px 12px 24px #0a0a0a, -12px -12px 24px #4a4a4a;
+}
+
 /* Light mode 3D glass adjustments */
 .light .glass-3d-btn {
   background: rgba(255, 255, 255, 0.4);
