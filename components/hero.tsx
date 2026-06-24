@@ -126,30 +126,30 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
               </TransitionLink>
             </div>
 
-            {/* Stats */}
+            {/* Stats with Glass Effects */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
-              <div className="animate-smoothFadeUp animation-delay-300">
+              <div className="animate-smoothFadeUp animation-delay-300 glass-card-accent rounded-lg p-3 sm:p-4">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">2018</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Founded</p>
+                <p className="text-xs sm:text-sm text-slate-300 uppercase tracking-wide">Founded</p>
               </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
+              <div className="animate-smoothFadeUp animation-delay-300 glass-card-accent rounded-lg p-3 sm:p-4">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">3</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">League Titles</p>
+                <p className="text-xs sm:text-sm text-slate-300 uppercase tracking-wide">League Titles</p>
               </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
+              <div className="animate-smoothFadeUp animation-delay-300 glass-card-accent rounded-lg p-3 sm:p-4">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">2</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">FA Cups</p>
+                <p className="text-xs sm:text-sm text-slate-300 uppercase tracking-wide">FA Cups</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="animate-smoothFadeUp animation-delay-300">
+              <div className="animate-smoothFadeUp animation-delay-300 glass-card-accent rounded-lg p-3 sm:p-4">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
+                <p className="text-xs sm:text-sm text-slate-300 uppercase tracking-wide">Fans</p>
               </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
+              <div className="animate-smoothFadeUp animation-delay-300 glass-card-accent rounded-lg p-3 sm:p-4">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Players</p>
+                <p className="text-xs sm:text-sm text-slate-300 uppercase tracking-wide">Players</p>
               </div>
             </div>
           </div>

@@ -29,7 +29,7 @@ export function Navbar() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
+    <nav className="sticky top-0 z-50 glass-container-premium rounded-none">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image

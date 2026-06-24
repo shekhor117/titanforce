@@ -38,7 +38,7 @@ export function HomeLatestNews() {
               <Link
                 key={item.id}
                 href={`/news/${item.id}`}
-                className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300"
+                className="group glass-card-accent relative overflow-hidden rounded-lg transition-all duration-300"
               >
                 {/* Background Image or Placeholder */}
                 <div className="relative w-full aspect-video bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">
@@ -62,7 +62,7 @@ export function HomeLatestNews() {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 bg-black/60 backdrop-blur-sm">
+                <div className="p-4">
                   {/* Category Badge */}
                   <div className="mb-2">
                     <span className="text-xs font-bold uppercase tracking-widest text-red-500 bg-red-500/10 px-2 py-1 rounded">

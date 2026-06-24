@@ -655,6 +655,284 @@ canvas {
   border-right: 2px solid rgba(167, 25, 48, 0.5);
 }
 
+/* ===== ADVANCED GLASSMORPHISM EFFECTS ===== */
+
+/* Premium Glassmorphism Panel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+/* Glassmorphism Card with Accent */
+.glass-card-accent {
+  background: linear-gradient(135deg, rgba(167, 25, 48, 0.15) 0%, rgba(217, 30, 63, 0.1) 100%);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1.5px solid rgba(167, 25, 48, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(167, 25, 48, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(167, 25, 48, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-accent:hover {
+  background: linear-gradient(135deg, rgba(167, 25, 48, 0.2) 0%, rgba(217, 30, 63, 0.15) 100%);
+  border-color: rgba(167, 25, 48, 0.5);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(167, 25, 48, 0.2),
+    0 0 30px rgba(217, 30, 63, 0.2);
+  transform: translateY(-6px);
+}
+
+/* Ultra Premium Glassmorphism Container */
+.glass-container-premium {
+  background: rgba(15, 15, 20, 0.4);
+  backdrop-filter: blur(25px) saturate(200%);
+  -webkit-backdrop-filter: blur(25px) saturate(200%);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0px rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0px rgba(0, 0, 0, 0.2);
+}
+
+.glass-container-premium:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 16px 56px rgba(167, 25, 48, 0.2),
+    inset 0 1px 0px rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== NEUMORPHISM EFFECTS ===== */
+
+/* Base Neumorphism - Light Theme */
+.neomorph-base {
+  background: linear-gradient(135deg, #1a1a1f 0%, #0a0a0f 100%);
+  box-shadow: 
+    8px 8px 16px rgba(0, 0, 0, 0.4),
+    -4px -4px 12px rgba(255, 255, 255, 0.05),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neomorph-base:hover {
+  box-shadow: 
+    6px 6px 12px rgba(0, 0, 0, 0.5),
+    -2px -2px 8px rgba(255, 255, 255, 0.08),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.12),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Neumorphism Button */
+.neomorph-btn {
+  background: linear-gradient(145deg, #1a1a1f, #0f0f14);
+  box-shadow: 
+    6px 6px 12px rgba(0, 0, 0, 0.4),
+    -4px -4px 10px rgba(255, 255, 255, 0.05),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(167, 25, 48, 0.2);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neomorph-btn:hover {
+  background: linear-gradient(145deg, #232329, #0f0f14);
+  box-shadow: 
+    8px 8px 14px rgba(167, 25, 48, 0.2),
+    -4px -4px 12px rgba(255, 255, 255, 0.08),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.12),
+    0 0 20px rgba(167, 25, 48, 0.15);
+  transform: translateY(-3px);
+}
+
+.neomorph-btn:active {
+  box-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.4),
+    -2px -2px 4px rgba(255, 255, 255, 0.05),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Neumorphism Card */
+.neomorph-card {
+  background: linear-gradient(135deg, #1a1a1f 0%, #0d0d12 100%);
+  box-shadow: 
+    8px 8px 16px rgba(0, 0, 0, 0.35),
+    -4px -4px 12px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neomorph-card:hover {
+  box-shadow: 
+    10px 10px 20px rgba(0, 0, 0, 0.4),
+    -5px -5px 15px rgba(255, 255, 255, 0.1),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.12);
+  border-color: rgba(167, 25, 48, 0.2);
+  transform: translateY(-4px);
+}
+
+/* Soft Neumorphism - Convex Effect */
+.neomorph-convex {
+  background: linear-gradient(135deg, #131318 0%, #1a1a1f 100%);
+  box-shadow: 
+    4px 4px 10px rgba(0, 0, 0, 0.4),
+    -4px -4px 10px rgba(255, 255, 255, 0.08),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.08);
+}
+
+/* Neumorphism - Concave Effect (Pressed) */
+.neomorph-concave {
+  background: linear-gradient(135deg, #0a0a0f 0%, #151519 100%);
+  box-shadow: 
+    inset 4px 4px 10px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.05),
+    2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== HYBRID GLASS + NEUMORPHISM ===== */
+
+/* Modern Fusion Style - Glass with Neumorphic Depth */
+.fusion-modern {
+  background: rgba(20, 20, 28, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    6px 6px 12px rgba(0, 0, 0, 0.25),
+    -4px -4px 10px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fusion-modern:hover {
+  background: rgba(25, 25, 35, 0.7);
+  border-color: rgba(167, 25, 48, 0.3);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+    8px 8px 16px rgba(167, 25, 48, 0.15),
+    -4px -4px 12px rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Accent Fusion - With Primary Color Blend */
+.fusion-accent {
+  background: linear-gradient(135deg, rgba(167, 25, 48, 0.15) 0%, rgba(20, 20, 28, 0.6) 100%);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1.5px solid rgba(167, 25, 48, 0.25);
+  box-shadow: 
+    0 8px 32px rgba(167, 25, 48, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 2px rgba(167, 25, 48, 0.1),
+    6px 6px 12px rgba(0, 0, 0, 0.2),
+    -4px -4px 8px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fusion-accent:hover {
+  background: linear-gradient(135deg, rgba(167, 25, 48, 0.2) 0%, rgba(25, 25, 35, 0.7) 100%);
+  border-color: rgba(167, 25, 48, 0.4);
+  box-shadow: 
+    0 12px 48px rgba(167, 25, 48, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 2px rgba(167, 25, 48, 0.15),
+    8px 8px 14px rgba(167, 25, 48, 0.15),
+    -4px -4px 10px rgba(255, 255, 255, 0.08),
+    0 0 25px rgba(217, 30, 63, 0.15);
+  transform: translateY(-5px);
+}
+
+/* ===== GLOWING GLASS EFFECTS ===== */
+
+/* Glowing Glass Border Animation */
+@keyframes glass-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(167, 25, 48, 0.3),
+      inset 0 2px 4px rgba(255, 255, 255, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(167, 25, 48, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.2),
+      0 12px 48px rgba(167, 25, 48, 0.15);
+  }
+}
+
+.glass-glow {
+  animation: glass-glow 3s ease-in-out infinite;
+}
+
+/* Pulsing Neumorphic Glow */
+@keyframes neomorph-pulse {
+  0%, 100% {
+    box-shadow: 
+      8px 8px 16px rgba(0, 0, 0, 0.35),
+      -4px -4px 12px rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    box-shadow: 
+      10px 10px 20px rgba(167, 25, 48, 0.2),
+      -4px -4px 12px rgba(255, 255, 255, 0.12);
+  }
+}
+
+.neomorph-pulse {
+  animation: neomorph-pulse 2.5s ease-in-out infinite;
+}
+
+/* ===== TEXT WITH GLASS BACKGROUND ===== */
+
+.glass-text {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 3px solid rgba(167, 25, 48, 0.5);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.glass-text-accent {
+  background: linear-gradient(135deg, rgba(167, 25, 48, 0.15) 0%, rgba(217, 30, 63, 0.1) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 4px solid rgba(217, 30, 63, 0.6);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 32px rgba(167, 25, 48, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
 /* ===== THEME-AWARE TEXT COLOR UTILITIES ===== */
 
 /* Auto text color based on foreground */

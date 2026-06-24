@@ -112,7 +112,7 @@ export function FeaturedPlayers() {
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="rounded-xl overflow-hidden border-2 border-secondary bg-card hover:border-primary hover-lift hover-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="glass-card-accent rounded-xl overflow-hidden hover-lift hover-glow transition-all duration-300 hover:-translate-y-1">
                 {/* Player Image */}
                 <div className="relative w-full aspect-square overflow-hidden bg-secondary/30">
                   {player.image_url ? (

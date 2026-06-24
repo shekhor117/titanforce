@@ -13,6 +13,7 @@ import { PremiumMatchStats } from "@/components/premium-match-stats"
 import { PlayersGrid } from "@/components/players-grid"
 import { HomeShopLatest } from "@/components/home-shop-latest"
 import { GalleryShowcase } from "@/components/gallery-showcase"
+import { GlassNeumorphismShowcase } from "@/components/glass-neumorphism-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -92,6 +93,7 @@ export default function Home() {
         <HomeLatestNews />
         <PremiumMatchStats />
         <PlayersGrid />
+        <GlassNeumorphismShowcase />
         <HomeAboutGallery />
         <HomeStatsShowcase />
         <HomeShopLatest />

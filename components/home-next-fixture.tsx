@@ -20,16 +20,16 @@ export function HomeNextFixture() {
   }
 
   return (
-    <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
+    <div className="fusion-accent rounded-xl overflow-hidden h-full flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-accent/10">
+      <div className="p-6 border-b border-accent/20">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-1 h-4 bg-accent rounded-full" />
+          <div className="w-1 h-4 bg-gradient-to-b from-primary to-accent rounded-full" />
           <h3 className="text-lg font-bold text-foreground uppercase tracking-wider">
             NEXT FIXTURE
           </h3>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-300">
           {nextMatch.competition || 'Local Championship'}
         </p>
       </div>
@@ -92,7 +92,7 @@ export function HomeNextFixture() {
         {/* CTA Button */}
         <Link
           href="/fixtures-results"
-          className="w-full py-3 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold uppercase tracking-wider rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group"
+          className="w-full py-3 px-4 glass-btn-primary font-bold uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 group"
         >
           MATCH CENTRE
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
