@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { useCart } from "@/lib/cart-context"
+import { ButtonModern } from "@/components/button-modern"
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -92,11 +93,14 @@ export function Navbar() {
           {user ? (
             <UserProfileDropdown />
           ) : (
-            <Link
-              href="/login"
-              className={`px-4 py-2 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-            >
-              {language === "bn" ? "লগইন" : "Login"}
+            <Link href="/login" className="no-underline">
+              <ButtonModern
+                variant="neumorphic-accent"
+                size="sm"
+                className={`${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+              >
+                {language === "bn" ? "লগইন" : "Login"}
+              </ButtonModern>
             </Link>
           )}
         </div>
@@ -147,12 +151,14 @@ export function Navbar() {
             {user ? (
               <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
             ) : (
-              <Link
-                href="/login"
-                className={`px-4 py-3 font-bold text-xs uppercase tracking-wider rounded glass-btn-accent text-foreground hover-lift transition duration-300 text-center min-h-[44px] flex items-center justify-center ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {language === "bn" ? "লগইন" : "Login"}
+              <Link href="/login" className="no-underline" onClick={() => setMobileMenuOpen(false)}>
+                <ButtonModern
+                  variant="neumorphic-accent"
+                  size="md"
+                  className={`w-full ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {language === "bn" ? "লগইন" : "Login"}
+                </ButtonModern>
               </Link>
             )}
           </div>

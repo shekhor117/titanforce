@@ -14,6 +14,10 @@ const buttonVariants = cva(
         outline: 'border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white',
         success: 'bg-green-600 text-white hover:bg-green-700 shadow-md hover:shadow-lg',
         destructive: 'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg',
+        // Neumorphic variants with soft shadows and glow
+        neumorphic: 'bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 shadow-[0_8px_16px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.1),inset_0_0_20px_rgba(255,255,255,0.5)] active:shadow-[0_2px_4px_rgba(0,0,0,0.05)]',
+        'neumorphic-dark': 'bg-gradient-to-br from-slate-700 to-slate-600 text-white shadow-[0_8px_16px_rgba(0,0,0,0.3),0_2px_4px_rgba(255,200,100,0.2)] hover:shadow-[0_12px_24px_rgba(255,200,100,0.4)]',
+        'neumorphic-accent': 'bg-gradient-to-br from-orange-300 to-orange-200 text-orange-900 shadow-[0_8px_16px_rgba(255,140,0,0.3),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(255,140,0,0.5)]',
       },
       size: {
         sm: 'px-4 py-2 text-xs',
@@ -32,11 +36,13 @@ const buttonVariants = cva(
         none: '',
         soft: 'hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]',
         strong: 'hover:shadow-[0_0_40px_rgba(220,38,38,0.6)]',
+        warmGlow: 'hover:shadow-[0_0_30px_rgba(255,140,0,0.4)]',
       },
       shadow: {
         none: 'shadow-none',
         soft: 'shadow-md hover:shadow-lg',
         inset: 'shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.15)]',
+        neumorphic: 'shadow-[0_8px_16px_rgba(0,0,0,0.08)]',
       },
     },
     defaultVariants: {
