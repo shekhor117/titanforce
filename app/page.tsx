@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { ClubInfoSection } from "@/components/club-info-section"
+import { LiquidGlassFoundations } from "@/components/liquid-glass-foundations"
 import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
@@ -78,6 +79,7 @@ export default function Home() {
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
+        <LiquidGlassFoundations />
         
         {/* Three Column Section */}
         <section className="py-12 md:py-16 px-4 bg-background">
