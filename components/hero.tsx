@@ -158,12 +158,6 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
           <div className="lg:col-span-3 flex items-center justify-center">
             <div className="relative w-full h-[400px] md:h-[600px]">
               {/* Placeholder for player images - would be populated with actual player images */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-black/30 rounded-2xl backdrop-blur-sm flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-white/60 text-sm uppercase tracking-wider">Player Showcase</p>
-                  <p className="text-white/40 text-xs mt-2">Multiple player images will display here</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
