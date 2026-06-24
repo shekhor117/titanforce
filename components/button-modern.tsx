@@ -55,6 +55,15 @@ const buttonVariants = cva(
         neumorphic: 'shadow-[0_8px_16px_rgba(0,0,0,0.08)]',
         premium: 'shadow-[0_12px_24px_rgba(0,0,0,0.15)]',
       },
+      animated: {
+        none: '',
+        pulse: 'neu-animate-pulse',
+        bounce: 'neu-animate-bounce hover:neu-animate-bounce',
+        glow: 'neu-animate-glow',
+        float: 'neu-animate-float',
+        wiggle: 'neu-animate-wiggle',
+        hover: 'neu-hover-lift',
+      },
     },
     defaultVariants: {
       variant: 'default',
@@ -62,6 +71,7 @@ const buttonVariants = cva(
       state: 'default',
       glow: 'none',
       shadow: 'soft',
+      animated: 'none',
     },
   }
 )
@@ -74,6 +84,7 @@ interface ButtonProps
   isSuccess?: boolean
   icon?: ReactNode
   iconPosition?: 'left' | 'right'
+  animated?: 'none' | 'pulse' | 'bounce' | 'glow' | 'float' | 'wiggle' | 'hover'
 }
 
 export const ButtonModern = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -85,6 +96,7 @@ export const ButtonModern = React.forwardRef<HTMLButtonElement, ButtonProps>(
       state,
       glow,
       shadow,
+      animated = 'none',
       isLoading,
       isSuccess,
       icon,
@@ -111,6 +123,7 @@ export const ButtonModern = React.forwardRef<HTMLButtonElement, ButtonProps>(
             state: actualState,
             glow,
             shadow,
+            animated,
           }),
           className
         )}

@@ -976,6 +976,246 @@ canvas {
   box-shadow: var(--neu-shadow-md);
 }
 
+/* ===== NEUMORPHIC ANIMATIONS ===== */
+
+@keyframes neuPulse {
+  0%, 100% {
+    box-shadow: var(--neu-shadow-lg);
+  }
+  50% {
+    box-shadow: var(--neu-shadow-xl);
+  }
+}
+
+@keyframes neuPress {
+  0% {
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+  50% {
+    transform: translateY(2px);
+    box-shadow: var(--neu-shadow-md);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+}
+
+@keyframes neuBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes neuGlow {
+  0%, 100% {
+    box-shadow: var(--neu-shadow-lg);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: var(--neu-shadow-xl);
+    filter: brightness(1.05);
+  }
+}
+
+@keyframes neuFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes neuPress3D {
+  0% {
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+  100% {
+    transform: translateY(4px);
+    box-shadow: var(--neu-shadow-sm);
+  }
+}
+
+@keyframes neuRelease3D {
+  0% {
+    transform: translateY(4px);
+    box-shadow: var(--neu-shadow-sm);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+}
+
+@keyframes neuShimmer {
+  0%, 100% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes neuRipple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(167, 25, 48, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(167, 25, 48, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(167, 25, 48, 0);
+  }
+}
+
+/* Animation Utility Classes */
+
+/* Pulse Animation */
+.neu-animate-pulse {
+  animation: neuPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Press Animation */
+.neu-animate-press {
+  animation: neuPress 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Bounce Animation */
+.neu-animate-bounce {
+  animation: neuBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+/* Glow Animation */
+.neu-animate-glow {
+  animation: neuGlow 2s ease-in-out infinite;
+}
+
+/* Float Animation */
+.neu-animate-float {
+  animation: neuFloat 3s ease-in-out infinite;
+}
+
+/* Enhanced Hover Effects */
+.neu-hover-lift:hover {
+  transform: translateY(-4px);
+  animation: neuBounce 0.3s ease-out;
+}
+
+.neu-hover-glow:hover {
+  animation: neuGlow 0.5s ease-out;
+}
+
+.neu-hover-pulse:hover {
+  animation: neuPulse 0.4s ease-out;
+}
+
+/* Button Animation Enhancements */
+.neumorphic-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.neumorphic-btn:active {
+  animation: neuPress3D 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neumorphic-btn:not(:active):hover {
+  animation: neuRelease3D 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Card Animation Enhancements */
+.neumorphic-card {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neumorphic-card:hover {
+  animation: neuBounce 0.4s ease-out;
+}
+
+/* Input Focus Animation */
+.neumorphic-input:focus,
+.neumorphic-textarea:focus,
+.neumorphic-select:focus {
+  animation: neuGlow 0.5s ease-out;
+}
+
+/* Badge Pulse Animation */
+.neumorphic-badge {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.neumorphic-badge:hover {
+  animation: neuBounce 0.4s ease-out;
+}
+
+/* Smooth Ripple Effect */
+.neu-ripple {
+  animation: neuRipple 0.6s ease-out;
+}
+
+/* Entrance Animation */
+@keyframes neuEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    box-shadow: var(--neu-shadow-sm);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+}
+
+.neu-enter {
+  animation: neuEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Exit Animation */
+@keyframes neuExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: var(--neu-shadow-lg);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+    box-shadow: var(--neu-shadow-sm);
+  }
+}
+
+.neu-exit {
+  animation: neuExit 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Wiggle Animation */
+@keyframes neuWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1deg);
+  }
+  75% {
+    transform: rotate(1deg);
+  }
+}
+
+.neu-animate-wiggle {
+  animation: neuWiggle 0.5s ease-in-out;
+}
+
+.neu-animate-wiggle:hover {
+  animation: neuWiggle 0.3s ease-in-out infinite;
+}
+
 /* Light mode 3D glass adjustments */
 .light .glass-3d-btn {
   background: rgba(255, 255, 255, 0.4);
