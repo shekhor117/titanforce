@@ -119,7 +119,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 <ButtonModern
                   variant="outline"
                   size="lg"
-                  className={`w-full sm:w-auto border-white text-white hover:text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                  className={`w-full sm:w-auto bg-red-600 border-red-600 text-white hover:bg-red-700 hover:border-red-700 hover:text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   {t.hero.matches}
                 </ButtonModern>
