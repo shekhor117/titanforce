@@ -61,10 +61,10 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
       {/* Content container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
-        <div className="h-full py-12 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center h-full py-12 md:py-20">
           
-          {/* Text Content */}
-          <div className="flex flex-col justify-center space-y-6 md:space-y-8 max-w-2xl">
+          {/* Left Column - Text Content */}
+          <div className="lg:col-span-2 flex flex-col justify-center space-y-6 md:space-y-8">
             {/* Logo */}
             <div className="animate-fade-up">
               <div className="relative inline-block">
@@ -116,21 +116,43 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
               <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}+</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Active Players</p>
+                <p className="text-2xl sm:text-3xl font-bold text-accent">2018</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Founded</p>
               </div>
               <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">15+</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Seasons</p>
+                <p className="text-2xl sm:text-3xl font-bold text-accent">3</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">League Titles</p>
               </div>
               <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">1000+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-accent">2</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">FA Cups</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="animate-smoothFadeUp animation-delay-300">
+                <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
                 <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
+              </div>
+              <div className="animate-smoothFadeUp animation-delay-300">
+                <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}</p>
+                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Players</p>
               </div>
             </div>
           </div>
 
-
+          {/* Right Column - Player Showcase */}
+          <div className="lg:col-span-3 flex items-center justify-center">
+            <div className="relative w-full h-[400px] md:h-[600px]">
+              {/* Placeholder for player images - would be populated with actual player images */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-black/30 rounded-2xl backdrop-blur-sm flex items-center justify-center">
+                <div className="text-center">
+                  <p className="text-white/60 text-sm uppercase tracking-wider">Player Showcase</p>
+                  <p className="text-white/40 text-xs mt-2">Multiple player images will display here</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

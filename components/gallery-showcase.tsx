@@ -37,28 +37,62 @@ export function GalleryShowcase() {
   })) : DEFAULT_FEATURED_ITEMS
 
   return (
-    <section className="py-8 sm:py-12 md:py-16 px-3 sm:px-4 bg-gradient-to-b from-background to-card/30">
+    <section className="py-12 md:py-16 px-4 bg-black/40">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-12 gap-4">
-          <div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 bg-accent rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
               {isBn ? 'গ্যালারি' : 'Gallery'}
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              {isBn ? 'টাইটান ফোর্সের হাইলাইট এবং স্মৃতি' : 'Highlights and memories from Titan Force'}
-            </p>
           </div>
           <Link
             href="/gallery"
-            className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold text-xs sm:text-sm min-h-[44px] justify-center sm:justify-start"
+            className="text-accent hover:text-primary text-sm font-semibold flex items-center gap-2 transition-colors group"
           >
-            {isBn ? 'সব দেখুন' : 'View All'}
-            <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5" />
+            {isBn ? 'সব দেখুন' : 'View all gallery'}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* Swipeable Carousel - Real Madrid Style */}
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {featuredItems.slice(0, 4).map((item: any) => (
+            <Link
+              key={item.id}
+              href="/gallery"
+              className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300"
+            >
+              <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">
+                {item.imageUrl && (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
+                <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-2">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  {item.type === 'match' && (isBn ? 'ম্যাচ' : 'Match')}
+                  {item.type === 'team-events' && (isBn ? 'ইভেন্ট' : 'Events')}
+                  {item.type === 'training' && (isBn ? 'প্রশিক্ষণ' : 'Training')}
+                  {item.type === 'merchandise' && (isBn ? 'পণ্য' : 'Merchandise')}
+                  {item.type === 'news' && (isBn ? 'খবর' : 'News')}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Carousel Fallback for Additional Items */}
+        {featuredItems.length > 4 && (
         <div className="relative group">
           <Carousel
             opts={{
@@ -134,6 +168,7 @@ export function GalleryShowcase() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   )
