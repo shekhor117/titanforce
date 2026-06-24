@@ -9,6 +9,8 @@ import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
+import { PremiumMatchStats } from "@/components/premium-match-stats"
+import { PlayersGrid } from "@/components/players-grid"
 import { HomeShopLatest } from "@/components/home-shop-latest"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
@@ -80,14 +82,16 @@ export default function Home() {
         {/* Three Column Section */}
         <section className="py-12 md:py-16 px-4 bg-background">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <HomeNextFixture />
-              <HomeLatestNews />
               <HomeLeagueStandings />
             </div>
           </div>
         </section>
 
+        <HomeLatestNews />
+        <PremiumMatchStats />
+        <PlayersGrid />
         <HomeAboutGallery />
         <HomeStatsShowcase />
         <HomeShopLatest />
