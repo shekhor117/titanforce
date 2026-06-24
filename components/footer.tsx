@@ -65,7 +65,7 @@ export function Footer() {
             {/* Email Card */}
             <a
               href={`mailto:${contactEmail}`}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift hover-glow transition-all duration-300 group"
+              className="flex items-center gap-3 p-4 neumorphic-card group"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                 <Mail className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />

@@ -626,98 +626,354 @@ canvas {
   transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) translateZ(6px);
 }
 
-/* ===== NEUMORPHIC DESIGN EFFECTS ===== */
+/* ===== COMPREHENSIVE NEUMORPHIC DESIGN SYSTEM ===== */
 
-/* Base Neumorphic Style - Convex/Raised Effect */
+/* Light Mode Neumorphic Shadows */
+.light {
+  --neu-shadow-sm: 3px 3px 6px #d1d1d1, -3px -3px 6px #ffffff;
+  --neu-shadow-md: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+  --neu-shadow-lg: 9px 9px 16px #d1d1d1, -9px -9px 16px #ffffff;
+  --neu-shadow-xl: 12px 12px 24px #d1d1d1, -12px -12px 24px #ffffff;
+  --neu-shadow-inset: inset 6px 6px 12px #d1d1d1, inset -6px -6px 12px #ffffff;
+}
+
+/* Dark Mode Neumorphic Shadows */
+.dark {
+  --neu-shadow-sm: 3px 3px 6px #0a0a0a, -3px -3px 6px #4a4a4a;
+  --neu-shadow-md: 6px 6px 12px #0a0a0a, -6px -6px 12px #4a4a4a;
+  --neu-shadow-lg: 9px 9px 16px #0a0a0a, -9px -9px 16px #4a4a4a;
+  --neu-shadow-xl: 12px 12px 24px #0a0a0a, -12px -12px 24px #4a4a4a;
+  --neu-shadow-inset: inset 6px 6px 12px #0a0a0a, inset -6px -6px 12px #4a4a4a;
+}
+
+/* Base Neumorphic Transitions */
+.neu-transition {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Light Neumorphic Gradients */
+.light {
+  --neu-gradient-light: linear-gradient(145deg, #f5f5f5, #e8e8e8);
+  --neu-gradient-medium: linear-gradient(145deg, #e8e8e8, #d8d8d8);
+  --neu-gradient-deep: linear-gradient(145deg, #d8d8d8, #c8c8c8);
+}
+
+/* Dark Neumorphic Gradients */
+.dark {
+  --neu-gradient-light: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  --neu-gradient-medium: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+  --neu-gradient-deep: linear-gradient(145deg, #0a0a0a, #000000);
+}
+
+/* ===== NEUMORPHIC ELEMENT STYLES ===== */
+
+/* Base Neumorphic Element */
 .neumorphic {
-  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
-  box-shadow: 9px 9px 16px #d1d1d1, -9px -9px 16px #ffffff;
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-lg);
   border: none;
   border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .neumorphic:hover {
-  box-shadow: 9px 9px 20px #d1d1d1, -9px -9px 20px #ffffff;
+  box-shadow: var(--neu-shadow-xl);
   transform: translateY(-2px);
 }
 
 .neumorphic:active {
-  box-shadow: inset 9px 9px 16px #d1d1d1, inset -9px -9px 16px #ffffff;
+  box-shadow: var(--neu-shadow-inset);
   transform: translateY(2px);
 }
 
-/* Neumorphic Button - Premium Light */
+/* Neumorphic Button */
 .neumorphic-btn {
-  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
-  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-md);
   border: none;
   border-radius: 10px;
   padding: 12px 24px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  color: #333;
+  color: var(--foreground);
 }
 
 .neumorphic-btn:hover {
-  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+  box-shadow: var(--neu-shadow-lg);
   transform: translateY(-3px);
 }
 
 .neumorphic-btn:active {
-  box-shadow: inset 6px 6px 12px #d1d1d1, inset -6px -6px 12px #ffffff;
+  box-shadow: var(--neu-shadow-inset);
   transform: translateY(1px);
 }
 
-/* Neumorphic Card - Convex */
+.neumorphic-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Neumorphic Card */
 .neumorphic-card {
-  background: linear-gradient(145deg, #f5f5f5, #e8e8e8);
-  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-lg);
   border-radius: 16px;
   transition: all 0.3s ease;
+  border: none;
 }
 
 .neumorphic-card:hover {
-  box-shadow: 12px 12px 24px #d1d1d1, -12px -12px 24px #ffffff;
+  box-shadow: var(--neu-shadow-xl);
   transform: translateY(-4px);
 }
 
-/* Neumorphic Dark Mode */
-.dark .neumorphic {
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  box-shadow: 9px 9px 16px #0a0a0a, -9px -9px 16px #4a4a4a;
+/* Neumorphic Input Fields */
+.neumorphic-input {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  color: var(--foreground);
 }
 
-.dark .neumorphic:hover {
-  box-shadow: 9px 9px 20px #0a0a0a, -9px -9px 20px #4a4a4a;
+.neumorphic-input:focus {
+  outline: none;
+  box-shadow: var(--neu-shadow-md);
 }
 
-.dark .neumorphic:active {
-  box-shadow: inset 9px 9px 16px #0a0a0a, inset -9px -9px 16px #4a4a4a;
+.neumorphic-input::placeholder {
+  color: var(--muted-foreground);
 }
 
-.dark .neumorphic-btn {
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  box-shadow: 6px 6px 12px #0a0a0a, -6px -6px 12px #4a4a4a;
-  color: #f5f5f5;
+/* Neumorphic Textarea */
+.neumorphic-textarea {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  color: var(--foreground);
+  resize: vertical;
 }
 
-.dark .neumorphic-btn:hover {
-  box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #4a4a4a;
+.neumorphic-textarea:focus {
+  outline: none;
+  box-shadow: var(--neu-shadow-md);
 }
 
-.dark .neumorphic-btn:active {
-  box-shadow: inset 6px 6px 12px #0a0a0a, inset -6px -6px 12px #4a4a4a;
+/* Neumorphic Select */
+.neumorphic-select {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--foreground);
 }
 
-.dark .neumorphic-card {
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-  box-shadow: 8px 8px 16px #0a0a0a, -8px -8px 16px #4a4a4a;
+.neumorphic-select:focus {
+  outline: none;
+  box-shadow: var(--neu-shadow-md);
 }
 
-.dark .neumorphic-card:hover {
-  box-shadow: 12px 12px 24px #0a0a0a, -12px -12px 24px #4a4a4a;
+/* Neumorphic Checkbox */
+.neumorphic-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.neumorphic-checkbox:checked {
+  background: linear-gradient(145deg, var(--primary), #8a152a);
+  box-shadow: var(--neu-shadow-inset);
+}
+
+.neumorphic-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Neumorphic Radio */
+.neumorphic-radio {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.neumorphic-radio:checked {
+  background: linear-gradient(145deg, var(--primary), #8a152a);
+  box-shadow: var(--neu-shadow-inset);
+}
+
+.neumorphic-radio:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* Neumorphic Navigation */
+.neumorphic-nav {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-lg);
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-nav-item {
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+.neumorphic-nav-item:hover {
+  background: var(--neu-gradient-medium);
+  box-shadow: var(--neu-shadow-md);
+}
+
+.neumorphic-nav-item.active {
+  background: linear-gradient(145deg, var(--primary), #8a152a);
+  color: var(--primary-foreground);
+  box-shadow: var(--neu-shadow-md);
+}
+
+/* Neumorphic Container */
+.neumorphic-container {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-lg);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-container:hover {
+  box-shadow: var(--neu-shadow-xl);
+  transform: translateY(-2px);
+}
+
+/* Neumorphic Badge */
+.neumorphic-badge {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-sm);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-badge:hover {
+  box-shadow: var(--neu-shadow-md);
+  transform: scale(1.05);
+}
+
+/* Neumorphic Dropdown */
+.neumorphic-dropdown {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-lg);
+  border-radius: 12px;
+  border: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-dropdown-item {
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  color: var(--foreground);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.neumorphic-dropdown-item:hover {
+  background: var(--neu-gradient-medium);
+  box-shadow: var(--neu-shadow-inset);
+}
+
+/* Neumorphic Modal/Dialog */
+.neumorphic-modal {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-xl);
+  border-radius: 16px;
+  border: none;
+  padding: 24px;
+}
+
+/* Neumorphic Tabs */
+.neumorphic-tabs {
+  background: var(--neu-gradient-light);
+  box-shadow: var(--neu-shadow-md);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-tab {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.neumorphic-tab:hover {
+  color: var(--foreground);
+  background: var(--neu-gradient-medium);
+}
+
+.neumorphic-tab.active {
+  background: linear-gradient(145deg, var(--primary), #8a152a);
+  color: var(--primary-foreground);
+  box-shadow: var(--neu-shadow-md);
 }
 
 /* Light mode 3D glass adjustments */
