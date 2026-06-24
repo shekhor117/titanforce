@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
-import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
+import { Bebas_Neue, Barlow, Noto_Sans_Bengali, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
@@ -29,6 +29,12 @@ const notoSansBengali = Noto_Sans_Bengali({
   weight: ['400', '500', '600', '700'],
   subsets: ['bengali'],
   variable: '--font-bengali',
+})
+
+const inter = Inter({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-inter',
 })
 
 export const viewport: Viewport = defaultViewport
@@ -60,6 +66,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth bg-gradient-to-r from-slate-950 via-purple-900 to-pink-600 min-h-screen" data-scroll-behavior="smooth">
       <head>
+        {/* Custom Fonts */}
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11"
+        />
 
         {/* Google Search Console Verification */}
         <meta name="google-site-verification" content="S1BRuvXJo49oWBcV9tvlLDn2gIiL75tp0MvejZ_CLbQ" />
@@ -75,7 +87,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
-      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} ${inter.variable} font-sans antialiased`}>
         <Script
           id="error-handler"
           strategy="beforeInteractive"
