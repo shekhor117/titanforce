@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { ButtonModern } from './button-modern'
-import { Check, Loader2, ArrowRight } from 'lucide-react'
+import { Check, Loader2, ArrowRight, Eye, Zap } from 'lucide-react'
 
 export function ButtonShowcase() {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({})
   const [successStates, setSuccessStates] = useState<Record<string, boolean>>({})
+  const [hoveredState, setHoveredState] = useState<string | null>(null)
 
   const toggleLoading = (id: string) => {
     setLoadingStates(prev => ({
@@ -39,162 +40,214 @@ export function ButtonShowcase() {
   }
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-b from-background to-card/20">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-2">Modern Button Component</h2>
-          <p className="text-muted-foreground">Showcase of button states, variants, and effects</p>
+    <section className="py-16 px-4 bg-gradient-to-b from-gray-100 to-gray-50 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-16">
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">Premium Button UI</h2>
+          <p className="text-gray-600 text-lg">Showcase of elegant button states, variants, and interactive effects</p>
+        </div>
+
+        {/* Default & Hover States - Main Section */}
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Default & Hover States</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="light" size="md">Default</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Light variant</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md" glow="soft">Hover with glow</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Dark with glow effect</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md">Hover</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Dark variant standard</p>
+            </div>
+          </div>
         </div>
 
         {/* Variants Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Variants</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern variant="default">Default</ButtonModern>
-            <ButtonModern variant="primary">Primary</ButtonModern>
-            <ButtonModern variant="secondary">Secondary</ButtonModern>
-            <ButtonModern variant="success">Success</ButtonModern>
-            <ButtonModern variant="destructive">Destructive</ButtonModern>
-            <ButtonModern variant="outline">Outline</ButtonModern>
-            <ButtonModern variant="ghost">Ghost</ButtonModern>
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Variants & Colors</h3>
+          <div className="flex flex-wrap gap-6 justify-center">
+            <ButtonModern variant="light" size="md">Light</ButtonModern>
+            <ButtonModern variant="default" size="md">Default</ButtonModern>
+            <ButtonModern variant="primary" size="md">Primary</ButtonModern>
+            <ButtonModern variant="secondary" size="md">Secondary</ButtonModern>
+            <ButtonModern variant="success" size="md">Success</ButtonModern>
+            <ButtonModern variant="destructive" size="md">Destructive</ButtonModern>
+            <ButtonModern variant="outline" size="md">Outline</ButtonModern>
+            <ButtonModern variant="ghost" size="md">Ghost</ButtonModern>
           </div>
         </div>
 
-        {/* Sizes Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Sizes</h3>
-          <div className="flex flex-wrap items-center gap-4">
-            <ButtonModern size="sm">Small</ButtonModern>
-            <ButtonModern size="md">Medium</ButtonModern>
-            <ButtonModern size="lg">Large</ButtonModern>
-          </div>
-        </div>
-
-        {/* States Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">States</h3>
-          <div className="flex flex-wrap gap-4 items-start">
-            <ButtonModern state="default">Default State</ButtonModern>
-            <ButtonModern state="active">Active State</ButtonModern>
-            <ButtonModern disabled>Disabled State</ButtonModern>
-            <ButtonModern state="hover">Hover State</ButtonModern>
-          </div>
-        </div>
-
-        {/* Glow Effects Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Glow Effects</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern variant="primary" glow="none">No Glow</ButtonModern>
-            <ButtonModern variant="primary" glow="soft">Soft Glow</ButtonModern>
-            <ButtonModern variant="primary" glow="strong">Strong Glow</ButtonModern>
+        {/* Active & Disabled States Section */}
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Active & Disabled States</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="light" size="md" state="active">Active</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Light active state</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md" state="active">Active</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Dark active state</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md" disabled>Disabled</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Disabled state</p>
+            </div>
           </div>
         </div>
 
         {/* Shadow Effects Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Shadow Effects</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern shadow="none">No Shadow</ButtonModern>
-            <ButtonModern shadow="soft">Soft Shadow</ButtonModern>
-            <ButtonModern shadow="inset">Inset Shadow</ButtonModern>
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Shadow Effects</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="light" size="md" shadow="inset">Everted inset shadow</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Inset shadow variant</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md" shadow="premium">Premium Shadow</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Premium elevated shadow</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="secondary" size="md" shadow="soft">Soft Shadow</ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Subtle soft shadow</p>
+            </div>
           </div>
         </div>
 
-        {/* Loading State Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Loading State</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern
-              variant="primary"
-              isLoading={loadingStates['loading1']}
-              onClick={() => toggleLoading('loading1')}
-            >
-              {loadingStates['loading1'] ? 'Loading...' : 'Start Loading'}
-            </ButtonModern>
-            <ButtonModern
-              variant="primary"
-              isLoading={loadingStates['loading2']}
-              onClick={() => triggerSuccess('loading2')}
-            >
-              {loadingStates['loading2'] ? 'Processing...' : 'Process Action'}
-            </ButtonModern>
+        {/* Loading & Success States */}
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Loading & Success States</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <ButtonModern
+                variant="primary"
+                size="md"
+                isLoading={loadingStates['loading1']}
+                onClick={() => toggleLoading('loading1')}
+              >
+                {loadingStates['loading1'] ? 'Loading' : 'Loaded'}
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Click to toggle loading</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern
+                variant="primary"
+                size="md"
+                isLoading={loadingStates['loading2']}
+                onClick={() => triggerSuccess('loading2')}
+              >
+                {loadingStates['loading2'] ? 'Processing' : 'Process'}
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Loading then success</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern
+                variant="success"
+                size="md"
+                isSuccess={successStates['success1']}
+                onClick={() => setSuccessStates(prev => ({
+                  ...prev,
+                  'success1': !prev['success1']
+                }))}
+              >
+                {successStates['success1'] ? 'Success' : 'Submit'}
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Success state</p>
+            </div>
           </div>
         </div>
 
-        {/* Success State Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Success State</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern
-              variant="success"
-              isSuccess={successStates['success1']}
-            >
-              {successStates['success1'] ? 'Completed' : 'Success Button'}
-            </ButtonModern>
-            <ButtonModern
-              variant="primary"
-              isSuccess={successStates['success2']}
-              onClick={() => setSuccessStates(prev => ({
-                ...prev,
-                'success2': !prev['success2']
-              }))}
-            >
-              {successStates['success2'] ? 'Done' : 'Toggle Success'}
-            </ButtonModern>
+        {/* Special Effects Section */}
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Special Effects & Variants</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="primary" size="md" icon={<Eye className="w-4 h-4" />}>
+                Hover with glow
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Glow effect on hover</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="neumorphic" size="md">
+                Hyper-neumorphic
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Neumorphic design</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern variant="success" size="md" icon={<Check className="w-4 h-4" />}>
+                Hyper-reawaay
+              </ButtonModern>
+              <p className="text-sm text-gray-600 mt-4">Success with icon</p>
+            </div>
           </div>
         </div>
 
-        {/* Icons Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">With Icons</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern variant="primary" icon={<ArrowRight className="w-4 h-4" />} iconPosition="right">
-              Next Step
-            </ButtonModern>
-            <ButtonModern variant="success" icon={<Check className="w-4 h-4" />} iconPosition="left">
-              Confirm
-            </ButtonModern>
-            <ButtonModern variant="primary" icon={<Loader2 className="w-4 h-4 animate-spin" />} iconPosition="left">
-              Processing
-            </ButtonModern>
+        {/* Glow Effects Showcase */}
+        <div className="mb-16 bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Glow Effects</h3>
+          <div className="flex flex-wrap gap-6 justify-center">
+            <ButtonModern variant="primary" size="md" glow="none">No Glow</ButtonModern>
+            <ButtonModern variant="primary" size="md" glow="soft">Soft Glow</ButtonModern>
+            <ButtonModern variant="primary" size="md" glow="strong">Strong Glow</ButtonModern>
+            <ButtonModern variant="primary" size="md" glow="warmGlow">Warm Glow</ButtonModern>
           </div>
         </div>
 
-        {/* Combined Effects Section */}
-        <div className="bg-card rounded-lg p-8 border border-border">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Combined Effects</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ButtonModern 
-              variant="primary" 
-              glow="strong" 
-              shadow="soft"
-              icon={<Check className="w-4 h-4" />}
-            >
-              Primary with Glow
-            </ButtonModern>
-            <ButtonModern 
-              variant="secondary" 
-              shadow="inset"
-              icon={<ArrowRight className="w-4 h-4" />}
-              iconPosition="right"
-            >
-              Secondary with Inset
-            </ButtonModern>
-            <ButtonModern 
-              variant="success" 
-              glow="soft"
-              size="lg"
-            >
-              Success Large
-            </ButtonModern>
-            <ButtonModern 
-              variant="outline" 
-              glow="strong"
-              size="sm"
-            >
-              Outline Small
-            </ButtonModern>
+        {/* Combined Effects Showcase */}
+        <div className="bg-white rounded-2xl p-12 shadow-lg border border-gray-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Combined Effects & Icons</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex flex-col items-center">
+              <ButtonModern 
+                variant="primary" 
+                glow="strong" 
+                shadow="premium"
+                icon={<Check className="w-4 h-4" />}
+                iconPosition="left"
+              >
+                Confirmed
+              </ButtonModern>
+              <p className="text-xs text-gray-600 mt-4 text-center">Premium + Glow</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern 
+                variant="secondary" 
+                shadow="inset"
+                icon={<ArrowRight className="w-4 h-4" />}
+                iconPosition="right"
+                size="lg"
+              >
+                Next
+              </ButtonModern>
+              <p className="text-xs text-gray-600 mt-4 text-center">Inset Shadow</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern 
+                variant="success" 
+                glow="soft"
+                size="md"
+                icon={<Zap className="w-4 h-4" />}
+                iconPosition="left"
+              >
+                Power Up
+              </ButtonModern>
+              <p className="text-xs text-gray-600 mt-4 text-center">Success + Glow</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <ButtonModern 
+                variant="outline" 
+                glow="subtle"
+                size="md"
+              >
+                Explore
+              </ButtonModern>
+              <p className="text-xs text-gray-600 mt-4 text-center">Outline Style</p>
+            </div>
           </div>
         </div>
       </div>

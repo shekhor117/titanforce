@@ -3,21 +3,30 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-sm uppercase tracking-wider rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden',
+  'inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-sm rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden',
   {
     variants: {
       variant: {
-        default: 'bg-gray-200 text-gray-900 hover:bg-gray-300 shadow-md hover:shadow-lg',
-        primary: 'bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-lg',
-        secondary: 'bg-gray-600 text-white hover:bg-gray-700 shadow-md hover:shadow-lg',
-        ghost: 'bg-transparent text-gray-900 hover:bg-gray-100 border border-gray-300',
-        outline: 'border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white',
-        success: 'bg-green-600 text-white hover:bg-green-700 shadow-md hover:shadow-lg',
-        destructive: 'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg',
-        // Neumorphic variants with soft shadows and glow
-        neumorphic: 'bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 shadow-[0_8px_16px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.1),inset_0_0_20px_rgba(255,255,255,0.5)] active:shadow-[0_2px_4px_rgba(0,0,0,0.05)]',
-        'neumorphic-dark': 'bg-gradient-to-br from-slate-700 to-slate-600 text-white shadow-[0_8px_16px_rgba(0,0,0,0.3),0_2px_4px_rgba(255,200,100,0.2)] hover:shadow-[0_12px_24px_rgba(255,200,100,0.4)]',
-        'neumorphic-accent': 'bg-gradient-to-br from-orange-300 to-orange-200 text-orange-900 shadow-[0_8px_16px_rgba(255,140,0,0.3),0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(255,140,0,0.5)]',
+        // Light variants (Premium neumorphic style)
+        default: 'bg-gradient-to-br from-gray-50 to-gray-100 text-gray-700 shadow-[0_8px_16px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.12)] hover:scale-[1.02] active:scale-95',
+        light: 'bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 shadow-[0_8px_16px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.1)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]',
+        
+        // Dark variants
+        primary: 'bg-gradient-to-br from-gray-700 to-gray-800 text-white shadow-[0_8px_16px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.4),0_0_30px_rgba(59,130,246,0.3)] hover:scale-[1.02] active:scale-95',
+        secondary: 'bg-gradient-to-br from-gray-600 to-gray-700 text-white shadow-[0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.35)] active:shadow-inner',
+        
+        // Accent variants
+        success: 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-[0_8px_16px_rgba(34,197,94,0.3)] hover:shadow-[0_12px_24px_rgba(34,197,94,0.5),0_0_20px_rgba(34,197,94,0.3)] active:scale-95',
+        destructive: 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_8px_16px_rgba(239,68,68,0.3)] hover:shadow-[0_12px_24px_rgba(239,68,68,0.5)] active:scale-95',
+        
+        // Special variants
+        ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-none',
+        outline: 'border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white transition-colors',
+        
+        // Premium neumorphic variants
+        neumorphic: 'bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 shadow-[0_8px_16px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.1),inset_0_0_20px_rgba(255,255,255,0.5)] active:shadow-[inset_0_2px_8px_rgba(0,0,0,0.08)]',
+        'neumorphic-dark': 'bg-gradient-to-br from-slate-700 to-slate-800 text-white shadow-[0_8px_16px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.1)] hover:shadow-[0_12px_24px_rgba(255,200,100,0.4),0_0_40px_rgba(255,200,100,0.3)]',
+        'neumorphic-accent': 'bg-gradient-to-br from-orange-300 to-orange-200 text-orange-900 shadow-[0_8px_16px_rgba(255,140,0,0.3)] hover:shadow-[0_12px_24px_rgba(255,140,0,0.5),0_0_30px_rgba(255,140,0,0.4)]',
       },
       size: {
         sm: 'px-4 py-2 text-xs',
@@ -37,12 +46,14 @@ const buttonVariants = cva(
         soft: 'hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]',
         strong: 'hover:shadow-[0_0_40px_rgba(220,38,38,0.6)]',
         warmGlow: 'hover:shadow-[0_0_30px_rgba(255,140,0,0.4)]',
+        subtle: 'hover:shadow-[0_0_15px_rgba(107,114,128,0.2)]',
       },
       shadow: {
         none: 'shadow-none',
         soft: 'shadow-md hover:shadow-lg',
         inset: 'shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_2px_8px_rgba(0,0,0,0.15)]',
         neumorphic: 'shadow-[0_8px_16px_rgba(0,0,0,0.08)]',
+        premium: 'shadow-[0_12px_24px_rgba(0,0,0,0.15)]',
       },
     },
     defaultVariants: {
