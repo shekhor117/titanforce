@@ -53,7 +53,7 @@ export function PlayersGrid() {
                     </div>
                   </div>
 
-                  {/* Player Image or Placeholder */}
+                  {/* Player Image or Placeholder with Heatmap */}
                   <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
                     {player.image ? (
                       <Image
@@ -63,11 +63,23 @@ export function PlayersGrid() {
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-3xl text-red-500/20 font-bold mb-2">👤</div>
-                          <p className="text-xs text-white/20">Player</p>
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-black/60">
+                        {/* Field Visualization Heatmap */}
+                        <div className="mb-3">
+                          <p className="text-xs text-white/60 mb-2 text-center">Field Visualization</p>
+                          <div className="grid grid-cols-2 gap-1 bg-black/40 p-2 rounded">
+                            {[0, 1, 2, 3].map((i) => (
+                              <div
+                                key={i}
+                                className="w-6 h-6 rounded bg-gradient-to-br from-green-500 to-green-700 border border-green-400/30"
+                                style={{
+                                  opacity: 0.7 + (i * 0.08),
+                                }}
+                              />
+                            ))}
+                          </div>
                         </div>
+                        <p className="text-xs text-white/40">Heatmap</p>
                       </div>
                     )}
                     {/* Overlay */}
