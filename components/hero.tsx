@@ -37,27 +37,25 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-r from-indigo-950 via-fuchsia-800 to-pink-500">
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-black via-red-900 to-pink-600">
       {/* Background animated elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Top left curved accent */}
-        <div className="absolute top-0 left-0 w-full h-full">
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 800" preserveAspectRatio="none">
+        {/* Animated gradient orbs */}
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-pink-500/25 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute top-40 left-10 w-72 h-72 bg-red-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 right-32 w-80 h-80 bg-pink-400/15 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#a71930" stopOpacity="0.15"/>
-                <stop offset="100%" stopColor="#d91e3f" stopOpacity="0.08"/>
-              </linearGradient>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/>
+              </pattern>
             </defs>
-            {/* Curved wave pattern */}
-            <path d="M 0,200 Q 360,100 720,200 T 1440,200 L 1440,0 L 0,0 Z" fill="url(#purpleGrad)" />
-            <path d="M 0,400 Q 360,300 720,400 T 1440,400 L 1440,150 Q 720,200 0,150 Z" fill="#d91e3f" opacity="0.1" />
+            <rect width="100%" height="100%" fill="url(#grid)" />
           </svg>
         </div>
-
-        {/* Gradient orbs */}
-        <div className="absolute top-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob"></div>
-        <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
       </div>
 
       {/* Content container */}
@@ -82,19 +80,19 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
             {/* Tagline */}
             <div className="animate-smoothFadeUp">
-              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                MORE THAN A CLUB
+              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary dark:text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                MORE THAN A CLUB, WE ARE
               </p>
             </div>
 
             {/* Main Title */}
             <h1 className={`text-5xl sm:text-6xl md:text-7xl font-black leading-tight tracking-wider animate-smoothFadeUp animation-delay-100 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
-              <span className="block text-white">{t.hero.welcome}</span>
+              <span className="block text-slate-900 dark:text-white">{t.hero.welcome}</span>
               <span className="block text-accent mt-2">{t.hero.clubName}</span>
             </h1>
 
             {/* Description */}
-            <p className={`text-base sm:text-lg text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.tagline}
             </p>
 
@@ -127,23 +125,36 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-white/10">
+            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-300 dark:border-white/10">
               <div className="animate-smoothFadeUp animation-delay-300">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Fans</p>
               </div>
               <div className="animate-smoothFadeUp animation-delay-300">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Players</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Players</p>
               </div>
             </div>
 
           </div>
 
-          {/* Right Column - Player Showcase */}
-          <div className="lg:col-span-3 flex items-center justify-center">
-            <div className="relative w-full h-[400px] md:h-[600px]">
-              {/* Placeholder for player images - would be populated with actual player images */}
+          {/* Right Column - Football Illustration */}
+          <div className="lg:col-span-3 flex items-center justify-center relative">
+            <div className="relative w-full h-[400px] md:h-[600px] flex items-center justify-center">
+              {/* Decorative background circle */}
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-red-600/20 rounded-3xl blur-2xl"></div>
+              
+              {/* Football illustration */}
+              <div className="relative z-10 animate-float">
+                <Image
+                  src="/images/hero-football.png"
+                  alt="Football player kicking ball"
+                  width={500}
+                  height={600}
+                  className="object-contain drop-shadow-2xl"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
