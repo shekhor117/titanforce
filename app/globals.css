@@ -1011,3 +1011,63 @@ canvas {
 .interactive-feedback:active {
   transform: scale(0.98);
 }
+
+/* Modern Button Animations and Effects */
+@keyframes buttonGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(220, 38, 38, 0.6);
+  }
+}
+
+@keyframes buttonSuccessPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes loadingSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Button glow effect */
+.button-glow-soft {
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+}
+
+.button-glow-strong {
+  animation: buttonGlowPulse 2s ease-in-out infinite;
+}
+
+/* Button success state animation */
+.button-success-pulse {
+  animation: buttonSuccessPulse 0.5s ease-out;
+}
+
+/* Loading spinner animation */
+.button-loading-spinner {
+  animation: loadingSpinner 1s linear infinite;
+}
+
+/* Smooth button transitions */
+.button-transition {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.button-transition:active {
+  transform: scale(0.95);
+}
+
+.button-transition:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
