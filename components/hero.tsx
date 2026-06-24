@@ -81,7 +81,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             {/* Tagline */}
             <div className="animate-smoothFadeUp">
               <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary dark:text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                MORE THAN A CLUB
+                MORE THAN A CLUB, WE ARE
               </p>
             </div>
 
