@@ -37,18 +37,27 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
   }, [onLoadingChange, skipAnimation])
 
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh]">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picsart_26-06-23_19-46-43-466-WVfLPkJ1P2rW2VqNe518W0a7YFwlBO.jpg"
-          alt="Hero background"
-          fill
-          className="object-cover w-full h-full"
-          priority
-        />
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/30"></div>
+    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-r from-indigo-950 via-fuchsia-800 to-pink-500">
+      {/* Background animated elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Top left curved accent */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 800" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a71930" stopOpacity="0.15"/>
+                <stop offset="100%" stopColor="#d91e3f" stopOpacity="0.08"/>
+              </linearGradient>
+            </defs>
+            {/* Curved wave pattern */}
+            <path d="M 0,200 Q 360,100 720,200 T 1440,200 L 1440,0 L 0,0 Z" fill="url(#purpleGrad)" />
+            <path d="M 0,400 Q 360,300 720,400 T 1440,400 L 1440,150 Q 720,200 0,150 Z" fill="#d91e3f" opacity="0.1" />
+          </svg>
+        </div>
+
+        {/* Gradient orbs */}
+        <div className="absolute top-20 right-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute bottom-40 left-20 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
       </div>
 
       {/* Content container */}
