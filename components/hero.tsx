@@ -80,19 +80,19 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
 
             {/* Tagline */}
             <div className="animate-smoothFadeUp">
-              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary dark:text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 MORE THAN A CLUB
               </p>
             </div>
 
             {/* Main Title */}
             <h1 className={`text-5xl sm:text-6xl md:text-7xl font-black leading-tight tracking-wider animate-smoothFadeUp animation-delay-100 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
-              <span className="block text-white">{t.hero.welcome}</span>
+              <span className="block text-slate-900 dark:text-white">{t.hero.welcome}</span>
               <span className="block text-accent mt-2">{t.hero.clubName}</span>
             </h1>
 
             {/* Description */}
-            <p className={`text-base sm:text-lg text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            <p className={`text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.hero.tagline}
             </p>
 
@@ -125,14 +125,14 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-white/10">
+            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-300 dark:border-white/10">
               <div className="animate-smoothFadeUp animation-delay-300">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Fans</p>
               </div>
               <div className="animate-smoothFadeUp animation-delay-300">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Players</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Players</p>
               </div>
             </div>
 
