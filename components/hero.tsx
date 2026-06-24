@@ -127,22 +127,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
-              <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">2018</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Founded</p>
-              </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">3</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">League Titles</p>
-              </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">2</p>
-                <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">FA Cups</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-white/10">
               <div className="animate-smoothFadeUp animation-delay-300">
                 <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
                 <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Fans</p>
@@ -152,6 +137,7 @@ export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
                 <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wide">Players</p>
               </div>
             </div>
+
           </div>
 
           {/* Right Column - Player Showcase */}
