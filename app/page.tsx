@@ -13,7 +13,6 @@ import { PremiumMatchStats } from "@/components/premium-match-stats"
 import { PlayersGrid } from "@/components/players-grid"
 import { HomeShopLatest } from "@/components/home-shop-latest"
 import { GalleryShowcase } from "@/components/gallery-showcase"
-import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
@@ -96,7 +95,6 @@ export default function Home() {
         <HomeStatsShowcase />
         <HomeShopLatest />
         <GalleryShowcase />
-        <Contact />
       </main>
       {!heroLoading && <Footer />}
     </div>
