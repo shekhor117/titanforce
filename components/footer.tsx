@@ -21,10 +21,10 @@ export function Footer() {
   ]
 
   const connectLinks = [
-    { label: "Contact", href: "/about" },
+    { label: "Contact", href: "/contact" },
     { label: "Tickets", href: "/about" },
-    { label: "Shop", href: "/about" },
-    { label: "Newsletter", href: "/about" },
+    { label: "Shop", href: "/shop" },
+    { label: "Newsletter", href: "/features" },
   ]
 
   return (
