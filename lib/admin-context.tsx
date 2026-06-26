@@ -16,14 +16,22 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
+// Create supabase client outside component to prevent recreating
+let supabaseClient: any = null
+
+function getSupabaseClient() {
+  if (!supabaseClient) {
+    supabaseClient = createClient()
+  }
+  return supabaseClient
+}
+
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<AuthUser | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [isConfigured] = useState(() => isSupabaseConfigured())
-
-  const supabase = createClient()
 
   // Check if admin is logged in on mount
   useEffect(() => {
@@ -32,6 +40,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
+        // If Supabase is not configured, mark as initialized immediately
+        if (!isConfigured) {
+          if (isMounted) {
+            setIsInitialized(true)
+          }
+          return
+        }
+
+        const supabase = getSupabaseClient()
+        
         // Set up auth state change listener first (non-blocking)
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
@@ -50,7 +68,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 }
                 setAdmin(user)
               } else {
-                // User lost admin role or is not an admin
                 setAdmin(null)
               }
             } else {
@@ -61,12 +78,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session with timeout (non-blocking)
-        const sessionCheck = supabase.auth.getSession().then(({ data }) => {
-          if (data.session?.user && isMounted) {
+        // Check for existing session (non-blocking)
+        supabase.auth.getSession().then(({ data }) => {
+          if (!isMounted) return
+          
+          if (data.session?.user) {
             const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
             
-            // Only set admin if user has admin/moderator role
             if (userRole === "admin" || userRole === "moderator") {
               const user: AuthUser = {
                 id: data.session.user.id,
@@ -80,18 +98,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
               setAdmin(null)
             }
           }
+          
+          // Mark as initialized after session check completes
+          setIsInitialized(true)
         }).catch(() => {
-          // Silently fail if session check times out
-        })
-
-        // Mark as initialized after a short delay or when session check completes
-        const timeoutId = setTimeout(() => {
+          // Even on error, mark as initialized
           if (isMounted) {
             setIsInitialized(true)
           }
-        }, 100)
-        
-        return () => clearTimeout(timeoutId)
+        })
       } catch (err) {
         // Handle initialization error silently
         if (isMounted) setIsInitialized(true)
@@ -106,7 +121,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         subscription.unsubscribe()
       }
     }
-  }, [supabase])
+  }, [])
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)

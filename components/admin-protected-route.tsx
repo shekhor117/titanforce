@@ -9,21 +9,11 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const router = useRouter()
   const pathname = usePathname()
   const [isRedirecting, setIsRedirecting] = useState(false)
-  const [hasTimedOut, setHasTimedOut] = useState(false)
   const [isClient, setIsClient] = useState(false)
 
   // Ensure we're on the client before using router
   useEffect(() => {
     setIsClient(true)
-  }, [])
-
-  // Timeout for initialization - if it takes more than 10 seconds, assume not authenticated
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHasTimedOut(true)
-    }, 10000)
-    
-    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
@@ -40,15 +30,8 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
         setIsRedirecting(true)
         router.push("/admin/login")
       }
-      return
     }
-
-    // Only redirect on timeout if still not initialized
-    if (hasTimedOut && !admin && !isRedirecting && !isPublicPage) {
-      setIsRedirecting(true)
-      router.push("/admin/login")
-    }
-  }, [isClient, admin, isInitialized, hasTimedOut, isRedirecting, router, pathname])
+  }, [isClient, admin, isInitialized, isRedirecting, router, pathname])
 
   // If we have admin data, render immediately
   if (admin) {
@@ -56,17 +39,17 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   }
 
   // Show loading state while initializing
-  if (!isInitialized && !hasTimedOut) {
+  if (!isInitialized) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-foreground/60">Loading...</p>
+          <p className="mt-4 text-foreground/60">Initializing...</p>
         </div>
       </div>
     )
   }
 
-  // If initialized/timed out but no admin, show nothing (redirect is happening)
+  // If initialized but no admin, show nothing (redirect is happening)
   return null
 }
