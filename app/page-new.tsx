@@ -1,20 +1,28 @@
-"use client"
-
-import { useState, useEffect } from "react"
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Search, ShoppingBag, ChevronRight, Play, MapPin, Trophy, Users, Heart, Target,
   Calendar, ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
+import heroPlayers from "@/assets/hero-players.jpg";
+import teamHuddle from "@/assets/team-huddle.jpg";
+import newsCoach from "@/assets/news-coach.jpg";
+import newsGoal from "@/assets/news-goal.jpg";
+import newsStadium from "@/assets/news-stadium.jpg";
+import newsPlayer from "@/assets/news-player.jpg";
 
-// Import images (these would need to be imported from assets)
-const heroPlayers = "/images/hero-players.jpg"
-const teamHuddle = "/images/team-huddle.jpg"
-const newsCoach = "/images/news-coach.jpg"
-const newsGoal = "/images/news-goal.jpg"
-const newsStadium = "/images/news-stadium.jpg"
-const newsPlayer = "/images/news-player.jpg"
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Titan Force Mulikandi — Rise Like Titans" },
+      { name: "description", content: "Official home of Titan Force Mulikandi FC. Fixtures, players, match stats, and the latest club news." },
+      { property: "og:title", content: "Titan Force Mulikandi FC" },
+      { property: "og:description", content: "Pride of Mulikandi. Power of the Titans." },
+    ],
+  }),
+  component: Index,
+});
 
-const NAV = ["HOME", "FIXTURES", "PLAYERS", "GALLERY", "SHOP", "CLUB", "NEWS", "CONTACT"]
+const NAV = ["HOME", "FIXTURES", "PLAYERS", "GALLERY", "SHOP", "CLUB", "NEWS", "CONTACT"];
 
 function Logo() {
   return (
@@ -28,7 +36,7 @@ function Logo() {
         <div className="text-[10px] tracking-[0.3em] text-muted-foreground">MULIKANDI</div>
       </div>
     </div>
-  )
+  );
 }
 
 function Header() {
@@ -56,7 +64,8 @@ function Header() {
         </div>
       </div>
     </header>
-  )
+
+  );
 }
 
 function Hero() {
@@ -148,11 +157,12 @@ function Hero() {
         </div>
       </div>
     </section>
-  )
+
+  );
 }
 
 function TeamBadge({ name, color, label }: { name: string; color: "primary" | "blue"; label?: string }) {
-  const isPrimary = color === "primary"
+  const isPrimary = color === "primary";
   return (
     <div className="flex flex-col items-center gap-2">
       <div className={`h-14 w-14 grid place-items-center rounded-md font-display font-bold text-sm ${
@@ -160,7 +170,7 @@ function TeamBadge({ name, color, label }: { name: string; color: "primary" | "b
       }`}>{name}</div>
       <div className="text-[10px] tracking-[0.2em]">{label ?? "TFM"}</div>
     </div>
-  )
+  );
 }
 
 function SectionHeader({ kicker, title, action }: { kicker?: string; title: string; action?: string }) {
@@ -176,7 +186,7 @@ function SectionHeader({ kicker, title, action }: { kicker?: string; title: stri
         </a>
       )}
     </div>
-  )
+  );
 }
 
 function LatestNews() {
@@ -185,7 +195,7 @@ function LatestNews() {
     { img: newsGoal, title: "Sabbir Hossain scores a brace against Warriors", date: "22 May 2026" },
     { img: newsStadium, title: "Mulikandi Stadium gets a new look", date: "20 May 2026" },
     { img: newsPlayer, title: "Player of the Month — Rahim Uddin", date: "18 May 2026" },
-  ]
+  ];
   return (
     <section className="container mx-auto px-4 sm:px-6 py-10 sm:py-16">
       <div className="panel p-4 sm:p-6 md:p-8">
@@ -197,6 +207,7 @@ function LatestNews() {
                 <img src={n.img} alt={n.title} width={768} height={576} loading="lazy" decoding="async"
                   className="h-44 sm:h-40 lg:h-44 w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               </div>
+
               <h3 className="mt-4 font-display text-base font-semibold leading-snug group-hover:text-primary transition">
                 {n.title}
               </h3>
@@ -206,11 +217,11 @@ function LatestNews() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function PossessionRing() {
-  const r = 52, c = 2 * Math.PI * r, pct = 63
+  const r = 52, c = 2 * Math.PI * r, pct = 63;
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="relative h-32 w-32 sm:h-36 sm:w-36 shrink-0">
@@ -231,8 +242,9 @@ function PossessionRing() {
         <div className="text-[10px] tracking-widest text-muted-foreground">OPP</div>
       </div>
     </div>
-  )
+  );
 }
+
 
 function StatBar({ label, value, pct }: { label: string; value: string | number; pct: number }) {
   return (
@@ -244,7 +256,7 @@ function StatBar({ label, value, pct }: { label: string; value: string | number;
         <div className="h-full rounded-full bg-gradient-to-r from-primary to-[oklch(0.7_0.2_25)]" style={{ width: `${pct}%` }} />
       </div>
     </div>
-  )
+  );
 }
 
 function MatchStats() {
@@ -267,6 +279,7 @@ function MatchStats() {
               VIEW FULL STATS
             </button>
           </div>
+
 
           {/* Last match */}
           <div className="rounded-md border border-border bg-background/40 p-5 sm:p-6">
@@ -295,6 +308,7 @@ function MatchStats() {
                 <rect x="10" y="90" width="60" height="120" fill="none" stroke="oklch(0.97 0 0 / 0.3)" strokeWidth="1.5" />
                 <rect x="330" y="90" width="60" height="120" fill="none" stroke="oklch(0.97 0 0 / 0.3)" strokeWidth="1.5" />
               </svg>
+              {/* heatmap dots */}
               {[[120,120,40],[260,140,55],[300,160,30],[180,180,35],[230,100,25],[160,200,28]].map(([x,y,s],i)=>(
                 <div key={i} className="absolute rounded-full" style={{
                   left: `${(x as number)/400*100}%`, top: `${(y as number)/300*100}%`,
@@ -347,11 +361,11 @@ function MatchStats() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function Fixtures() {
-  const tabs = ["ALL", "PREMIER LEAGUE", "FRIENDLY", "CUP"]
+  const tabs = ["ALL", "PREMIER LEAGUE", "FRIENDLY", "CUP"];
   const rows = [
     { date: "28 JUN 2026", opp: "RIVALS FC", venue: "Mulikandi Stadium" },
     { date: "05 JUL 2026", opp: "WARRIORS FC", venue: "Away" },
@@ -359,10 +373,10 @@ function Fixtures() {
     { date: "19 JUL 2026", opp: "EAGLES FC", venue: "Mulikandi Stadium" },
     { date: "26 JUL 2026", opp: "TIGERS FC", venue: "Away", swap: true },
     { date: "02 AUG 2026", opp: "LEGENDS FC", venue: "Mulikandi Stadium" },
-  ]
+  ];
   return (
     <div className="panel p-6">
-      <SectionHeader title="UPCOMING FIXTURES" />
+      <SectionHeader title="FIXTURES" />
       <div className="text-[10px] tracking-widest text-muted-foreground mb-3">HOME / FIXTURES</div>
       <div className="flex gap-2 mb-5 flex-wrap">
         {tabs.map((t, i) => (
@@ -385,15 +399,16 @@ function Fixtures() {
           </li>
         ))}
       </ul>
+
       <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
         VIEW FULL FIXTURES
       </button>
     </div>
-  )
+  );
 }
 
 function Players() {
-  const tabs = ["ALL", "GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"]
+  const tabs = ["ALL", "GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"];
   const players = [
     { n: "01", name: "RAKIB HOSSAIN", role: "Goalkeeper" },
     { n: "04", name: "ARIF AHMED", role: "Defender" },
@@ -401,7 +416,7 @@ function Players() {
     { n: "07", name: "RAHIM UDDIN", role: "Midfielder", c: true },
     { n: "10", name: "SABBIR HOSSAIN", role: "Forward" },
     { n: "11", name: "RONY HASAN", role: "Midfielder" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="PLAYERS" />
@@ -414,6 +429,7 @@ function Players() {
         ))}
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+
         {players.map((p) => (
           <div key={p.n} className="relative overflow-hidden rounded-md border border-border bg-gradient-to-b from-secondary/40 to-background aspect-[3/4] p-3 flex flex-col justify-between hover:border-primary transition group">
             <div className="font-display text-3xl font-bold text-primary">{p.n}</div>
@@ -429,63 +445,7 @@ function Players() {
         VIEW ALL PLAYERS
       </button>
     </div>
-  )
-}
-
-function Gallery() {
-  return (
-    <div className="panel p-6">
-      <SectionHeader title="GALLERY" />
-      <div className="grid grid-cols-2 gap-2">
-        {[heroPlayers, teamHuddle, newsGoal, newsStadium].map((s, i) => (
-          <img key={i} src={s} alt="Team gallery" width={768} height={576} loading="lazy" decoding="async" className="aspect-square object-cover rounded border border-border" />
-        ))}
-      </div>
-      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-        VIEW FULL GALLERY
-      </button>
-    </div>
-  )
-}
-
-function Shop() {
-  const items = [
-    { name: "Home Jersey", price: "1,299", g: "from-primary to-[oklch(0.3_0.15_25)]" },
-    { name: "Away Jersey", price: "1,299", g: "from-[oklch(0.95_0.005_0)] to-[oklch(0.7_0.01_0)]" },
-    { name: "Training Kit", price: "1,199", g: "from-secondary to-background" },
-    { name: "TFM Cap", price: "419", g: "from-[oklch(0.2_0.04_25)] to-background" },
-    { name: "Scarf", price: "309", g: "from-primary to-secondary" },
-    { name: "Water Bottle", price: "649", g: "from-[oklch(0.3_0.05_25)] to-background" },
-  ]
-  return (
-    <div className="panel p-6">
-      <SectionHeader title="SHOP" />
-      <div className="text-[10px] tracking-widest text-muted-foreground mb-3">HOME / SHOP</div>
-      <div className="flex gap-2 mb-5 flex-wrap">
-        {["ALL", "JERSEYS", "TRAINING", "ACCESSORIES", "LIFESTYLE"].map((t, i) => (
-          <button key={t} className={`text-[10px] font-bold tracking-widest px-3 py-1.5 rounded ${
-            i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
-          }`}>{t}</button>
-        ))}
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        {items.map((it) => (
-          <div key={it.name} className="rounded-md border border-border overflow-hidden bg-background/40 hover:border-primary transition group">
-            <div className={`aspect-square bg-gradient-to-br ${it.g} grid place-items-center`}>
-              <span className="font-display text-2xl font-bold opacity-30">TFM</span>
-            </div>
-            <div className="p-3">
-              <div className="text-[11px] font-bold tracking-wider">{it.name}</div>
-              <div className="text-[11px] text-primary font-bold mt-0.5">৳ {it.price}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-        VIEW ALL PRODUCTS
-      </button>
-    </div>
-  )
+  );
 }
 
 function About() {
@@ -520,7 +480,7 @@ function About() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function NewsList() {
@@ -529,7 +489,7 @@ function NewsList() {
     { img: newsGoal, t: "Injury Update: Two players ruled out", d: "26 May 2026" },
     { img: newsPlayer, t: "Youth Academy trials announced", d: "22 May 2026" },
     { img: newsStadium, t: "Thank you Titans Fans!", d: "18 May 2026" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="NEWS" />
@@ -550,7 +510,47 @@ function NewsList() {
         VIEW ALL NEWS
       </button>
     </div>
-  )
+  );
+}
+
+function Shop() {
+  const items = [
+    { name: "Home Jersey", price: "1,299", g: "from-primary to-[oklch(0.3_0.15_25)]" },
+    { name: "Away Jersey", price: "1,299", g: "from-[oklch(0.95_0.005_0)] to-[oklch(0.7_0.01_0)]" },
+    { name: "Training Kit", price: "1,199", g: "from-secondary to-background" },
+    { name: "TFM Cap", price: "419", g: "from-[oklch(0.2_0.04_25)] to-background" },
+    { name: "Scarf", price: "309", g: "from-primary to-secondary" },
+    { name: "Water Bottle", price: "649", g: "from-[oklch(0.3_0.05_25)] to-background" },
+  ];
+  return (
+    <div className="panel p-6">
+      <SectionHeader title="SHOP" />
+      <div className="text-[10px] tracking-widest text-muted-foreground mb-3">HOME / SHOP</div>
+      <div className="flex gap-2 mb-5 flex-wrap">
+        {["ALL", "JERSEYS", "TRAINING", "ACCESSORIES", "LIFESTYLE"].map((t, i) => (
+          <button key={t} className={`text-[10px] font-bold tracking-widest px-3 py-1.5 rounded ${
+            i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+          }`}>{t}</button>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {items.map((it) => (
+          <div key={it.name} className="rounded-md border border-border overflow-hidden bg-background/40 hover:border-primary transition group">
+            <div className={`aspect-square bg-gradient-to-br ${it.g} grid place-items-center`}>
+              <span className="font-display text-2xl font-bold opacity-30">TFM</span>
+            </div>
+            <div className="p-3">
+              <div className="text-[11px] font-bold tracking-wider">{it.name}</div>
+              <div className="text-[11px] text-primary font-bold mt-0.5">৳ {it.price}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+        VIEW ALL PRODUCTS
+      </button>
+    </div>
+  );
 }
 
 function Footer() {
@@ -580,10 +580,10 @@ function Footer() {
         © 2026 TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
       </div>
     </footer>
-  )
+  );
 }
 
-export default function Home() {
+function Index() {
   return (
     <div className="min-h-screen">
       <Header />
@@ -594,15 +594,28 @@ export default function Home() {
         <section className="container mx-auto px-4 sm:px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-12 sm:pb-16">
           <Fixtures />
           <Players />
-          <Gallery />
+          <div className="md:col-span-2 lg:col-span-1">
+            <div className="panel p-5 sm:p-6 h-full">
+              <SectionHeader title="GALLERY" />
+              <div className="grid grid-cols-2 gap-2">
+                {[heroPlayers, teamHuddle, newsGoal, newsStadium].map((s, i) => (
+                  <img key={i} src={s} alt="Team gallery" width={768} height={576} loading="lazy" decoding="async" className="aspect-square object-cover rounded border border-border" />
+                ))}
+              </div>
+              <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+                VIEW FULL GALLERY
+              </button>
+            </div>
+          </div>
         </section>
         <section className="container mx-auto px-4 sm:px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-16 sm:pb-20">
           <Shop />
           <About />
           <NewsList />
         </section>
+
       </main>
       <Footer />
     </div>
-  )
+  );
 }
