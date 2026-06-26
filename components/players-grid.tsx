@@ -4,13 +4,22 @@ import { usePlayers } from "@/lib/use-data-store"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { useState } from "react"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel"
 
 export function PlayersGrid() {
   const { players } = usePlayers()
+  const [api, setApi] = useState<any>(null)
 
-  // Get active players for display
+  // Get all active players for carousel
   const activePlayers = Array.isArray(players) 
-    ? players.filter(p => p.status?.toLowerCase() === "active").slice(0, 6)
+    ? players.filter(p => p.status?.toLowerCase() === "active")
     : []
 
   return (
@@ -33,65 +42,83 @@ export function PlayersGrid() {
           </Link>
         </div>
 
-        {/* Players Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {activePlayers.length > 0 ? (
-            activePlayers.map((player, idx) => (
-              <Link
-                key={player.id}
-                href={`/team-squad/${player.id}`}
-                className="group relative"
-              >
-                {/* Player Card */}
-                <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300">
-                  {/* Jersey Number - Top Badge */}
-                  <div className="absolute top-2 right-2 z-10 flex gap-2">
-                    <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
-                      <span className="text-xs font-bold text-black">
-                        {player.num || idx + 1}
-                      </span>
-                    </div>
-                  </div>
+        {/* Players Carousel */}
+        {activePlayers.length > 0 ? (
+          <div className="relative px-12">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: false,
+              }}
+              setApi={setApi}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-4">
+                {activePlayers.map((player, idx) => (
+                  <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
+                    <Link
+                      href={`/team-squad/${player.id}`}
+                      className="group relative block h-full"
+                    >
+                      {/* Player Card */}
+                      <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300 h-full">
+                        {/* Jersey Number - Top Badge */}
+                        <div className="absolute top-2 right-2 z-10 flex gap-2">
+                          <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
+                            <span className="text-xs font-bold text-black">
+                              {player.num || idx + 1}
+                            </span>
+                          </div>
+                        </div>
 
-                  {/* Player Image or Placeholder */}
-                  <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
-                    {player.image_url ? (
-                      <Image
-                        src={player.image_url}
-                        alt={player.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-3xl text-red-500/20 font-bold mb-2">👤</div>
-                          <p className="text-xs text-white/20">Player</p>
+                        {/* Player Image or Placeholder */}
+                        <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
+                          {player.image_url ? (
+                            <Image
+                              src={player.image_url}
+                              alt={player.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <div className="text-center">
+                                <div className="text-3xl text-red-500/20 font-bold mb-2">👤</div>
+                                <p className="text-xs text-white/20">Player</p>
+                              </div>
+                            </div>
+                          )}
+                          {/* Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+
+                        {/* Player Info */}
+                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
+                          <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-1">
+                            {player.name}
+                          </h3>
+                          <p className="text-xs text-slate-400 line-clamp-1">
+                            {player.position || "Player"}
+                          </p>
                         </div>
                       </div>
-                    )}
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-
-                  {/* Player Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
-                    <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-1">
-                      {player.name}
-                    </h3>
-                    <p className="text-xs text-slate-400 line-clamp-1">
-                      {player.position || "Player"}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-slate-400 text-sm">No players available</p>
-            </div>
-          )}
-        </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious 
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-600/20 hover:bg-red-600/40 border-red-500/50 text-white h-10 w-10 rounded-full"
+              />
+              <CarouselNext 
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-600/20 hover:bg-red-600/40 border-red-500/50 text-white h-10 w-10 rounded-full"
+              />
+            </Carousel>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-slate-400 text-sm">No players available</p>
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="mt-12 text-center">
