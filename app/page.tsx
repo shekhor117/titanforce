@@ -79,23 +79,35 @@ export default function Home() {
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
-        {/* Three Column Section */}
+        {/* Main 3-Column Layout */}
         <section className="py-12 md:py-16 px-4 bg-background">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <HomeNextFixture />
-              <HomeLeagueStandings />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Left Column */}
+              <div className="md:col-span-1 space-y-6">
+                <PremiumMatchStats />
+              </div>
+
+              {/* Center Column */}
+              <div className="md:col-span-1 space-y-6">
+                <HomeLeagueStandings />
+              </div>
+
+              {/* Right Column */}
+              <div className="md:col-span-1 space-y-6">
+                <HomeNextFixture />
+              </div>
             </div>
           </div>
         </section>
 
+        {/* Full Width Sections */}
         <HomeLatestNews />
-        <PremiumMatchStats />
-        <PlayersGrid />
-        <HomeAboutGallery />
-        <HomeStatsShowcase />
-        <HomeShopLatest />
-        <GalleryShowcase />
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <HomeShopLatest />
+          </div>
+        </section>
         <Contact />
       </main>
       {!heroLoading && <Footer />}
