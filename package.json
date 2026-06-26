@@ -41,6 +41,7 @@
     "@react-three/fiber": "^9.6.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.105.3",
+    "@tanstack/react-router": "^1.170.16",
     "@tiptap/extension-image": "^3.27.0",
     "@tiptap/extension-link": "^3.27.0",
     "@tiptap/extension-placeholder": "^3.27.0",
