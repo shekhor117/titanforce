@@ -58,10 +58,13 @@ export function PlayersGrid() {
                   <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
                     <Link
                       href={`/team-squad/${player.id}`}
-                      className="group relative block h-full"
+                      className="group relative block h-full pointer-events-auto"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
                     >
                       {/* Player Card */}
-                      <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300 h-full">
+                      <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300 h-full pointer-events-none">
                         {/* Jersey Number - Top Badge */}
                         <div className="absolute top-2 right-2 z-10 flex gap-2">
                           <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
