@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
@@ -20,6 +21,15 @@ export function Footer() {
     { icon: Instagram, href: "https://instagram.com/titanforce", label: "Instagram" },
     { icon: Youtube, href: "https://youtube.com/@titanforce", label: "YouTube" },
     { icon: Twitter, href: "https://twitter.com/titanforce", label: "Twitter" },
+  ]
+
+  const navigationLinks = [
+    { label: isBn ? "হোম" : "Home", href: "/" },
+    { label: isBn ? "দল" : "Team Squad", href: "/team-squad" },
+    { label: isBn ? "ম্যাচ" : "Fixtures & Results", href: "/fixtures-results" },
+    { label: isBn ? "সংবাদ" : "News", href: "/features" },
+    { label: isBn ? "গ্যালারি" : "Gallery", href: "/about" },
+    { label: isBn ? "সম্পর্কে" : "About", href: "/about" },
   ]
 
   return (
@@ -45,20 +55,39 @@ export function Footer() {
         <div className="flex flex-col items-center">
           {/* Logo and Site Name */}
           <div className="flex justify-center mb-4">
-            <Image
-              src="/logos/titanforce-logo.svg"
-              alt={`${siteName} Logo`}
-              width={60}
-              height={60}
-              className="object-contain"
-            />
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Image
+                src="/logos/titanforce-logo.svg"
+                alt={`${siteName} Logo`}
+                width={60}
+                height={60}
+                className="object-contain"
+              />
+            </Link>
           </div>
-          <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
-            {siteName.toUpperCase()}
-          </p>
+          <Link href="/" className="hover:text-primary/80 transition-colors">
+            <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
+              {siteName.toUpperCase()}
+            </p>
+          </Link>
           <p className="text-sm text-foreground/60 text-center mb-8">
             {tagline}
           </p>
+
+          {/* Navigation Links */}
+          <div className="w-full mb-8 pb-8 border-b border-primary/20">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm uppercase tracking-wider text-foreground/70 hover:text-primary transition-colors duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
 
           {/* Contact Information Cards */}
           <div className="w-full grid md:grid-cols-3 gap-4 mb-8">
