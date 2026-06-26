@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { Facebook, Twitter, Instagram, Youtube } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -103,8 +104,51 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Social Media Links */}
+        <div className="flex flex-col items-center gap-6 pt-8 border-t border-border">
+          <h3 className="text-foreground font-semibold">Follow Us</h3>
+          <div className="flex gap-4">
+            <a
+              href="https://facebook.com/titanforce"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              aria-label="Facebook"
+            >
+              <Facebook className="w-6 h-6" />
+            </a>
+            <a
+              href="https://twitter.com/titanforce"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              aria-label="Twitter"
+            >
+              <Twitter className="w-6 h-6" />
+            </a>
+            <a
+              href="https://instagram.com/titanforce"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6" />
+            </a>
+            <a
+              href="https://youtube.com/@titanforce"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              aria-label="YouTube"
+            >
+              <Youtube className="w-6 h-6" />
+            </a>
+          </div>
+        </div>
+
         {/* Copyright */}
-        <div className="text-center">
+        <div className="text-center pt-8">
           <p className="text-muted-foreground text-xs tracking-wider">
             © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
