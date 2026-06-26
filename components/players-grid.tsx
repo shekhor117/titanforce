@@ -48,16 +48,16 @@ export function PlayersGrid() {
                   <div className="absolute top-2 right-2 z-10 flex gap-2">
                     <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
                       <span className="text-xs font-bold text-black">
-                        {player.jersey_number || idx + 1}
+                        {player.num || idx + 1}
                       </span>
                     </div>
                   </div>
 
                   {/* Player Image or Placeholder */}
                   <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
-                    {player.image ? (
+                    {player.image_url ? (
                       <Image
-                        src={player.image}
+                        src={player.image_url}
                         alt={player.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
