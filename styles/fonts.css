@@ -1,0 +1,7 @@
+/* Sequel Sans - Fallback to system fonts */
+/* This is a premium font that should be licensed separately */
+/* For now, we're using the Jeton design system with Barlow as the sans-serif */
+
+:root {
+  --font-sequel-sans: 'Sequel Sans', 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

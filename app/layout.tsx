@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import '@/styles/fonts.css'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
 import { AdminProvider } from '@/lib/admin-context'
@@ -22,7 +23,7 @@ const bebasNeue = Bebas_Neue({
 const barlow = Barlow({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-barlow',
 })
 
 const notoSansBengali = Noto_Sans_Bengali({
@@ -75,7 +76,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
-      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`} style={{ fontFamily: "'Sequel Sans', 'Barlow', sans-serif" }}>
         <Script
           id="error-handler"
           strategy="beforeInteractive"
