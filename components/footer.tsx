@@ -2,166 +2,107 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from "lucide-react"
-import { useLanguage } from "@/lib/language-context"
 
 export function Footer() {
-  const { language, t } = useLanguage()
-  const isBn = language === "bn"
-  
-  // Default footer settings
-  const siteName = "Titan Force"
-  const tagline = "Pride · Passion · Power"
-  const contactEmail = "contact@titanforcemulikandi.com"
-  const contactPhone = "+880 1800-123456"
-  const address = "Mulikandi, Sylhet, Bangladesh"
-  
-  const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com/titanforce", label: "Facebook" },
-    { icon: Instagram, href: "https://instagram.com/titanforce", label: "Instagram" },
-    { icon: Youtube, href: "https://youtube.com/@titanforce", label: "YouTube" },
-    { icon: Twitter, href: "https://twitter.com/titanforce", label: "Twitter" },
+  const currentYear = new Date().getFullYear()
+
+  const clubLinks = [
+    { label: "About", href: "/about" },
+    { label: "History", href: "/about" },
+    { label: "Stadium", href: "/about" },
+    { label: "Academy", href: "/about" },
   ]
 
-  const navigationLinks = [
-    { label: isBn ? "হোম" : "Home", href: "/" },
-    { label: isBn ? "দল" : "Team Squad", href: "/team-squad" },
-    { label: isBn ? "ম্যাচ" : "Fixtures & Results", href: "/fixtures-results" },
-    { label: isBn ? "সংবাদ" : "News", href: "/features" },
-    { label: isBn ? "গ্যালারি" : "Gallery", href: "/about" },
-    { label: isBn ? "সম্পর্কে" : "About", href: "/about" },
+  const teamsLinks = [
+    { label: "Fixtures", href: "/fixtures-results" },
+    { label: "Players", href: "/team-squad" },
+    { label: "Results", href: "/fixtures-results" },
+    { label: "Standings", href: "/fixtures-results" },
+  ]
+
+  const connectLinks = [
+    { label: "Contact", href: "/about" },
+    { label: "Tickets", href: "/about" },
+    { label: "Shop", href: "/about" },
+    { label: "Newsletter", href: "/about" },
   ]
 
   return (
-    <footer className="relative border-t-2 border-primary py-12 px-4 bg-black dark:bg-black light:bg-gray-50 overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        crossOrigin="anonymous"
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-40 dark:opacity-40 light:opacity-30"
-      >
-        <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/52177-467701518_medium-NHHZMX0waW7Vl9MVhVGsYsklvDeifE.mp4" type="video/mp4" />
-      </video>
-
-      {/* Overlay for content readability - Theme aware */}
-      <div className="absolute inset-0 bg-black/40 dark:bg-black/40 light:bg-white/50 z-1"></div>
-
-      {/* Content */}
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="flex flex-col items-center">
-          {/* Logo and Site Name */}
-          <div className="flex justify-center mb-4">
-            <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Image
-                src="/logos/titanforce-logo.svg"
-                alt={`${siteName} Logo`}
-                width={60}
-                height={60}
-                className="object-contain"
-              />
-            </Link>
-          </div>
-          <Link href="/" className="hover:text-primary/80 transition-colors">
-            <p className="font-[var(--font-display)] text-xl tracking-wider mb-2 text-primary text-center">
-              {siteName.toUpperCase()}
-            </p>
-          </Link>
-          <p className="text-sm text-foreground/60 text-center mb-8">
-            {tagline}
-          </p>
-
-          {/* Navigation Links */}
-          <div className="w-full mb-8 pb-8 border-b border-primary/20">
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm uppercase tracking-wider text-foreground/70 hover:text-primary transition-colors duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact Information Cards */}
-          <div className="w-full grid md:grid-cols-3 gap-4 mb-8">
-            {/* Email Card */}
-            <a
-              href={`mailto:${contactEmail}`}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift hover-glow transition-all duration-300 group"
-            >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                <Mail className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-              </div>
-              <div>
-                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "ইমেল করুন" : "Email Us"}
-                </p>
-                <p className="text-foreground font-semibold text-sm hover-color-primary">{contactEmail}</p>
-              </div>
-            </a>
-
-            {/* Phone Card */}
-            <a
-              href={`tel:${contactPhone}`}
-              className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift hover-glow transition-all duration-300 group"
-            >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                <Phone className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-              </div>
-              <div>
-                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "কল করুন" : "Call Us"}
-                </p>
-                <p className="text-foreground font-semibold text-sm hover-color-primary">{contactPhone}</p>
-              </div>
-            </a>
-
-            {/* Address Card */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-card/30 backdrop-blur-sm border border-primary/20 hover:border-primary hover:bg-primary/10 hover-lift transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                <MapPin className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-              </div>
-              <div>
-                <p className={`text-xs uppercase tracking-wider text-foreground/50 mb-0.5 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {isBn ? "আমাদের অবস্থান" : "Visit Us"}
-                </p>
-                <p className="text-foreground font-semibold text-sm">{address}</p>
-              </div>
-            </div>
-          </div>
+    <footer className="bg-black text-white py-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12 pb-12 border-b border-white/10">
           
-          {/* Follow Us - Social Media Icons */}
-          {socialLinks.length > 0 && (
-            <div className="mb-6">
-              <p className={`text-sm text-foreground/60 text-center mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {isBn ? "আমাদের অনুসরণ করুন" : "Follow Us"}
-              </p>
-              <div className="flex justify-center gap-3">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-primary/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary hover-lift hover-accent-glow transition-all duration-300"
-                  >
-                    <social.icon className="w-5 h-5 hover-scale" />
-                  </a>
-                ))}
+          {/* Brand Section */}
+          <div className="md:col-span-1">
+            <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
+              <div className="w-16 h-16 bg-red-600 rounded flex items-center justify-center">
+                <span className="text-white font-bold text-lg">TFM</span>
               </div>
-            </div>
-          )}
+            </Link>
+            <h3 className="font-bold text-lg tracking-wide mb-2">TITAN FORCE</h3>
+            <p className="text-xs text-white/60 mb-1">MULIKANDI</p>
+            <p className="text-sm text-white/70 leading-relaxed mt-4">
+              Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
+            </p>
+          </div>
 
-          <p className={`text-sm text-foreground/50 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            &copy; {new Date().getFullYear()} {t.footer.rights}
+          {/* Club Links */}
+          <div className="md:col-span-1">
+            <h4 className="text-red-600 text-xs font-bold tracking-widest mb-6 uppercase">Club</h4>
+            <ul className="space-y-3">
+              {clubLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Teams Links */}
+          <div className="md:col-span-1">
+            <h4 className="text-red-600 text-xs font-bold tracking-widest mb-6 uppercase">Teams</h4>
+            <ul className="space-y-3">
+              {teamsLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Connect Links */}
+          <div className="md:col-span-1">
+            <h4 className="text-red-600 text-xs font-bold tracking-widest mb-6 uppercase">Connect</h4>
+            <ul className="space-y-3">
+              {connectLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="text-center">
+          <p className="text-white/50 text-xs tracking-wider">
+            © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
         </div>
       </div>
