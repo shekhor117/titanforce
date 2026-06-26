@@ -24,6 +24,8 @@
   --input: #1a1a1a;
   --ring: #a71930;
   --radius: 0.625rem;
+  --shadow-glow: 0 0 20px rgba(167, 25, 48, 0.4);
+  --gradient-hero: linear-gradient(135deg, rgba(10, 10, 10, 0.8) 0%, rgba(42, 15, 24, 0.8) 30%, rgba(61, 20, 37, 0.8) 60%, rgba(10, 10, 10, 0.8) 100%);
 }
 
 .dark {
@@ -624,6 +626,30 @@ canvas {
     -8px 15px 35px rgba(167, 25, 48, 0.15),
     0 0 20px rgba(167, 25, 48, 0.1);
   transform: perspective(1000px) rotateX(4deg) rotateY(-4deg) translateZ(6px);
+}
+
+/* Text stroke effect */
+.text-stroke {
+  -webkit-text-stroke: 1px var(--foreground);
+  text-stroke: 1px var(--foreground);
+  color: transparent;
+}
+
+.light .text-stroke {
+  -webkit-text-stroke: 1px var(--foreground);
+  text-stroke: 1px var(--foreground);
+}
+
+/* Panel/Card with border styling */
+.panel {
+  border-radius: 0.625rem;
+  border: 1px solid var(--border);
+  background: rgba(26, 26, 26, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.light .panel {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Light mode 3D glass adjustments */
