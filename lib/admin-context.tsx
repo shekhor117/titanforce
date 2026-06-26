@@ -37,6 +37,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true
     let subscription: any = null
+    let timeoutId: any = null
     
     const initializeAuth = async () => {
       try {
@@ -49,6 +50,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         }
 
         const supabase = getSupabaseClient()
+        
+        // Safety timeout - if initialization takes more than 5 seconds, mark as initialized anyway
+        timeoutId = setTimeout(() => {
+          if (isMounted && !isInitialized) {
+            console.warn('[v0] Admin initialization timeout - marking as initialized')
+            setIsInitialized(true)
+          }
+        }, 5000)
         
         // Set up auth state change listener first (non-blocking)
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
@@ -78,8 +87,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session (non-blocking)
-        supabase.auth.getSession().then(({ data }) => {
+        // Check for existing session (non-blocking) with timeout
+        const sessionPromise = supabase.auth.getSession().then(({ data }) => {
           if (!isMounted) return
           
           if (data.session?.user) {
@@ -100,8 +109,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           }
           
           // Mark as initialized after session check completes
-          setIsInitialized(true)
-        }).catch(() => {
+          if (isMounted) {
+            setIsInitialized(true)
+          }
+        })
+
+        // Timeout for session check - if it takes longer than 3 seconds, mark as initialized anyway
+        const sessionTimeout = new Promise<void>((resolve) => {
+          setTimeout(() => {
+            if (isMounted) {
+              setIsInitialized(true)
+            }
+            resolve()
+          }, 3000)
+        })
+
+        Promise.race([sessionPromise, sessionTimeout]).catch(() => {
           // Even on error, mark as initialized
           if (isMounted) {
             setIsInitialized(true)
@@ -117,11 +140,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     return () => {
       isMounted = false
+      if (timeoutId) clearTimeout(timeoutId)
       if (subscription) {
         subscription.unsubscribe()
       }
     }
-  }, [])
+  }, [isConfigured])
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
