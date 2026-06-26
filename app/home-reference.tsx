@@ -1,32 +1,32 @@
-"use client"
-
-import { useRouter } from "next/navigation"
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Search, ShoppingBag, ChevronRight, Play, MapPin, Trophy, Users, Heart, Target,
   Calendar, ArrowRight,
-} from "lucide-react"
-import heroPlayers from "@/assets/hero-players.jpg"
-import teamHuddle from "@/assets/team-huddle.jpg"
-import newsCoach from "@/assets/news-coach.jpg"
-import newsGoal from "@/assets/news-goal.jpg"
-import newsStadium from "@/assets/news-stadium.jpg"
-import newsPlayer from "@/assets/news-player.jpg"
+} from "lucide-react";
+import heroPlayers from "@/assets/hero-players.jpg";
+import teamHuddle from "@/assets/team-huddle.jpg";
+import newsCoach from "@/assets/news-coach.jpg";
+import newsGoal from "@/assets/news-goal.jpg";
+import newsStadium from "@/assets/news-stadium.jpg";
+import newsPlayer from "@/assets/news-player.jpg";
 
-const NAV = [
-  { label: "HOME", href: "/" },
-  { label: "FIXTURES", href: "/fixtures-results" },
-  { label: "PLAYERS", href: "/team-squad" },
-  { label: "GALLERY", href: "/gallery" },
-  { label: "SHOP", href: "/shop" },
-  { label: "CLUB", href: "/about" },
-  { label: "NEWS", href: "/news" },
-  { label: "CONTACT", href: "/contact" },
-]
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Titan Force Mulikandi — Rise Like Titans" },
+      { name: "description", content: "Official home of Titan Force Mulikandi FC. Fixtures, players, match stats, and the latest club news." },
+      { property: "og:title", content: "Titan Force Mulikandi FC" },
+      { property: "og:description", content: "Pride of Mulikandi. Power of the Titans." },
+    ],
+  }),
+  component: Index,
+});
+
+const NAV = ["HOME", "FIXTURES", "PLAYERS", "GALLERY", "SHOP", "CLUB", "NEWS", "CONTACT"];
 
 function Logo() {
-  const router = useRouter()
   return (
-    <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/")}>
+    <div className="flex items-center gap-3">
       <div className="relative h-11 w-11 grid place-items-center rounded-md bg-gradient-to-br from-primary to-[oklch(0.4_0.18_25)] shadow-[var(--shadow-glow)]">
         <span className="font-display text-lg font-bold tracking-tighter">TFM</span>
         <span className="absolute -inset-px rounded-md border border-primary/40" />
@@ -36,47 +36,36 @@ function Logo() {
         <div className="text-[10px] tracking-[0.3em] text-muted-foreground">MULIKANDI</div>
       </div>
     </div>
-  )
+  );
 }
 
 function Header() {
-  const router = useRouter()
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/60">
       <div className="container mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 py-3 sm:py-4">
         <Logo />
         <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-[12px] font-semibold tracking-[0.18em]">
           {NAV.map((n, i) => (
-            <a
-              key={n.label}
-              href={n.href}
-              className={`relative transition-colors hover:text-primary ${i === 0 ? "text-foreground" : "text-muted-foreground"}`}
-            >
-              {n.label}
+            <a key={n} href="#" className={`relative transition-colors hover:text-primary ${i === 0 ? "text-foreground" : "text-muted-foreground"}`}>
+              {n}
               {i === 0 && <span className="absolute -bottom-[18px] left-0 right-0 h-[2px] bg-primary" />}
             </a>
           ))}
         </nav>
         <div className="flex items-center gap-1 sm:gap-3">
           <button aria-label="Search" className="p-2 text-muted-foreground hover:text-foreground"><Search className="h-4 w-4" /></button>
-          <button
-            aria-label="Cart"
-            className="relative p-2 text-muted-foreground hover:text-foreground"
-            onClick={() => router.push("/cart")}
-          >
+          <button aria-label="Cart" className="relative p-2 text-muted-foreground hover:text-foreground">
             <ShoppingBag className="h-4 w-4" />
             <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-primary" />
           </button>
-          <button
-            onClick={() => router.push("/login")}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold tracking-widest text-primary-foreground hover:brightness-110 shadow-[var(--shadow-glow)]"
-          >
+          <button className="inline-flex items-center gap-2 rounded-md bg-primary px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold tracking-widest text-primary-foreground hover:brightness-110 shadow-[var(--shadow-glow)]">
             LOGIN
           </button>
         </div>
       </div>
     </header>
-  )
+
+  );
 }
 
 function Hero() {
@@ -168,11 +157,12 @@ function Hero() {
         </div>
       </div>
     </section>
-  )
+
+  );
 }
 
 function TeamBadge({ name, color, label }: { name: string; color: "primary" | "blue"; label?: string }) {
-  const isPrimary = color === "primary"
+  const isPrimary = color === "primary";
   return (
     <div className="flex flex-col items-center gap-2">
       <div className={`h-14 w-14 grid place-items-center rounded-md font-display font-bold text-sm ${
@@ -180,23 +170,23 @@ function TeamBadge({ name, color, label }: { name: string; color: "primary" | "b
       }`}>{name}</div>
       <div className="text-[10px] tracking-[0.2em]">{label ?? "TFM"}</div>
     </div>
-  )
+  );
 }
 
-function SectionHeader({ kicker, title, action, actionHref }: { kicker?: string; title: string; action?: string; actionHref?: string }) {
+function SectionHeader({ kicker, title, action }: { kicker?: string; title: string; action?: string }) {
   return (
     <div className="flex items-end justify-between mb-6">
       <div>
         {kicker && <div className="text-primary text-[10px] font-bold tracking-[0.3em] mb-1">{kicker}</div>}
         <h2 className="font-display text-2xl md:text-3xl font-bold tracking-wider">{title}</h2>
       </div>
-      {action && actionHref && (
-        <a href={actionHref} className="hidden md:inline-flex items-center gap-1 text-[11px] font-bold tracking-[0.25em] text-muted-foreground hover:text-primary">
+      {action && (
+        <a href="#" className="hidden md:inline-flex items-center gap-1 text-[11px] font-bold tracking-[0.25em] text-muted-foreground hover:text-primary">
           {action} <ChevronRight className="h-3 w-3" />
         </a>
       )}
     </div>
-  )
+  );
 }
 
 function LatestNews() {
@@ -205,11 +195,11 @@ function LatestNews() {
     { img: newsGoal, title: "Sabbir Hossain scores a brace against Warriors", date: "22 May 2026" },
     { img: newsStadium, title: "Mulikandi Stadium gets a new look", date: "20 May 2026" },
     { img: newsPlayer, title: "Player of the Month — Rahim Uddin", date: "18 May 2026" },
-  ]
+  ];
   return (
     <section className="container mx-auto px-4 sm:px-6 py-10 sm:py-16">
       <div className="panel p-4 sm:p-6 md:p-8">
-        <SectionHeader title="LATEST NEWS" action="VIEW ALL NEWS" actionHref="/news" />
+        <SectionHeader title="LATEST NEWS" action="VIEW ALL NEWS" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {items.map((n) => (
             <a key={n.title} href="#" className="group block">
@@ -227,11 +217,11 @@ function LatestNews() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function PossessionRing() {
-  const r = 52, c = 2 * Math.PI * r, pct = 63
+  const r = 52, c = 2 * Math.PI * r, pct = 63;
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="relative h-32 w-32 sm:h-36 sm:w-36 shrink-0">
@@ -252,8 +242,9 @@ function PossessionRing() {
         <div className="text-[10px] tracking-widest text-muted-foreground">OPP</div>
       </div>
     </div>
-  )
+  );
 }
+
 
 function StatBar({ label, value, pct }: { label: string; value: string | number; pct: number }) {
   return (
@@ -265,7 +256,7 @@ function StatBar({ label, value, pct }: { label: string; value: string | number;
         <div className="h-full rounded-full bg-gradient-to-r from-primary to-[oklch(0.7_0.2_25)]" style={{ width: `${pct}%` }} />
       </div>
     </div>
-  )
+  );
 }
 
 function MatchStats() {
@@ -288,6 +279,7 @@ function MatchStats() {
               VIEW FULL STATS
             </button>
           </div>
+
 
           {/* Last match */}
           <div className="rounded-md border border-border bg-background/40 p-5 sm:p-6">
@@ -369,11 +361,11 @@ function MatchStats() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function Fixtures() {
-  const tabs = ["ALL", "PREMIER LEAGUE", "FRIENDLY", "CUP"]
+  const tabs = ["ALL", "PREMIER LEAGUE", "FRIENDLY", "CUP"];
   const rows = [
     { date: "28 JUN 2026", opp: "RIVALS FC", venue: "Mulikandi Stadium" },
     { date: "05 JUL 2026", opp: "WARRIORS FC", venue: "Away" },
@@ -381,7 +373,7 @@ function Fixtures() {
     { date: "19 JUL 2026", opp: "EAGLES FC", venue: "Mulikandi Stadium" },
     { date: "26 JUL 2026", opp: "TIGERS FC", venue: "Away", swap: true },
     { date: "02 AUG 2026", opp: "LEGENDS FC", venue: "Mulikandi Stadium" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="FIXTURES" />
@@ -408,17 +400,15 @@ function Fixtures() {
         ))}
       </ul>
 
-      <a href="/fixtures-results" className="block mt-5">
-        <button className="w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-          VIEW FULL FIXTURES
-        </button>
-      </a>
+      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+        VIEW FULL FIXTURES
+      </button>
     </div>
-  )
+  );
 }
 
 function Players() {
-  const tabs = ["ALL", "GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"]
+  const tabs = ["ALL", "GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"];
   const players = [
     { n: "01", name: "RAKIB HOSSAIN", role: "Goalkeeper" },
     { n: "04", name: "ARIF AHMED", role: "Defender" },
@@ -426,7 +416,7 @@ function Players() {
     { n: "07", name: "RAHIM UDDIN", role: "Midfielder", c: true },
     { n: "10", name: "SABBIR HOSSAIN", role: "Forward" },
     { n: "11", name: "RONY HASAN", role: "Midfielder" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="PLAYERS" />
@@ -451,13 +441,11 @@ function Players() {
           </div>
         ))}
       </div>
-      <a href="/team-squad" className="block mt-5">
-        <button className="w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-          VIEW ALL PLAYERS
-        </button>
-      </a>
+      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+        VIEW ALL PLAYERS
+      </button>
     </div>
-  )
+  );
 }
 
 function About() {
@@ -478,11 +466,9 @@ function About() {
               <li key={v} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" />{v}</li>
             ))}
           </ul>
-          <a href="/about" className="block mt-5">
-            <button className="rounded-md bg-primary px-5 py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-              LEARN MORE
-            </button>
-          </a>
+          <button className="mt-5 rounded-md bg-primary px-5 py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+            LEARN MORE
+          </button>
         </div>
         <img src={teamHuddle} alt="Team huddle" width={1024} height={768} loading="lazy"
           className="rounded-md object-cover h-full w-full border border-border" />
@@ -494,7 +480,7 @@ function About() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function NewsList() {
@@ -503,7 +489,7 @@ function NewsList() {
     { img: newsGoal, t: "Injury Update: Two players ruled out", d: "26 May 2026" },
     { img: newsPlayer, t: "Youth Academy trials announced", d: "22 May 2026" },
     { img: newsStadium, t: "Thank you Titans Fans!", d: "18 May 2026" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="NEWS" />
@@ -520,13 +506,11 @@ function NewsList() {
           </li>
         ))}
       </ul>
-      <a href="/news" className="block mt-5">
-        <button className="w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-          VIEW ALL NEWS
-        </button>
-      </a>
+      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+        VIEW ALL NEWS
+      </button>
     </div>
-  )
+  );
 }
 
 function Shop() {
@@ -537,7 +521,7 @@ function Shop() {
     { name: "TFM Cap", price: "419", g: "from-[oklch(0.2_0.04_25)] to-background" },
     { name: "Scarf", price: "309", g: "from-primary to-secondary" },
     { name: "Water Bottle", price: "649", g: "from-[oklch(0.3_0.05_25)] to-background" },
-  ]
+  ];
   return (
     <div className="panel p-6">
       <SectionHeader title="SHOP" />
@@ -562,16 +546,14 @@ function Shop() {
           </div>
         ))}
       </div>
-      <a href="/shop" className="block mt-5">
-        <button className="w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-          VIEW ALL PRODUCTS
-        </button>
-      </a>
+      <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+        VIEW ALL PRODUCTS
+      </button>
     </div>
-  )
+  );
 }
 
-function FooterComponent() {
+function Footer() {
   return (
     <footer className="border-t border-border mt-12">
       <div className="container mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">
@@ -582,14 +564,14 @@ function FooterComponent() {
           </p>
         </div>
         {[
-          { t: "CLUB", l: [{ label: "About", href: "/about" }, { label: "History", href: "#" }, { label: "Stadium", href: "#" }, { label: "Academy", href: "#" }] },
-          { t: "TEAMS", l: [{ label: "Fixtures", href: "/fixtures-results" }, { label: "Players", href: "/team-squad" }, { label: "Results", href: "#" }, { label: "Standings", href: "#" }] },
-          { t: "CONNECT", l: [{ label: "Contact", href: "/contact" }, { label: "Tickets", href: "#" }, { label: "Shop", href: "/shop" }, { label: "Newsletter", href: "#" }] },
+          { t: "CLUB", l: ["About", "History", "Stadium", "Academy"] },
+          { t: "TEAMS", l: ["Fixtures", "Players", "Results", "Standings"] },
+          { t: "CONNECT", l: ["Contact", "Tickets", "Shop", "Newsletter"] },
         ].map((c) => (
           <div key={c.t}>
             <div className="font-display text-xs font-bold tracking-[0.3em] text-primary mb-3">{c.t}</div>
             <ul className="space-y-2 text-xs text-muted-foreground">
-              {c.l.map((x) => <li key={x.label}><a href={x.href} className="hover:text-foreground">{x.label}</a></li>)}
+              {c.l.map((x) => <li key={x}><a href="#" className="hover:text-foreground">{x}</a></li>)}
             </ul>
           </div>
         ))}
@@ -598,10 +580,10 @@ function FooterComponent() {
         © 2026 TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
       </div>
     </footer>
-  )
+  );
 }
 
-export default function Home() {
+function Index() {
   return (
     <div className="min-h-screen">
       <Header />
@@ -620,11 +602,9 @@ export default function Home() {
                   <img key={i} src={s} alt="Team gallery" width={768} height={576} loading="lazy" decoding="async" className="aspect-square object-cover rounded border border-border" />
                 ))}
               </div>
-              <a href="/gallery" className="block mt-5">
-                <button className="w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
-                  VIEW FULL GALLERY
-                </button>
-              </a>
+              <button className="mt-5 w-full rounded-md bg-primary py-2.5 text-[11px] font-bold tracking-[0.25em] hover:brightness-110">
+                VIEW FULL GALLERY
+              </button>
             </div>
           </div>
         </section>
@@ -633,8 +613,9 @@ export default function Home() {
           <About />
           <NewsList />
         </section>
+
       </main>
-      <FooterComponent />
+      <Footer />
     </div>
-  )
+  );
 }
