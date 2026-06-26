@@ -6,68 +6,68 @@
 :root {
   --background: #0a0a0a;
   --foreground: #f5f5f5;
-  --card: #1a0a0a;
+  --card: #1a1a1a;
   --card-foreground: #f0f0f0;
-  --popover: #1a0a0a;
+  --popover: #1a1a1a;
   --popover-foreground: #f0f0f0;
-  --primary: #c41e3a;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #1a0a0a;
+  --secondary: #1a1a1a;
   --secondary-foreground: #f5f5f5;
-  --muted: #3a1a1a;
+  --muted: #2a2a2a;
   --muted-foreground: #999999;
-  --accent: #e63946;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #3a1a1a;
-  --input: #1a0a0a;
-  --ring: #c41e3a;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
   --radius: 0.625rem;
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #f5f5f5;
-  --card: #1a0a0a;
+  --card: #1a1a1a;
   --card-foreground: #f0f0f0;
-  --popover: #1a0a0a;
+  --popover: #1a1a1a;
   --popover-foreground: #f0f0f0;
-  --primary: #c41e3a;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #1a0a0a;
+  --secondary: #1a1a1a;
   --secondary-foreground: #f5f5f5;
-  --muted: #3a1a1a;
+  --muted: #2a2a2a;
   --muted-foreground: #999999;
-  --accent: #e63946;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #3a1a1a;
-  --input: #1a0a0a;
-  --ring: #c41e3a;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
 }
 
 .light {
-  --background: #fafafa;
+  --background: #f5f5f5;
   --foreground: #1a1a1a;
   --card: #ffffff;
   --card-foreground: #1a1a1a;
   --popover: #ffffff;
   --popover-foreground: #1a1a1a;
-  --primary: #c41e3a;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #ffe8eb;
+  --secondary: #f0f0f0;
   --secondary-foreground: #5a1220;
-  --muted: #f0e0e3;
+  --muted: #e8e8e8;
   --muted-foreground: #4a4a4a;
-  --accent: #e63946;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #ffe8eb;
+  --border: #e8e8e8;
   --input: #f5f5f5;
-  --ring: #c41e3a;
+  --ring: #a71930;
 }
 
 @theme inline {
@@ -181,13 +181,13 @@ html {
   animation: smoothFadeIn 0.6s ease-out;
 }
 
-/* Hero gradient - Crimson Red */
+/* Hero gradient */
 .hero-gradient {
-  background: linear-gradient(135deg, #0a0a0a 0%, #3a1420 25%, #4a1f30 50%, #2a0f18 75%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #2a0f18 30%, #3d1425 60%, #0a0a0a 100%);
 }
 
 .light .hero-gradient {
-  background: linear-gradient(135deg, #fafafa 0%, #ffe8ec 25%, #ffd4e0 50%, #ffccd5 75%, #fafafa 100%);
+  background: linear-gradient(135deg, #f5f5f5 0%, #fce8ec 30%, #f3d5dd 60%, #f5f5f5 100%);
 }
 
 /* Card glow effect */
