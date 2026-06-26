@@ -32,7 +32,7 @@ export function Footer() {
     <footer className="bg-background text-foreground py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12 pb-12 border-b border-border">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12 pb-12">
           
           {/* Brand Section */}
           <div className="md:col-span-1">
@@ -105,7 +105,7 @@ export function Footer() {
         </div>
 
         {/* Social Media Links */}
-        <div className="flex flex-col items-center gap-6 pt-8 border-t border-border">
+        <div className="flex flex-col items-center gap-6 pt-8">
           <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
