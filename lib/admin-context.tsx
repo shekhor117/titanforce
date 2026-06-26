@@ -128,13 +128,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      // Set a timeout for the login process (10 seconds)
-      const loginPromise = signInWithEmail(email, password)
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Login request timed out. Please try again.")), 10000)
-      )
-      
-      const user = await Promise.race([loginPromise, timeoutPromise]) as any
+      const user = await signInWithEmail(email, password)
       
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
@@ -142,11 +136,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         throw new Error("Your account does not have admin access. Contact the administrator to grant access.")
       }
 
-      // Immediately set admin state without waiting for subscription update
+      // Immediately set admin state
       setAdmin(user)
       setIsLoading(false)
-      // Return immediately to allow quick redirect
-      return Promise.resolve()
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)

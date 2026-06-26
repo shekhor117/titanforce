@@ -50,8 +50,7 @@ export function AdminLoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
-      // Wait a bit for auth state to update via listener before redirecting
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Immediately redirect after successful login - auth state updates in background
       router.push("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
