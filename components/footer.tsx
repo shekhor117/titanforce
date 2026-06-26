@@ -36,9 +36,13 @@ export function Footer() {
           {/* Brand Section */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
-              <div className="w-16 h-16 bg-red-600 rounded flex items-center justify-center">
-                <span className="text-white font-bold text-lg">TFM</span>
-              </div>
+              <Image
+                src="/logos/titanforce-logo.svg"
+                alt="Titan Force Mulikandi Logo"
+                width={80}
+                height={80}
+                className="object-contain"
+              />
             </Link>
             <h3 className="font-bold text-lg tracking-wide mb-2 text-slate-900 dark:text-white">TITAN FORCE</h3>
             <p className="text-xs text-slate-600 dark:text-white/60 mb-1">MULIKANDI</p>
