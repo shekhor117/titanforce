@@ -7,24 +7,24 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   const clubLinks = [
-    { label: "About", href: "/about" },
-    { label: "History", href: "/about" },
-    { label: "Stadium", href: "/about" },
-    { label: "Academy", href: "/about" },
+    { id: "about", label: "About", href: "/about" },
+    { id: "history", label: "History", href: "/about" },
+    { id: "stadium", label: "Stadium", href: "/about" },
+    { id: "academy", label: "Academy", href: "/about" },
   ]
 
   const teamsLinks = [
-    { label: "Fixtures", href: "/fixtures-results" },
-    { label: "Players", href: "/team-squad" },
-    { label: "Results", href: "/fixtures-results" },
-    { label: "Standings", href: "/fixtures-results" },
+    { id: "fixtures", label: "Fixtures", href: "/fixtures-results" },
+    { id: "players", label: "Players", href: "/team-squad" },
+    { id: "results", label: "Results", href: "/fixtures-results" },
+    { id: "standings", label: "Standings", href: "/fixtures-results" },
   ]
 
   const connectLinks = [
-    { label: "Contact", href: "/about" },
-    { label: "Tickets", href: "/about" },
-    { label: "Shop", href: "/shop" },
-    { label: "Newsletter", href: "/about" },
+    { id: "contact", label: "Contact", href: "/about" },
+    { id: "tickets", label: "Tickets", href: "/about" },
+    { id: "shop", label: "Shop", href: "/shop" },
+    { id: "newsletter", label: "Newsletter", href: "/about" },
   ]
 
   return (
@@ -56,7 +56,7 @@ export function Footer() {
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Club</h4>
             <ul className="space-y-3">
               {clubLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link
                     href={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors duration-300"
@@ -73,7 +73,7 @@ export function Footer() {
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Teams</h4>
             <ul className="space-y-3">
               {teamsLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link
                     href={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors duration-300"
@@ -90,7 +90,7 @@ export function Footer() {
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Connect</h4>
             <ul className="space-y-3">
               {connectLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link
                     href={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors duration-300"
