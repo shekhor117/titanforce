@@ -128,8 +128,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      // Use Supabase authentication
-      const user = await signInWithEmail(email, password)
+      // Set a timeout for the login process (10 seconds)
+      const loginPromise = signInWithEmail(email, password)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Login request timed out. Please try again.")), 10000)
+      )
+      
+      const user = await Promise.race([loginPromise, timeoutPromise]) as any
       
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
