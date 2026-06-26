@@ -98,7 +98,7 @@ export default function Home() {
         <GalleryShowcase />
         <Contact />
       </main>
-      {!heroLoading && <Footer />}
+      <Footer />
     </div>
   )
 }
