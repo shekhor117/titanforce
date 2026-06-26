@@ -28,10 +28,10 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-black text-white py-16 px-4">
+    <footer className="bg-white dark:bg-black text-slate-900 dark:text-white py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12 pb-12 border-b border-slate-200 dark:border-white/10">
           
           {/* Brand Section */}
           <div className="md:col-span-1">
@@ -40,9 +40,9 @@ export function Footer() {
                 <span className="text-white font-bold text-lg">TFM</span>
               </div>
             </Link>
-            <h3 className="font-bold text-lg tracking-wide mb-2">TITAN FORCE</h3>
-            <p className="text-xs text-white/60 mb-1">MULIKANDI</p>
-            <p className="text-sm text-white/70 leading-relaxed mt-4">
+            <h3 className="font-bold text-lg tracking-wide mb-2 text-slate-900 dark:text-white">TITAN FORCE</h3>
+            <p className="text-xs text-slate-600 dark:text-white/60 mb-1">MULIKANDI</p>
+            <p className="text-sm text-slate-700 dark:text-white/70 leading-relaxed mt-4">
               Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
             </p>
           </div>
@@ -55,7 +55,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                    className="text-slate-700 dark:text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -72,7 +72,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                    className="text-slate-700 dark:text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -89,7 +89,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
+                    className="text-slate-700 dark:text-white/70 text-sm hover:text-red-600 transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -101,7 +101,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center">
-          <p className="text-white/50 text-xs tracking-wider">
+          <p className="text-slate-600 dark:text-white/50 text-xs tracking-wider">
             © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
         </div>
