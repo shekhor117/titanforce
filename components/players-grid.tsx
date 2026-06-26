@@ -57,7 +57,7 @@ export function PlayersGrid() {
                 {activePlayers.map((player, idx) => (
                   <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
                     <Link
-                      href={`/team-squad/${player.id}`}
+                      href={`/player/${player.num}`}
                       className="group relative block h-full pointer-events-auto"
                       onClick={(e) => {
                         e.stopPropagation()
