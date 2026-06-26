@@ -4,44 +4,65 @@ import { useEffect, useState } from "react"
 import { useMatches } from "@/lib/use-data-store"
 import { usePlayers } from "@/lib/use-data-store"
 import Link from "next/link"
+import type { Match } from "@/lib/data-service"
 
 export function PremiumMatchStats() {
   const { matches = [] } = useMatches()
   const { players = [] } = usePlayers()
-  const [nextMatch, setNextMatch] = useState(null)
-  const [lastMatch, setLastMatch] = useState(null)
+  const [nextMatch, setNextMatch] = useState<Match | null>(null)
+  const [lastMatch, setLastMatch] = useState<Match | null>(null)
   const [topPlayers, setTopPlayers] = useState([])
 
   useEffect(() => {
-    if (matches.length > 0) {
-      // Get next match (upcoming)
-      const next = matches.find(m => m.status === 'upcoming')
-      setNextMatch(next || null)
+    if (Array.isArray(matches) && matches.length > 0) {
+      try {
+        // Get next match (upcoming)
+        const next = matches.find(m => m?.status === 'upcoming')
+        setNextMatch(next || null)
 
-      // Get last completed match
-      const last = matches.find(m => m.status === 'completed')
-      setLastMatch(last || null)
+        // Get last completed match
+        const last = matches.find(m => m?.status === 'completed')
+        setLastMatch(last || null)
+      } catch (err) {
+        console.error('[v0] Error processing matches:', err)
+      }
     }
   }, [matches])
 
   useEffect(() => {
-    if (players.length > 0) {
-      // Get top players by rating/performance
-      const sorted = [...players]
-        .filter(p => p.status === 'active')
-        .sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0))
-        .slice(0, 4)
-      setTopPlayers(sorted)
+    if (Array.isArray(players) && players.length > 0) {
+      try {
+        // Get top players by rating/performance
+        const sorted = [...players]
+          .filter(p => p?.status === 'active' || p?.status === 'Active')
+          .sort((a, b) => (b?.average_rating || 0) - (a?.average_rating || 0))
+          .slice(0, 4)
+        setTopPlayers(sorted)
+      } catch (err) {
+        console.error('[v0] Error processing players:', err)
+      }
     }
   }, [players])
 
-  const getTeamBadgeColor = (team: string) => {
+  const getTeamBadgeColor = (team: string | undefined) => {
+    if (!team) return 'bg-blue-600'
     if (team.includes('TFM') || team.includes('Titan')) return 'bg-red-600'
     return 'bg-blue-600'
   }
 
-  const getTeamInitials = (team: string) => {
+  const getTeamInitials = (team: string | undefined) => {
+    if (!team) return 'TBD'
     return team.split(' ').map(w => w[0]).join('').slice(0, 3)
+  }
+
+  const getMatchResult = (match: Match | null) => {
+    if (!match) return 'Draw'
+    if (match.home_score > match.away_score) {
+      return match.home.includes('TFM') || match.home.includes('Titan') ? 'Win' : 'Loss'
+    } else if (match.away_score > match.home_score) {
+      return match.away.includes('TFM') || match.away.includes('Titan') ? 'Win' : 'Loss'
+    }
+    return 'Draw'
   }
 
   return (
@@ -114,13 +135,20 @@ export function PremiumMatchStats() {
 
                   {/* Result Badge */}
                   <div className="text-center mb-4">
-                    <span className={`inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${
-                      lastMatch.result === 'W' ? 'bg-green-500/20 text-green-400' :
-                      lastMatch.result === 'L' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
-                    }`}>
-                      {lastMatch.result === 'W' ? 'Win' : lastMatch.result === 'L' ? 'Loss' : 'Draw'}
-                    </span>
+                    {(() => {
+                      const result = getMatchResult(lastMatch)
+                      const isWin = result === 'Win'
+                      const isLoss = result === 'Loss'
+                      return (
+                        <span className={`inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${
+                          isWin ? 'bg-green-500/20 text-green-400' :
+                          isLoss ? 'bg-red-500/20 text-red-400' :
+                          'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                          {result}
+                        </span>
+                      )
+                    })()}
                   </div>
 
                   <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-xs uppercase tracking-widest rounded transition-colors mt-auto">
@@ -143,18 +171,18 @@ export function PremiumMatchStats() {
               <div className="space-y-4">
                 {topPlayers.length > 0 ? (
                   topPlayers.map((player, idx) => (
-                    <div key={player.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-900/30 hover:bg-slate-900/50 transition-colors">
+                    <div key={player?.id || idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-900/30 hover:bg-slate-900/50 transition-colors">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-bold text-xs">{player.num}</span>
+                          <span className="text-white font-bold text-xs">{player?.num || ''}</span>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-white font-bold text-sm truncate">{player.name}</p>
-                          <p className="text-xs text-slate-400 truncate">{player.position}</p>
+                          <p className="text-white font-bold text-sm truncate">{player?.name || 'Unknown'}</p>
+                          <p className="text-xs text-slate-400 truncate">{player?.position || 'N/A'}</p>
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0 ml-2">
-                        <p className="text-red-500 font-bold text-sm">{player.average_rating ? player.average_rating.toFixed(1) : '—'}</p>
+                        <p className="text-red-500 font-bold text-sm">{player?.average_rating ? player.average_rating.toFixed(1) : '—'}</p>
                         <p className="text-xs text-slate-400">Rating</p>
                       </div>
                     </div>
