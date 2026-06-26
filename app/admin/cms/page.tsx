@@ -43,14 +43,14 @@ export default function CMSAdminPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Content Management System</h1>
-        <p className="text-slate-600 mt-2">
+        <h1 className="text-3xl font-bold text-white">Content Management System</h1>
+        <p className="text-slate-400 mt-2">
           Create, edit, and manage all your website content with rich text editing, image uploads, and scheduling
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
+      <div className="flex gap-2 border-b border-slate-700 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon
           const isActive = activeTab === tab.id
@@ -61,7 +61,7 @@ export default function CMSAdminPage() {
               className={`flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap ${
                 isActive
                   ? 'border-b-2 border-primary text-primary'
-                  : 'text-slate-600 hover:text-slate-900'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
               title={tab.description}
             >
@@ -73,7 +73,7 @@ export default function CMSAdminPage() {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-lg p-6">
+      <div className="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
         {!isClient ? (
           <div className="flex items-center justify-center p-8">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
