@@ -5,12 +5,12 @@ import {
   Search, ShoppingBag, ChevronRight, Play, MapPin, Trophy, Users, Heart, Target,
   Calendar, ArrowRight,
 } from "lucide-react"
-import heroPlayers from "@/assets/hero-players.jpg"
-import teamHuddle from "@/assets/team-huddle.jpg"
-import newsCoach from "@/assets/news-coach.jpg"
-import newsGoal from "@/assets/news-goal.jpg"
-import newsStadium from "@/assets/news-stadium.jpg"
-import newsPlayer from "@/assets/news-player.jpg"
+const heroPlayers = "/hero-players.png"
+const teamHuddle = "/team-huddle.png"
+const newsCoach = "/news-coach.png"
+const newsGoal = "/news-goal.png"
+const newsStadium = "/news-victory.png"
+const newsPlayer = "/news-coach.png"
 
 const NAV = [
   { label: "HOME", href: "/" },
