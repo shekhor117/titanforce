@@ -79,23 +79,69 @@ export default function Home() {
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
-        {/* Three Column Section */}
+        {/* Main 3-Column Layout */}
         <section className="py-12 md:py-16 px-4 bg-background">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <HomeNextFixture />
-              <HomeLeagueStandings />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column - Premium Stats */}
+              <div className="lg:col-span-1">
+                <PremiumMatchStats />
+              </div>
+
+              {/* Center Column - Heatmap & Top Players */}
+              <div className="lg:col-span-1">
+                <HomeStatsShowcase />
+              </div>
+
+              {/* Right Column - Next Fixtures */}
+              <div className="lg:col-span-1">
+                <HomeNextFixture />
+              </div>
             </div>
           </div>
         </section>
 
+        {/* Latest News Section */}
         <HomeLatestNews />
-        <PremiumMatchStats />
-        <PlayersGrid />
+
+        {/* Upcoming Fixtures & Partners Section */}
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-2xl font-bold mb-6">UPCOMING FIXTURES</h3>
+              <HomeLeagueStandings />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold mb-6">OUR PARTNERS</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Partners placeholder */}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Newsletter */}
+        <section className="py-12 md:py-16 px-4 bg-gradient-to-r from-red-600 to-red-700">
+          <div className="max-w-7xl mx-auto text-center text-white">
+            <h2 className="text-3xl font-bold mb-4">JOIN THE TITAN FAMILY!</h2>
+            <p className="mb-6 text-red-50">Get the latest news, match updates and exclusive offers.</p>
+            <form className="flex gap-2 max-w-md mx-auto">
+              <input type="email" placeholder="Enter your email address" className="flex-1 px-4 py-3 rounded text-black" />
+              <button className="px-6 py-3 bg-red-900 hover:bg-red-800 rounded font-bold">SUBSCRIBE</button>
+            </form>
+          </div>
+        </section>
+
+        {/* About */}
         <HomeAboutGallery />
-        <HomeStatsShowcase />
+
+        {/* Shop */}
         <HomeShopLatest />
+
+        {/* Gallery */}
         <GalleryShowcase />
+
+        {/* Contact */}
         <Contact />
       </main>
       {!heroLoading && <Footer />}
