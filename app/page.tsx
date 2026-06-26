@@ -3,12 +3,9 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
-import { ClubInfoSection } from "@/components/club-info-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
-import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
-import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { PremiumMatchStats } from "@/components/premium-match-stats"
 import { PlayersGrid } from "@/components/players-grid"
 import { HomeShopLatest } from "@/components/home-shop-latest"
@@ -77,26 +74,14 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <ClubInfoSection />
-        
-        {/* Three Column Section */}
-        <section className="py-12 md:py-16 px-4 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <HomeNextFixture />
-              <HomeLeagueStandings />
-            </div>
-          </div>
-        </section>
-
         <HomeLatestNews />
         <PremiumMatchStats />
+        <HomeNextFixture />
         <PlayersGrid />
         <HomeAboutGallery />
-        <HomeStatsShowcase />
+        <Contact />
         <HomeShopLatest />
         <GalleryShowcase />
-        <Contact />
       </main>
       {!heroLoading && <Footer />}
     </div>
