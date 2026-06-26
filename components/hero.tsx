@@ -22,9 +22,9 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6">
             <span className="h-px w-6 sm:w-8 bg-red-600" /> RISE LIKE TITANS
           </div>
-          <h1 className="font-display font-bold leading-[0.85] tracking-tight">
-            <span className="block text-foreground text-[clamp(2.25rem,11vw,8rem)]">TITAN FORCE</span>
-            <span className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)]">
+          <h1 className="font-display font-bold leading-[0.85]">
+            <span className="block text-foreground text-[clamp(2.25rem,11vw,8rem)] tracking-[0.1em]">TITAN FORCE</span>
+            <span className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]">
               MULIKANDI
             </span>
           </h1>
