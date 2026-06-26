@@ -128,7 +128,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      // Use Supabase authentication
       const user = await signInWithEmail(email, password)
       
       // Check if user has admin role
@@ -137,11 +136,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         throw new Error("Your account does not have admin access. Contact the administrator to grant access.")
       }
 
-      // Immediately set admin state without waiting for subscription update
+      // Immediately set admin state
       setAdmin(user)
       setIsLoading(false)
-      // Return immediately to allow quick redirect
-      return Promise.resolve()
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)
