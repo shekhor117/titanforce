@@ -31,18 +31,6 @@ export default function NewsPage() {
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 px-4 text-center hero-gradient">
-          {/* Video Background */}
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
-          >
-            <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/52177-467701518_medium-NHHZMX0waW7Vl9MVhVGsYsklvDeifE.mp4" type="video/mp4" />
-          </video>
-
           {/* Animated Background */}
           <div className="absolute inset-0 overflow-hidden z-1">
             <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
