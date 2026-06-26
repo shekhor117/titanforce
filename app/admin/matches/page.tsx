@@ -19,9 +19,20 @@ export default function AdminMatchesPage() {
   }, [])
 
   const loadMatches = async () => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setLoading(true)
-      const matches = await service.getMatches()
+      const matches = await retryOperation(() => service.getMatches())
       
       // Convert Match to Fixture format
       const convertedFixtures: Fixture[] = matches.map(match => ({

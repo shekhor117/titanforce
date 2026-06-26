@@ -40,6 +40,17 @@ export default function AdminMedia() {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
 
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setUploading(true)
       setError("")
@@ -66,14 +77,14 @@ export default function AdminMedia() {
         const url = URL.createObjectURL(file)
 
         try {
-          // Add to Supabase via DataService
-          await dataService.createMediaItem({
+          // Add to Supabase via DataService with retry logic
+          await retryOperation(() => dataService.createMediaItem({
             title: file.name.replace(/\.[^/.]+$/, ""),
             type: isVideo ? "video" : "photo",
             url: url,
             category: "general",
             description: "",
-          })
+          }))
         } catch (err) {
           console.error("[v0] Error creating media item:", err)
           setError(isBn ? "আইটেম যোগ করার সময় ত্রুটি" : "Error adding item")

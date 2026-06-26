@@ -30,9 +30,20 @@ export default function AdminNewsPage() {
   }, [])
 
   const loadNews = async () => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setLoading(true)
-      const newsItems = await service.getNewsItems()
+      const newsItems = await retryOperation(() => service.getNewsItems())
       
       // Convert NewsItem to NewsArticle format
       const convertedArticles: NewsArticle[] = (newsItems || []).map(item => ({
@@ -82,7 +93,7 @@ export default function AdminNewsPage() {
 
   const handleUpdateArticle = async (article: NewsArticle) => {
     try {
-      await updateNewsItem(article.id, {
+      await service.updateNewsItem(article.id, {
         title: article.title,
         excerpt: article.summary,
         content: article.content,
@@ -103,7 +114,7 @@ export default function AdminNewsPage() {
 
   const handleDeleteArticle = async (articleId: string) => {
     try {
-      await deleteNewsItem(articleId)
+      await service.deleteNewsItem(articleId)
       await loadNews()
     } catch (err) {
       console.error('[v0] Error deleting news:', err)

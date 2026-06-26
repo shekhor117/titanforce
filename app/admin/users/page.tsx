@@ -29,6 +29,17 @@ export default function AdminUsersPage() {
   })
 
   const loadUsers = async () => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     setIsLoading(true)
     setError(null)
     try {
@@ -37,11 +48,12 @@ export default function AdminUsersPage() {
       if (filterRole !== "all") filters.role = filterRole
       if (filterStatus !== "all") filters.status = filterStatus
       
-      const usersData = await dataService.getAppUsers(filters)
-      setUsers(usersData)
+      const usersData = await retryOperation(() => dataService.getAppUsers(filters))
+      setUsers(usersData || [])
     } catch (err) {
       console.error("[v0] Error loading users:", err)
       setError(isBn ? "ব্যবহারকারী লোড করতে ব্যর্থ" : "Failed to load users")
+      setUsers([])
     } finally {
       setIsLoading(false)
     }
