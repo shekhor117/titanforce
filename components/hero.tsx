@@ -1,238 +1,50 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
-import { useLanguage } from "@/lib/language-context"
 import { TransitionLink } from "@/components/transition-link"
-import { usePlayers } from "@/lib/use-data-store"
-import { ButtonModern } from "@/components/button-modern"
 
-interface HeroProps {
-  onLoadingChange?: (loading: boolean) => void
-  skipAnimation?: boolean
-}
-
-export function Hero({ onLoadingChange, skipAnimation = false }: HeroProps) {
-  const { language, t } = useLanguage()
-  const isBn = language === "bn"
-  const [loading, setLoading] = useState(!skipAnimation)
-  const { players } = usePlayers()
-
-  const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
-
-  useEffect(() => {
-    // Skip animation if requested
-    if (skipAnimation) {
-      setLoading(false)
-      onLoadingChange?.(false)
-      return
-    }
-
-    const timer = setTimeout(() => {
-      setLoading(false)
-      onLoadingChange?.(false)
-    }, 3500)
-
-    return () => clearTimeout(timer)
-  }, [onLoadingChange, skipAnimation])
-
+export function Hero() {
   return (
-    <section id="home" className="relative overflow-hidden min-h-[100vh] bg-gradient-to-br from-black via-red-900 to-pink-600">
-      {/* Background animated elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Animated gradient orbs */}
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-pink-500/25 rounded-full blur-3xl animate-blob"></div>
-        <div className="absolute top-40 left-10 w-72 h-72 bg-red-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 right-32 w-80 h-80 bg-pink-400/15 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
-        
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
+    <section className="relative overflow-hidden">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/hero-bg-soccer.jpg"
+          alt="Titan Force Mulikandi players celebrating"
+          fill
+          priority
+          className="object-cover object-[70%_top] sm:object-top opacity-80 sm:opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
       </div>
 
-      {/* Content container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-[100vh]">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center h-full py-12 md:py-20">
-          
-          {/* Left Column - Text Content */}
-          <div className="lg:col-span-2 flex flex-col justify-center space-y-6 md:space-y-8">
-            {/* Logo */}
-            <div className="animate-fade-up">
-              <div className="relative inline-block">
-                <Image
-                  src="/logos/titanforce-logo.svg"
-                  alt="Titan Force FC Logo"
-                  width={60}
-                  height={60}
-                  className="object-contain drop-shadow-xl w-14 md:w-16"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* Tagline */}
-            <div className="animate-smoothFadeUp">
-              <p className={`text-xs sm:text-sm uppercase tracking-widest font-bold text-primary dark:text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                MORE THAN A CLUB, WE ARE
-              </p>
-            </div>
-
-            {/* Main Title */}
-            <h1 className={`text-5xl sm:text-6xl md:text-7xl font-black leading-tight tracking-wider animate-smoothFadeUp animation-delay-100 ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
-              <span className="block text-slate-900 dark:text-white">{t.hero.welcome}</span>
-              <span className="block text-accent mt-2">{t.hero.clubName}</span>
-            </h1>
-
-            {/* Description */}
-            <p className={`text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-md animate-smoothFadeUp animation-delay-200 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.hero.tagline}
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-buttonSlideIn">
-              <TransitionLink
-                href="/team-squad"
-                className="no-underline"
-              >
-                <ButtonModern
-                  variant="primary"
-                  size="lg"
-                  className={`w-full sm:w-auto ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {t.hero.viewSquad}
-                </ButtonModern>
-              </TransitionLink>
-              <TransitionLink
-                href="/fixtures-results"
-                className="no-underline"
-              >
-                <ButtonModern
-                  variant="outline"
-                  size="lg"
-                  className={`w-full sm:w-auto bg-red-600 border-red-600 text-white hover:bg-red-700 hover:border-red-700 hover:text-white ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {t.hero.matches}
-                </ButtonModern>
-              </TransitionLink>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-300 dark:border-white/10">
-              <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">12K+</p>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Fans</p>
-              </div>
-              <div className="animate-smoothFadeUp animation-delay-300">
-                <p className="text-2xl sm:text-3xl font-bold text-accent">{activePlayers.length}</p>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-wide">Players</p>
-              </div>
-            </div>
-
+      <div className="relative container mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-24 grid lg:grid-cols-[1.3fr_0.7fr] gap-8 lg:gap-10 min-h-[560px] sm:min-h-[680px]">
+        <div className="flex flex-col justify-center">
+          <div className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6">
+            <span className="h-px w-6 sm:w-8 bg-red-600" /> RISE LIKE TITANS
           </div>
-
-          {/* Right Column - Football Illustration */}
-          <div className="lg:col-span-3 flex items-center justify-center relative">
-            <div className="relative w-full h-[400px] md:h-[600px] flex items-center justify-center">
-              {/* Decorative background circle */}
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-red-600/20 rounded-3xl blur-2xl"></div>
-              
-              {/* Football illustration */}
-              <div className="relative z-10 animate-float">
-                <Image
-                  src="/images/hero-football.png"
-                  alt="Football player kicking ball"
-                  width={500}
-                  height={600}
-                  className="object-contain drop-shadow-2xl"
-                  priority
-                />
-              </div>
-            </div>
+          <h1 className="font-display font-bold leading-[0.85] tracking-tight">
+            <span className="block text-foreground text-[clamp(2.25rem,11vw,8rem)]">TITAN FORCE</span>
+            <span className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)]">
+              MULIKANDI
+            </span>
+          </h1>
+          <p className="mt-5 sm:mt-6 text-muted-foreground max-w-md text-sm leading-relaxed">
+            Pride of Mulikandi. Power of the Titans. We are more than a club. We are a legacy in the making.
+          </p>
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
+            <TransitionLink href="/team-squad" className="no-underline">
+              <button className="group inline-flex items-center gap-2 rounded-md bg-red-600 px-5 sm:px-6 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] text-white hover:bg-red-700 transition-colors">
+                OUR PLAYER
+              </button>
+            </TransitionLink>
+            <TransitionLink href="/fixtures-results" className="no-underline">
+              <button className="inline-flex items-center gap-3 rounded-md border border-border bg-card/40 backdrop-blur px-4 sm:px-5 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] hover:bg-card transition-colors">
+                MATCHES
+              </button>
+            </TransitionLink>
           </div>
         </div>
       </div>
-
-
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-
-        @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes smoothFadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes buttonSlideIn {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-up {
-          animation: fadeUp 0.6s ease-out forwards;
-        }
-
-        .animate-smoothFadeUp {
-          animation: smoothFadeUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        .animate-buttonSlideIn {
-          animation: buttonSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        .animation-delay-100 {
-          animation-delay: 0.1s;
-        }
-
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-        }
-
-        .animation-delay-300 {
-          animation-delay: 0.3s;
-        }
-      `}</style>
-      </section>
+    </section>
   )
 }
