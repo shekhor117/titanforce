@@ -15,11 +15,15 @@ import { HomeShopLatest } from "@/components/home-shop-latest"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { HomeNewsletter } from "@/components/home-newsletter"
+import { TopPlayersCards } from "@/components/top-players-cards"
+import { useDataStore } from "@/lib/data-store"
 
 export default function Home() {
   // Check if hero animation has been shown this session
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
   const [heroLoading, setHeroLoading] = useState(true)
+  const { players } = useDataStore()
 
   useEffect(() => {
     try {
@@ -83,17 +87,21 @@ export default function Home() {
         <section className="py-12 md:py-16 px-4 bg-background">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Left Column */}
+              {/* Left Column - Premium Stats */}
               <div className="md:col-span-1 space-y-6">
                 <PremiumMatchStats />
               </div>
 
-              {/* Center Column */}
+              {/* Center Column - League & Fixtures */}
               <div className="md:col-span-1 space-y-6">
                 <HomeLeagueStandings />
+                <div className="mt-6">
+                  <h3 className="text-lg font-bold text-foreground mb-4">UPCOMING FIXTURES</h3>
+                  <HomeNextFixture />
+                </div>
               </div>
 
-              {/* Right Column */}
+              {/* Right Column - Next Matches */}
               <div className="md:col-span-1 space-y-6">
                 <HomeNextFixture />
               </div>
@@ -101,13 +109,36 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Full Width Sections */}
+        {/* Latest News Section */}
         <HomeLatestNews />
+
+        {/* Top Players Section */}
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <TopPlayersCards players={players} limit={6} />
+          </div>
+        </section>
+
+        {/* Match Stats Showcase */}
+        <HomeStatsShowcase />
+
+        {/* Latest Shop */}
         <section className="py-12 md:py-16 px-4 bg-background">
           <div className="max-w-7xl mx-auto">
             <HomeShopLatest />
           </div>
         </section>
+
+        {/* Gallery */}
+        <GalleryShowcase />
+
+        {/* Newsletter Signup */}
+        <HomeNewsletter />
+
+        {/* About Section */}
+        <HomeAboutGallery />
+
+        {/* Contact */}
         <Contact />
       </main>
       {!heroLoading && <Footer />}
