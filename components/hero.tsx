@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { ChevronRight, Play } from "lucide-react"
 import { TransitionLink } from "@/components/transition-link"
 
 export function Hero() {
@@ -35,12 +34,11 @@ export function Hero() {
           <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
             <TransitionLink href="/team-squad" className="no-underline">
               <button className="group inline-flex items-center gap-2 rounded-md bg-red-600 px-5 sm:px-6 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] text-white hover:bg-red-700 transition-colors">
-                OURPLAYER <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                OUR PLAYER
               </button>
             </TransitionLink>
             <TransitionLink href="/fixtures-results" className="no-underline">
               <button className="inline-flex items-center gap-3 rounded-md border border-border bg-card/40 backdrop-blur px-4 sm:px-5 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] hover:bg-card transition-colors">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-red-600"><Play className="h-3 w-3 fill-current text-white" /></span>
                 MATCHES
               </button>
             </TransitionLink>
