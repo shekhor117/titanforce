@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Facebook, Twitter, Instagram, Youtube } from "lucide-react"
+import { Facebook, Instagram, Youtube, Music } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -136,13 +136,13 @@ export function Footer() {
               <Facebook className="w-6 h-6" />
             </a>
             <a
-              href="https://twitter.com/titanforce"
+              href="https://tiktok.com/@titanforce"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-              aria-label="Twitter"
+              aria-label="TikTok"
             >
-              <Twitter className="w-6 h-6" />
+              <Music className="w-6 h-6" />
             </a>
             <a
               href="https://instagram.com/titanforce"
