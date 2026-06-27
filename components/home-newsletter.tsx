@@ -44,12 +44,12 @@ export function HomeNewsletter() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="flex-1 px-4 py-3 bg-card border border-accent/20 rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-accent transition-colors"
+              className="neo-input flex-1"
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="px-8 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-bold uppercase tracking-wider rounded-lg transition-all duration-300 flex items-center gap-2 group disabled:opacity-50"
+              className="neo-btn neo-btn-primary flex items-center gap-2 group disabled:opacity-50"
             >
               {status === 'loading' ? 'Subscribing...' : 'SUBSCRIBE'}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

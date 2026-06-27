@@ -41,7 +41,7 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
   const getCategory = (p: Player) => p.category || p.cat || "MID"
 
   return (
-    <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+    <div className="neo-card p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className={`font-display text-lg tracking-wider text-foreground ${isBn ? "font-bengali" : ""}`}>
           <div className="flex items-center gap-2">

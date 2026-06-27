@@ -64,7 +64,7 @@ export function GalleryShowcase() {
             <Link
               key={item.id}
               href="/gallery"
-              className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300"
+              className="neo-floating group relative overflow-hidden"
             >
               <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">
                 {item.imageUrl && (

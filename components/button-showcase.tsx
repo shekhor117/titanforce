@@ -47,7 +47,7 @@ export function ButtonShowcase() {
         </div>
 
         {/* Variants Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Variants</h3>
           <div className="flex flex-wrap gap-4">
             <ButtonModern variant="default">Default</ButtonModern>
@@ -61,108 +61,42 @@ export function ButtonShowcase() {
         </div>
 
         {/* Sizes Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Sizes</h3>
-          <div className="flex flex-wrap items-center gap-4">
-            <ButtonModern size="sm">Small</ButtonModern>
-            <ButtonModern size="md">Medium</ButtonModern>
-            <ButtonModern size="lg">Large</ButtonModern>
-          </div>
         </div>
 
         {/* States Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">States</h3>
-          <div className="flex flex-wrap gap-4 items-start">
-            <ButtonModern state="default">Default State</ButtonModern>
-            <ButtonModern state="active">Active State</ButtonModern>
-            <ButtonModern disabled>Disabled State</ButtonModern>
-            <ButtonModern state="hover">Hover State</ButtonModern>
-          </div>
         </div>
 
         {/* Glow Effects Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Glow Effects</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern variant="primary" glow="none">No Glow</ButtonModern>
-            <ButtonModern variant="primary" glow="soft">Soft Glow</ButtonModern>
-            <ButtonModern variant="primary" glow="strong">Strong Glow</ButtonModern>
-          </div>
         </div>
 
         {/* Shadow Effects Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Shadow Effects</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern shadow="none">No Shadow</ButtonModern>
-            <ButtonModern shadow="soft">Soft Shadow</ButtonModern>
-            <ButtonModern shadow="inset">Inset Shadow</ButtonModern>
-          </div>
         </div>
 
         {/* Loading State Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Loading State</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern
-              variant="primary"
-              isLoading={loadingStates['loading1']}
-              onClick={() => toggleLoading('loading1')}
-            >
-              {loadingStates['loading1'] ? 'Loading...' : 'Start Loading'}
-            </ButtonModern>
-            <ButtonModern
-              variant="primary"
-              isLoading={loadingStates['loading2']}
-              onClick={() => triggerSuccess('loading2')}
-            >
-              {loadingStates['loading2'] ? 'Processing...' : 'Process Action'}
-            </ButtonModern>
-          </div>
         </div>
 
         {/* Success State Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Success State</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern
-              variant="success"
-              isSuccess={successStates['success1']}
-            >
-              {successStates['success1'] ? 'Completed' : 'Success Button'}
-            </ButtonModern>
-            <ButtonModern
-              variant="primary"
-              isSuccess={successStates['success2']}
-              onClick={() => setSuccessStates(prev => ({
-                ...prev,
-                'success2': !prev['success2']
-              }))}
-            >
-              {successStates['success2'] ? 'Done' : 'Toggle Success'}
-            </ButtonModern>
-          </div>
         </div>
 
         {/* Icons Section */}
-        <div className="mb-16 bg-card rounded-lg p-8 border border-border">
+        <div className="mb-16 neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">With Icons</h3>
-          <div className="flex flex-wrap gap-4">
-            <ButtonModern variant="primary" icon={<ArrowRight className="w-4 h-4" />} iconPosition="right">
-              Next Step
-            </ButtonModern>
-            <ButtonModern variant="success" icon={<Check className="w-4 h-4" />} iconPosition="left">
-              Confirm
-            </ButtonModern>
-            <ButtonModern variant="primary" icon={<Loader2 className="w-4 h-4 animate-spin" />} iconPosition="left">
-              Processing
-            </ButtonModern>
-          </div>
         </div>
 
         {/* Combined Effects Section */}
-        <div className="bg-card rounded-lg p-8 border border-border">
+        <div className="neo-card p-8">
           <h3 className="text-2xl font-bold text-foreground mb-6">Combined Effects</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ButtonModern 

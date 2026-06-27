@@ -23,7 +23,7 @@ export function ThemeToggle() {
     <div className="relative w-full md:w-auto">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="w-full md:w-auto p-2 rounded-lg border border-primary/30 hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center md:justify-start"
+        className="neo-btn w-full md:w-auto p-2 flex items-center justify-center md:justify-start"
         aria-label="Toggle theme menu"
         title={`Current theme: ${theme}`}
       >
@@ -35,16 +35,16 @@ export function ThemeToggle() {
       </button>
       
       {showMenu && (
-        <div className="absolute right-0 mt-2 w-full md:w-40 bg-card border border-primary/30 rounded-lg shadow-lg overflow-hidden z-50">
+        <div className="neo-panel absolute right-0 mt-2 w-full md:w-40 overflow-hidden z-50">
           <button
             onClick={() => {
               setTheme('light')
               setShowMenu(false)
             }}
-            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
               theme === 'light'
-                ? 'bg-primary/20 text-primary'
-                : 'hover:bg-primary/10 text-foreground'
+                ? 'neo-btn-primary'
+                : 'hover:bg-primary/5 text-foreground'
             }`}
           >
             <Sun className="w-4 h-4" />
@@ -57,10 +57,10 @@ export function ThemeToggle() {
               setTheme('dark')
               setShowMenu(false)
             }}
-            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
               theme === 'dark'
-                ? 'bg-primary/20 text-primary'
-                : 'hover:bg-primary/10 text-foreground'
+                ? 'neo-btn-primary'
+                : 'hover:bg-primary/5 text-foreground'
             }`}
           >
             <Moon className="w-4 h-4" />
@@ -73,10 +73,10 @@ export function ThemeToggle() {
               setTheme('system')
               setShowMenu(false)
             }}
-            className={`w-full px-4 py-2 flex items-center gap-2 transition-colors text-left ${
+            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
               theme === 'system'
-                ? 'bg-primary/20 text-primary'
-                : 'hover:bg-primary/10 text-foreground'
+                ? 'neo-btn-primary'
+                : 'hover:bg-primary/5 text-foreground'
             }`}
           >
             <Moon className="w-4 h-4" />

@@ -71,7 +71,7 @@ export function HomeShopLatest() {
                 className="group relative"
               >
                 {/* Product Card */}
-                <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300">
+                <div className="neo-floating relative overflow-hidden">
                   {/* Product Image */}
                   <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
                     {product.imageUrl ? (
@@ -115,7 +115,7 @@ export function HomeShopLatest() {
         <div className="text-center">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-sm uppercase tracking-widest rounded transition-all group"
+            className="neo-btn neo-btn-primary inline-flex items-center gap-2"
           >
             View all products
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

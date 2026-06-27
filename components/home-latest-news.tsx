@@ -45,7 +45,7 @@ export function HomeLatestNews() {
               <Link
                 key={item.id}
                 href={`/news/${item.id}`}
-                className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300"
+                className="neo-soft group relative overflow-hidden"
               >
                 {/* Background Image or Placeholder */}
                 <div className="relative w-full aspect-video bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">

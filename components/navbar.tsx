@@ -69,7 +69,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-2 rounded glass-btn-primary text-foreground hover-lift transition-all relative group"
+            className="neo-btn flex items-center gap-2 px-4 py-2 relative group"
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
@@ -83,7 +83,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300"
+            className="neo-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full"
             aria-label="Toggle language"
           >
             <Globe className="w-4 h-4" />
@@ -93,7 +93,7 @@ export function Navbar() {
           {user ? (
             <UserProfileDropdown />
           ) : (
-            <Link href="/login" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 no-underline">
+            <Link href="/login" className="neo-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline">
               <span className={`text-xs font-bold ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}>
                 {language === "bn" ? "লগইন" : "LOGIN"}
               </span>
@@ -118,7 +118,7 @@ export function Navbar() {
           
           <Link
             href="/shop"
-            className="flex items-center gap-2 px-4 py-3 rounded glass-btn-primary text-foreground hover-lift transition-all duration-300 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
+            className="neo-btn flex items-center gap-2 px-4 py-3 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
             style={{ animationDelay: '300ms' }}
             onClick={() => setMobileMenuOpen(false)}
           >
@@ -136,7 +136,7 @@ export function Navbar() {
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 flex-1 text-xs min-h-[44px]"
+                className="neo-btn flex items-center justify-center gap-1.5 px-3 py-2 rounded-full flex-1 text-xs min-h-[44px]"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -147,7 +147,7 @@ export function Navbar() {
             {user ? (
               <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
             ) : (
-              <Link href="/login" className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 w-full text-xs min-h-[44px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/login" className="neo-btn flex items-center justify-center gap-1.5 px-4 py-3 rounded-full w-full text-xs min-h-[44px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
                 {language === "bn" ? "লগইন" : "LOGIN"}
               </Link>
             )}

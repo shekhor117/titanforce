@@ -76,7 +76,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
   // If no players data, show empty state
   if (!safePlayersArray || safePlayersArray.length === 0) {
     return (
-      <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+      <div className="neo-card p-6">
         <h3 className={`font-display text-lg tracking-wider text-foreground mb-4 ${isBn ? "font-bengali" : ""}`}>
           {isBn ? "খেলোয়াড় পরিসংখ্যান" : "Player Statistics"}
         </h3>
@@ -97,7 +97,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className={`rounded-lg p-4 border border-secondary/50 ${stat.bgColor}`}
+            className={`neo-soft p-4 ${stat.bgColor}`}
           >
             <div className="flex items-start justify-between mb-3">
               <div className={stat.color}>{stat.icon}</div>
@@ -111,12 +111,12 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
       </div>
 
       {/* Player Status Overview */}
-      <div className="rounded-lg border-2 border-secondary bg-card/50 p-6">
+      <div className="neo-card p-6">
         <h3 className={`font-display text-lg tracking-wider text-foreground mb-4 ${isBn ? "font-bengali" : ""}`}>
           {isBn ? "খেলোয়াড় স্থিতি" : "Player Status Overview"}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+          <div className="neo-soft flex items-center gap-4 p-4 bg-green-500/10">
             <div className="text-3xl font-bold text-green-400">{activePlayers}</div>
             <div className="flex-1">
               <div className={`text-sm font-semibold text-foreground ${isBn ? "font-bengali" : ""}`}>
@@ -128,7 +128,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+          <div className="neo-soft flex items-center gap-4 p-4 bg-yellow-500/10">
             <div className="text-3xl font-bold text-yellow-400">{injuredPlayers}</div>
             <div className="flex-1">
               <div className={`text-sm font-semibold text-foreground ${isBn ? "font-bengali" : ""}`}>
@@ -140,7 +140,7 @@ export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-red-500/10 border border-red-500/30">
+          <div className="neo-soft flex items-center gap-4 p-4 bg-red-500/10">
             <div className="text-3xl font-bold text-red-400">{suspendedPlayers}</div>
             <div className="flex-1">
               <div className={`text-sm font-semibold text-foreground ${isBn ? "font-bengali" : ""}`}>

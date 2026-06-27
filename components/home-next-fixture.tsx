@@ -15,7 +15,7 @@ export function HomeNextFixture() {
   if (!nextMatch) {
     return (
       <ScrollAnimatedElement variant="fadeInLeft">
-        <div className="rounded-xl border border-accent/20 bg-card p-6 h-full flex items-center justify-center">
+        <div className="neo-card p-6 h-full flex items-center justify-center">
           <p className="text-muted-foreground text-center">No upcoming matches</p>
         </div>
       </ScrollAnimatedElement>
@@ -24,7 +24,7 @@ export function HomeNextFixture() {
 
   return (
     <ScrollAnimatedElement variant="fadeInLeft">
-      <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
+      <div className="neo-card overflow-hidden h-full flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-accent/10">
         <div className="flex items-center gap-2 mb-2">

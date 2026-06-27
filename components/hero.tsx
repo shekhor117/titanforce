@@ -70,7 +70,7 @@ export function Hero() {
           >
             <TransitionLink href="/team-squad" className="no-underline">
               <motion.button 
-                className="group inline-flex items-center gap-2 rounded-md bg-red-600 px-5 sm:px-6 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] text-white hover:bg-red-700 transition-colors"
+                className="neo-btn-primary neo-btn group inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -79,7 +79,7 @@ export function Hero() {
             </TransitionLink>
             <TransitionLink href="/fixtures-results" className="no-underline">
               <motion.button 
-                className="inline-flex items-center gap-3 rounded-md border border-border bg-card/40 backdrop-blur px-4 sm:px-5 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em] hover:bg-card transition-colors"
+                className="neo-btn inline-flex items-center gap-3 px-4 sm:px-5 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

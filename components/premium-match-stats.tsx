@@ -75,7 +75,7 @@ export function PremiumMatchStats() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Next Match - Full Stats Link */}
           <Link href="/fixtures-results" className="no-underline">
-            <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer h-full">
+            <div className="neo-card p-8 h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Next Match</h3>
               
               {nextMatch ? (
@@ -91,7 +91,7 @@ export function PremiumMatchStats() {
                     <p className="text-lg font-bold text-red-500">TBA</p>
                   </div>
 
-                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-xs uppercase tracking-widest rounded transition-colors">
+                  <button className="neo-btn neo-btn-primary w-full">
                     View Full Stats & Prediction
                   </button>
                 </div>
@@ -105,7 +105,7 @@ export function PremiumMatchStats() {
 
           {/* Last Match - Stats & Facts */}
           <Link href="/fixtures-results" className="no-underline">
-            <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer flex flex-col h-full">
+            <div className="neo-card p-8 flex flex-col h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Last Match</h3>
               
               {lastMatch ? (
@@ -151,7 +151,7 @@ export function PremiumMatchStats() {
                     })()}
                   </div>
 
-                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-xs uppercase tracking-widest rounded transition-colors mt-auto">
+                  <button className="neo-btn neo-btn-primary w-full mt-auto">
                     View Stats & Lineup
                   </button>
                 </div>
@@ -165,7 +165,7 @@ export function PremiumMatchStats() {
 
           {/* Top Players - with link */}
           <Link href="/team-squad" className="no-underline">
-            <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer h-full">
+            <div className="neo-card p-8 h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Top Players</h3>
               
               <div className="space-y-4">
@@ -194,7 +194,7 @@ export function PremiumMatchStats() {
                 )}
               </div>
 
-              <button className="w-full mt-6 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-xs uppercase tracking-widest rounded transition-colors">
+              <button className="neo-btn neo-btn-primary w-full mt-6">
                 View All Players
               </button>
             </div>

@@ -112,7 +112,7 @@ export function FeaturedPlayers() {
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="rounded-xl overflow-hidden border-2 border-secondary bg-card hover:border-primary hover-lift hover-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="neo-floating overflow-hidden">
                 {/* Player Image */}
                 <div className="relative w-full aspect-square overflow-hidden bg-secondary/30">
                   {player.image_url ? (
@@ -184,7 +184,7 @@ export function FeaturedPlayers() {
       <div className="flex justify-center mt-8 sm:mt-12">
         <Link
           href="#squad"
-          className="px-6 sm:px-8 py-3 text-sm font-bold uppercase tracking-wider rounded-lg glass-btn-accent text-foreground hover-lift transition-all duration-300"
+          className="neo-btn px-6 sm:px-8 py-3"
         >
           {isBn ? "সমস্ত খেলোয়াড় দেখুন" : "View All Players"}
         </Link>
