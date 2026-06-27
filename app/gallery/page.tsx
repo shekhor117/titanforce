@@ -2,16 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
 import { EntranceReveal } from '@/components/entrance-reveal'
-
-const Gallery3DScene = dynamic(() => import('@/components/3d-gallery-scene').then(mod => ({ default: mod.Gallery3DScene })), {
-  loading: () => <div className="w-full h-72 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
-})
 
 const GALLERY_TYPES = [
   { value: 'match', label: 'Match', labelBn: 'ম্যাচ' },
@@ -68,13 +63,8 @@ export default function GalleryPage() {
         </div>
       </header>
 
-      {/* Hero Section with 3D Background */}
-      <section className='hero-gradient relative overflow-hidden py-16 md:py-24'>
-        {/* 3D Scene Background */}
-        <div className='absolute inset-0 z-0 opacity-40'>
-          <Gallery3DScene />
-        </div>
-
+      {/* Hero Section */}
+      <section className='relative overflow-hidden py-16 md:py-24'>
         {/* Animated Background */}
         <div className='absolute inset-0 overflow-hidden z-1'>
           <div className='absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse' />
