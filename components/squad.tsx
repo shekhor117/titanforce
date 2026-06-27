@@ -83,9 +83,6 @@ export function Squad() {
           className={`text-center mb-8 sm:mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
-          <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.squad.subtitle}
-          </p>
           <h2 className={`text-3xl sm:text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.squad.title}
           </h2>
