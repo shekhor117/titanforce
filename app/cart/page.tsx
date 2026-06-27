@@ -25,7 +25,7 @@ export default function CartPage() {
         </p>
         <Link
           href="/shop"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
+          className="neo-btn neo-btn-primary px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />
           {isBn ? "শপে ফিরুন" : "Back to Shop"}
@@ -95,14 +95,14 @@ export default function CartPage() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => updateQuantity(item.cartId, item.quantity - 1)}
-                          className="px-2 py-1 bg-background border border-primary/20 rounded hover:border-primary transition-colors"
+                          className="neo-btn px-2 py-1 bg-background rounded transition-colors"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="w-8 text-center font-bold text-foreground">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.cartId, item.quantity + 1)}
-                          className="px-2 py-1 bg-background border border-primary/20 rounded hover:border-primary transition-colors"
+                          className="neo-btn px-2 py-1 bg-background rounded transition-colors"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -154,21 +154,21 @@ export default function CartPage() {
 
             <button
               onClick={() => router.push("/checkout")}
-              className="w-full px-6 py-3 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors mb-3"
+              className="neo-btn neo-btn-primary w-full px-6 py-3 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors mb-3"
             >
               {isBn ? "চেকআউট" : "Checkout"}
             </button>
 
             <button
               onClick={() => router.push("/shop")}
-              className="w-full px-6 py-3 bg-secondary border border-primary/20 text-foreground font-bold rounded-lg hover:border-primary transition-colors"
+              className="neo-btn neo-soft w-full px-6 py-3 bg-secondary text-foreground font-bold rounded-lg transition-colors"
             >
               {isBn ? "শপিং চালিয়ে যান" : "Continue Shopping"}
             </button>
 
             <button
               onClick={() => clearCart()}
-              className="w-full mt-4 px-6 py-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors rounded-lg text-sm"
+              className="neo-btn w-full mt-4 px-6 py-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors rounded-lg text-sm"
             >
               {isBn ? "কার্ট পরিষ্কার করুন" : "Clear Cart"}
             </button>
