@@ -12,6 +12,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel"
+import { ScrollAnimatedElement } from "./scroll-animated-element"
 
 export function PlayersGrid() {
   const { players } = usePlayers()
@@ -43,8 +44,9 @@ export function PlayersGrid() {
         </div>
 
         {/* Players Carousel */}
-        {activePlayers.length > 0 ? (
-          <div className="relative px-12">
+        <ScrollAnimatedElement variant="fadeInUp">
+          {activePlayers.length > 0 ? (
+            <div className="relative px-12">
             <Carousel
               opts={{
                 align: "start",
@@ -118,10 +120,11 @@ export function PlayersGrid() {
             </Carousel>
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-sm">No players available</p>
-          </div>
-        )}
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-sm">No players available</p>
+            </div>
+          )}
+        </ScrollAnimatedElement>
 
         {/* View All Button */}
         <div className="mt-12 text-center">

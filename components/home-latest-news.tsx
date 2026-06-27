@@ -4,6 +4,7 @@ import { useNewsItems } from '@/lib/use-data-store'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ScrollStaggerContainer } from './scroll-stagger-container'
 
 export function HomeLatestNews() {
   const { newsItems } = useNewsItems()
@@ -32,7 +33,11 @@ export function HomeLatestNews() {
         </div>
 
         {/* News Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <ScrollStaggerContainer 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          staggerDelay={0.1}
+          variant="fadeInUp"
+        >
           {topNews.length > 0 ? (
             topNews.map((item) => (
               <Link
@@ -91,7 +96,7 @@ export function HomeLatestNews() {
               <p className="text-muted-foreground text-sm">No news available</p>
             </div>
           )}
-        </div>
+        </ScrollStaggerContainer>
       </div>
     </section>
   )

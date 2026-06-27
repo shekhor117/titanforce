@@ -1,6 +1,7 @@
 'use client'
 
 import { Users, MapPin, Award, Heart, Users2 } from 'lucide-react'
+import { ScrollStaggerContainer } from './scroll-stagger-container'
 
 const clubInfoData = [
   {
@@ -34,7 +35,11 @@ export function ClubInfoSection() {
   return (
     <section className="bg-background py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+        <ScrollStaggerContainer 
+          className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6"
+          staggerDelay={0.12}
+          variant="fadeInUp"
+        >
           {clubInfoData.map((item, index) => {
             const Icon = item.icon
             return (
@@ -52,7 +57,7 @@ export function ClubInfoSection() {
               </div>
             )
           })}
-        </div>
+        </ScrollStaggerContainer>
       </div>
     </section>
   )
