@@ -23,7 +23,7 @@ export function PlayersGrid() {
     : []
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-black/40">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
