@@ -132,32 +132,48 @@ export function LineupBuilder() {
   }
 
   const handleDownloadLineup = () => {
-    const lineupData = {
-      formation: selectedFormation,
-      players: fieldPositions
-        .filter(p => p.player)
-        .map(p => ({
-          position: { x: p.x, y: p.y },
-          player: {
-            id: p.player!.id,
-            name: p.player!.name,
-            number: p.player!.number,
-            position: p.player!.position,
-          },
-        })),
-      timestamp: new Date().toISOString(),
-    }
+    try {
+      const lineupData = {
+        formation: selectedFormation,
+        players: fieldPositions
+          .filter(p => p.player)
+          .map(p => ({
+            position: { x: p.x, y: p.y },
+            player: {
+              id: p.player!.id,
+              name: p.player!.name,
+              number: p.player!.number,
+              position: p.player!.position,
+            },
+          })),
+        timestamp: new Date().toISOString(),
+      }
 
-    const jsonString = JSON.stringify(lineupData, null, 2)
-    const blob = new Blob([jsonString], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `lineup-${selectedFormation}-${new Date().getTime()}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+      const jsonString = JSON.stringify(lineupData, null, 2)
+      const blob = new Blob([jsonString], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `lineup-${selectedFormation}-${new Date().getTime()}.json`
+      
+      // Use a more reliable method that works in all contexts
+      if (typeof window !== 'undefined' && document.body) {
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } else {
+        // Fallback for edge cases
+        link.click()
+      }
+      
+      // Cleanup - use setTimeout to ensure click completes first
+      setTimeout(() => {
+        URL.revokeObjectURL(url)
+      }, 100)
+    } catch (error) {
+      console.error("[v0] Download failed:", error)
+      alert(isBn ? "ডাউনলোড ব্যর্থ হয়েছে" : "Download failed")
+    }
   }
 
   const assignedPlayerIds = fieldPositions
