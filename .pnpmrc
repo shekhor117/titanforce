@@ -1,0 +1,2 @@
+ignore-scripts=false
+script-shell="/bin/bash"
