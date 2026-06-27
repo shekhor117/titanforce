@@ -121,10 +121,10 @@ export default function GalleryPage() {
           <div className='flex gap-2 flex-wrap'>
             <button
               onClick={() => setSelectedType('all')}
-              className={`px-4 py-2 rounded-lg transition ${
+              className={`neo-btn px-4 py-2 rounded-lg transition ${
                 selectedType === 'all'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border border-border hover:bg-muted'
+                  ? 'neo-btn-primary bg-primary text-primary-foreground'
+                  : 'neo-soft text-foreground'
               }`}
             >
               {isBn ? 'সব' : 'All'}
@@ -133,10 +133,10 @@ export default function GalleryPage() {
               <button
                 key={type.value}
                 onClick={() => setSelectedType(type.value)}
-                className={`px-4 py-2 rounded-lg transition ${
+                className={`neo-btn px-4 py-2 rounded-lg transition ${
                   selectedType === type.value
-                    ? 'bg-primary text-primary-foreground'
-                    : 'border border-border hover:bg-muted'
+                    ? 'neo-btn-primary bg-primary text-primary-foreground'
+                    : 'neo-soft text-foreground'
                 }`}
               >
                 {isBn ? type.labelBn : type.label}

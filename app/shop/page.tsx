@@ -143,13 +143,13 @@ export default function ShopPage() {
                 <Search className="w-4 h-4 inline mr-2" />
                 {isBn ? "খুঁজুন" : "Search"}
               </label>
-              <input
-                type="text"
-                placeholder={isBn ? "জার্সি খুঁজুন..." : "Search jerseys..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors text-xs sm:text-sm min-h-[44px]"
-              />
+                <input
+                  type="text"
+                  placeholder={isBn ? "জার্সি খুঁজুন..." : "Search jerseys..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="neo-input w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors text-xs sm:text-sm min-h-[44px]"
+                />
             </div>
 
             {/* Category Filter */}
@@ -163,10 +163,10 @@ export default function ShopPage() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`neo-btn px-4 py-2 rounded-lg font-medium transition-colors ${
                       selectedCategory === cat.id
-                        ? "bg-primary text-foreground"
-                        : "bg-background border border-primary/20 text-foreground hover:border-primary"
+                        ? "neo-btn-primary bg-primary text-foreground"
+                        : "neo-soft text-foreground"
                     }`}
                   >
                     {cat.label}
@@ -183,7 +183,7 @@ export default function ShopPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full md:w-48 px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                className="neo-input w-full md:w-48 px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none transition-colors"
               >
                 <option value="rating">{isBn ? "রেটিং" : "Rating"}</option>
                 <option value="price-asc">{isBn ? "দাম: ক�� থেকে বেশি" : "Price: Low to High"}</option>
