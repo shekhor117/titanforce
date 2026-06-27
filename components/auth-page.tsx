@@ -99,7 +99,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       setOtpSentEmail(emailAddress)
       setOtpResendTimer(60) // 60 second cooldown
     } catch (err) {
-      console.error('[v0] Error sending OTP:', err)
       throw err
     }
   }
@@ -126,10 +125,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       }
 
       const data = await response.json()
-      console.log('[v0] OTP verified successfully:', data)
       return true
     } catch (err) {
-      console.error('[v0] Error verifying OTP:', err)
       setError(isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed')
       return false
     }

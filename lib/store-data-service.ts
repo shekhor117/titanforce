@@ -742,6 +742,11 @@ class StoreDataService {
     try {
       const supabase = createClient()
       
+      if (!supabase) {
+        onError?.(new Error('Supabase client not initialized'))
+        return () => {}
+      }
+      
       const channel = supabase
         .channel('products-sync')
         .on(
@@ -749,11 +754,9 @@ class StoreDataService {
           { event: '*', schema: 'public', table: 'store_products' },
           async () => {
             try {
-              console.log('[v0] Store: Products update detected')
               const products = await this.getProducts()
               callback(products)
             } catch (error) {
-              console.error('[v0] Store: Error fetching updated products:', error)
               onError?.(error instanceof Error ? error : new Error(String(error)))
             }
           }
@@ -764,7 +767,6 @@ class StoreDataService {
         supabase.removeChannel(channel)
       }
     } catch (error) {
-      console.error('[v0] Store: Error setting up subscription:', error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
