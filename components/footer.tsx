@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Facebook, Instagram, Youtube, Music } from "lucide-react"
+import { Facebook, Instagram, Youtube } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -142,7 +142,9 @@ export function Footer() {
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="TikTok"
             >
-              <Music className="w-6 h-6" />
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.08 1.61 2.88 2.88 0 0 1 4.07-4.09v-3.45a6.47 6.47 0 0 0-5.79 10.221 6.648 6.648 0 0 0 10.86-5.48v-5.6a8.552 8.552 0 0 0 3.79-1.75v-3.54z"/>
+              </svg>
             </a>
             <a
               href="https://instagram.com/titanforce"
