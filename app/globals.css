@@ -129,7 +129,7 @@ html {
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -138,7 +138,8 @@ html {
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.6s ease both;
+  animation: fadeUp 0.4s ease both;
+  will-change: transform, opacity;
 }
 
 .animation-delay-100 {
@@ -169,7 +170,8 @@ html {
 }
 
 .animate-blob {
-  animation: blob 4s infinite;
+  animation: blob 6s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  will-change: transform;
 }
 
 .animation-delay-2000 {
@@ -187,7 +189,8 @@ html {
 }
 
 .animate-smooth-fade-in {
-  animation: smoothFadeIn 0.6s ease-out;
+  animation: smoothFadeIn 0.3s ease-out;
+  will-change: opacity;
 }
 
 /* Hero gradient */
@@ -228,25 +231,26 @@ canvas {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   100% {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(167, 25, 48, 0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(167, 25, 48, 0.2);
   }
 }
 
 .hover-lift:hover {
-  animation: lift 0.3s ease forwards;
+  animation: lift 0.2s ease forwards;
+  will-change: transform;
 }
 
 /* Glow Effect - adds primary color glow */
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(167, 25, 48, 0.5), inset 0 0 20px rgba(167, 25, 48, 0.1);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 15px rgba(167, 25, 48, 0.4), inset 0 0 12px rgba(167, 25, 48, 0.08);
+  transition: box-shadow 0.2s ease;
 }
 
 /* Accent Glow - adds accent color glow */
 .hover-accent-glow:hover {
-  box-shadow: 0 0 20px rgba(217, 30, 63, 0.6), inset 0 0 15px rgba(217, 30, 63, 0.15);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 15px rgba(217, 30, 63, 0.5), inset 0 0 10px rgba(217, 30, 63, 0.12);
+  transition: box-shadow 0.2s ease;
 }
 
 /* Scale Effect - enlarges element */
@@ -1111,7 +1115,30 @@ canvas {
 
 /* Button success state animation */
 .button-success-pulse {
-  animation: buttonSuccessPulse 0.5s ease-out;
+  animation: buttonSuccessPulse 0.4s ease-out;
+}
+
+/* ===== ACCESSIBILITY: Respects prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-fade-up,
+  .animate-blob,
+  .animate-smooth-fade-in,
+  .hover-lift:hover,
+  .button-glow-strong,
+  .button-success-pulse,
+  [class*="animate-"],
+  [class*="motion-"] {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* Loading spinner animation */

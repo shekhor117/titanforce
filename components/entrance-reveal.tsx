@@ -14,27 +14,27 @@ interface EntranceRevealProps {
 
 const variantAnimations = {
   fadeInUp: {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0 },
   },
   fadeInDown: {
-    hidden: { opacity: 0, y: -60 },
+    hidden: { opacity: 0, y: -40 },
     visible: { opacity: 1, y: 0 },
   },
   fadeInLeft: {
-    hidden: { opacity: 0, x: -60 },
+    hidden: { opacity: 0, x: -40 },
     visible: { opacity: 1, x: 0 },
   },
   fadeInRight: {
-    hidden: { opacity: 0, x: 60 },
+    hidden: { opacity: 0, x: 40 },
     visible: { opacity: 1, x: 0 },
   },
   fadeInScale: {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0, scale: 0.9 },
     visible: { opacity: 1, scale: 1 },
   },
   rotateIn: {
-    hidden: { opacity: 0, scale: 0.8, rotate: -10 },
+    hidden: { opacity: 0, scale: 0.9, rotate: -5 },
     visible: { opacity: 1, scale: 1, rotate: 0 },
   },
 }
@@ -42,7 +42,7 @@ const variantAnimations = {
 export function EntranceReveal({
   children,
   delay = 0,
-  duration = 0.8,
+  duration = 0.5,
   variant = 'fadeInUp',
   className = '',
   staggerChildren = false,
@@ -51,9 +51,9 @@ export function EntranceReveal({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.2 }}
       variants={variantAnimations[variant]}
-      transition={{ duration, delay, ease: 'easeOut' }}
+      transition={{ duration: Math.min(duration, 0.5), delay: Math.min(delay, 0.3), ease: 'easeOut' }}
       className={className}
     >
       {staggerChildren && React.isValidElement(children) && React.Children.count(children) > 1 ? (
