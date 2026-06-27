@@ -2,6 +2,7 @@
 
 import { Users, Trophy, Users2, Heart, MapPin } from 'lucide-react'
 import { usePlayers } from '@/lib/use-data-store'
+import { ScrollProgressAnimation } from '@/components/scroll-progress-animation'
 
 export function HomeStatsShowcase() {
   const { players } = usePlayers()
@@ -46,8 +47,8 @@ export function HomeStatsShowcase() {
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
+              <ScrollProgressAnimation key={index} className="h-full">
               <div
-                key={index}
                 className="flex flex-col items-center justify-center p-4 md:p-6 rounded-lg border border-accent/20 bg-card/30 hover:bg-card/50 hover:border-accent/40 transition-all duration-300 group text-center"
               >
                 <Icon className={`w-8 h-8 md:w-10 md:h-10 mb-3 ${stat.color} group-hover:text-primary transition-colors`} />
@@ -58,6 +59,7 @@ export function HomeStatsShowcase() {
                   {stat.label}
                 </p>
               </div>
+              </ScrollProgressAnimation>
             )
           })}
         </div>

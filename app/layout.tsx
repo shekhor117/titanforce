@@ -9,6 +9,7 @@ import { TransitionProvider } from '@/lib/transition-context'
 import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { ScrollAnimationProvider } from '@/components/scroll-animation-provider'
 
 import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
 import './globals.css'
@@ -93,21 +94,23 @@ export default function RootLayout({
             `,
           }}
         />
-        <ThemeProvider>
-          <TransitionProvider>
-            <AdminProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <LanguageProvider>
-                    <ErrorBoundary>
-                      {children}
-                    </ErrorBoundary>
-                  </LanguageProvider>
-                </CartProvider>
-              </AuthProvider>
-            </AdminProvider>
-          </TransitionProvider>
-        </ThemeProvider>
+        <ScrollAnimationProvider>
+          <ThemeProvider>
+            <TransitionProvider>
+              <AdminProvider>
+                <AuthProvider>
+                  <CartProvider>
+                    <LanguageProvider>
+                      <ErrorBoundary>
+                        {children}
+                      </ErrorBoundary>
+                    </LanguageProvider>
+                  </CartProvider>
+                </AuthProvider>
+              </AdminProvider>
+            </TransitionProvider>
+          </ThemeProvider>
+        </ScrollAnimationProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

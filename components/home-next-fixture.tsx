@@ -4,6 +4,7 @@ import { useMatches } from '@/lib/use-data-store'
 import { Calendar, Clock, MapPin, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ScrollAnimatedElement } from './scroll-animated-element'
 
 export function HomeNextFixture() {
   const { matches } = useMatches()
@@ -13,14 +14,17 @@ export function HomeNextFixture() {
 
   if (!nextMatch) {
     return (
-      <div className="rounded-xl border border-accent/20 bg-card p-6 h-full flex items-center justify-center">
-        <p className="text-muted-foreground text-center">No upcoming matches</p>
-      </div>
+      <ScrollAnimatedElement variant="fadeInLeft">
+        <div className="rounded-xl border border-accent/20 bg-card p-6 h-full flex items-center justify-center">
+          <p className="text-muted-foreground text-center">No upcoming matches</p>
+        </div>
+      </ScrollAnimatedElement>
     )
   }
 
   return (
-    <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
+    <ScrollAnimatedElement variant="fadeInLeft">
+      <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-accent/10">
         <div className="flex items-center gap-2 mb-2">
@@ -98,6 +102,7 @@ export function HomeNextFixture() {
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
-    </div>
+      </div>
+    </ScrollAnimatedElement>
   )
 }
