@@ -6,6 +6,8 @@ import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { usePlayers } from "@/lib/use-data-store"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { EntranceReveal } from "@/components/entrance-reveal"
+import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 
 export function FeaturedPlayers() {
   const [isVisible, setIsVisible] = useState(false)
@@ -58,10 +60,11 @@ export function FeaturedPlayers() {
   }
 
   return (
-    <section
-      ref={containerRef}
-      className="py-12 sm:py-16 px-3 sm:px-4 bg-gradient-to-br from-card/50 to-background"
-    >
+    <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+      <section
+        ref={containerRef}
+        className="py-12 sm:py-16 px-3 sm:px-4 bg-gradient-to-br from-card/50 to-background"
+      >
       {/* Header */}
       <div
         className={`text-center mb-8 sm:mb-12 transition-all duration-600 ${
@@ -199,6 +202,7 @@ export function FeaturedPlayers() {
           scrollbar-width: none;
         }
       `}</style>
-    </section>
+      </section>
+    </EntranceReveal>
   )
 }

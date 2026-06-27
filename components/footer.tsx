@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Facebook, Instagram, Youtube } from "lucide-react"
+import { EntranceReveal } from "@/components/entrance-reveal"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -29,7 +30,8 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-background text-foreground py-12 md:py-16 px-4">
+    <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
+      <footer className="bg-background text-foreground py-12 md:py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Brand Section - Mobile */}
         <div className="md:hidden mb-8 pb-8 border-b border-primary/10">
@@ -174,6 +176,7 @@ export function Footer() {
           </p>
         </div>
       </div>
-    </footer>
+      </footer>
+    </EntranceReveal>
   )
 }
