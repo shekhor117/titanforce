@@ -22,6 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
+    // Silently catch errors without logging to avoid console spam
     // Log to a monitoring service in production
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
       // Send to error tracking service

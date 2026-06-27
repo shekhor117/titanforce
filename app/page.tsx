@@ -122,9 +122,7 @@ export default function Home() {
           <GalleryShowcase />
         </EntranceReveal>
         
-        <EntranceReveal delay={1.1} duration={0.6} variant="fadeInUp">
-          <Contact />
-        </EntranceReveal>
+        <Contact />
       </main>
       <Footer />
     </div>

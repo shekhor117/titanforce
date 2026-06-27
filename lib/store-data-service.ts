@@ -736,38 +736,43 @@ class StoreDataService {
 
   // Realtime subscription for products - listen to admin changes
   subscribeToProducts(
-    callback: (products: StoreProduct[]) => void,
+    callback: (products: any[]) => void,
     onError?: (error: Error) => void
   ): () => void {
     try {
       const supabase = createClient()
       
+      // Skip subscription if Supabase is not available
       if (!supabase) {
-        onError?.(new Error('Supabase client not initialized'))
         return () => {}
       }
       
-      const channel = supabase
-        .channel('products-sync')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'store_products' },
-          async () => {
-            try {
-              const products = await this.getProducts()
-              callback(products)
-            } catch (error) {
-              onError?.(error instanceof Error ? error : new Error(String(error)))
+      // Wrap in try-catch to handle potential subscription errors
+      try {
+        const channel = supabase
+          .channel('products-sync')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'store_products' },
+            async () => {
+              try {
+                const products = await this.getProducts()
+                callback(products)
+              } catch (error) {
+                // Silently fail subscription updates
+              }
             }
-          }
-        )
-        .subscribe()
+          )
+          .subscribe()
 
-      return () => {
-        supabase.removeChannel(channel)
+        return () => {
+          supabase.removeChannel(channel)
+        }
+      } catch (subscriptionError) {
+        // Silently fail if subscription setup fails
+        return () => {}
       }
     } catch (error) {
-      onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
   }
