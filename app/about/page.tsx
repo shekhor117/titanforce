@@ -15,7 +15,7 @@ export default function AboutPage() {
       <Navbar />
       <main>
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-16 md:py-24 px-4">
+        <section className="relative overflow-hidden py-[46px] md:py-[46px] pb-4 px-4">
           <div className="max-w-6xl mx-auto text-center">
             <button 
               onClick={() => router.back()} 

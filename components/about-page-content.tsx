@@ -39,7 +39,7 @@ export function AboutPageContent() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="relative max-w-6xl mx-auto px-4 py-[46px] md:py-36 pb-[33px] text-center">
+      <div className="relative max-w-6xl mx-auto px-4 py-0 md:py-0 pb-[33px] text-center">
         {/* Logo */}
         <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
           <div className="relative">
