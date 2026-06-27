@@ -66,7 +66,7 @@ export function PremiumMatchStats() {
   }
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-black/40 to-black/60">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 uppercase tracking-wider">
           Premium Match Stats
