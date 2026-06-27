@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import StoreDataService, { StoreProduct } from '@/lib/store-data-service'
+import { ScrollProgressAnimation } from './scroll-progress-animation'
 
 export function HomeShopLatest() {
   const [products, setProducts] = useState<StoreProduct[]>([])
@@ -62,7 +63,8 @@ export function HomeShopLatest() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-            {products.map((product) => (
+            {products.map((product, idx) => (
+              <ScrollProgressAnimation key={product.id} delay={idx * 0.06} animationType="scale">
               <Link
                 key={product.id}
                 href={`/shop/${product.id}`}
@@ -104,6 +106,7 @@ export function HomeShopLatest() {
                   </div>
                 </div>
               </Link>
+              </ScrollProgressAnimation>
             ))}
           </div>
         )}

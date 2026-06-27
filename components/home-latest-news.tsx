@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ScrollStaggerContainer } from './scroll-stagger-container'
+import { ScrollProgressAnimation } from './scroll-progress-animation'
 
 export function HomeLatestNews() {
   const { newsItems } = useNewsItems()
@@ -39,7 +40,8 @@ export function HomeLatestNews() {
           variant="fadeInUp"
         >
           {topNews.length > 0 ? (
-            topNews.map((item) => (
+            topNews.map((item, idx) => (
+              <ScrollProgressAnimation key={item.id} delay={idx * 0.05}>
               <Link
                 key={item.id}
                 href={`/news/${item.id}`}
@@ -90,7 +92,8 @@ export function HomeLatestNews() {
                   </p>
                 </div>
               </Link>
-            ))
+              </ScrollProgressAnimation>
+            ))  
           ) : (
             <div className="col-span-full text-center py-12">
               <p className="text-muted-foreground text-sm">No news available</p>

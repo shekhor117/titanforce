@@ -13,6 +13,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from '@/components/ui/carousel'
+import { ScrollProgressAnimation } from './scroll-progress-animation'
 
 // Default featured items for display when no Supabase data is available
 const DEFAULT_FEATURED_ITEMS: any[] = []
@@ -58,7 +59,8 @@ export function GalleryShowcase() {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {featuredItems.slice(0, 4).map((item: any) => (
+          {featuredItems.slice(0, 4).map((item: any, idx: number) => (
+            <ScrollProgressAnimation key={item.id} delay={idx * 0.08} animationType="scale">
             <Link
               key={item.id}
               href="/gallery"
@@ -88,6 +90,7 @@ export function GalleryShowcase() {
                 </p>
               </div>
             </Link>
+            </ScrollProgressAnimation>
           ))}
         </div>
 

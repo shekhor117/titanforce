@@ -13,6 +13,7 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel"
 import { ScrollAnimatedElement } from "./scroll-animated-element"
+import { ScrollProgressAnimation } from "./scroll-progress-animation"
 
 export function PlayersGrid() {
   const { players } = usePlayers()
@@ -58,6 +59,7 @@ export function PlayersGrid() {
               <CarouselContent className="-ml-4">
                 {activePlayers.map((player, idx) => (
                   <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
+                    <ScrollProgressAnimation delay={idx * 0.05} animationType="scale">
                     <Link
                       href={`/player/${player.num}`}
                       className="group relative block h-full pointer-events-auto"
@@ -108,6 +110,7 @@ export function PlayersGrid() {
                         </div>
                       </div>
                     </Link>
+                    </ScrollProgressAnimation>
                   </CarouselItem>
                 ))}
               </CarouselContent>
