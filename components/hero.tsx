@@ -5,7 +5,11 @@ import { TransitionLink } from "@/components/transition-link"
 import { TextReveal } from "@/components/text-reveal"
 import { motion } from "framer-motion"
 
-export function Hero() {
+interface HeroProps {
+  skipAnimation?: boolean
+}
+
+export function Hero({ skipAnimation = false }: HeroProps) {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0">
@@ -23,7 +27,7 @@ export function Hero() {
         <div className="flex flex-col justify-center">
           <motion.div 
             className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6 w-fit"
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: skipAnimation ? 1 : 0, x: skipAnimation ? 0 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             viewport={{ once: true }}
@@ -32,24 +36,37 @@ export function Hero() {
           </motion.div>
           
           <h1 className="font-display font-bold leading-[0.85]">
-            <TextReveal 
-              variant="characters"
-              duration={0.03}
-              staggerChildren={0.01}
-              delay={0.2}
-              className="block text-foreground text-[clamp(2.25rem,11vw,8rem)] tracking-[0.1em]"
-            >
-              TITAN FORCE
-            </TextReveal>
-            <TextReveal 
-              variant="characters"
-              duration={0.03}
-              staggerChildren={0.01}
-              delay={0.4}
-              className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]"
-            >
-              MULIKANDI
-            </TextReveal>
+            {skipAnimation ? (
+              <>
+                <div className="block text-foreground text-[clamp(2.25rem,11vw,8rem)] tracking-[0.1em]">
+                  TITAN FORCE
+                </div>
+                <div className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]">
+                  MULIKANDI
+                </div>
+              </>
+            ) : (
+              <>
+                <TextReveal 
+                  variant="characters"
+                  duration={0.03}
+                  staggerChildren={0.01}
+                  delay={0.2}
+                  className="block text-foreground text-[clamp(2.25rem,11vw,8rem)] tracking-[0.1em]"
+                >
+                  TITAN FORCE
+                </TextReveal>
+                <TextReveal 
+                  variant="characters"
+                  duration={0.03}
+                  staggerChildren={0.01}
+                  delay={0.4}
+                  className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]"
+                >
+                  MULIKANDI
+                </TextReveal>
+              </>
+            )}
           </h1>
           
           <motion.p 
