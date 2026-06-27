@@ -24,6 +24,9 @@
   --input: #1a1a1a;
   --ring: #a71930;
   --radius: 0.625rem;
+  /* Neumorphism shadows - dark theme */
+  --neo-shadow-light: rgba(255, 255, 255, 0.05);
+  --neo-shadow-dark: rgba(0, 0, 0, 0.5);
 }
 
 .dark {
@@ -68,6 +71,9 @@
   --border: #e8e8e8;
   --input: #f5f5f5;
   --ring: #a71930;
+  /* Neumorphism shadows - light theme */
+  --neo-shadow-light: rgba(255, 255, 255, 0.8);
+  --neo-shadow-dark: rgba(0, 0, 0, 0.15);
 }
 
 @theme inline {
@@ -1070,4 +1076,232 @@ canvas {
 
 .button-transition:hover:not(:disabled) {
   transform: translateY(-2px);
+}
+
+/* ===== NEUMORPHISM STYLES ===== */
+
+/* Base Neumorphic Card - Extruded */
+.neo-card {
+  background: var(--card);
+  border-radius: calc(var(--radius) * 1.5);
+  box-shadow: 
+    -8px -8px 16px var(--neo-shadow-light),
+    8px 8px 16px var(--neo-shadow-dark);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  position: relative;
+}
+
+.neo-card:hover {
+  box-shadow: 
+    -12px -12px 24px var(--neo-shadow-light),
+    12px 12px 24px var(--neo-shadow-dark);
+  transform: translateY(-4px);
+}
+
+.neo-card:active {
+  box-shadow: 
+    -4px -4px 8px var(--neo-shadow-light),
+    4px 4px 8px var(--neo-shadow-dark);
+  transform: translateY(0);
+}
+
+/* Neumorphic Card - Inset (Pressed) */
+.neo-card-inset {
+  background: var(--card);
+  border-radius: calc(var(--radius) * 1.5);
+  box-shadow: 
+    inset -8px -8px 16px var(--neo-shadow-light),
+    inset 8px 8px 16px var(--neo-shadow-dark);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.neo-card-inset:hover {
+  box-shadow: 
+    inset -10px -10px 20px var(--neo-shadow-light),
+    inset 10px 10px 20px var(--neo-shadow-dark);
+}
+
+/* Neumorphic Button */
+.neo-btn {
+  background: var(--card);
+  border: none;
+  border-radius: calc(var(--radius) * 1.2);
+  box-shadow: 
+    -6px -6px 12px var(--neo-shadow-light),
+    6px 6px 12px var(--neo-shadow-dark);
+  color: var(--foreground);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s cubic-bezier(0.23, 1, 0.320, 1);
+  user-select: none;
+}
+
+.neo-btn:hover {
+  box-shadow: 
+    -8px -8px 16px var(--neo-shadow-light),
+    8px 8px 16px var(--neo-shadow-dark);
+  transform: translateY(-2px);
+}
+
+.neo-btn:active {
+  box-shadow: 
+    inset -4px -4px 8px var(--neo-shadow-light),
+    inset 4px 4px 8px var(--neo-shadow-dark);
+  transform: translateY(0);
+}
+
+/* Neumorphic Button Primary */
+.neo-btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 
+    -6px -6px 12px rgba(167, 25, 48, 0.3),
+    6px 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.neo-btn-primary:hover {
+  box-shadow: 
+    -8px -8px 16px rgba(167, 25, 48, 0.4),
+    8px 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.neo-btn-primary:active {
+  box-shadow: 
+    inset -4px -4px 8px rgba(0, 0, 0, 0.3),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Neumorphic Badge */
+.neo-badge {
+  background: var(--card);
+  border-radius: 9999px;
+  box-shadow: 
+    -4px -4px 8px var(--neo-shadow-light),
+    4px 4px 8px var(--neo-shadow-dark);
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* Neumorphic Input */
+.neo-input {
+  background: var(--card);
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: 
+    inset -4px -4px 8px var(--neo-shadow-light),
+    inset 4px 4px 8px var(--neo-shadow-dark);
+  color: var(--foreground);
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.neo-input:focus {
+  outline: none;
+  box-shadow: 
+    inset -6px -6px 12px var(--neo-shadow-light),
+    inset 6px 6px 12px var(--neo-shadow-dark),
+    0 0 12px rgba(167, 25, 48, 0.3);
+}
+
+/* Neumorphic Card with Soft Shadow */
+.neo-soft {
+  background: var(--card);
+  border-radius: calc(var(--radius) * 1.5);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.neo-soft:hover {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Neumorphic Floating Card */
+.neo-floating {
+  background: var(--card);
+  border-radius: calc(var(--radius) * 1.5);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 0 1px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.neo-floating::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  border-radius: calc(var(--radius) * 1.5) calc(var(--radius) * 1.5) 0 0;
+}
+
+.neo-floating:hover {
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.25),
+    0 0 1px rgba(0, 0, 0, 0.5);
+  transform: translateY(-8px);
+}
+
+/* Neumorphic Panel */
+.neo-panel {
+  background: var(--card);
+  border-radius: calc(var(--radius) * 2);
+  box-shadow: 
+    -12px -12px 24px var(--neo-shadow-light),
+    12px 12px 24px var(--neo-shadow-dark);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.neo-panel:hover {
+  box-shadow: 
+    -16px -16px 32px var(--neo-shadow-light),
+    16px 16px 32px var(--neo-shadow-dark);
+}
+
+/* Light mode neumorphism adjustments */
+.light .neo-card,
+.light .neo-btn,
+.light .neo-badge,
+.light .neo-soft,
+.light .neo-floating,
+.light .neo-panel {
+  background: #ffffff;
+  box-shadow: 
+    -8px -8px 16px rgba(255, 255, 255, 0.8),
+    8px 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.light .neo-card:hover,
+.light .neo-btn:hover,
+.light .neo-soft:hover,
+.light .neo-panel:hover {
+  box-shadow: 
+    -12px -12px 24px rgba(255, 255, 255, 0.8),
+    12px 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.light .neo-input {
+  background: #ffffff;
+  box-shadow: 
+    inset -4px -4px 8px rgba(255, 255, 255, 0.7),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.light .neo-input:focus {
+  box-shadow: 
+    inset -6px -6px 12px rgba(255, 255, 255, 0.7),
+    inset 6px 6px 12px rgba(0, 0, 0, 0.1),
+    0 0 12px rgba(167, 25, 48, 0.2);
 }
