@@ -29,13 +29,13 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-background text-foreground py-12 md:py-16 px-4">
+    <footer className="bg-background text-foreground py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12 mb-8 md:mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           
           {/* Brand Section */}
-          <div className="col-span-1">
+          <div className="md:col-span-1">
             <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
               <Image
                 src="/logos/titanforce-logo.svg"
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
 
           {/* Club Links */}
-          <div className="col-span-1">
+          <div className="md:col-span-1">
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Club</h4>
             <ul className="space-y-3">
               {clubLinks.map((link) => (
@@ -70,7 +70,7 @@ export function Footer() {
           </div>
 
           {/* Teams Links */}
-          <div className="col-span-1">
+          <div className="md:col-span-1">
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Teams</h4>
             <ul className="space-y-3">
               {teamsLinks.map((link) => (
@@ -87,7 +87,7 @@ export function Footer() {
           </div>
 
           {/* Connect Links */}
-          <div className="col-span-1">
+          <div className="md:col-span-1">
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Connect</h4>
             <ul className="space-y-3">
               {connectLinks.map((link) => (
@@ -102,96 +102,53 @@ export function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* Social Media Links - Desktop */}
-          <div className="hidden md:flex flex-col items-center gap-6">
-            <h3 className="text-foreground font-semibold text-sm">Follow Us</h3>
-            <div className="flex gap-4">
-              <a
-                href="https://facebook.com/titanforce"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="https://twitter.com/titanforce"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="https://instagram.com/titanforce"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://youtube.com/@titanforce"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
         </div>
 
-        {/* Social Media Links - Mobile */}
-        <div className="md:hidden flex flex-col items-center gap-6 mb-8">
-          <h3 className="text-foreground font-semibold text-sm">Follow Us</h3>
+        {/* Social Media Links */}
+        <div className="flex flex-col items-center gap-6">
+          <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
               href="https://facebook.com/titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="Facebook"
             >
-              <Facebook className="w-5 h-5" />
+              <Facebook className="w-6 h-6" />
             </a>
             <a
               href="https://twitter.com/titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="Twitter"
             >
-              <Twitter className="w-5 h-5" />
+              <Twitter className="w-6 h-6" />
             </a>
             <a
               href="https://instagram.com/titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="Instagram"
             >
-              <Instagram className="w-5 h-5" />
+              <Instagram className="w-6 h-6" />
             </a>
             <a
               href="https://youtube.com/@titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="YouTube"
             >
-              <Youtube className="w-5 h-5" />
+              <Youtube className="w-6 h-6" />
             </a>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-primary/10 pt-6 md:pt-8 text-center">
+        <div className="text-center pt-8">
           <p className="text-muted-foreground text-xs tracking-wider">
             © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
