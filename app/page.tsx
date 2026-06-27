@@ -6,7 +6,7 @@ import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { ClubInfoSection } from "@/components/club-info-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
-import { HomeLatestNews } from "@/components/home-latest-news"
+import { HomeLastMatchWin } from "@/components/home-last-match-win"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
@@ -86,6 +86,9 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <HomeNextFixture />
+              <HomeLastMatchWin />
+            </div>
+            <div className="grid grid-cols-1 mt-6">
               <HomeLeagueStandings />
             </div>
           </div>
