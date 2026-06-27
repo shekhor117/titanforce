@@ -76,7 +76,7 @@ export default function ShopPage() {
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground flex-1 text-center">{isBn ? "জার্সি স্টোর" : "Jersey Store"}</h1>
             <Link
               href="/cart"
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative min-h-[44px] flex-shrink-0"
+              className="neo-btn neo-btn-primary flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative min-h-[44px] flex-shrink-0"
             >
               <ShoppingCart className="w-4 sm:w-5 h-4 sm:h-5" />
               <span className="hidden sm:inline text-xs sm:text-sm font-medium">{isBn ? "কার্ট" : "Cart"}</span>
@@ -143,13 +143,13 @@ export default function ShopPage() {
                 <Search className="w-4 h-4 inline mr-2" />
                 {isBn ? "খুঁজুন" : "Search"}
               </label>
-              <input
-                type="text"
-                placeholder={isBn ? "জার্সি খুঁজুন..." : "Search jerseys..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors text-xs sm:text-sm min-h-[44px]"
-              />
+                <input
+                  type="text"
+                  placeholder={isBn ? "জার্সি খুঁজুন..." : "Search jerseys..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="neo-input w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors text-xs sm:text-sm min-h-[44px]"
+                />
             </div>
 
             {/* Category Filter */}
@@ -163,10 +163,10 @@ export default function ShopPage() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`neo-btn px-4 py-2 rounded-lg font-medium transition-colors ${
                       selectedCategory === cat.id
-                        ? "bg-primary text-foreground"
-                        : "bg-background border border-primary/20 text-foreground hover:border-primary"
+                        ? "neo-btn-primary bg-primary text-foreground"
+                        : "neo-soft text-foreground"
                     }`}
                   >
                     {cat.label}
@@ -183,7 +183,7 @@ export default function ShopPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full md:w-48 px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                className="neo-input w-full md:w-48 px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none transition-colors"
               >
                 <option value="rating">{isBn ? "রেটিং" : "Rating"}</option>
                 <option value="price-asc">{isBn ? "দাম: ক�� থেকে বেশি" : "Price: Low to High"}</option>
@@ -212,7 +212,7 @@ export default function ShopPage() {
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute top-3 right-3 px-3 py-1 bg-primary text-foreground text-sm font-bold rounded-full">
+                      <div className="neo-btn neo-btn-primary absolute top-3 right-3 px-4 py-2 bg-primary text-foreground text-sm font-bold rounded-full">
                         ৳{product.price}
                       </div>
                     </div>

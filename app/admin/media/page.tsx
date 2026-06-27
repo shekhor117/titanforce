@@ -180,7 +180,7 @@ export default function AdminMedia() {
             className={`px-4 py-2 rounded-lg font-semibold transition text-sm ${
               filter === tab
                 ? "bg-primary text-primary-foreground"
-                : "bg-card border border-secondary hover:border-primary/50"
+                : "bg-card neo-input/50"
             } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           >
             {tab === "all" ? (isBn ? "সব" : "All") : tab === "photo" ? (isBn ? "ছবি" : "Photos") : (isBn ? "ভিডিও" : "Videos")}
@@ -200,7 +200,7 @@ export default function AdminMedia() {
           {filteredMedia.map((item) => (
             <div
               key={item.id}
-              className="group relative rounded-lg overflow-hidden bg-secondary/50 border border-secondary hover:border-primary/50 transition"
+              className="group relative rounded-lg overflow-hidden bg-secondary/50 neo-input/50 transition"
             >
               {item.type === "photo" ? (
                 <Image

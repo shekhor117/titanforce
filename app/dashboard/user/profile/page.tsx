@@ -125,7 +125,7 @@ export default function UserProfile() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary focus:border-primary outline-none transition text-foreground"
+                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary outline-none transition text-foreground"
                 />
               </div>
               <div>
@@ -150,7 +150,7 @@ export default function UserProfile() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder={isBn ? "+88..." : "+1..."}
-                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary focus:border-primary outline-none transition text-foreground"
+                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary outline-none transition text-foreground"
                 />
               </div>
               <div>
@@ -163,7 +163,7 @@ export default function UserProfile() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder={isBn ? "শহর, দেশ" : "City, Country"}
-                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary focus:border-primary outline-none transition text-foreground"
+                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary outline-none transition text-foreground"
                 />
               </div>
             </div>
@@ -180,7 +180,7 @@ export default function UserProfile() {
               onChange={handleChange}
               placeholder={isBn ? "নিজের সম্পর্কে বলুন..." : "Tell us about yourself..."}
               rows={4}
-              className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary focus:border-primary outline-none transition text-foreground"
+              className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary outline-none transition text-foreground"
             />
             <p className="text-xs text-foreground/50 mt-2">
               {isBn ? "সর্বাধিক ৫০০ অক্ষর" : "Maximum 500 characters"}

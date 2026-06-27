@@ -166,7 +166,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder={isBn ? 'আপনার নাম' : 'Your name'}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background hover:border-primary/50 focus:border-primary outline-none transition"
+                  className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition"
                 />
               </div>
 
@@ -182,7 +182,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder={isBn ? 'আপনার ইমেইল' : 'Your email'}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background hover:border-primary/50 focus:border-primary outline-none transition"
+                  className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition"
                 />
               </div>
 
@@ -197,7 +197,7 @@ export default function ContactPage() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder={isBn ? 'আপনার ফোন নাম্বার' : 'Your phone number'}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background hover:border-primary/50 focus:border-primary outline-none transition"
+                  className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition"
                 />
               </div>
 
@@ -213,7 +213,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder={isBn ? 'বিষয় লিখুন' : 'Subject'}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background hover:border-primary/50 focus:border-primary outline-none transition"
+                  className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition"
                 />
               </div>
 
@@ -229,7 +229,7 @@ export default function ContactPage() {
                   required
                   rows={5}
                   placeholder={isBn ? 'আপনার বার্তা লিখুন' : 'Your message'}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background hover:border-primary/50 focus:border-primary outline-none transition resize-none"
+                  className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition resize-none"
                 />
               </div>
 
@@ -237,7 +237,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
+                className="neo-btn neo-btn-primary w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-primary-foreground font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2"
               >
                 <Send className={`w-4 h-4 ${isSubmitting ? 'animate-spin' : ''}`} />
                 {isSubmitting ? (isBn ? 'পাঠাচ্ছে...' : 'Sending...') : (isBn ? 'পাঠান' : 'Send Message')}

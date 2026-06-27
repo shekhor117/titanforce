@@ -86,7 +86,7 @@ export default function AdminLineupPage() {
                 className={`p-3 rounded-lg border-2 font-bold transition ${
                   selectedFormation === formation
                     ? "border-primary bg-primary/10 text-primary"
-                    : "border-secondary hover:border-primary/50"
+                    : "border-secondary/50"
                 }`}
               >
                 {formation}
@@ -102,7 +102,7 @@ export default function AdminLineupPage() {
               <button
                 key={player.id}
                 onClick={() => handleAddPlayer(player)}
-                className="w-full flex items-center justify-between p-2 rounded-lg border border-secondary hover:border-primary/50 transition text-left"
+                className="w-full flex items-center justify-between p-2 rounded-lg neo-input/50 transition text-left"
               >
                 <div>
                   <div className="font-semibold text-sm">{player.name}</div>
@@ -163,7 +163,7 @@ export default function AdminLineupPage() {
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {lineupPlayers.map((player) => (
-                  <div key={player.id} className="p-2 rounded-lg bg-secondary/30 border border-secondary text-center">
+                  <div key={player.id} className="p-2 rounded-lg bg-secondary/30 neo-input text-center">
                     <div className="font-bold text-primary">{player.num}</div>
                     <div className="text-xs text-foreground/70">{player.name}</div>
                   </div>
@@ -175,7 +175,7 @@ export default function AdminLineupPage() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleReset}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-secondary hover:border-primary text-foreground/70 hover:text-primary transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-secondary text-foreground/70 hover:text-primary transition"
               >
                 <RefreshCw className="w-4 h-4" />
                 {isBn ? "রিসেট" : "Reset"}

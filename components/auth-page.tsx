@@ -515,14 +515,14 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     maxLength={6}
-                    className="w-full p-4 text-center text-2xl tracking-widest font-mono bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    className="neo-input w-full p-4 text-center text-2xl tracking-widest font-mono bg-background rounded-lg focus:outline-none transition-colors"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading || otp.length !== 6}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="neo-btn neo-btn-primary w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
                   {isLoading ? (isBn ? 'যাচাই করছি...' : 'Verifying...') : (isBn ? 'চালিয়ে যান' : 'Continue')}
@@ -558,13 +558,13 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     required
-                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                   />
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value as any)}
                     required
-                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                   >
                     <option value="">{isBn ? 'লিঙ্গ' : 'Gender'}</option>
                     <option value="male">{isBn ? 'পুরুষ' : 'Male'}</option>
@@ -579,7 +579,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
-                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                 />
 
                 <input
@@ -587,7 +587,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                   placeholder={isBn ? "ফোন নম্বর (ঐচ্ছিক)" : "Phone Number (Optional)"}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                 />
 
                 {/* Role-specific fields */}
@@ -598,7 +598,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                     value={favoriteTeam}
                     onChange={(e) => setFavoriteTeam(e.target.value)}
                     required
-                    className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                   />
                 )}
 
@@ -610,7 +610,26 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                       value={organizationName}
                       onChange={(e) => setOrganizationName(e.target.value)}
                       required
-                      className="w-full p-3 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                      className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
+                    />
+                    <select
+                      value={organizationType}
+                      onChange={(e) => setOrganizationType(e.target.value)}
+                      required
+                      className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
+                    >
+                      <option value="">{isBn ? 'ব্যবসার ধরন' : 'Business Type'}</option>
+                      <option value="sports">{isBn ? 'ক্রীড়া' : 'Sports'}</option>
+                      <option value="media">{isBn ? 'মিডিয়া' : 'Media'}</option>
+                      <option value="equipment">{isBn ? 'সরঞ্জাম' : 'Equipment'}</option>
+                      <option value="other">{isBn ? 'অন্যান্য' : 'Other'}</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder={isBn ? "যোগাযোগ ব্যক্তি" : "Contact Person"}
+                      value={contactPerson}
+                      onChange={(e) => setContactPerson(e.target.value)}
+                      className="neo-input w-full p-3 text-sm bg-muted rounded-lg focus:outline-none transition-colors"
                     />
                     <select
                       value={organizationType}
@@ -732,14 +751,14 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                 <button
                   type="button"
                   onClick={handlePreviousStep}
-                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                  className="neo-btn neo-soft flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
                 >
                   {isBn ? 'পিছনে' : 'Back'}
                 </button>
                 <button
                   type="submit"
                   disabled={!agreeToTerms || isLoading}
-                  className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                  className="neo-btn neo-btn-primary flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isBn ? 'অ্যাকাউন���ট তৈরি করুন' : 'Create Account'}
@@ -756,7 +775,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required={view === 'signup'}
-                  className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+                  className="neo-input w-full p-4 text-base bg-muted rounded-xl focus:outline-none transition-colors placeholder:text-muted-foreground text-foreground"
                 />
               )}
 
@@ -766,7 +785,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full p-4 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-colors placeholder:text-muted-foreground text-foreground"
+                className="neo-input w-full p-4 text-base bg-muted rounded-xl focus:outline-none transition-colors placeholder:text-muted-foreground text-foreground"
               />
 
               <div className="relative">
@@ -776,7 +795,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+                  className="neo-input w-full p-4 pr-14 text-base bg-muted rounded-xl focus:outline-none transition-all placeholder:text-muted-foreground text-foreground"
                 />
                 <button
                   type="button"
@@ -796,7 +815,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full p-4 pr-14 text-base bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring transition-all placeholder:text-muted-foreground text-foreground"
+                    className="neo-input w-full p-4 pr-14 text-base bg-muted rounded-xl focus:outline-none transition-all placeholder:text-muted-foreground text-foreground"
                   />
                   <button
                     type="button"
@@ -812,7 +831,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               <button
                 type="submit"
                 disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+                className="neo-btn neo-btn-primary w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
                 {isLoading
@@ -872,7 +891,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('apple')}
             disabled={isAppleLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isAppleLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />
@@ -890,7 +909,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('google')}
             disabled={isGoogleLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isGoogleLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />
@@ -911,7 +930,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('facebook')}
             disabled={isFacebookLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isFacebookLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />

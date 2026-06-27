@@ -8,7 +8,7 @@ export default function NotFound() {
           <h1 className="text-4xl font-bold text-foreground">404</h1>
           <p className="text-lg text-muted-foreground">Page not found</p>
         </div>
-        <a href="/" className="inline-block px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition">
+        <a href="/" className="neo-btn neo-btn-primary inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition">
           Go back home
         </a>
       </div>

@@ -249,7 +249,7 @@ export default function PlayerProfile() {
         {stats.map((item, index) => (
           <div
             key={index}
-            className="card bg-secondary/20 border border-secondary rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg"
+            className="card bg-secondary/20 neo-input rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg"
           >
             <p className={`text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {item.title}
@@ -265,7 +265,7 @@ export default function PlayerProfile() {
       <section className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 pb-12 sm:pb-16 md:pb-20">
         <div className="space-y-4 sm:space-y-6 md:space-y-8">
           {/* Player Details */}
-          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+          <div className="card bg-secondary/20 neo-input rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
             <h2 className={`text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "খেলোয়াড়ের বিবরণ" : "Player Details"}
             </h2>
@@ -293,7 +293,7 @@ export default function PlayerProfile() {
           </div>
 
           {/* Season Stats */}
-          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+          <div className="card bg-secondary/20 neo-input rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
             <h2 className={`text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "মৌসুমী পরিসংখ্যান" : "Season Stats"}
             </h2>
@@ -323,7 +323,7 @@ export default function PlayerProfile() {
 
         <div className="lg:col-span-2 space-y-4 sm:space-y-6 md:space-y-8">
           {/* Biography */}
-          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+          <div className="card bg-secondary/20 neo-input rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
             <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 md:mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "জীবনী" : "Biography"}
             </h2>
@@ -333,7 +333,7 @@ export default function PlayerProfile() {
           </div>
 
           {/* Player Attributes */}
-          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+          <div className="card bg-secondary/20 neo-input rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
             <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "খেলোয়াড়ের বৈশিষ্ট্য" : "Player Attributes"}
             </h2>
@@ -364,7 +364,7 @@ export default function PlayerProfile() {
           </div>
 
           {/* Trophies */}
-          <div className="card bg-secondary/20 border border-secondary rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
+          <div className="card bg-secondary/20 neo-input rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8">
             <h2 className={`text-lg sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "ট্রফি" : "Trophies"}
             </h2>
@@ -373,7 +373,7 @@ export default function PlayerProfile() {
               {trophies.map((trophy, i) => (
                 <div
                   key={i}
-                  className="card bg-secondary/30 border border-secondary rounded-lg sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center"
+                  className="card bg-secondary/30 neo-input rounded-lg sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center"
                 >
                   <div className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3">🏆</div>
                   <h3 className={`font-bold text-xs sm:text-sm md:text-base ${isBn ? "font-[var(--font-bengali)]" : ""}`}>

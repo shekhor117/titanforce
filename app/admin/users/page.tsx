@@ -199,7 +199,7 @@ export default function AdminUsersPage() {
                   placeholder={isBn ? "নাম বা ইমেইল দ্বারা অনুসন্ধান করুন..." : "Search by name or email..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground placeholder-foreground/40 focus:outline-none"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function AdminUsersPage() {
                 <select
                   value={filterRole}
                   onChange={(e) => setFilterRole(e.target.value)}
-                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                 >
                   <option value="all">{isBn ? "সব ভূমিকা" : "All Roles"}</option>
                   <option value="admin">{isBn ? "প্রশাসক" : "Admin"}</option>
@@ -220,7 +220,7 @@ export default function AdminUsersPage() {
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                  className="flex-1 lg:flex-none px-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                 >
                   <option value="all">{isBn ? "সব স্ট্যাটাস" : "All Status"}</option>
                   <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
@@ -328,7 +328,7 @@ export default function AdminUsersPage() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -340,7 +340,7 @@ export default function AdminUsersPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -351,7 +351,7 @@ export default function AdminUsersPage() {
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value as AppUser["role"] })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   >
                     <option value="user">{isBn ? "ব্যবহারকারী" : "User"}</option>
                     <option value="player">{isBn ? "খেলোয়াড়" : "Player"}</option>
@@ -368,7 +368,7 @@ export default function AdminUsersPage() {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as AppUser["status"] })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   >
                     <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
                     <option value="inactive">{isBn ? "নিষ্ক্রিয়" : "Inactive"}</option>
@@ -384,7 +384,7 @@ export default function AdminUsersPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -396,7 +396,7 @@ export default function AdminUsersPage() {
                     type="text"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -407,7 +407,7 @@ export default function AdminUsersPage() {
                   <textarea
                     value={formData.bio}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none focus:border-primary resize-none"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground focus:outline-none resize-none"
                     rows={3}
                   />
                 </div>

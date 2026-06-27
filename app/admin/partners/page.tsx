@@ -105,11 +105,11 @@ export default function AdminPartners() {
 
         {showForm && (
           <div className="bg-muted p-4 rounded-lg mb-6 space-y-3">
-            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <input type="url" placeholder="Website" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <input type="url" placeholder="Logo URL" value={formData.logo_url} onChange={(e) => setFormData({...formData, logo_url: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} className="w-full px-3 py-2 border border-border rounded" />
-            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 border border-border rounded">
+            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <input type="url" placeholder="Website" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <input type="url" placeholder="Logo URL" value={formData.logo_url} onChange={(e) => setFormData({...formData, logo_url: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 neo-soft border-border rounded">
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
@@ -122,7 +122,7 @@ export default function AdminPartners() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {partners.map(partner => (
-            <div key={partner.id} className="border border-border rounded-lg p-4">
+            <div key={partner.id} className="neo-soft border-border rounded-lg p-4">
               <h3 className="font-bold">{partner.name}</h3>
               <p className="text-sm text-muted-foreground">{partner.status}</p>
               <div className="flex gap-2 mt-3">

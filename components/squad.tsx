@@ -99,9 +99,9 @@ export function Squad() {
             <button
               key={filter}
               onClick={() => setSelectedPosition(filter)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full border-2 transition-all ${selectedPosition === filter
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-card bg-transparent text-foreground hover:border-primary/50"
+              className={`neo-btn px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold uppercase tracking-wider rounded-full transition-all ${selectedPosition === filter
+                ? "neo-btn-primary bg-primary text-primary-foreground"
+                : "neo-soft text-foreground"
                 } ${isBn && filter === "all" ? "font-[var(--font-bengali)]" : ""}`}
             >
               {filter === "all" ? t.squad.all : filter}

@@ -300,7 +300,7 @@ export default function AdminAnalyticsPage() {
 
             {/* Goals & Assists */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg bg-primary/10 border border-primary/30 text-center">
+              <div className="p-4 rounded-lg bg-primary/10 neo-input/30 text-center">
                 <div className="text-3xl font-bold text-primary">{playerStats.totalGoals}</div>
                 <div className={`text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {isBn ? "মোট গোল" : "Total Goals"}
@@ -327,7 +327,7 @@ export default function AdminAnalyticsPage() {
 
           <div className="space-y-4">
             {/* Win Rate */}
-            <div className="p-4 rounded-lg bg-gradient-to-r from-green-500/20 to-primary/20 border border-primary/30">
+            <div className="p-4 rounded-lg bg-gradient-to-r from-green-500/20 to-primary/20 neo-input/30">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-4xl font-bold text-primary">{winRate}%</div>
@@ -484,7 +484,7 @@ export default function AdminAnalyticsPage() {
           <button
             onClick={handleSaveAnalytics}
             disabled={!hasChanges}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" />
             {hasChanges ? (isBn ? "পরিবর্তন সংরক্ষণ করুন" : "Save Changes") : (isBn ? "কোন পরিবর্তন নেই" : "No Changes")}
@@ -505,7 +505,7 @@ export default function AdminAnalyticsPage() {
                   className={`w-full text-left p-3 rounded-lg border-2 transition ${
                     selectedPlayerAnalytics?.playerId === player.playerId
                       ? "border-primary bg-primary/10"
-                      : "border-secondary hover:border-primary/50"
+                      : "border-secondary/50"
                   }`}
                 >
                   <div className="font-semibold text-foreground text-sm">{player.playerName}</div>

@@ -157,7 +157,7 @@ export default function UserDashboard() {
             return (
               <div
                 key={index}
-                className="p-4 rounded-lg border-2 border-secondary bg-card/50 hover:border-primary transition"
+                className="p-4 rounded-lg border-2 border-secondary bg-card/50 transition"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -211,7 +211,7 @@ export default function UserDashboard() {
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             {/* Featured News Item */}
-            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 hover:border-primary transition">
+            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 transition">
               <div className="flex items-start gap-4">
                 <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-red-600 to-red-500 flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="w-10 h-10 text-white" />
@@ -229,7 +229,7 @@ export default function UserDashboard() {
             </div>
 
             {/* Stats Highlight */}
-            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 hover:border-primary transition">
+            <div className="group p-6 rounded-lg border-2 border-secondary bg-card/50 transition">
               <div className="flex items-start gap-4">
                 <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center flex-shrink-0">
                   <Trophy className="w-10 h-10 text-white" />
@@ -254,7 +254,7 @@ export default function UserDashboard() {
             {isBn ? "আসন্ন ইভেন্ট" : "Upcoming Events"}
           </h3>
           <div className="space-y-3">
-            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 hover:border-primary transition">
+            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 transition">
               <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
@@ -274,7 +274,7 @@ export default function UserDashboard() {
               </Link>
             </div>
 
-            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 hover:border-primary transition">
+            <div className="p-4 rounded-lg border-2 border-secondary bg-card/50 flex items-center gap-4 transition">
               <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center flex-shrink-0">
                 <MessageSquare className="w-8 h-8 text-white" />
               </div>

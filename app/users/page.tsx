@@ -27,7 +27,7 @@ function UserCard({ user }: { user: AppUser }) {
   const RoleIcon = getRoleIcon(user.role)
 
   return (
-    <div className="rounded-lg border-2 border-secondary/30 bg-secondary/10 backdrop-blur-sm p-4 hover:border-primary/50 transition-all group hover:scale-105">
+    <div className="rounded-lg border-2 border-secondary/30 bg-secondary/10 backdrop-blur-sm p-4/50 transition-all group hover:scale-105">
       <div className="flex items-start gap-4">
         {/* Avatar */}
         {user.avatar_url ? (
@@ -162,7 +162,7 @@ export default function UsersPage() {
               <input
                 type="text"
                 placeholder="Search users by name or email..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-secondary/30 bg-secondary/10 text-foreground placeholder-foreground/40 focus:outline-none"
               />
             </div>
           </div>

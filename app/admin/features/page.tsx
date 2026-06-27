@@ -223,19 +223,19 @@ export default function AdminFeaturesPage() {
           </button>
           <button
             onClick={handleReset}
-            className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+            className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           >
             <RefreshCw className="w-4 h-4" />
             {isBn ? "রিসেট" : "Reset"}
           </button>
           <button
             onClick={handleExport}
-            className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+            className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:text-primary transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           >
             <Download className="w-4 h-4" />
             {isBn ? "রপ্তানি" : "Export"}
           </button>
-          <label className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:border-primary hover:text-primary transition cursor-pointer ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+          <label className={`flex items-center gap-2 px-4 py-2 border-2 border-secondary text-foreground/70 rounded hover:text-primary transition cursor-pointer ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             <Upload className="w-4 h-4" />
             {isBn ? "আমদানি" : "Import"}
             <input 
@@ -259,7 +259,7 @@ export default function AdminFeaturesPage() {
       {/* Feature Categories */}
       {categories.map((category) => (
         <div key={category.key} className="rounded-xl border-2 border-secondary bg-card overflow-hidden">
-          <div className="px-6 py-4 bg-secondary/30 border-b border-secondary">
+          <div className="neo-btn neo-soft px-4 py-2 bg-secondary/30 border-b border-secondary">
             <h2 className={`text-xl font-bold text-foreground flex items-center gap-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               <span>{category.icon}</span>
               {category.label}
@@ -384,7 +384,7 @@ export default function AdminFeaturesPage() {
                   onChange={(e) => setFormData({ ...formData, id: e.target.value })}
                   disabled={!!editingFeature}
                   placeholder="feature-id"
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground disabled:opacity-50"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground disabled:opacity-50"
                 />
               </div>
               <div>
@@ -396,7 +396,7 @@ export default function AdminFeaturesPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Feature Name"
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground"
                 />
               </div>
               <div>
@@ -408,7 +408,7 @@ export default function AdminFeaturesPage() {
                   value={formData.nameBn}
                   onChange={(e) => setFormData({ ...formData, nameBn: e.target.value })}
                   placeholder="বৈশিষ্ট্য নাম"
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground"
                 />
               </div>
               <div>
@@ -419,7 +419,7 @@ export default function AdminFeaturesPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Feature Description"
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground"
                   rows={2}
                 />
               </div>
@@ -431,7 +431,7 @@ export default function AdminFeaturesPage() {
                   value={formData.descriptionBn}
                   onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
                   placeholder="বৈশিষ্ট্য বিবরণ"
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground"
                   rows={2}
                 />
               </div>
@@ -442,7 +442,7 @@ export default function AdminFeaturesPage() {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value as "tools" | "analytics" | "engagement" })}
-                  className="w-full px-3 py-2 border border-secondary rounded bg-secondary/20 text-foreground"
+                  className="w-full px-3 py-2 neo-input rounded bg-secondary/20 text-foreground"
                 >
                   <option value="tools">{isBn ? "সরঞ্জাম" : "Tools"}</option>
                   <option value="analytics">{isBn ? "বিশ্লেষণ" : "Analytics"}</option>
@@ -469,7 +469,7 @@ export default function AdminFeaturesPage() {
                 </button>
                 <button
                   onClick={closeModal}
-                  className={`flex-1 px-4 py-2 border border-secondary text-foreground rounded hover:bg-secondary/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                  className={`flex-1 px-4 py-2 neo-input text-foreground rounded hover:bg-secondary/20 transition ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                 >
                   {isBn ? "বাতিল" : "Cancel"}
                 </button>

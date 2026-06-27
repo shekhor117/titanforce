@@ -43,7 +43,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/shop"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
+          className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />
           {isBn ? "শপে ফিরুন" : "Back to Shop"}
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
         </div>
         <Link
           href="/"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+          className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
         >
           {isBn ? "হোমে ফিরুন" : "Back to Home"}
         </Link>
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
                   placeholder={isBn ? "সম্পূর্ণ নাম" : "Full Name"}
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   required
                 />
                 <input
@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                   placeholder={isBn ? "ইমেইল" : "Email"}
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   required
                 />
                 <input
@@ -178,7 +178,7 @@ export default function CheckoutPage() {
                   placeholder={isBn ? "ফোন নম্বর" : "Phone Number"}
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   required
                 />
                 <textarea
@@ -187,7 +187,7 @@ export default function CheckoutPage() {
                   value={formData.address}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   required
                 />
                 <div className="grid grid-cols-2 gap-4">
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
                     placeholder={isBn ? "শহর" : "City"}
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   />
                   <input
                     type="text"
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
                     placeholder={isBn ? "পোস্টাল কোড" : "Postal Code"}
                     value={formData.postalCode}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
                   placeholder={isBn ? "কার্ড ধারকের নাম" : "Cardholder Name"}
                   value={formData.cardName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors"
                   required
                 />
                 <input
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                   value={formData.cardNumber}
                   onChange={handleInputChange}
                   maxLength={16}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors font-mono"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors font-mono"
                   required
                 />
                 <div className="grid grid-cols-2 gap-4">
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                     value={formData.expiry}
                     onChange={handleInputChange}
                     maxLength={5}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors font-mono"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors font-mono"
                     required
                   />
                   <input
@@ -259,7 +259,7 @@ export default function CheckoutPage() {
                     value={formData.cvv}
                     onChange={handleInputChange}
                     maxLength={3}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary transition-colors font-mono"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground placeholder-foreground/40 focus:outline-none transition-colors font-mono"
                     required
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-full px-6 py-3 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="neo-btn neo-btn-primary neo-btn neo-btn-primary w-full px-4 py-2 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>

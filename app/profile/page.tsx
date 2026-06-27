@@ -224,7 +224,7 @@ export default function ProfilePage() {
                     {formData.name}
                   </h2>
                   <div className="flex flex-wrap gap-2">
-                    <div className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium border border-primary/30">
+                    <div className="neo-btn neo-btn-primary px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-medium neo-input/30">
                       {user.role || "user"}
                     </div>
                     {formData.position && (
@@ -237,10 +237,10 @@ export default function ProfilePage() {
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+                    className="neo-btn neo-btn-primary neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
                   >
                     <Edit className="w-4 h-4" />
-                    {isBn ? "��ম্পাদনা" : "Edit"}
+                    {isBn ? "সম্পাদনা" : "Edit"}
                   </button>
                 )}
               </div>
@@ -293,7 +293,7 @@ export default function ProfilePage() {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -307,7 +307,7 @@ export default function ProfilePage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+880 171 1234567"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="City, Country"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -335,7 +335,7 @@ export default function ProfilePage() {
                     value={formData.website}
                     onChange={handleInputChange}
                     placeholder="https://example.com"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -348,7 +348,7 @@ export default function ProfilePage() {
                     name="dateOfBirth"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                     value={formData.position}
                     onChange={handleInputChange}
                     placeholder="e.g., Forward"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -376,7 +376,7 @@ export default function ProfilePage() {
                     value={formData.jersey}
                     onChange={handleInputChange}
                     placeholder="e.g., 7"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -390,7 +390,7 @@ export default function ProfilePage() {
                     value={formData.experience}
                     onChange={handleInputChange}
                     placeholder="e.g., 5+ years"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -404,7 +404,7 @@ export default function ProfilePage() {
                     value={formData.height}
                     onChange={handleInputChange}
                     placeholder={'5\'10"'}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -418,7 +418,7 @@ export default function ProfilePage() {
                     value={formData.weight}
                     onChange={handleInputChange}
                     placeholder="75kg"
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   />
                 </div>
 
@@ -430,7 +430,7 @@ export default function ProfilePage() {
                     name="foot"
                     value={formData.foot}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                    className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                   >
                     <option value="">Select</option>
                     <option value="Right">Right</option>
@@ -450,7 +450,7 @@ export default function ProfilePage() {
                   onChange={handleInputChange}
                   placeholder="Tell us about yourself..."
                   rows={4}
-                  className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary"
+                  className="neo-input w-full px-4 py-2 bg-background rounded-lg text-foreground focus:outline-none"
                 />
               </div>
 
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 px-6 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="neo-btn neo-btn-primary neo-btn neo-btn-primary flex-1 px-4 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -475,7 +475,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-2 bg-secondary text-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors flex items-center gap-2"
+                  className="neo-btn neo-soft neo-btn neo-soft px-4 py-2 bg-secondary text-foreground font-medium rounded-lg transition-colors flex items-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   {isBn ? "বাতিল" : "Cancel"}
@@ -530,7 +530,7 @@ export default function ProfilePage() {
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center gap-2 px-6 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors border border-red-500/30 disabled:opacity-50"
+            className="neo-btn flex items-center gap-2 px-6 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors disabled:opacity-50"
           >
             {isLoggingOut ? (
               <>

@@ -80,7 +80,7 @@ export default function StoreSalesAnalyticsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-lg p-6 ${stat.bgColor} border border-primary/20 hover:border-primary/50 transition-colors`}
+              className={`rounded-lg p-6 ${stat.bgColor} neo-input border/50 transition-colors`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -98,14 +98,14 @@ export default function StoreSalesAnalyticsPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-secondary rounded-lg p-8 border border-primary/20"
+        className="bg-secondary rounded-lg p-8 neo-input border"
       >
         <h2 className={`text-2xl font-bold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
           {isBn ? "রাজস্ব বিবরণ" : "Revenue Breakdown"}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 bg-background rounded-lg border border-primary/20">
+          <div className="p-6 bg-background rounded-lg neo-input border">
             <p className="text-foreground/60 text-sm mb-2">{isBn ? "ডেলিভার করা অর্ডার" : "Delivered Orders"}</p>
             <p className="text-3xl font-bold text-green-400 mb-2">
               ৳{analytics.revenueByStatus.delivered.toLocaleString()}
@@ -122,7 +122,7 @@ export default function StoreSalesAnalyticsPage() {
             </div>
           </div>
 
-          <div className="p-6 bg-background rounded-lg border border-primary/20">
+          <div className="p-6 bg-background rounded-lg neo-input border">
             <p className="text-foreground/60 text-sm mb-2">{isBn ? "প্রেরিত অর্ডার" : "Shipped Orders"}</p>
             <p className="text-3xl font-bold text-purple-400 mb-2">
               ৳{analytics.revenueByStatus.shipped.toLocaleString()}
@@ -139,7 +139,7 @@ export default function StoreSalesAnalyticsPage() {
             </div>
           </div>
 
-          <div className="p-6 bg-background rounded-lg border border-primary/20">
+          <div className="p-6 bg-background rounded-lg neo-input border">
             <p className="text-foreground/60 text-sm mb-2">{isBn ? "অপেক্ষমাণ অর্ডার" : "Pending Orders"}</p>
             <p className="text-3xl font-bold text-yellow-400 mb-2">
               ৳{analytics.revenueByStatus.pending.toLocaleString()}
@@ -179,7 +179,7 @@ export default function StoreSalesAnalyticsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-secondary rounded-lg p-8 border border-primary/20"
+          className="bg-secondary rounded-lg p-8 neo-input border"
         >
           <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "মাসিক রাজস্ব" : "Monthly Revenue"}
@@ -193,7 +193,7 @@ export default function StoreSalesAnalyticsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-secondary rounded-lg p-8 border border-primary/20"
+          className="bg-secondary rounded-lg p-8 neo-input border"
         >
           <h3 className={`text-lg font-bold text-foreground mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
             {isBn ? "কর্মক্ষমতা সারসংক্ষেপ" : "Performance Summary"}

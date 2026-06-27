@@ -54,7 +54,7 @@ export default function ProductDetailPage() {
           </h1>
           <button
             onClick={() => router.push("/shop")}
-            className="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+            className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
           >
             {isBn ? "শপে ফিরুন" : "Back to Shop"}
           </button>
@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             {/* Category */}
             <div>
-              <span className="px-3 py-1 bg-primary/20 text-primary text-sm font-medium rounded-full border border-primary/30">
+              <span className="neo-btn neo-btn-primary px-4 py-2 bg-primary/20 text-primary text-sm font-medium rounded-full neo-input/30">
                 {product.category.toUpperCase()}
               </span>
             </div>
@@ -180,7 +180,7 @@ export default function ProductDetailPage() {
                     className={`px-4 py-3 rounded-lg font-bold transition-colors ${
                       selectedSize === size
                         ? "bg-primary text-foreground"
-                        : "bg-secondary border border-primary/20 text-foreground hover:border-primary"
+                        : "bg-secondary neo-input border text-foreground"
                     }`}
                   >
                     {size}
@@ -202,7 +202,7 @@ export default function ProductDetailPage() {
                     className={`px-4 py-3 rounded-lg font-medium transition-colors ${
                       selectedColor === color
                         ? "bg-primary text-foreground"
-                        : "bg-secondary border border-primary/20 text-foreground hover:border-primary"
+                        : "bg-secondary neo-input border text-foreground"
                     }`}
                   >
                     {color}
@@ -219,14 +219,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-2 bg-secondary border border-primary/20 rounded-lg hover:bg-background transition-colors"
+                  className="neo-btn px-secondary py-secondary bg-secondary neo-input border rounded-lg hover:bg-background transition-colors"
                 >
                   −
                 </button>
                 <span className="text-2xl font-bold text-foreground w-8 text-center">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 py-2 bg-secondary border border-primary/20 rounded-lg hover:bg-background transition-colors"
+                  className="neo-btn px-secondary py-secondary bg-secondary neo-input border rounded-lg hover:bg-background transition-colors"
                 >
                   +
                 </button>

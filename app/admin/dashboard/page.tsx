@@ -451,7 +451,7 @@ export default function AdminDashboard() {
           <Link
             key={stat.label}
             href={stat.href}
-            className="flex items-center gap-4 p-4 rounded-xl border-2 border-secondary bg-card hover:border-primary/50 transition"
+            className="flex items-center gap-4 p-4 rounded-xl border-2 border-secondary bg-card/50 transition"
           >
             <div className={`p-3 rounded-lg bg-secondary/50 ${stat.color}`}>
               {stat.icon}
@@ -510,7 +510,7 @@ export default function AdminDashboard() {
               <Link
                 key={action.label}
                 href={action.href}
-                className="flex items-center gap-4 p-4 rounded-lg bg-secondary/20 hover:bg-primary/10 hover:border-primary border border-transparent transition group"
+                className="flex items-center gap-4 p-4 rounded-lg bg-secondary/20 hover:bg-primary/10 border border-transparent transition group"
               >
                 <div className="p-3 rounded-lg bg-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
                   {action.icon}
@@ -713,7 +713,7 @@ export default function AdminDashboard() {
             <Link
               key={tool.label}
               href={tool.href}
-              className={`group p-4 rounded-lg border-2 border-secondary ${tool.bgColor} hover:border-primary hover:scale-105 transition-all`}
+              className={`group p-4 rounded-lg border-2 border-secondary ${tool.bgColor} hover:scale-105 transition-all`}
             >
               <div className={`${tool.color} mb-3 p-2 rounded-lg bg-secondary/30 inline-block group-hover:bg-primary/20 transition`}>
                 {tool.icon}
@@ -779,7 +779,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Trophy className="w-6 h-6 text-yellow-400 group-hover:scale-110 transition-transform" />
           <div className="text-2xl font-bold text-yellow-400">{matchList?.length || 0}</div>
@@ -791,7 +791,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Users className="w-6 h-6 text-green-400 group-hover:scale-110 transition-transform" />
           <div className="text-2xl font-bold text-green-400">{fanList?.length || 0}</div>
@@ -803,7 +803,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Handshake className="w-6 h-6 text-purple-400 group-hover:scale-110 transition-transform" />
           <div className="text-2xl font-bold text-purple-400">{partnerList?.length || 0}</div>
@@ -815,7 +815,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Newspaper className="w-6 h-6 text-orange-400 group-hover:scale-110 transition-transform" />
           <div className="text-2xl font-bold text-orange-400">{newsList?.length || 0}</div>
@@ -827,7 +827,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border border-card/50 bg-card/30 hover:border-primary/50 hover:bg-card/50 transition-all group">
+      <div className="p-4 rounded-xl border border-card/50 bg-card/30/50 hover:bg-card/50 transition-all group">
         <div className="flex items-start justify-between">
           <Image className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
           <div className="text-2xl font-bold text-pink-400">{mediaList?.length || 0}</div>

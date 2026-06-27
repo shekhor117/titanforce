@@ -354,7 +354,7 @@ export default function AdminPlayerProfiles() {
             placeholder={isBn ? "খেলোয়াড় খুঁজুন..." : "Search players..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:border-primary outline-none"
+            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground outline-none"
           />
         </div>
         <div className="flex gap-2">
@@ -447,7 +447,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                     required
                   />
                 </div>
@@ -459,7 +459,7 @@ export default function AdminPlayerProfiles() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                     required
                   />
                 </div>
@@ -473,7 +473,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as PlayerProfile["status"] }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="approved">{isBn ? "অনুমোদিত" : "Approved"}</option>
                     <option value="pending">{isBn ? "অপেক্ষমাণ" : "Pending"}</option>
@@ -488,7 +488,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -499,7 +499,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.age}
                     onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -513,7 +513,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.position}
                     onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="">{isBn ? "অবস্থান নির্বাচন করুন" : "Select position"}</option>
                     <option value="goalkeeper">{isBn ? "গোলকিপার" : "Goalkeeper"}</option>
@@ -530,7 +530,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.jersey}
                     onChange={(e) => setFormData(prev => ({ ...prev, jersey: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -540,7 +540,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.foot}
                     onChange={(e) => setFormData(prev => ({ ...prev, foot: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="">{isBn ? "পা নির্বাচন করুন" : "Select foot"}</option>
                     <option value="left">{isBn ? "বাম" : "Left"}</option>
@@ -560,7 +560,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.height}
                     onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -571,7 +571,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.weight}
                     onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -582,7 +582,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.experience}
                     onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function AdminPlayerProfiles() {
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -608,7 +608,7 @@ export default function AdminPlayerProfiles() {
                     type="date"
                     value={formData.joinDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -622,7 +622,7 @@ export default function AdminPlayerProfiles() {
                   value={formData.address}
                   onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                   rows={2}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                 />
               </div>
 
@@ -685,7 +685,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -696,7 +696,7 @@ export default function AdminPlayerProfiles() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -709,7 +709,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as PlayerProfile["status"] }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="approved">{isBn ? "অনুমোদিত" : "Approved"}</option>
                     <option value="pending">{isBn ? "অপেক্ষমাণ" : "Pending"}</option>
@@ -724,7 +724,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -735,7 +735,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.age}
                     onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -749,7 +749,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.position}
                     onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="">{isBn ? "অবস্থান নির্বাচন করুন" : "Select position"}</option>
                     <option value="goalkeeper">{isBn ? "গোলকিপার" : "Goalkeeper"}</option>
@@ -766,7 +766,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.jersey}
                     onChange={(e) => setFormData(prev => ({ ...prev, jersey: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -776,7 +776,7 @@ export default function AdminPlayerProfiles() {
                   <select
                     value={formData.foot}
                     onChange={(e) => setFormData(prev => ({ ...prev, foot: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   >
                     <option value="">{isBn ? "পা নির্বাচন করুন" : "Select foot"}</option>
                     <option value="left">{isBn ? "বাম" : "Left"}</option>
@@ -796,7 +796,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.height}
                     onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -807,7 +807,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.weight}
                     onChange={(e) => setFormData(prev => ({ ...prev, weight: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -818,7 +818,7 @@ export default function AdminPlayerProfiles() {
                     type="number"
                     value={formData.experience}
                     onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -833,7 +833,7 @@ export default function AdminPlayerProfiles() {
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -844,7 +844,7 @@ export default function AdminPlayerProfiles() {
                     type="date"
                     value={formData.joinDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -855,7 +855,7 @@ export default function AdminPlayerProfiles() {
                     type="text"
                     value={formData.seasonYear}
                     onChange={(e) => setFormData(prev => ({ ...prev, seasonYear: e.target.value }))}
-                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                    className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                     placeholder="2024-2025"
                   />
                 </div>
@@ -870,7 +870,7 @@ export default function AdminPlayerProfiles() {
                   value={formData.address}
                   onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                   rows={2}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none resize-none"
                 />
               </div>
 
@@ -979,7 +979,7 @@ export default function AdminPlayerProfiles() {
       {filteredPlayers.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredPlayers.map((player) => (
-            <div key={player.id} className="rounded-xl border-2 border-secondary bg-card p-4 hover:border-primary/50 transition">
+            <div key={player.id} className="rounded-xl border-2 border-secondary bg-card p-4/50 transition">
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center overflow-hidden flex-shrink-0">
                   {player.playerProfile?.photoUrl ? (

@@ -253,14 +253,14 @@ export default function AdminContactsPage() {
                   placeholder={isBn ? "নাম" : "Name"}
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                 />
                 <input
                   type="email"
                   placeholder={isBn ? "ইমেইল" : "Email"}
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -269,14 +269,14 @@ export default function AdminContactsPage() {
                   placeholder={isBn ? "ফোন (ঐচ্ছিক)" : "Phone (optional)"}
                   value={formData.phone}
                   onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                 />
                 <input
                   type="text"
                   placeholder={isBn ? "বিষয়" : "Subject"}
                   value={formData.subject}
                   onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                  className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
                 />
               </div>
               <textarea
@@ -284,7 +284,7 @@ export default function AdminContactsPage() {
                 value={formData.message}
                 onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
                 rows={4}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none resize-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none resize-none"
               />
               <div className="flex gap-2">
                 <button
@@ -315,7 +315,7 @@ export default function AdminContactsPage() {
             placeholder={isBn ? "বার্তা খুঁজুন..." : "Search messages..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground focus:border-primary outline-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+            className={`w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-card text-foreground outline-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           />
         </div>
         <div className="flex gap-2 flex-wrap">

@@ -46,7 +46,7 @@ export default function FixturesResultsPage() {
 
           {/* Hero Content */}
           <div className="relative max-w-6xl mx-auto px-4 text-center z-10">
-            <button onClick={() => router.back()} className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105">
+            <button onClick={() => router.back()} className="neo-btn inline-flex items-center gap-2 mb-6 px-4 py-2 rounded text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105">
               <ArrowLeft className="w-4 h-4" />
               <span className={`text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                 {isBn ? "পিছনে" : "Back"}

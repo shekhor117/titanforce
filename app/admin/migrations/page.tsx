@@ -43,7 +43,7 @@ export default function MigrationsPage() {
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-surface rounded-lg border border-border p-8 shadow-lg">
+        <div className="bg-surface rounded-lg neo-soft border-border p-8 shadow-lg">
           <h1 className="text-3xl font-bold text-foreground mb-2">Database Migrations</h1>
           <p className="text-muted-foreground mb-8">
             Apply pending database migrations to set up the OTP functionality
@@ -51,7 +51,7 @@ export default function MigrationsPage() {
 
           <div className="space-y-6">
             {/* Status Card */}
-            <div className="bg-muted rounded-lg p-6 border border-border">
+            <div className="bg-muted rounded-lg p-6 neo-soft border-border">
               <h2 className="text-lg font-semibold text-foreground mb-4">Migration Status</h2>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
