@@ -146,7 +146,7 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-            <div className="rounded-2xl border-2 border-card bg-card/30 backdrop-blur-2xl p-8">
+            <div className="neo-panel">
               {showSuccess ? (
                 <div className="text-center py-12">
                   <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
@@ -189,9 +189,7 @@ export function Contact() {
                           onChange={(e) => setName(e.target.value)}
                           onFocus={() => setFocusedField("name")}
                           onBlur={() => setFocusedField(null)}
-                          className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
-                            focusedField === "name" ? "border-primary bg-background" : "border-border/50"
-                          } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                           placeholder={t.contact.namePlaceholder}
                           required
                           disabled={isSubmitting}
@@ -216,9 +214,7 @@ export function Contact() {
                           onChange={(e) => setEmail(e.target.value)}
                           onFocus={() => setFocusedField("email")}
                           onBlur={() => setFocusedField(null)}
-                          className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
-                            focusedField === "email" ? "border-primary bg-background" : "border-border/50"
-                          } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                           placeholder={isBn ? "আপনার ইমেল" : "your@email.com"}
                           required
                           disabled={isSubmitting}
@@ -244,9 +240,7 @@ export function Contact() {
                         onChange={(e) => setPhone(e.target.value)}
                         onFocus={() => setFocusedField("phone")}
                         onBlur={() => setFocusedField(null)}
-                        className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all ${
-                          focusedField === "phone" ? "border-primary bg-background" : "border-border/50"
-                        } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                         placeholder={isBn ? "+৮৮০ ১২৩৪ ৫৬৭৮৯০" : "+880 1234 567890"}
                         disabled={isSubmitting}
                       />
@@ -270,9 +264,7 @@ export function Contact() {
                         onChange={(e) => setMessage(e.target.value)}
                         onFocus={() => setFocusedField("message")}
                         onBlur={() => setFocusedField(null)}
-                        className={`w-full pl-12 pr-4 py-4 rounded-xl border-2 bg-background/50 text-foreground placeholder:text-foreground/30 focus:outline-none transition-all resize-none ${
-                          focusedField === "message" ? "border-primary bg-background" : "border-border/50"
-                        } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        className={`neo-input w-full pl-12 pr-4 resize-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                         placeholder={t.contact.messagePlaceholder}
                         required
                         disabled={isSubmitting}
@@ -284,7 +276,7 @@ export function Contact() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-4 font-bold text-sm uppercase tracking-wider rounded-xl glass-btn-primary text-primary-foreground hover:scale-105 disabled:opacity-50 transition-all flex items-center justify-center gap-3 group ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`neo-btn neo-btn-primary w-full flex items-center justify-center gap-3 group disabled:opacity-50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                   >
                     {isSubmitting ? (
                       <>
