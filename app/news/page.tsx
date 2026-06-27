@@ -71,7 +71,7 @@ export default function NewsPage() {
                   placeholder="Search news articles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className="neo-input w-full pl-12 pr-4 py-3 bg-card rounded-lg text-foreground placeholder-muted-foreground focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -82,10 +82,10 @@ export default function NewsPage() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
+                  className={`neo-btn px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                     selectedCategory === category
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-card text-foreground hover:bg-card/80 border border-border'
+                      ? 'neo-btn-primary bg-primary text-primary-foreground'
+                      : 'neo-soft text-foreground'
                   }`}
                 >
                   {category}
@@ -197,11 +197,11 @@ export default function NewsPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                className="neo-input flex-1 px-4 py-3 bg-background rounded-lg text-foreground placeholder-muted-foreground focus:outline-none transition-colors"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg transition-colors duration-300 whitespace-nowrap"
+                className="neo-btn neo-btn-primary px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg transition-colors duration-300 whitespace-nowrap"
               >
                 Subscribe
               </button>
