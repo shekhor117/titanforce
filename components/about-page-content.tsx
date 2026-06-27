@@ -38,21 +38,7 @@ export function AboutPageContent() {
   const activePlayers = Array.isArray(players) ? players.filter(p => p.status?.toLowerCase() === "active") : []
 
   return (
-    <section className="hero-gradient relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
-      </div>
-
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
-        }}
-      />
-
+    <section className="relative overflow-hidden">
       <div className="relative max-w-6xl mx-auto px-4 py-[46px] md:py-36 pb-[33px] text-center">
         {/* Logo */}
         <div className="animate-fade-up flex justify-center mb-6 animate-[float_5s_ease-in-out_infinite]">
