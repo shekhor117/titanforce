@@ -107,6 +107,8 @@ export default function AdminFeaturesPage() {
   const loadFeaturesFromSupabase = async () => {
     try {
       const supabase = createClient()
+      if (!supabase) return
+      
       const { data, error } = await supabase
         .from("site_settings")
         .select("*")
@@ -135,6 +137,7 @@ export default function AdminFeaturesPage() {
   const handleSave = async () => {
     try {
       const supabase = createClient()
+      if (!supabase) return
       
       // Save each feature to site_settings table
       for (const feature of features) {

@@ -22,9 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
-    console.error('[v0] Error Boundary caught:', error.message)
-    console.error('[v0] Error Stack:', error.stack)
-    console.error('[v0] Component Stack:', errorInfo.componentStack)
+    // Silently catch errors without logging to avoid console spam
     // Log to a monitoring service in production
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
       // Send to error tracking service

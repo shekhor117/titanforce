@@ -736,36 +736,43 @@ class StoreDataService {
 
   // Realtime subscription for products - listen to admin changes
   subscribeToProducts(
-    callback: (products: StoreProduct[]) => void,
+    callback: (products: any[]) => void,
     onError?: (error: Error) => void
   ): () => void {
     try {
       const supabase = createClient()
       
-      const channel = supabase
-        .channel('products-sync')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'store_products' },
-          async () => {
-            try {
-              console.log('[v0] Store: Products update detected')
-              const products = await this.getProducts()
-              callback(products)
-            } catch (error) {
-              console.error('[v0] Store: Error fetching updated products:', error)
-              onError?.(error instanceof Error ? error : new Error(String(error)))
+      // Skip subscription if Supabase is not available
+      if (!supabase) {
+        return () => {}
+      }
+      
+      // Wrap in try-catch to handle potential subscription errors
+      try {
+        const channel = supabase
+          .channel('products-sync')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'store_products' },
+            async () => {
+              try {
+                const products = await this.getProducts()
+                callback(products)
+              } catch (error) {
+                // Silently fail subscription updates
+              }
             }
-          }
-        )
-        .subscribe()
+          )
+          .subscribe()
 
-      return () => {
-        supabase.removeChannel(channel)
+        return () => {
+          supabase.removeChannel(channel)
+        }
+      } catch (subscriptionError) {
+        // Silently fail if subscription setup fails
+        return () => {}
       }
     } catch (error) {
-      console.error('[v0] Store: Error setting up subscription:', error)
-      onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
   }

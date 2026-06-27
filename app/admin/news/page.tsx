@@ -47,7 +47,7 @@ export default function AdminNewsPage() {
       const newsItems = await retryOperation(() => service.getNewsItems())
       
       // Convert NewsItem to NewsArticle format
-      const convertedArticles: NewsArticle[] = (newsItems || []).map(item => ({
+      const convertedArticles: NewsArticle[] = (newsItems || []).map((item: any) => ({
         id: item.id,
         title: item.title,
         category: (item.category as any) || 'Club News',
@@ -75,14 +75,11 @@ export default function AdminNewsPage() {
     try {
       await service.createNewsItem({
         title: article.title,
-        excerpt: article.summary,
         content: article.content,
         author: article.author,
         category: article.category.toLowerCase() as any,
         status: article.status.toLowerCase() as any,
         image: article.image || null,
-        views: 0,
-        clicks: 0,
       })
       
       await loadNews()

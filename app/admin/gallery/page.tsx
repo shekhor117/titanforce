@@ -39,15 +39,12 @@ export default function AdminGalleryPage() {
         image: item.url || '',
         category: item.category || 'General',
         date: new Date(item.created_at).toLocaleDateString(),
-        views: item.views || 0,
-        likes: item.likes || 0,
         description: item.description || '',
       }))
       
       setItems(convertedItems)
       setError(null)
     } catch (err) {
-      console.error('[v0] Error loading gallery:', err)
       setError('Failed to load gallery items')
     } finally {
       setLoading(false)
@@ -61,13 +58,10 @@ export default function AdminGalleryPage() {
         url: item.image,
         category: item.category,
         description: item.description || '',
-        views: 0,
-        likes: 0,
       })
       
       await loadGallery()
     } catch (err) {
-      console.error('[v0] Error adding gallery item:', err)
       setError('Failed to add gallery item')
     }
   }
@@ -77,7 +71,6 @@ export default function AdminGalleryPage() {
       // Since update might not exist, we can just reload
       await loadGallery()
     } catch (err) {
-      console.error('[v0] Error updating gallery item:', err)
       setError('Failed to update gallery item')
     }
   }
@@ -87,7 +80,6 @@ export default function AdminGalleryPage() {
       await service.deleteMediaItem(id)
       await loadGallery()
     } catch (err) {
-      console.error('[v0] Error deleting gallery item:', err)
       setError('Failed to delete gallery item')
     }
   }

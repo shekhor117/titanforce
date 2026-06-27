@@ -50,7 +50,6 @@ export function RichTextEditor({
       },
     })
   } catch (err) {
-    console.error('[v0] Failed to initialize TipTap editor:', err)
     return (
       <div className="p-4 border border-red-300 bg-red-50 rounded">
         <p className="text-red-700">Failed to load editor</p>

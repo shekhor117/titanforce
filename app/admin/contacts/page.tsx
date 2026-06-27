@@ -53,11 +53,9 @@ export default function AdminContactsPage() {
       setError(null)
       const service = getDataService()
       const contactsData = await service.getContactMessages()
-      console.log('[v0] Loaded contacts:', contactsData)
       setContacts(contactsData)
       setLoading(false)
     } catch (err) {
-      console.error('[v0] Error loading contacts:', err)
       setError(err instanceof Error ? err.message : "Failed to load messages")
       setLoading(false)
     }

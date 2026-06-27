@@ -25,7 +25,6 @@ export function HomeShopLatest() {
     const unsubscribe = StoreDataService.subscribeToProducts((updatedProducts) => {
       setProducts(updatedProducts.slice(0, 6))
     }, (error) => {
-      console.error('[v0] Error subscribing to products:', error)
     })
 
     return () => unsubscribe()

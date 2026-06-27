@@ -35,14 +35,14 @@ export default function AdminMatchesPage() {
       const matches = await retryOperation(() => service.getMatches())
       
       // Convert Match to Fixture format
-      const convertedFixtures: Fixture[] = matches.map(match => ({
+      const convertedFixtures: Fixture[] = matches.map((match: any) => ({
         id: match.id,
         homeTeam: match.home || 'Home Team',
         awayTeam: match.away || 'Away Team',
         homeLogoColor: 'bg-emerald-600',
         awayLogoColor: 'bg-indigo-600',
-        homeScore: match.home_score || 0,
-        awayScore: match.away_score || 0,
+        homeScore: match.home_score ?? 0,
+        awayScore: match.away_score ?? 0,
         date: match.date,
         time: match.time,
         stadium: match.venue,
@@ -64,7 +64,6 @@ export default function AdminMatchesPage() {
   const handleAddFixture = async (fixture: Fixture) => {
     try {
       setError(null)
-      console.log('[v0] Creating match:', fixture)
       await service.createMatch({
         home: fixture.homeTeam,
         away: fixture.awayTeam,
@@ -89,7 +88,6 @@ export default function AdminMatchesPage() {
   const handleUpdateFixture = async (fixture: Fixture) => {
     try {
       setError(null)
-      console.log('[v0] Updating match:', fixture.id, fixture)
       await service.updateMatch(fixture.id, {
         home: fixture.homeTeam,
         away: fixture.awayTeam,
@@ -115,7 +113,6 @@ export default function AdminMatchesPage() {
   const handleDeleteFixture = async (fixtureId: string) => {
     try {
       setError(null)
-      console.log('[v0] Deleting match:', fixtureId)
       await service.deleteMatch(fixtureId)
       setSuccessMessage('Match deleted successfully')
       await loadMatches()

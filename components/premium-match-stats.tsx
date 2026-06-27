@@ -25,7 +25,6 @@ export function PremiumMatchStats() {
         const last = matches.find(m => m?.status === 'completed')
         setLastMatch(last || null)
       } catch (err) {
-        console.error('[v0] Error processing matches:', err)
       }
     }
   }, [matches])
@@ -40,7 +39,6 @@ export function PremiumMatchStats() {
           .slice(0, 4)
         setTopPlayers(sorted)
       } catch (err) {
-        console.error('[v0] Error processing players:', err)
       }
     }
   }, [players])

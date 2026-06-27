@@ -62,7 +62,7 @@ export default function AdminInjuriesPage() {
     playerId: "",
     injuryType: "",
     injuryDate: "",
-    status: "active" as const,
+    status: "active" as "active" | "recovering" | "recovered",
     recoveryProgress: 0,
     notes: ""
   })

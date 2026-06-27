@@ -89,7 +89,8 @@ export default function AdminDashboard() {
     const loadLocalData = async () => {
       const { dataStore } = await import("@/lib/data-store")
       setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
-      setContacts(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts() : [])
+      const contactsData = await dataStore.getContacts()
+      setContacts(Array.isArray(contactsData) ? contactsData : [])
       setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
     }
     loadLocalData()
@@ -356,7 +357,7 @@ export default function AdminDashboard() {
       bgColor: "bg-green-500/10"
     },
     { 
-      label: isBn ? "সেটিংস এবং কনফিগ" : "Settings & Config", 
+      label: isBn ? "সেট��ংস এবং কনফিগ" : "Settings & Config", 
       description: isBn ? "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন" : "Configure application settings",
       href: "/admin/settings", 
       icon: <Cog className="w-5 h-5" />,
