@@ -58,9 +58,6 @@ export default function TeamSquadPage() {
               {isBn ? "পিছনে" : "Back"}
             </span>
           </button>
-          <p className={`text-sm sm:text-base md:text-lg text-foreground/70 max-w-2xl mx-auto px-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "আমাদের প্রতিভাবান খেলোয়াড়দের দেখুন যারা টাইটান ফোর্সের গর্বের প্রতিনিধিত্ব করে" : "Meet the talented players representing Titan Force on the pitch"}
-          </p>
         </div>
 
         {/* Squad Section */}
