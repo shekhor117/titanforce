@@ -104,21 +104,21 @@ export function InjuryTracking() {
 
         {/* Stats Overview */}
         <div className={`grid grid-cols-3 gap-4 mb-8 transition-all duration-600 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <div className="p-4 rounded-xl bg-red-500/10 border-2 border-red-500/30 text-center">
+          <div className="neo-soft p-4 bg-red-500/10 text-center">
             <AlertTriangle className="w-6 h-6 text-red-400 mx-auto mb-2" />
             <div className="font-[var(--font-display)] text-3xl text-red-400">{activeCount}</div>
             <div className={`text-xs text-red-400/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "সক্রিয় ইনজুরি" : "Active Injuries"}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-yellow-500/10 border-2 border-yellow-500/30 text-center">
+          <div className="neo-soft p-4 bg-yellow-500/10 text-center">
             <Clock className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
             <div className="font-[var(--font-display)] text-3xl text-yellow-400">{recoveringCount}</div>
             <div className={`text-xs text-yellow-400/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "সুস্থ হচ্ছে" : "Recovering"}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-green-500/10 border-2 border-green-500/30 text-center">
+          <div className="neo-soft p-4 bg-green-500/10 text-center">
             <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
             <div className="font-[var(--font-display)] text-3xl text-green-400">{recoveredCount}</div>
             <div className={`text-xs text-green-400/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -135,10 +135,10 @@ export function InjuryTracking() {
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-4 py-2 text-xs font-bold uppercase rounded-full border-2 transition ${
+                className={`neo-badge px-4 py-2 text-xs font-bold uppercase transition ${
                   filterStatus === status
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-secondary bg-transparent text-foreground hover:border-primary/50"
+                    ? "neo-btn-primary"
+                    : "hover:opacity-80"
                 } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {status === "all" ? (isBn ? "সব" : "All") : config?.label}
@@ -162,7 +162,7 @@ export function InjuryTracking() {
               return (
                 <div
                   key={injury.id}
-                  className={`p-5 rounded-xl bg-card border-2 ${statusConfig.border} hover:border-primary/50 transition`}
+                  className={`neo-soft p-5`}
                   style={{ transitionDelay: `${index * 50}ms` }}
                 >
                   <div className="flex flex-col md:flex-row md:items-center gap-4">
