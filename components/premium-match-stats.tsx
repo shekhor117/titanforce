@@ -86,7 +86,7 @@ export function PremiumMatchStats() {
                     <p className="text-xs text-muted-foreground/70">{nextMatch.venue}</p>
                   </div>
 
-                  <div className="bg-slate-900/40 rounded-lg p-4 text-center">
+                  <div className="bg-muted rounded-lg p-4 text-center">
                     <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Prediction</p>
                     <p className="text-lg font-bold text-red-500">TBA</p>
                   </div>
@@ -128,7 +128,7 @@ export function PremiumMatchStats() {
                   </div>
 
                   {/* Match Info */}
-                  <div className="bg-slate-900/40 rounded-lg p-3 mb-4 text-center text-xs">
+                  <div className="bg-muted rounded-lg p-3 mb-4 text-center text-xs">
                     <p className="text-muted-foreground">{lastMatch.date}</p>
                     <p className="text-muted-foreground/70 text-[10px] mt-1">{lastMatch.venue}</p>
                   </div>
@@ -166,12 +166,12 @@ export function PremiumMatchStats() {
           {/* Top Players - with link */}
           <Link href="/team-squad" className="no-underline">
             <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer h-full">
-              <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-6 font-bold">Top Players</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Top Players</h3>
               
               <div className="space-y-4">
                 {topPlayers.length > 0 ? (
                   topPlayers.map((player, idx) => (
-                    <div key={player?.id || idx} className="flex items-center justify-between p-3 rounded-lg bg-slate-900/30 hover:bg-slate-900/50 transition-colors">
+                    <div key={player?.id || idx} className="flex items-center justify-between p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
                           <span className="text-white font-bold text-xs">{player?.num || ''}</span>

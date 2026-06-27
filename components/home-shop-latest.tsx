@@ -55,8 +55,8 @@ export function HomeShopLatest() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-square bg-gray-800 rounded-lg mb-3" />
-                <div className="h-4 bg-gray-800 rounded w-3/4" />
+                <div className="aspect-square bg-muted rounded-lg mb-3" />
+                <div className="h-4 bg-muted rounded w-3/4" />
               </div>
             ))}
           </div>
@@ -112,7 +112,7 @@ export function HomeShopLatest() {
         <div className="text-center">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-sm uppercase tracking-widest rounded transition-all group"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-sm uppercase tracking-widest rounded transition-all group"
           >
             View all products
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
