@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, type FormEvent } from "react"
-import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, Send, CheckCircle2, User, MessageSquare, Sparkles, AlertCircle } from "lucide-react"
+import { Facebook, Instagram, Youtube, Twitter, Send, CheckCircle2, AlertCircle } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { getDataService } from "@/lib/data-service"
 
@@ -123,12 +123,6 @@ export function Contact() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className={`text-sm font-medium text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "আমাদের সাথে যোগাযোগ করুন" : "Get In Touch"}
-            </span>
-          </div>
           <h2 className={`text-4xl md:text-5xl tracking-wide mb-4 text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.contact.title}
           </h2>
@@ -181,7 +175,6 @@ export function Contact() {
                         {t.contact.name} *
                       </label>
                       <div className="relative">
-                        <User className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "name" ? "text-primary" : "text-foreground/30"}`} />
                         <input
                           id="c-name"
                           type="text"
@@ -189,7 +182,7 @@ export function Contact() {
                           onChange={(e) => setName(e.target.value)}
                           onFocus={() => setFocusedField("name")}
                           onBlur={() => setFocusedField(null)}
-                          className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          className={`neo-input w-full px-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                           placeholder={t.contact.namePlaceholder}
                           required
                           disabled={isSubmitting}
@@ -206,7 +199,6 @@ export function Contact() {
                         {isBn ? "ইমেল" : "Email"} *
                       </label>
                       <div className="relative">
-                        <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "email" ? "text-primary" : "text-foreground/30"}`} />
                         <input
                           id="c-email"
                           type="email"
@@ -214,7 +206,7 @@ export function Contact() {
                           onChange={(e) => setEmail(e.target.value)}
                           onFocus={() => setFocusedField("email")}
                           onBlur={() => setFocusedField(null)}
-                          className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                          className={`neo-input w-full px-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                           placeholder={isBn ? "আপনার ইমেল" : "your@email.com"}
                           required
                           disabled={isSubmitting}
@@ -232,7 +224,6 @@ export function Contact() {
                       {isBn ? "ফোন নম্বর" : "Phone Number"}
                     </label>
                     <div className="relative">
-                      <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${focusedField === "phone" ? "text-primary" : "text-foreground/30"}`} />
                       <input
                         id="c-phone"
                         type="tel"
@@ -240,7 +231,7 @@ export function Contact() {
                         onChange={(e) => setPhone(e.target.value)}
                         onFocus={() => setFocusedField("phone")}
                         onBlur={() => setFocusedField(null)}
-                        className={`neo-input w-full pl-12 pr-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        className={`neo-input w-full px-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                         placeholder={isBn ? "+৮৮০ ১২৩৪ ৫৬৭৮৯০" : "+880 1234 567890"}
                         disabled={isSubmitting}
                       />
@@ -256,7 +247,6 @@ export function Contact() {
                       {t.contact.message} *
                     </label>
                     <div className="relative">
-                      <MessageSquare className={`absolute left-4 top-4 w-5 h-5 transition-colors ${focusedField === "message" ? "text-primary" : "text-foreground/30"}`} />
                       <textarea
                         id="c-msg"
                         rows={5}
@@ -264,7 +254,7 @@ export function Contact() {
                         onChange={(e) => setMessage(e.target.value)}
                         onFocus={() => setFocusedField("message")}
                         onBlur={() => setFocusedField(null)}
-                        className={`neo-input w-full pl-12 pr-4 resize-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                        className={`neo-input w-full px-4 resize-none ${isBn ? "font-[var(--font-bengali)]" : ""}`}
                         placeholder={t.contact.messagePlaceholder}
                         required
                         disabled={isSubmitting}
