@@ -68,7 +68,7 @@ export function PremiumMatchStats() {
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 uppercase tracking-wider">
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 uppercase tracking-wider">
           Premium Match Stats
         </h2>
 
@@ -76,22 +76,22 @@ export function PremiumMatchStats() {
           {/* Next Match - Full Stats Link */}
           <Link href="/fixtures-results" className="no-underline">
             <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer h-full">
-              <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-6 font-bold">Next Match</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Next Match</h3>
               
               {nextMatch ? (
                 <div className="space-y-6">
                   <div className="text-center">
-                    <p className="text-xs text-slate-400 mb-2">{nextMatch.date} • {nextMatch.time}</p>
-                    <p className="text-3xl font-bold text-white mb-1">{nextMatch.home} vs {nextMatch.away}</p>
-                    <p className="text-xs text-slate-500">{nextMatch.venue}</p>
+                    <p className="text-xs text-muted-foreground mb-2">{nextMatch.date} • {nextMatch.time}</p>
+                    <p className="text-3xl font-bold text-foreground mb-1">{nextMatch.home} vs {nextMatch.away}</p>
+                    <p className="text-xs text-muted-foreground/70">{nextMatch.venue}</p>
                   </div>
 
                   <div className="bg-slate-900/40 rounded-lg p-4 text-center">
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-2">Prediction</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Prediction</p>
                     <p className="text-lg font-bold text-red-500">TBA</p>
                   </div>
 
-                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-xs uppercase tracking-widest rounded transition-colors">
+                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-xs uppercase tracking-widest rounded transition-colors">
                     View Full Stats & Prediction
                   </button>
                 </div>

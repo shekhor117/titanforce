@@ -43,7 +43,7 @@ export function GalleryShowcase() {
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
               {isBn ? 'গ্যালারি' : 'Gallery'}
             </h2>
           </div>
@@ -76,7 +76,7 @@ export function GalleryShowcase() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-                <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-2">
+                <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2">
                   {item.title}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
