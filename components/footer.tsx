@@ -29,13 +29,13 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-background text-foreground py-16 px-4">
+    <footer className="bg-background text-foreground py-12 md:py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-6 md:gap-12 mb-8 md:mb-12">
           
-          {/* Brand Section */}
-          <div className="md:col-span-1">
+          {/* Brand Section - Desktop Only */}
+          <div className="hidden md:block">
             <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
               <Image
                 src="/logos/titanforce-logo.svg"
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
 
           {/* Club Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Club</h4>
             <ul className="space-y-3">
               {clubLinks.map((link) => (
@@ -70,7 +70,7 @@ export function Footer() {
           </div>
 
           {/* Teams Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Teams</h4>
             <ul className="space-y-3">
               {teamsLinks.map((link) => (
@@ -87,7 +87,7 @@ export function Footer() {
           </div>
 
           {/* Connect Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Connect</h4>
             <ul className="space-y-3">
               {connectLinks.map((link) => (
@@ -104,8 +104,8 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Social Media Links */}
-        <div className="flex flex-col items-center gap-6">
+        {/* Social Media Links - Desktop Only */}
+        <div className="hidden md:flex flex-col items-center gap-6 mb-8">
           <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
@@ -148,7 +148,7 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-center pt-8">
+        <div className="border-t border-primary/10 pt-6 md:pt-8 text-center">
           <p className="text-muted-foreground text-xs tracking-wider">
             © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
