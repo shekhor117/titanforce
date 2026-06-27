@@ -1279,8 +1279,11 @@ canvas {
 .light .neo-panel {
   background: #ffffff;
   box-shadow: 
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    8px 8px 16px rgba(0, 0, 0, 0.1);
+    -8px -8px 16px rgba(255, 255, 255, 1),
+    8px 8px 16px rgba(0, 0, 0, 0.15),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+  color: var(--foreground);
 }
 
 .light .neo-card:hover,
@@ -1288,20 +1291,67 @@ canvas {
 .light .neo-soft:hover,
 .light .neo-panel:hover {
   box-shadow: 
-    -12px -12px 24px rgba(255, 255, 255, 0.8),
-    12px 12px 24px rgba(0, 0, 0, 0.15);
+    -12px -12px 24px rgba(255, 255, 255, 1),
+    12px 12px 24px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.light .neo-card:active,
+.light .neo-btn:active {
+  box-shadow: 
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.12);
 }
 
 .light .neo-input {
   background: #ffffff;
   box-shadow: 
-    inset -4px -4px 8px rgba(255, 255, 255, 0.7),
-    inset 4px 4px 8px rgba(0, 0, 0, 0.08);
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.12);
+  color: var(--foreground);
+}
+
+.light .neo-input::placeholder {
+  color: var(--muted-foreground);
 }
 
 .light .neo-input:focus {
   box-shadow: 
-    inset -6px -6px 12px rgba(255, 255, 255, 0.7),
-    inset 6px 6px 12px rgba(0, 0, 0, 0.1),
-    0 0 12px rgba(167, 25, 48, 0.2);
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8),
+    inset 6px 6px 12px rgba(0, 0, 0, 0.15),
+    0 0 12px rgba(167, 25, 48, 0.3);
+}
+
+.light .neo-floating {
+  background: #fafafa;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    0 0 1px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.6),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.light .neo-floating:hover {
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.12),
+    0 0 1px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.6),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.light .neo-soft {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.light .neo-soft:hover {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.15),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.03);
 }
