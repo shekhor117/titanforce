@@ -130,7 +130,7 @@ export function Footer() {
               href="https://facebook.com/titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="neo-btn neo-soft w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="Facebook"
             >
               <Facebook className="w-6 h-6" />
@@ -139,7 +139,7 @@ export function Footer() {
               href="https://tiktok.com/@titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="neo-btn neo-soft w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="TikTok"
             >
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -150,7 +150,7 @@ export function Footer() {
               href="https://instagram.com/titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="neo-btn neo-soft w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="Instagram"
             >
               <Instagram className="w-6 h-6" />
@@ -159,7 +159,7 @@ export function Footer() {
               href="https://youtube.com/@titanforce"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
+              className="neo-btn neo-soft w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
               aria-label="YouTube"
             >
               <Youtube className="w-6 h-6" />
