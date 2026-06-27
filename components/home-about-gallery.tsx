@@ -12,7 +12,7 @@ export function HomeAboutGallery() {
 
   return (
     <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
-    <section className="py-12 md:py-16 px-4 bg-background">
+      <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left Side - About */}
@@ -66,7 +66,7 @@ export function HomeAboutGallery() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
     </EntranceReveal>
   )
 }
