@@ -77,53 +77,25 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with Video Background */}
-      <div className="relative overflow-hidden py-20 hero-gradient">
-        {/* Video Background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+      {/* Header */}
+      <div className="container mx-auto px-4 py-20 relative z-10">
+        <button
+          onClick={() => router.back()}
+          className="mb-8 inline-flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors group"
+          aria-label={isBn ? 'ফিরে যান' : 'Go back'}
         >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hf_20260514_102933_4e8f73b5-775a-4179-b2fb-472f59063dcd-f1kKY6BLUtnOYd6RM2o4IQXoJwdM18.mp4" type="video/mp4" />
-        </video>
-
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden z-1">
-          <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-[-150px] right-[-100px] w-[450px] h-[450px] bg-accent/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-blob" />
-        </div>
-
-        <div
-          className="absolute inset-0 opacity-10 z-1"
-          style={{
-            background: "radial-gradient(circle at 70% 30%, var(--primary) 0%, transparent 60%)",
-          }}
-        />
-
-        <div className="container mx-auto px-4 relative z-10">
-          <button
-            onClick={() => router.back()}
-            className="mb-8 inline-flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors group"
-            aria-label={isBn ? 'ফিরে যান' : 'Go back'}
-          >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">{isBn ? 'ফিরে যান' : 'Back'}</span>
-          </button>
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {isBn ? 'যোগাযোগ করুন' : 'Contact Us'}
-            </h1>
-            <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
-              {isBn 
-                ? 'আমাদের সাথে যোগাযোগ করতে আমরা আমাদের থেকে শুনতে আগ্রহী' 
-                : 'Get in touch with us. We\'d love to hear from you.'}
-            </p>
-          </div>
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">{isBn ? 'ফিরে যান' : 'Back'}</span>
+        </button>
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {isBn ? 'যোগাযোগ করুন' : 'Contact Us'}
+          </h1>
+          <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
+            {isBn 
+              ? 'আমাদের সাথে যোগাযোগ করতে আমরা আমাদের থেকে শুনতে আগ্রহী' 
+              : 'Get in touch with us. We\'d love to hear from you.'}
+          </p>
         </div>
       </div>
 
