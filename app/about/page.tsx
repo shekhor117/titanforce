@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -36,14 +37,29 @@ export default function AboutPage() {
           />
 
           {/* Hero Content */}
-          <div className="relative max-w-6xl mx-auto px-4 text-center z-10">
-            <h1 className="text-5xl md:text-7xl font-black tracking-wider text-white mb-4">
+          <motion.div 
+            className="relative max-w-6xl mx-auto px-4 text-center z-10"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <motion.h1 
+              className="text-5xl md:text-7xl font-black tracking-wider text-white mb-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
+            >
               ABOUT US
-            </h1>
-            <p className="text-lg text-white font-semibold max-w-2xl mx-auto">
+            </motion.h1>
+            <motion.p 
+              className="text-lg text-white font-semibold max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            >
               Learn about Titan Force FC&apos;s history, mission, and values
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </section>
 
         {/* Content Section */}

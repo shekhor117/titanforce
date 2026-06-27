@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
@@ -88,14 +89,29 @@ export default function GalleryPage() {
         />
 
         {/* Hero Content */}
-        <div className='relative max-w-6xl mx-auto px-4 text-center z-10'>
-          <h2 className='text-5xl md:text-7xl font-black tracking-wider text-primary mb-4'>
+        <motion.div 
+          className='relative max-w-6xl mx-auto px-4 text-center z-10'
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        >
+          <motion.h2 
+            className='text-5xl md:text-7xl font-black tracking-wider text-primary mb-4'
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
+          >
             {isBn ? 'গ্যালারি' : 'GALLERY'}
-          </h2>
-          <p className='text-lg text-foreground/70 max-w-2xl mx-auto'>
+          </motion.h2>
+          <motion.p 
+            className='text-lg text-foreground/70 max-w-2xl mx-auto'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+          >
             {isBn ? 'আমাদের দলের বিশেষ মুহূর্ত এবং ঘটনা অন্বেষণ করুন' : 'Explore special moments and events of our team'}
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </section>
 
       {/* Main Content */}
