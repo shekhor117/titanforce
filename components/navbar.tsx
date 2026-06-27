@@ -93,14 +93,10 @@ export function Navbar() {
           {user ? (
             <UserProfileDropdown />
           ) : (
-            <Link href="/login" className="no-underline">
-              <ButtonModern
-                variant="neumorphic-accent"
-                size="sm"
-                className={`${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              >
-                {language === "bn" ? "লগইন" : "Login"}
-              </ButtonModern>
+            <Link href="/login" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 no-underline">
+              <span className={`text-xs font-bold ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}>
+                {language === "bn" ? "লগইন" : "LOGIN"}
+              </span>
             </Link>
           )}
         </div>
@@ -151,14 +147,8 @@ export function Navbar() {
             {user ? (
               <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
             ) : (
-              <Link href="/login" className="no-underline" onClick={() => setMobileMenuOpen(false)}>
-                <ButtonModern
-                  variant="neumorphic-accent"
-                  size="md"
-                  className={`w-full ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-                >
-                  {language === "bn" ? "লগইন" : "Login"}
-                </ButtonModern>
+              <Link href="/login" className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-full glass-btn-primary text-foreground hover-lift transition-all duration-300 w-full text-xs min-h-[44px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
+                {language === "bn" ? "লগইন" : "LOGIN"}
               </Link>
             )}
           </div>
