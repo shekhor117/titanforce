@@ -83,45 +83,45 @@ export function AboutPageContent() {
               {aboutSettings.aboutDescription}
             </p>
 
-            {/* Statistics Grid */}
+            {/* Statistics Grid - Neomorphism */}
             <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
-              <div>
+              <div className="neo-card-inset p-6 rounded-2xl transition-all duration-300 hover:shadow-lg">
                 <div className="font-[var(--font-display)] text-4xl text-accent font-bold">
                   {activePlayers.length}
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.players}
                 </div>
               </div>
-              <div>
+              <div className="neo-card-inset p-6 rounded-2xl transition-all duration-300 hover:shadow-lg">
                 <div className="flex justify-center">
                   <Zap className="w-8 h-8 text-accent animate-pulse drop-shadow-[0_0_8px_rgba(217,30,63,0.6)]" />
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.spirit}
                 </div>
               </div>
-              <div>
+              <div className="neo-card-inset p-6 rounded-2xl transition-all duration-300 hover:shadow-lg">
                 <div className="font-[var(--font-display)] text-4xl text-accent font-bold">
                   1
                 </div>
-                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <div className={`text-xs uppercase tracking-wider text-white font-semibold mt-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                   {t.about.team}
                 </div>
               </div>
             </div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons - Neomorphism */}
           <div className="mt-8 flex justify-center gap-4 animate-buttonSlideIn">
             <TransitionLink
               href="/team-squad"
-              className={`px-6 py-3 font-bold text-sm uppercase tracking-wider rounded glass-btn-primary text-primary-foreground hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              className={`neo-btn-primary px-8 py-4 font-bold text-sm uppercase tracking-wider rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105 active:shadow-inset ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.viewSquad}
             </TransitionLink>
             <TransitionLink
               href="/fixtures-results"
-              className={`px-8 py-3 font-bold text-sm uppercase tracking-wider rounded glass-btn text-primary hover:scale-110 transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+              className={`neo-btn px-8 py-4 font-bold text-sm uppercase tracking-wider rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105 active:shadow-inset ${isBn ? "font-[var(--font-bengali)]" : ""}`}
             >
               {t.hero.matches}
             </TransitionLink>
