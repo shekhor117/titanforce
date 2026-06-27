@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 import { useMatches } from "@/lib/use-data-store"
 import { usePlayers } from "@/lib/use-data-store"
 import Link from "next/link"
@@ -68,13 +69,25 @@ export function PremiumMatchStats() {
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12 uppercase tracking-wider">
+        <motion.h2 
+          className="text-3xl md:text-4xl font-bold text-foreground mb-12 uppercase tracking-wider"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          viewport={{ once: true, amount: 0.5 }}
+        >
           Premium Match Stats
-        </h2>
+        </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Next Match - Full Stats Link */}
-          <Link href="/fixtures-results" className="no-underline">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <Link href="/fixtures-results" className="no-underline">
             <div className="neo-card p-8 h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Next Match</h3>
               
@@ -102,9 +115,16 @@ export function PremiumMatchStats() {
               )}
             </div>
           </Link>
+          </motion.div>
 
           {/* Last Match - Stats & Facts */}
-          <Link href="/fixtures-results" className="no-underline">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <Link href="/fixtures-results" className="no-underline">
             <div className="neo-card p-8 flex flex-col h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Last Match</h3>
               
@@ -161,10 +181,17 @@ export function PremiumMatchStats() {
                 </div>
               )}
             </div>
-          </Link>
+            </Link>
+          </motion.div>
 
           {/* Top Players - with link */}
-          <Link href="/team-squad" className="no-underline">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <Link href="/team-squad" className="no-underline">
             <div className="neo-card p-8 h-full">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Top Players</h3>
               
@@ -198,7 +225,8 @@ export function PremiumMatchStats() {
                 View All Players
               </button>
             </div>
-          </Link>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>
