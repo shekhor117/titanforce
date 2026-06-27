@@ -79,7 +79,7 @@ export function GalleryShowcase() {
                 <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {item.type === 'match' && (isBn ? 'ম্যাচ' : 'Match')}
                   {item.type === 'team-events' && (isBn ? 'ইভেন্ট' : 'Events')}
                   {item.type === 'training' && (isBn ? 'প্রশিক্ষণ' : 'Training')}

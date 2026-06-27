@@ -96,7 +96,7 @@ export function PremiumMatchStats() {
                   </button>
                 </div>
               ) : (
-                <div className="text-center py-12 text-slate-400">
+                <div className="text-center py-12 text-muted-foreground">
                   <p className="text-sm">No upcoming matches</p>
                 </div>
               )}
@@ -106,7 +106,7 @@ export function PremiumMatchStats() {
           {/* Last Match - Stats & Facts */}
           <Link href="/fixtures-results" className="no-underline">
             <div className="bg-gradient-to-br from-red-900/30 to-black/50 border border-red-500/20 rounded-lg p-8 hover:border-red-500/40 transition-all cursor-pointer flex flex-col h-full">
-              <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-6 font-bold">Last Match</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-6 font-bold">Last Match</h3>
               
               {lastMatch ? (
                 <div className="flex-1 flex flex-col">
@@ -118,7 +118,7 @@ export function PremiumMatchStats() {
                       </div>
                     </div>
                     <div className="text-center">
-                      <p className="text-3xl font-bold text-white">{lastMatch.home_score} - {lastMatch.away_score}</p>
+                      <p className="text-3xl font-bold text-foreground">{lastMatch.home_score} - {lastMatch.away_score}</p>
                     </div>
                     <div className="flex flex-col items-center gap-2">
                       <div className={`w-10 h-10 ${getTeamBadgeColor(lastMatch.away)} rounded flex items-center justify-center`}>
@@ -129,8 +129,8 @@ export function PremiumMatchStats() {
 
                   {/* Match Info */}
                   <div className="bg-slate-900/40 rounded-lg p-3 mb-4 text-center text-xs">
-                    <p className="text-slate-400">{lastMatch.date}</p>
-                    <p className="text-slate-500 text-[10px] mt-1">{lastMatch.venue}</p>
+                    <p className="text-muted-foreground">{lastMatch.date}</p>
+                    <p className="text-muted-foreground/70 text-[10px] mt-1">{lastMatch.venue}</p>
                   </div>
 
                   {/* Result Badge */}
@@ -151,12 +151,12 @@ export function PremiumMatchStats() {
                     })()}
                   </div>
 
-                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-xs uppercase tracking-widest rounded transition-colors mt-auto">
+                  <button className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-xs uppercase tracking-widest rounded transition-colors mt-auto">
                     View Stats & Lineup
                   </button>
                 </div>
               ) : (
-                <div className="text-center py-12 text-slate-400">
+                <div className="text-center py-12 text-muted-foreground">
                   <p className="text-sm">No completed matches</p>
                 </div>
               )}

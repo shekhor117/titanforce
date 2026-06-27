@@ -88,7 +88,7 @@ export function HomeLatestNews() {
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <p className="text-slate-400 text-sm">No news available</p>
+              <p className="text-muted-foreground text-sm">No news available</p>
             </div>
           )}
         </div>

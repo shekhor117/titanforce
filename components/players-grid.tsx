@@ -100,7 +100,7 @@ export function PlayersGrid() {
                           <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-1">
                             {player.name}
                           </h3>
-                          <p className="text-xs text-slate-400 line-clamp-1">
+                          <p className="text-xs text-muted-foreground line-clamp-1">
                             {player.position || "Player"}
                           </p>
                         </div>
@@ -119,7 +119,7 @@ export function PlayersGrid() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-slate-400 text-sm">No players available</p>
+            <p className="text-muted-foreground text-sm">No players available</p>
           </div>
         )}
 
