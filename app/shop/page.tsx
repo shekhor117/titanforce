@@ -7,6 +7,8 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
+import { EntranceReveal } from "@/components/entrance-reveal"
+import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -194,9 +196,10 @@ export default function ShopPage() {
         </motion.div>
 
         {/* Products Grid */}
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product, index) => (
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -261,15 +264,16 @@ export default function ShopPage() {
                   </div>
                 </Link>
               </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-foreground/60 text-lg">
-              {isBn ? "কোন জার্সি পাওয়া যায়নি" : "No jerseys found"}
-            </p>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-foreground/60 text-lg">
+                {isBn ? "কোন জার্সি পাওয়া যায়নি" : "No jerseys found"}
+              </p>
+            </div>
+          )}
+        </EntranceReveal>
       </div>
     </div>
   )

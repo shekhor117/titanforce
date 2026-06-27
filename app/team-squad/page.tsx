@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft } from "lucide-react"
 import { useEffect } from "react"
+import { EntranceReveal } from "@/components/entrance-reveal"
 
 export default function TeamSquadPage() {
   const router = useRouter()
@@ -81,7 +82,9 @@ export default function TeamSquadPage() {
         </section>
 
         {/* Squad Section */}
-        <Squad />
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+          <Squad />
+        </EntranceReveal>
       </main>
       <Footer />
     </div>

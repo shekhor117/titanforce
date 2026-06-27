@@ -14,6 +14,8 @@ import {
 import { useState, useEffect } from "react"
 import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
 import { useDataStore } from "@/lib/use-data-store"
+import { EntranceReveal } from "@/components/entrance-reveal"
+import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
@@ -392,24 +394,25 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Error State */}
-      {error && (
-        <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
-          <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error instanceof Error ? error.message : "Unknown error"}</p>
-        </div>
-      )}
+    <EntranceReveal delay={0.1} duration={0.6} variant="fadeInUp">
+      <div className="space-y-8">
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
+            <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error instanceof Error ? error.message : "Unknown error"}</p>
+          </div>
+        )}
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-        <div>
-          <h1 className={`font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl tracking-wider text-foreground mb-1 sm:mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
-          </h1>
-          <p className={`text-xs sm:text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {isBn ? "ট্রাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
-          </p>
-        </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+          <div>
+            <h1 className={`font-[var(--font-display)] text-2xl sm:text-3xl md:text-4xl tracking-wider text-foreground mb-1 sm:mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
+            </h1>
+            <p className={`text-xs sm:text-sm text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {isBn ? "ট্রাইটান ফোর্স ম্যানেজমেন্ট সিস্টেম" : "Titan Force Management System"}
+            </p>
+          </div>
         <div className="flex items-center gap-3">
           {contactList.filter((c: any) => c.status === "unread").length > 0 && (
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">
@@ -838,6 +841,7 @@ export default function AdminDashboard() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </EntranceReveal>
   )
 }

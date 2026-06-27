@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Mail, Phone, MapPin, MessageSquare, Send, ArrowLeft, CheckCircle } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { dataStore } from '@/lib/data-store'
+import { EntranceReveal } from '@/components/entrance-reveal'
+import { ScrollStaggerContainer } from '@/components/scroll-stagger-container'
 
 export default function ContactPage() {
   const router = useRouter()
@@ -126,24 +128,29 @@ export default function ContactPage() {
       </div>
 
       {/* Contact Info and Form */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Info */}
-          <div>
-            <h2 className="text-2xl font-bold mb-8">
-              {isBn ? 'আমাদের তথ্য' : 'Contact Information'}
-            </h2>
-            <div className="space-y-6">
-              {contactInfo.map((info, idx) => (
-                <div key={idx} className="flex gap-4">
-                  <div className="text-primary mt-1">{info.icon}</div>
-                  <div>
-                    <h3 className="font-semibold mb-1">{info.label}</h3>
-                    <p className="text-foreground/60">{info.value}</p>
+      <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+        <div className="container mx-auto px-4 py-20">
+          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Contact Info */}
+            <div>
+              <h2 className="text-2xl font-bold mb-8">
+                {isBn ? 'আমাদের তথ্য' : 'Contact Information'}
+              </h2>
+              <ScrollStaggerContainer 
+                className="space-y-6"
+                staggerDelay={0.1}
+                variant="fadeInLeft"
+              >
+                {contactInfo.map((info, idx) => (
+                  <div key={idx} className="flex gap-4">
+                    <div className="text-primary mt-1">{info.icon}</div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{info.label}</h3>
+                      <p className="text-foreground/60">{info.value}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </ScrollStaggerContainer>
 
 
           </div>
@@ -260,7 +267,8 @@ export default function ContactPage() {
             </form>
           </div>
         </div>
-      </div>
+        </div>
+      </EntranceReveal>
     </div>
   )
 }

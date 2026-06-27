@@ -15,6 +15,7 @@ import { HomeShopLatest } from "@/components/home-shop-latest"
 import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { EntranceReveal } from "@/components/entrance-reveal"
 
 export default function Home() {
   // Check if hero animation has been shown this session
@@ -77,26 +78,53 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <ClubInfoSection />
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+          <ClubInfoSection />
+        </EntranceReveal>
         
         {/* Three Column Section */}
-        <section className="py-12 md:py-16 px-4 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <HomeNextFixture />
-              <HomeLeagueStandings />
+        <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
+          <section className="py-12 md:py-16 px-4 bg-background">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <HomeNextFixture />
+                <HomeLeagueStandings />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </EntranceReveal>
 
-        <HomeLatestNews />
-        <PremiumMatchStats />
-        <PlayersGrid />
-        <HomeAboutGallery />
-        <HomeStatsShowcase />
-        <HomeShopLatest />
-        <GalleryShowcase />
-        <Contact />
+        <EntranceReveal delay={0.4} duration={0.6} variant="fadeInUp">
+          <HomeLatestNews />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={0.5} duration={0.6} variant="fadeInUp">
+          <PremiumMatchStats />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={0.6} duration={0.6} variant="fadeInUp">
+          <PlayersGrid />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={0.7} duration={0.6} variant="fadeInUp">
+          <HomeAboutGallery />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={0.8} duration={0.6} variant="fadeInUp">
+          <HomeStatsShowcase />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={0.9} duration={0.6} variant="fadeInUp">
+          <HomeShopLatest />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={1.0} duration={0.6} variant="fadeInUp">
+          <GalleryShowcase />
+        </EntranceReveal>
+        
+        <EntranceReveal delay={1.1} duration={0.6} variant="fadeInUp">
+          <Contact />
+        </EntranceReveal>
       </main>
       <Footer />
     </div>

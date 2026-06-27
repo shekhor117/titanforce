@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AboutPageContent } from "@/components/about-page-content"
+import { EntranceReveal } from "@/components/entrance-reveal"
 
 const About3DScene = dynamic(() => import('@/components/3d-about-scene').then(mod => ({ default: mod.About3DScene })), {
   loading: () => <div className="w-full h-64 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
@@ -63,7 +64,9 @@ export default function AboutPage() {
         </section>
 
         {/* Content Section */}
-        <AboutPageContent />
+        <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
+          <AboutPageContent />
+        </EntranceReveal>
       </main>
       <Footer />
     </div>
