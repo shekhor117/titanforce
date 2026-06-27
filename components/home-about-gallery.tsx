@@ -28,7 +28,7 @@ export function HomeAboutGallery() {
 
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-card hover:bg-card/80 border border-accent/20 hover:border-accent/40 text-foreground font-bold uppercase tracking-wider rounded-lg transition-all duration-300 group"
+              className="neo-btn inline-flex items-center gap-2 group"
             >
               LEARN MORE
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

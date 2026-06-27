@@ -44,7 +44,7 @@ const standingsData = [
 
 export function HomeLeagueStandings() {
   return (
-    <div className="rounded-xl border border-accent/20 bg-card hover:bg-card/80 transition-all duration-300 overflow-hidden h-full flex flex-col">
+    <div className="neo-card overflow-hidden h-full flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-accent/10 flex items-center justify-between">
         <div className="flex items-center gap-2">

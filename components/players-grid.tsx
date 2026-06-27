@@ -68,7 +68,7 @@ export function PlayersGrid() {
                       }}
                     >
                       {/* Player Card */}
-                      <div className="relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300 h-full pointer-events-none">
+                      <div className="neo-floating relative overflow-hidden h-full pointer-events-none">
                         {/* Jersey Number - Top Badge */}
                         <div className="absolute top-2 right-2 z-10 flex gap-2">
                           <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
@@ -133,7 +133,7 @@ export function PlayersGrid() {
         <div className="mt-12 text-center">
           <Link
             href="/team-squad"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-sm uppercase tracking-widest rounded transition-all group"
+            className="neo-btn neo-btn-primary inline-flex items-center gap-2"
           >
             View all players
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
