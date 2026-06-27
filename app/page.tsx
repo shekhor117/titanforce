@@ -13,11 +13,23 @@ import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
-// Lazy load heavy animation components
-const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { ssr: false })
-const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { ssr: false })
-const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { ssr: false })
-const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { ssr: false })
+// Lazy load heavy animation components with loading delay
+const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-card animate-pulse rounded-lg" />
+})
+const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+})
+const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { 
+  ssr: false,
+  loading: () => <div className="h-80 bg-card animate-pulse rounded-lg" />
+})
+const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+})
 
 export default function Home() {
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)

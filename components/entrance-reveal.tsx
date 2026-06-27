@@ -39,10 +39,10 @@ const variantAnimations = {
   },
 }
 
-export function EntranceReveal({
+export const EntranceReveal = React.memo(function EntranceRevealComponent({
   children,
   delay = 0,
-  duration = 0.5,
+  duration = 0.4,
   variant = 'fadeInUp',
   className = '',
   staggerChildren = false,
@@ -51,9 +51,9 @@ export function EntranceReveal({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.1, margin: "0px 0px -40px 0px" }}
       variants={variantAnimations[variant]}
-      transition={{ duration: Math.min(duration, 0.5), delay: Math.min(delay, 0.3), ease: 'easeOut' }}
+      transition={{ duration: Math.min(duration, 0.35), delay: Math.min(delay, 0.15), ease: 'easeOut' }}
       className={className}
     >
       {staggerChildren && React.isValidElement(children) && React.Children.count(children) > 1 ? (
@@ -80,4 +80,4 @@ export function EntranceReveal({
       )}
     </motion.div>
   )
-}
+})

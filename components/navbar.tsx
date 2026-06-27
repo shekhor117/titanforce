@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, memo, useCallback, useMemo } from "react"
 import { Menu, X, Globe, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -11,7 +11,7 @@ import { UserProfileDropdown } from "@/components/user-profile-dropdown"
 import { useCart } from "@/lib/cart-context"
 import { ButtonModern } from "@/components/button-modern"
 
-export function Navbar() {
+function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
@@ -161,3 +161,5 @@ export function Navbar() {
     </nav>
   )
 }
+
+export const Navbar = memo(NavbarComponent)

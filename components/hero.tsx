@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import Image from "next/image"
 import { TransitionLink } from "@/components/transition-link"
 import { TextReveal } from "@/components/text-reveal"
@@ -9,7 +10,7 @@ interface HeroProps {
   skipAnimation?: boolean
 }
 
-export function Hero({ skipAnimation = false }: HeroProps) {
+function HeroComponent({ skipAnimation = false }: HeroProps) {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0">
@@ -109,3 +110,5 @@ export function Hero({ skipAnimation = false }: HeroProps) {
     </section>
   )
 }
+
+export const Hero = memo(HeroComponent)
