@@ -62,18 +62,31 @@ export default function AdminMatchesPage() {
   }
 
   const handleAddFixture = async (fixture: Fixture) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.createMatch({
-        home: fixture.homeTeam,
-        away: fixture.awayTeam,
-        home_score: fixture.homeScore,
-        away_score: fixture.awayScore,
-        date: fixture.date,
-        time: fixture.time,
-        venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
-      })
+      await retryOperation(() =>
+        service.createMatch({
+          home: fixture.homeTeam,
+          away: fixture.awayTeam,
+          home_score: fixture.homeScore ?? 0,
+          away_score: fixture.awayScore ?? 0,
+          date: fixture.date,
+          time: fixture.time,
+          venue: fixture.stadium,
+          status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
+        })
+      )
       
       setSuccessMessage('Match created successfully')
       await loadMatches()
@@ -82,23 +95,37 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to add match'
       console.error('[v0] Error adding match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 
   const handleUpdateFixture = async (fixture: Fixture) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.updateMatch(fixture.id, {
-        home: fixture.homeTeam,
-        away: fixture.awayTeam,
-        home_score: fixture.homeScore,
-        away_score: fixture.awayScore,
-        date: fixture.date,
-        time: fixture.time,
-        venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
-        match_events: fixture.events,
-      })
+      await retryOperation(() => 
+        service.updateMatch(fixture.id, {
+          home: fixture.homeTeam,
+          away: fixture.awayTeam,
+          home_score: fixture.homeScore ?? 0,
+          away_score: fixture.awayScore ?? 0,
+          date: fixture.date,
+          time: fixture.time,
+          venue: fixture.stadium,
+          status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
+          match_events: fixture.events || [],
+        })
+      )
       
       setSuccessMessage('Match updated successfully')
       await loadMatches()
@@ -107,13 +134,25 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to update match'
       console.error('[v0] Error updating match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 
   const handleDeleteFixture = async (fixtureId: string) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.deleteMatch(fixtureId)
+      await retryOperation(() => service.deleteMatch(fixtureId))
       setSuccessMessage('Match deleted successfully')
       await loadMatches()
       setTimeout(() => setSuccessMessage(null), 3000)
@@ -121,6 +160,7 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to delete match'
       console.error('[v0] Error deleting match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 

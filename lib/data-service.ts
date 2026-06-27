@@ -52,8 +52,8 @@ export interface Match {
   date: string
   time: string
   venue: string
-  home_score: number
-  away_score: number
+  home_score: number | null | undefined
+  away_score: number | null | undefined
   status: 'live' | 'completed' | 'upcoming'
   tournament?: string
   home_lineup?: Array<{ name: string; number: number }>
