@@ -73,9 +73,6 @@ export function AboutPageContent() {
 
           {/* About Section */}
           <div>
-            <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {t.about.subtitle}
-            </p>
             <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-0 text-accent ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {t.about.location}
             </p>
