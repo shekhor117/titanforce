@@ -35,21 +35,50 @@ export default function AdminMatchesPage() {
       const matches = await retryOperation(() => service.getMatches())
       
       // Convert Match to Fixture format
-      const convertedFixtures: Fixture[] = matches.map((match: any) => ({
-        id: match.id,
-        homeTeam: match.home || 'Home Team',
-        awayTeam: match.away || 'Away Team',
-        homeLogoColor: 'bg-emerald-600',
-        awayLogoColor: 'bg-indigo-600',
-        homeScore: match.home_score ?? 0,
-        awayScore: match.away_score ?? 0,
-        date: match.date,
-        time: match.time,
-        stadium: match.venue,
-        referee: 'TBD',
-        status: (match.status === 'live' ? 'Live' : match.status === 'completed' ? 'Finished' : 'Upcoming') as 'Upcoming' | 'Live' | 'Finished',
-        events: match.match_events || [],
-      }))
+      const convertedFixtures: Fixture[] = matches.map((match: any) => {
+        // Convert goals to events for display in FixtureManager
+        const goalEvents: any[] = []
+        if (match.homeGoals) {
+          match.homeGoals.forEach((goal: any, idx: number) => {
+            goalEvents.push({
+              id: `hg_${idx}`,
+              type: 'goal',
+              minute: goal.minute || 0,
+              team: 'home',
+              playerName: goal.player,
+              assistantName: goal.assist
+            })
+          })
+        }
+        if (match.awayGoals) {
+          match.awayGoals.forEach((goal: any, idx: number) => {
+            goalEvents.push({
+              id: `ag_${idx}`,
+              type: 'goal',
+              minute: goal.minute || 0,
+              team: 'away',
+              playerName: goal.player,
+              assistantName: goal.assist
+            })
+          })
+        }
+
+        return {
+          id: match.id,
+          homeTeam: match.home || 'Home Team',
+          awayTeam: match.away || 'Away Team',
+          homeLogoColor: 'bg-emerald-600',
+          awayLogoColor: 'bg-indigo-600',
+          homeScore: match.home_score ?? 0,
+          awayScore: match.away_score ?? 0,
+          date: match.date,
+          time: match.time,
+          stadium: match.venue,
+          referee: 'TBD',
+          status: (match.status === 'live' ? 'Live' : match.status === 'completed' ? 'Finished' : 'Upcoming') as 'Upcoming' | 'Live' | 'Finished',
+          events: goalEvents.length > 0 ? goalEvents : match.match_events || [],
+        }
+      })
       
       setFixtures(convertedFixtures)
       setError(null)
@@ -62,18 +91,31 @@ export default function AdminMatchesPage() {
   }
 
   const handleAddFixture = async (fixture: Fixture) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.createMatch({
-        home: fixture.homeTeam,
-        away: fixture.awayTeam,
-        home_score: fixture.homeScore,
-        away_score: fixture.awayScore,
-        date: fixture.date,
-        time: fixture.time,
-        venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
-      })
+      await retryOperation(() =>
+        service.createMatch({
+          home: fixture.homeTeam,
+          away: fixture.awayTeam,
+          home_score: fixture.homeScore ?? 0,
+          away_score: fixture.awayScore ?? 0,
+          date: fixture.date,
+          time: fixture.time,
+          venue: fixture.stadium,
+          status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
+        })
+      )
       
       setSuccessMessage('Match created successfully')
       await loadMatches()
@@ -82,23 +124,66 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to add match'
       console.error('[v0] Error adding match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 
   const handleUpdateFixture = async (fixture: Fixture) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.updateMatch(fixture.id, {
-        home: fixture.homeTeam,
-        away: fixture.awayTeam,
-        home_score: fixture.homeScore,
-        away_score: fixture.awayScore,
-        date: fixture.date,
-        time: fixture.time,
-        venue: fixture.stadium,
-        status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
-        match_events: fixture.events,
-      })
+      
+      // Convert goal events to homeGoals and awayGoals format
+      const homeGoals = fixture.events
+        .filter((e: any) => e.team === 'home' && e.type === 'goal')
+        .map((e: any) => ({
+          player: e.playerName,
+          minute: e.minute,
+          assist: e.assistantName || undefined
+        }))
+      
+      const awayGoals = fixture.events
+        .filter((e: any) => e.team === 'away' && e.type === 'goal')
+        .map((e: any) => ({
+          player: e.playerName,
+          minute: e.minute,
+          assist: e.assistantName || undefined
+        }))
+
+      // Calculate result
+      let result: 'W' | 'L' | 'D' | undefined = undefined
+      if (fixture.status === 'Finished') {
+        if (fixture.homeScore > fixture.awayScore) result = 'W'
+        else if (fixture.homeScore < fixture.awayScore) result = 'L'
+        else result = 'D'
+      }
+
+      await retryOperation(() => 
+        service.updateMatch(fixture.id, {
+          home: fixture.homeTeam,
+          away: fixture.awayTeam,
+          home_score: fixture.homeScore ?? 0,
+          away_score: fixture.awayScore ?? 0,
+          date: fixture.date,
+          time: fixture.time,
+          venue: fixture.stadium,
+          status: fixture.status === 'Live' ? 'live' : fixture.status === 'Finished' ? 'completed' : 'upcoming',
+          result: result,
+          homeGoals: homeGoals.length > 0 ? homeGoals : undefined,
+          awayGoals: awayGoals.length > 0 ? awayGoals : undefined,
+          match_events: fixture.events || [],
+        })
+      )
       
       setSuccessMessage('Match updated successfully')
       await loadMatches()
@@ -107,13 +192,25 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to update match'
       console.error('[v0] Error updating match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 
   const handleDeleteFixture = async (fixtureId: string) => {
+    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          return await operation()
+        } catch (err) {
+          if (i === maxRetries - 1) throw err
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+        }
+      }
+    }
+
     try {
       setError(null)
-      await service.deleteMatch(fixtureId)
+      await retryOperation(() => service.deleteMatch(fixtureId))
       setSuccessMessage('Match deleted successfully')
       await loadMatches()
       setTimeout(() => setSuccessMessage(null), 3000)
@@ -121,6 +218,7 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to delete match'
       console.error('[v0] Error deleting match:', err)
       setError(errorMsg)
+      setTimeout(() => setError(null), 5000)
     }
   }
 
