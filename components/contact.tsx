@@ -310,28 +310,7 @@ export function Contact() {
               )}
             </div>
 
-          {/* Social Links */}
-          {socialLinks.length > 0 && (
-            <div className="mt-8 text-center">
-              <p className={`text-sm text-foreground/60 mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                {t.contact.followUs}
-              </p>
-              <div className="flex justify-center gap-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-12 h-12 flex items-center justify-center rounded-xl border-2 border-border/50 text-foreground/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-                  >
-                    <social.icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
     </section>

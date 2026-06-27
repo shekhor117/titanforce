@@ -157,7 +157,7 @@ export function AdminLoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 font-bold text-sm uppercase tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition flex items-center justify-center gap-2"
+              className="w-full py-3 font-bold text-sm uppercase tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/50 hover:-translate-y-1 disabled:opacity-50 disabled:hover:shadow-none disabled:hover:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2"
             >
               {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
               {isSubmitting ? (isBn ? "লগইন করছে..." : "Logging in...") : (isBn ? "লগইন করুন" : "Login")}

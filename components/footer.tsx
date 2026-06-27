@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Facebook, Twitter, Instagram, Youtube } from "lucide-react"
+import { Facebook, Instagram, Youtube } from "lucide-react"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -29,13 +29,31 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-background text-foreground py-16 px-4">
+    <footer className="bg-background text-foreground py-12 md:py-16 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Brand Section - Mobile */}
+        <div className="md:hidden mb-8 pb-8 border-b border-primary/10">
+          <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
+            <Image
+              src="/logos/titanforce-logo.svg"
+              alt="Titan Force Mulikandi Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </Link>
+          <h3 className="font-bold text-lg tracking-wide mb-2 text-foreground">TITAN FORCE</h3>
+          <p className="text-xs text-muted-foreground mb-1">MULIKANDI</p>
+          <p className="text-sm text-muted-foreground leading-relaxed mt-4">
+            Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
+          </p>
+        </div>
+
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-6 md:gap-12 mb-8 md:mb-12">
           
-          {/* Brand Section */}
-          <div className="md:col-span-1">
+          {/* Brand Section - Desktop Only */}
+          <div className="hidden md:block">
             <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
               <Image
                 src="/logos/titanforce-logo.svg"
@@ -53,7 +71,7 @@ export function Footer() {
           </div>
 
           {/* Club Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Club</h4>
             <ul className="space-y-3">
               {clubLinks.map((link) => (
@@ -70,7 +88,7 @@ export function Footer() {
           </div>
 
           {/* Teams Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Teams</h4>
             <ul className="space-y-3">
               {teamsLinks.map((link) => (
@@ -87,7 +105,7 @@ export function Footer() {
           </div>
 
           {/* Connect Links */}
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-primary text-xs font-bold tracking-widest mb-6 uppercase">Connect</h4>
             <ul className="space-y-3">
               {connectLinks.map((link) => (
@@ -105,7 +123,7 @@ export function Footer() {
         </div>
 
         {/* Social Media Links */}
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-6 mb-8">
           <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
@@ -118,13 +136,15 @@ export function Footer() {
               <Facebook className="w-6 h-6" />
             </a>
             <a
-              href="https://twitter.com/titanforce"
+              href="https://tiktok.com/@titanforce"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
-              aria-label="Twitter"
+              aria-label="TikTok"
             >
-              <Twitter className="w-6 h-6" />
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.08 1.61 2.88 2.88 0 0 1 4.07-4.09v-3.45a6.47 6.47 0 0 0-5.79 10.221 6.648 6.648 0 0 0 10.86-5.48v-5.6a8.552 8.552 0 0 0 3.79-1.75v-3.54z"/>
+              </svg>
             </a>
             <a
               href="https://instagram.com/titanforce"
@@ -148,7 +168,7 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-center pt-8">
+        <div className="border-t border-primary/10 pt-6 md:pt-8 text-center">
           <p className="text-muted-foreground text-xs tracking-wider">
             © {currentYear} TITAN FORCE MULIKANDI · ALL RIGHTS RESERVED
           </p>
