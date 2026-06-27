@@ -187,7 +187,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-3 font-bold text-sm uppercase tracking-wider rounded glass-btn-primary text-primary-foreground hover:scale-105 transition disabled:opacity-50 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+                className={`w-full py-3 font-bold text-sm uppercase tracking-wider rounded glass-btn-primary text-primary-foreground hover:scale-105 hover:shadow-lg hover:shadow-primary/50 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none transition-all duration-300 ${isBn ? "font-[var(--font-bengali)]" : ""}`}
               >
                 {isLoading ? (isBn ? "লোড হচ্ছে..." : "Loading...") : (isLoginMode ? (isBn ? "লগইন" : "Login") : (isBn ? "সাইন আপ" : "Sign Up"))}
               </button>
