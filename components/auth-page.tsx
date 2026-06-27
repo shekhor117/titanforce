@@ -751,14 +751,14 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
                 <button
                   type="button"
                   onClick={handlePreviousStep}
-                  className="flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
+                  className="neo-btn neo-soft flex-1 bg-muted hover:bg-muted/80 text-foreground font-semibold py-3 rounded-xl transition-colors"
                 >
                   {isBn ? 'পিছনে' : 'Back'}
                 </button>
                 <button
                   type="submit"
                   disabled={!agreeToTerms || isLoading}
-                  className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                  className="neo-btn neo-btn-primary flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isBn ? 'অ্যাকাউন���ট তৈরি করুন' : 'Create Account'}
@@ -831,7 +831,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               <button
                 type="submit"
                 disabled={isLoading || (authStep === 'details' && view === 'signup' && !dateOfBirth)}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
+                className="neo-btn neo-btn-primary w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
                 {isLoading
@@ -891,7 +891,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('apple')}
             disabled={isAppleLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isAppleLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />
@@ -909,7 +909,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('google')}
             disabled={isGoogleLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isGoogleLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />
@@ -930,7 +930,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             type="button"
             onClick={() => handleOAuthLogin('facebook')}
             disabled={isFacebookLoading}
-            className="w-full flex items-center justify-center p-4 bg-muted border border-border rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
+            className="neo-btn neo-soft w-full flex items-center justify-center p-4 bg-muted rounded-xl hover:bg-muted/80 transition-all disabled:opacity-50"
           >
             {isFacebookLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-3" />
