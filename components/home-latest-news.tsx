@@ -12,13 +12,13 @@ export function HomeLatestNews() {
   const topNews = newsItems.slice(0, 4)
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-black/40">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
               Latest News
             </h2>
           </div>
@@ -71,12 +71,12 @@ export function HomeLatestNews() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-2 mb-3">
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2 mb-3">
                     {item.title}
                   </h3>
 
                   {/* Date */}
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     {item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', {
                       day: 'numeric',
                       month: 'short',
@@ -88,7 +88,7 @@ export function HomeLatestNews() {
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <p className="text-slate-400 text-sm">No news available</p>
+              <p className="text-muted-foreground text-sm">No news available</p>
             </div>
           )}
         </div>

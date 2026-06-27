@@ -37,13 +37,13 @@ export function GalleryShowcase() {
   })) : DEFAULT_FEATURED_ITEMS
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-black/40">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
               {isBn ? 'গ্যালারি' : 'Gallery'}
             </h2>
           </div>
@@ -76,10 +76,10 @@ export function GalleryShowcase() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-                <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-2">
+                <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2">
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {item.type === 'match' && (isBn ? 'ম্যাচ' : 'Match')}
                   {item.type === 'team-events' && (isBn ? 'ইভেন্ট' : 'Events')}
                   {item.type === 'training' && (isBn ? 'প্রশিক্ষণ' : 'Training')}

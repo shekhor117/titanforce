@@ -31,13 +31,13 @@ export function HomeShopLatest() {
   }, [])
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-black/40">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
               Shop
             </h2>
           </div>
@@ -55,8 +55,8 @@ export function HomeShopLatest() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-square bg-gray-800 rounded-lg mb-3" />
-                <div className="h-4 bg-gray-800 rounded w-3/4" />
+                <div className="aspect-square bg-muted rounded-lg mb-3" />
+                <div className="h-4 bg-muted rounded w-3/4" />
               </div>
             ))}
           </div>
@@ -97,7 +97,7 @@ export function HomeShopLatest() {
 
                   {/* Product Info */}
                   <div className="p-3 bg-black/60 backdrop-blur-sm">
-                    <h3 className="text-xs font-bold text-white group-hover:text-red-500 transition-colors line-clamp-2 mb-1">
+                    <h3 className="text-xs font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2 mb-1">
                       {product.name}
                     </h3>
                     <p className="text-xs text-red-500 font-bold">৳{product.price}</p>
@@ -112,7 +112,7 @@ export function HomeShopLatest() {
         <div className="text-center">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-white text-sm uppercase tracking-widest rounded transition-all group"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-foreground text-sm uppercase tracking-widest rounded transition-all group"
           >
             View all products
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

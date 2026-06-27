@@ -23,13 +23,13 @@ export function PlayersGrid() {
     : []
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-black/40">
+    <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
               Players
             </h2>
           </div>
@@ -97,10 +97,10 @@ export function PlayersGrid() {
 
                         {/* Player Info */}
                         <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
-                          <h3 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors line-clamp-1">
+                          <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-1">
                             {player.name}
                           </h3>
-                          <p className="text-xs text-slate-400 line-clamp-1">
+                          <p className="text-xs text-muted-foreground line-clamp-1">
                             {player.position || "Player"}
                           </p>
                         </div>
@@ -119,7 +119,7 @@ export function PlayersGrid() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-slate-400 text-sm">No players available</p>
+            <p className="text-muted-foreground text-sm">No players available</p>
           </div>
         )}
 
