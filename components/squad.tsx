@@ -83,12 +83,12 @@ export function Squad() {
           className={`text-center mb-8 sm:mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
         >
-          <p className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.squad.subtitle}
-          </p>
           <h2 className={`text-3xl sm:text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
             {t.squad.title}
           </h2>
+          <p className={`text-sm sm:text-base md:text-lg text-foreground/70 max-w-2xl mx-auto px-2 mt-4 sm:mt-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "আমাদের প্রতিভাবান খেলোয়াড়দের দেখুন যারা টাইটান ফোর্সের গর্বের প্রতিনিধিত্ব করে" : "Meet the talented players representing Titan Force on the pitch"}
+          </p>
         </div>
 
         <div

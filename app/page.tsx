@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, lazy, Suspense } from "react"
+import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { ClubInfoSection } from "@/components/club-info-section"
@@ -9,18 +10,29 @@ import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { HomeStatsShowcase } from "@/components/home-stats-showcase"
-import { PremiumMatchStats } from "@/components/premium-match-stats"
-import { PlayersGrid } from "@/components/players-grid"
-import { HomeShopLatest } from "@/components/home-shop-latest"
-import { GalleryShowcase } from "@/components/gallery-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
-import { EntranceReveal } from "@/components/entrance-reveal"
+
+// Lazy load heavy animation components with loading delay
+const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-card animate-pulse rounded-lg" />
+})
+const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+})
+const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { 
+  ssr: false,
+  loading: () => <div className="h-80 bg-card animate-pulse rounded-lg" />
+})
+const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+})
 
 export default function Home() {
-  // Check if hero animation has been shown this session
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
-  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
     try {
@@ -45,13 +57,10 @@ export default function Home() {
 
       // Check sessionStorage after mount
       const alreadyShown = sessionStorage.getItem("hero-shown")
-      if (alreadyShown) {
-        setHasSeenAnimation(true)
-        setHeroLoading(false)
-      }
+      setHasSeenAnimation(!!alreadyShown)
+      sessionStorage.setItem("hero-shown", "true")
 
       return () => {
-        // Cleanup - safely remove script
         try {
           if (script && script.parentNode) {
             script.parentNode.removeChild(script)
@@ -61,66 +70,48 @@ export default function Home() {
         }
       }
     } catch (error) {
-      // Silently handle any DOM errors
       console.log("[v0] Schema setup error:", error instanceof Error ? error.message : "Unknown error")
     }
   }, [])
-
-  const handleLoadingChange = (loading: boolean) => {
-    setHeroLoading(loading)
-    if (!loading) {
-      sessionStorage.setItem("hero-shown", "true")
-    }
-  }
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        <Hero onLoadingChange={handleLoadingChange} skipAnimation={hasSeenAnimation} />
-        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
-          <ClubInfoSection />
-        </EntranceReveal>
+        <Hero skipAnimation={hasSeenAnimation} />
+        <ClubInfoSection />
         
         {/* Three Column Section */}
-        <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
-          <section className="py-12 md:py-16 px-4 bg-background">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <HomeNextFixture />
-                <HomeLeagueStandings />
-              </div>
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <HomeNextFixture />
+              <HomeLeagueStandings />
             </div>
-          </section>
-        </EntranceReveal>
+          </div>
+        </section>
 
-        <EntranceReveal delay={0.4} duration={0.6} variant="fadeInUp">
-          <HomeLatestNews />
-        </EntranceReveal>
+        <HomeLatestNews />
         
-        <EntranceReveal delay={0.5} duration={0.6} variant="fadeInUp">
+        <Suspense fallback={<div className="py-12 bg-background" />}>
           <PremiumMatchStats />
-        </EntranceReveal>
+        </Suspense>
         
-        <EntranceReveal delay={0.6} duration={0.6} variant="fadeInUp">
+        <Suspense fallback={<div className="py-12 bg-background" />}>
           <PlayersGrid />
-        </EntranceReveal>
+        </Suspense>
         
-        <EntranceReveal delay={0.7} duration={0.6} variant="fadeInUp">
-          <HomeAboutGallery />
-        </EntranceReveal>
+        <HomeAboutGallery />
         
-        <EntranceReveal delay={0.8} duration={0.6} variant="fadeInUp">
-          <HomeStatsShowcase />
-        </EntranceReveal>
+        <HomeStatsShowcase />
         
-        <EntranceReveal delay={0.9} duration={0.6} variant="fadeInUp">
+        <Suspense fallback={<div className="py-12 bg-background" />}>
           <HomeShopLatest />
-        </EntranceReveal>
+        </Suspense>
         
-        <EntranceReveal delay={1.0} duration={0.6} variant="fadeInUp">
+        <Suspense fallback={<div className="py-12 bg-background" />}>
           <GalleryShowcase />
-        </EntranceReveal>
+        </Suspense>
         
         <Contact />
       </main>

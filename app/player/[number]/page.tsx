@@ -155,7 +155,7 @@ export default function PlayerProfile() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 transition text-sm sm:text-base"
+            className="neo-btn flex items-center gap-2 text-primary px-3 py-2 rounded transition-all duration-300 hover:scale-105 active:scale-95 text-sm sm:text-base"
           >
             <ArrowLeft className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
             <span className={isBn ? "font-[var(--font-bengali)]" : ""}>

@@ -7,7 +7,12 @@ import { MatchPrediction } from "@/components/match-prediction"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
 
-export function Matches() {
+interface MatchesProps {
+  heroTitle?: string
+  heroDescription?: string
+}
+
+export function Matches({ heroTitle, heroDescription }: MatchesProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
@@ -61,17 +66,19 @@ export function Matches() {
   return (
     <section id="matches" ref={sectionRef} className="py-16 px-4">
       <div className="max-w-4xl mx-auto">
-        <div
-          className={`text-center mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-        >
-          <p className={`text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-            {t.matches.subtitle}
-          </p>
-          <h2 className={`text-4xl md:text-5xl tracking-wide text-foreground ${isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"}`}>
-            {t.matches.title}
-          </h2>
-        </div>
+        {heroTitle && heroDescription && (
+          <div
+            className={`text-center mb-12 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+          >
+            <h1 className={`text-5xl md:text-7xl font-black tracking-wider text-primary mb-4 text-center ${isBn ? "font-[var(--font-bengali)]" : "font-[var(--font-display)]"}`}>
+              {heroTitle}
+            </h1>
+            <p className={`text-lg text-foreground/70 max-w-2xl mx-auto text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+              {heroDescription}
+            </p>
+          </div>
+        )}
 
         <div className="space-y-4">
           {isLoading ? (

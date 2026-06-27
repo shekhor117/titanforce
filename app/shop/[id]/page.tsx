@@ -95,7 +95,7 @@ export default function ProductDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors"
+            className="neo-btn flex items-center gap-2 text-foreground px-3 py-2 rounded transition-all duration-300 hover:scale-105 active:scale-95"
           >
             <ChevronLeft className="w-5 h-5" />
             <span>{isBn ? "ফিরে যান" : "Back"}</span>

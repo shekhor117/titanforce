@@ -32,19 +32,19 @@ export function TextReveal({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren,
+        staggerChildren: Math.max(staggerChildren, 0.008),
         delayChildren: delay,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration,
+        duration: Math.max(duration, 0.03),
         ease: 'easeOut',
       },
     },

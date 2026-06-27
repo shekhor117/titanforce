@@ -21,8 +21,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     setIsTransitioning(false)
   }, [])
 
+  const value = { isTransitioning, startTransition, endTransition }
   return (
-    <TransitionContext.Provider value={{ isTransitioning, startTransition, endTransition }}>
+    <TransitionContext.Provider value={value}>
       {children}
     </TransitionContext.Provider>
   )
