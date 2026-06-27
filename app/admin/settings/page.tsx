@@ -102,7 +102,7 @@ export default function AdminSettingsPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded whitespace-nowrap transition ${
               activeTab === tab.key
                 ? "bg-primary text-primary-foreground"
-                : "bg-card border-2 border-secondary text-foreground/70 hover:border-primary hover:text-primary"
+                : "bg-card border-2 border-secondary text-foreground/70 hover:text-primary"
             } ${isBn ? "font-[var(--font-bengali)]" : ""}`}
           >
             {tab.icon}
@@ -128,7 +128,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   value={settings.siteName}
                   onChange={(e) => handleChange("siteName", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -139,7 +139,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   value={settings.tagline}
                   onChange={(e) => handleChange("tagline", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -150,7 +150,7 @@ export default function AdminSettingsPage() {
                   type="email"
                   value={settings.contactEmail}
                   onChange={(e) => handleChange("contactEmail", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -161,7 +161,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   value={settings.contactPhone}
                   onChange={(e) => handleChange("contactPhone", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function AdminSettingsPage() {
                 value={settings.description}
                 onChange={(e) => handleChange("description", e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none resize-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none resize-none"
               />
             </div>
 
@@ -186,7 +186,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={settings.address}
                 onChange={(e) => handleChange("address", e.target.value)}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
               />
             </div>
 
@@ -201,7 +201,7 @@ export default function AdminSettingsPage() {
                   type="url"
                   value={settings.socialLinks.facebook || ""}
                   onChange={(e) => handleSocialChange("facebook", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -210,7 +210,7 @@ export default function AdminSettingsPage() {
                   type="url"
                   value={settings.socialLinks.instagram || ""}
                   onChange={(e) => handleSocialChange("instagram", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -219,7 +219,7 @@ export default function AdminSettingsPage() {
                   type="url"
                   value={settings.socialLinks.twitter || ""}
                   onChange={(e) => handleSocialChange("twitter", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
               <div>
@@ -228,7 +228,7 @@ export default function AdminSettingsPage() {
                   type="url"
                   value={settings.socialLinks.youtube || ""}
                   onChange={(e) => handleSocialChange("youtube", e.target.value)}
-                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                  className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
                 />
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={settings.heroTitle}
                 onChange={(e) => handleChange("heroTitle", e.target.value)}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
               />
             </div>
             
@@ -261,7 +261,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={settings.heroSubtitle}
                 onChange={(e) => handleChange("heroSubtitle", e.target.value)}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
               />
             </div>
 
@@ -293,7 +293,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={settings.aboutTitle}
                 onChange={(e) => handleChange("aboutTitle", e.target.value)}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none"
               />
             </div>
             
@@ -305,7 +305,7 @@ export default function AdminSettingsPage() {
                 value={settings.aboutDescription}
                 onChange={(e) => handleChange("aboutDescription", e.target.value)}
                 rows={4}
-                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground focus:border-primary outline-none resize-none"
+                className="w-full px-4 py-2 rounded border-2 border-secondary bg-background text-foreground outline-none resize-none"
               />
             </div>
           </div>

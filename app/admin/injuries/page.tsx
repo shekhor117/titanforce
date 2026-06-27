@@ -257,7 +257,7 @@ export default function AdminInjuriesPage() {
                 className={`w-full text-left p-3 rounded-lg border-2 transition ${
                   selectedInjury?.id === injury.id
                     ? "border-primary bg-primary/10"
-                    : "border-secondary hover:border-primary/50"
+                    : "border-secondary/50"
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -374,7 +374,7 @@ export default function AdminInjuriesPage() {
                     setShowForm(false)
                     setSelectedInjury(null)
                   }}
-                  className="px-4 py-2 rounded-lg border-2 border-secondary hover:border-primary text-foreground/70 hover:text-primary transition"
+                  className="px-4 py-2 rounded-lg border-2 border-secondary text-foreground/70 hover:text-primary transition"
                 >
                   {isBn ? "বাতিল" : "Cancel"}
                 </button>

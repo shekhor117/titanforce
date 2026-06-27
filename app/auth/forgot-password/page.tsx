@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className="w-full max-w-md"
         >
-          <div className="bg-card border border-border rounded-2xl p-8 shadow-lg text-center">
+          <div className="bg-card neo-soft border-border rounded-2xl p-8 shadow-lg text-center">
             <div className="mb-6 flex justify-center">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-primary" />
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className="w-full max-w-md"
       >
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
+        <div className="bg-card neo-soft border-border rounded-2xl p-8 shadow-lg">
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <img
@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
                   setError("")
                 }}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-muted text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition"
+                className="w-full px-4 py-3 rounded-xl neo-soft border-border bg-muted text-foreground placeholder-muted-foreground focus:outline-none transition"
                 disabled={isLoading}
               />
             </div>
@@ -190,7 +190,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           {/* Demo Mode Info */}
-          <div className="mt-6 p-3 rounded-xl bg-secondary/20 border border-secondary/30 text-xs text-muted-foreground">
+          <div className="mt-6 p-3 rounded-xl bg-secondary/20 neo-input/30 text-xs text-muted-foreground">
             <p className="font-semibold mb-1">{isBn ? "ডেমো মোড:" : "Demo Mode:"}</p>
             <p>{isBn ? "ডেমো মোডে, ইমেল পাঠানো সিমুলেট করা হবে।" : "In demo mode, email sending will be simulated."}</p>
           </div>

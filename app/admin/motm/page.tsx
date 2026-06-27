@@ -81,7 +81,7 @@ export default function AdminMotmPage() {
               className={`w-full text-left p-4 rounded-lg border-2 transition ${
                 selectedMatch?.id === match.id
                   ? "border-primary bg-primary/10"
-                  : "border-secondary hover:border-primary/50"
+                  : "border-secondary/50"
               }`}
             >
               <div className="font-semibold text-foreground">{match.name}</div>
@@ -133,7 +133,7 @@ export default function AdminMotmPage() {
                   className={`p-4 rounded-lg border-2 transition text-center ${
                     selectedPlayer?.id === player.id
                       ? "border-primary bg-primary/10"
-                      : "border-secondary hover:border-primary/50"
+                      : "border-secondary/50"
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2 mb-2">
@@ -153,7 +153,7 @@ export default function AdminMotmPage() {
           <div className="flex gap-3">
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-secondary hover:border-primary text-foreground/70 hover:text-primary transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-secondary text-foreground/70 hover:text-primary transition"
             >
               <RefreshCw className="w-4 h-4" />
               {isBn ? "রিসেট" : "Reset"}

@@ -132,7 +132,7 @@ export default function AdminFans() {
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 border border-primary/30">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 neo-input/30">
             <Users className="w-6 h-6 text-primary" />
             <div>
               <div className="text-2xl font-[var(--font-display)] text-primary">{totalFans}</div>
@@ -163,7 +163,7 @@ export default function AdminFans() {
             placeholder={isBn ? "খোঁজ করুন..." : "Search fans..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+            className="w-full pl-10 pr-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
           />
         </div>
         <div className="flex gap-2">
@@ -207,28 +207,28 @@ export default function AdminFans() {
                 placeholder={isBn ? "নাম" : "Name"}
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
               />
               <input
                 type="email"
                 placeholder={isBn ? "ইমেইল" : "Email"}
                 value={formData.email}
                 onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
               />
               <input
                 type="tel"
                 placeholder={isBn ? "ফোন (ঐচ্ছিক)" : "Phone (optional)"}
                 value={formData.phone}
                 onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
               />
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <select
                 value={formData.membershipType}
                 onChange={(e) => setFormData((prev) => ({ ...prev, membershipType: e.target.value as Fan["membershipType"] }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
               >
                 <option value="regular">{isBn ? "রেগুলার" : "Regular"}</option>
                 <option value="premium">{isBn ? "প্রিমিয়াম" : "Premium"}</option>
@@ -237,7 +237,7 @@ export default function AdminFans() {
               <select
                 value={formData.status}
                 onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as Fan["status"] }))}
-                className="px-4 py-2 rounded border-2 border-secondary bg-transparent focus:border-primary outline-none"
+                className="px-4 py-2 rounded border-2 border-secondary bg-transparent outline-none"
               >
                 <option value="active">{isBn ? "সক্রিয়" : "Active"}</option>
                 <option value="pending">{isBn ? "অপেক্ষমান" : "Pending"}</option>

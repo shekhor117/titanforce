@@ -43,7 +43,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/shop"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
+          className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />
           {isBn ? "শপে ফিরুন" : "Back to Shop"}
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
         </div>
         <Link
           href="/"
-          className="px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+          className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
         >
           {isBn ? "হোমে ফিরুন" : "Back to Home"}
         </Link>
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isProcessing}
-              className="neo-btn neo-btn-primary w-full px-6 py-3 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="neo-btn neo-btn-primary neo-btn neo-btn-primary w-full px-4 py-2 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>

@@ -69,7 +69,7 @@ export default function MigrationsSetupPage() {
         {/* Main Content */}
         <div className="space-y-6">
           {/* Quick Setup Card */}
-          <div className="bg-surface rounded-lg border border-primary/20 p-8 shadow-lg">
+          <div className="bg-surface rounded-lg neo-input border p-8 shadow-lg">
             <h2 className="text-2xl font-bold text-foreground mb-6">Quick Setup</h2>
             
             {/* Method 1: CLI Command */}
@@ -78,7 +78,7 @@ export default function MigrationsSetupPage() {
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm">1</span>
                 Using Supabase CLI (Recommended)
               </h3>
-              <div className="bg-muted rounded-lg p-4 border border-border">
+              <div className="bg-muted rounded-lg p-4 neo-soft border-border">
                 <p className="text-sm text-muted-foreground mb-3">Run this command in your project terminal:</p>
                 <div className="flex items-center gap-2 bg-background rounded p-3">
                   <code className="text-foreground font-mono text-sm flex-1">npx supabase db push</code>
@@ -126,7 +126,7 @@ export default function MigrationsSetupPage() {
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm">3</span>
                 Manual Setup
               </h3>
-              <div className="bg-muted rounded-lg p-4 border border-border text-sm space-y-3">
+              <div className="bg-muted rounded-lg p-4 neo-soft border-border text-sm space-y-3">
                 <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
                   <li>Go to <a href="https://app.supabase.com" target="_blank" className="text-primary hover:underline">Supabase Dashboard</a></li>
                   <li>Select your project and navigate to SQL Editor</li>

@@ -134,7 +134,7 @@ export default function StoreProductsPage() {
 
         <button
           onClick={handleAdd}
-          className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-5 h-5" />
           <span>{isBn ? "নতুন পণ্য" : "Add Product"}</span>
@@ -150,14 +150,14 @@ export default function StoreProductsPage() {
             placeholder={isBn ? "পণ্য অনুসন্ধান..." : "Search products..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-secondary rounded-lg border border-primary/20 text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-primary"
+            className="w-full pl-10 pr-4 py-2 bg-secondary rounded-lg neo-input border text-foreground placeholder:text-foreground/40 focus:outline-none"
           />
         </div>
 
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="px-4 py-2 bg-secondary rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+          className="neo-btn px-secondary py-secondary bg-secondary rounded-lg neo-input border text-foreground focus:outline-none"
         >
           <option value="all">{isBn ? "সব ক্যাটাগরি" : "All Categories"}</option>
           <option value="Home">{isBn ? "হোম জার্সি" : "Home"}</option>
@@ -278,7 +278,7 @@ export default function StoreProductsPage() {
                     name="name"
                     value={formData.name}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none"
                     required
                   />
                 </div>
@@ -291,7 +291,7 @@ export default function StoreProductsPage() {
                     name="category"
                     value={formData.category}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none"
                   >
                     <option value="Home">{isBn ? "হোম জার্সি" : "Home"}</option>
                     <option value="Away">{isBn ? "অ্যাওয়ে জার্সি" : "Away"}</option>
@@ -309,7 +309,7 @@ export default function StoreProductsPage() {
                     name="price"
                     value={formData.price}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 bg-background rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+                    className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none"
                     required
                   />
                 </div>
@@ -324,7 +324,7 @@ export default function StoreProductsPage() {
                   value={formData.description}
                   onChange={handleFormChange}
                   rows={4}
-                  className="w-full px-4 py-2 bg-background rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+                  className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none"
                   required
                 />
               </div>
@@ -332,14 +332,14 @@ export default function StoreProductsPage() {
               <div className="flex gap-4">
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                  className="neo-btn neo-btn-primary flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
                 >
                   {isBn ? "সংরক্ষণ" : "Save"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-6 py-2 bg-secondary border border-primary/20 text-foreground rounded-lg hover:bg-primary/10 transition-colors font-medium"
+                  className="neo-btn neo-soft flex-1 px-4 py-2 bg-secondary neo-input border text-foreground rounded-lg hover:bg-primary/10 transition-colors font-medium"
                 >
                   {isBn ? "বাতিল" : "Cancel"}
                 </button>

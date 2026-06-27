@@ -195,7 +195,7 @@ export default function StoreInventoryPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleEditVariant(product)}
-                        className="flex items-center gap-2 px-3 py-1 bg-primary/20 text-primary rounded hover:bg-primary/30 transition-colors text-sm font-semibold"
+                        className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary/20 text-primary rounded hover:bg-primary/30 transition-colors text-sm font-semibold"
                       >
                         <Edit2 className="w-4 h-4" />
                         {isBn ? "সম্পাদনা" : "Edit"}
@@ -239,7 +239,7 @@ export default function StoreInventoryPage() {
               {editingVariants &&
                 Object.entries(editingVariants).map(([key, value]) => {
                   return (
-                    <div key={key} className="flex items-center gap-4 p-4 bg-background rounded-lg border border-primary/20">
+                    <div key={key} className="flex items-center gap-4 p-4 bg-background rounded-lg neo-input border">
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-foreground mb-1">
                           {key}
@@ -253,7 +253,7 @@ export default function StoreInventoryPage() {
                         min="0"
                         value={value || 0}
                         onChange={(e) => handleVariantChange(key, parseInt(e.target.value))}
-                        className="w-20 px-3 py-2 bg-background border border-primary/20 rounded text-foreground text-right font-semibold focus:outline-none focus:border-primary"
+                        className="w-20 px-3 py-2 bg-background neo-input border rounded text-foreground text-right font-semibold focus:outline-none"
                       />
                     </div>
                   )
@@ -263,14 +263,14 @@ export default function StoreInventoryPage() {
             <div className="flex gap-4">
               <button
                 onClick={() => handleSaveVariants(products.find((p) => p.id === editingProduct)!)}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                className="neo-btn neo-btn-primary flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />
                 {isBn ? "সংরক্ষণ" : "Save"}
               </button>
               <button
                 onClick={() => setEditingProduct(null)}
-                className="flex-1 px-6 py-2 bg-secondary border border-primary/20 text-foreground rounded-lg hover:bg-primary/10 transition-colors font-medium"
+                className="neo-btn neo-soft flex-1 px-4 py-2 bg-secondary neo-input border text-foreground rounded-lg hover:bg-primary/10 transition-colors font-medium"
               >
                 {isBn ? "বাতিল" : "Cancel"}
               </button>

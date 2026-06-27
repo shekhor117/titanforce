@@ -151,14 +151,14 @@ export default function StoreOrdersPage() {
             placeholder={isBn ? "অর্ডার বা গ্রাহক অনুসন্ধান..." : "Search order or customer..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-secondary rounded-lg border border-primary/20 text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-primary"
+            className="w-full pl-10 pr-4 py-2 bg-secondary rounded-lg neo-input border text-foreground placeholder:text-foreground/40 focus:outline-none"
           />
         </div>
 
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2 bg-secondary rounded-lg border border-primary/20 text-foreground focus:outline-none focus:border-primary"
+          className="neo-btn px-secondary py-secondary bg-secondary rounded-lg neo-input border text-foreground focus:outline-none"
         >
           <option value="all">{isBn ? "সব স্ট্যাটাস" : "All Status"}</option>
           <option value="pending">{isBn ? "অপেক্ষমাণ" : "Pending"}</option>
@@ -186,7 +186,7 @@ export default function StoreOrdersPage() {
               key={order.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-secondary rounded-lg p-6 border border-primary/20 hover:border-primary/50 transition-colors cursor-pointer"
+              className="bg-secondary rounded-lg p-6 neo-input border/50 transition-colors cursor-pointer"
               onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}
             >
               <div className="flex items-center justify-between mb-4">
@@ -257,7 +257,7 @@ export default function StoreOrdersPage() {
                             type="text"
                             value={editFormData.customerName}
                             onChange={(e) => setEditFormData({ ...editFormData, customerName: e.target.value })}
-                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-sm text-foreground mb-2"
+                            className="neo-btn neo-soft w-full px-4 py-2 bg-secondary neo-input border rounded text-sm text-foreground mb-2"
                           />
                         ) : (
                           <p className="text-sm font-semibold text-foreground">{order.customer.name}</p>
@@ -268,7 +268,7 @@ export default function StoreOrdersPage() {
                             type="email"
                             value={editFormData.customerEmail}
                             onChange={(e) => setEditFormData({ ...editFormData, customerEmail: e.target.value })}
-                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground mb-2"
+                            className="neo-btn neo-soft w-full px-4 py-2 bg-secondary neo-input border rounded text-xs text-foreground mb-2"
                           />
                         ) : (
                           <p className="text-xs text-foreground/60">{order.customer.email}</p>
@@ -279,7 +279,7 @@ export default function StoreOrdersPage() {
                             type="tel"
                             value={editFormData.customerPhone}
                             onChange={(e) => setEditFormData({ ...editFormData, customerPhone: e.target.value })}
-                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground"
+                            className="neo-btn neo-soft w-full px-4 py-2 bg-secondary neo-input border rounded text-xs text-foreground"
                           />
                         ) : (
                           <p className="text-xs text-foreground/60">{order.customer.phone}</p>
@@ -293,7 +293,7 @@ export default function StoreOrdersPage() {
                           <textarea
                             value={editFormData.shippingAddress}
                             onChange={(e) => setEditFormData({ ...editFormData, shippingAddress: e.target.value })}
-                            className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground h-16"
+                            className="neo-btn neo-soft w-full px-4 py-2 bg-secondary neo-input border rounded text-xs text-foreground h-16"
                           />
                         ) : (
                           <p className="text-xs text-foreground/80">{order.customer.address}</p>
@@ -309,7 +309,7 @@ export default function StoreOrdersPage() {
                           value={editFormData.notes}
                           onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
                           placeholder={isBn ? "অর্ডার সম্পর্কে নোট যোগ করুন..." : "Add notes about this order..."}
-                          className="w-full px-2 py-1 bg-secondary border border-primary/20 rounded text-xs text-foreground h-12"
+                          className="neo-btn neo-soft w-full px-4 py-2 bg-secondary neo-input border rounded text-xs text-foreground h-12"
                         />
                       ) : (
                         <p className="text-xs text-foreground/80">{selectedOrder?.notes || (isBn ? "কোনো নোট নেই" : "No notes")}</p>
@@ -365,7 +365,7 @@ export default function StoreOrdersPage() {
                           className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
                             order.status === status
                               ? "bg-primary text-primary-foreground"
-                              : "bg-secondary border border-primary/20 text-foreground hover:bg-primary/10"
+                              : "bg-secondary neo-input border text-foreground hover:bg-primary/10"
                           }`}
                         >
                           {isBn ? statusLabels[status]?.bn : statusLabels[status]?.en}

@@ -131,7 +131,7 @@ export default function AdminTrophyPage() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-5 h-5" />
           {isBn ? 'নতুন যোগ করুন' : 'Add New'}
@@ -140,23 +140,23 @@ export default function AdminTrophyPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 rounded-lg bg-card border border-border">
+        <div className="p-4 rounded-lg bg-card neo-soft border-border">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{isBn ? 'মোট' : 'Total'}</p>
           <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
         </div>
-        <div className="p-4 rounded-lg bg-card border border-border">
+        <div className="p-4 rounded-lg bg-card neo-soft border-border">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{isBn ? 'বৈশিষ্ট্যযুক্ত' : 'Featured'}</p>
           <p className="text-2xl font-bold text-accent mt-1">{stats.featured}</p>
         </div>
-        <div className="p-4 rounded-lg bg-card border border-border">
+        <div className="p-4 rounded-lg bg-card neo-soft border-border">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{isBn ? 'লিগ' : 'League'}</p>
           <p className="text-2xl font-bold text-primary mt-1">{stats.byCategory.league}</p>
         </div>
-        <div className="p-4 rounded-lg bg-card border border-border">
+        <div className="p-4 rounded-lg bg-card neo-soft border-border">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{isBn ? 'কাপ' : 'Cup'}</p>
           <p className="text-2xl font-bold text-green-500 mt-1">{stats.byCategory.cup}</p>
         </div>
-        <div className="p-4 rounded-lg bg-card border border-border">
+        <div className="p-4 rounded-lg bg-card neo-soft border-border">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{isBn ? 'চ্যাম্পিয়নশিপ' : 'Championship'}</p>
           <p className="text-2xl font-bold text-purple-500 mt-1">{stats.byCategory.championship}</p>
         </div>
@@ -164,7 +164,7 @@ export default function AdminTrophyPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="p-6 rounded-lg bg-card border border-border space-y-4">
+        <div className="p-6 rounded-lg bg-card neo-soft border-border space-y-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">{editingId ? (isBn ? 'ট্রফি সম্পাদনা' : 'Edit Trophy') : (isBn ? 'নতুন ট্রফি যোগ করুন' : 'Add New Trophy')}</h2>
             <button onClick={() => resetForm()} className="p-1 hover:bg-muted rounded transition-colors">
@@ -178,19 +178,19 @@ export default function AdminTrophyPage() {
               placeholder={isBn ? 'ট্রফির নাম' : 'Trophy name'}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="px-3 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground"
+              className="px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground placeholder-muted-foreground"
             />
             <input
               type="number"
               placeholder={isBn ? 'বছর' : 'Year'}
               value={formData.year}
               onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-              className="px-3 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground"
+              className="px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground placeholder-muted-foreground"
             />
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-              className="px-3 py-2 rounded-lg bg-background border border-border text-foreground"
+              className="px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground"
             >
               <option value="league">{isBn ? 'লিগ' : 'League'}</option>
               <option value="cup">{isBn ? 'কাপ' : 'Cup'}</option>
@@ -202,7 +202,7 @@ export default function AdminTrophyPage() {
               placeholder={isBn ? 'আইকন (ইমোজি)' : 'Icon (emoji)'}
               value={formData.icon}
               onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-              className="px-3 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground text-2xl text-center"
+              className="px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground placeholder-muted-foreground text-2xl text-center"
             />
           </div>
 
@@ -211,14 +211,14 @@ export default function AdminTrophyPage() {
             placeholder={isBn ? 'রানার আপ' : 'Runners up'}
             value={formData.runners_up}
             onChange={(e) => setFormData({ ...formData, runners_up: e.target.value })}
-            className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground"
+            className="w-full px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground placeholder-muted-foreground"
           />
 
           <textarea
             placeholder={isBn ? 'বিবরণ' : 'Description'}
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground placeholder-muted-foreground h-24"
+            className="w-full px-3 py-2 rounded-lg bg-background neo-soft border-border text-foreground placeholder-muted-foreground h-24"
           />
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -233,7 +233,7 @@ export default function AdminTrophyPage() {
 
           <button
             onClick={handleAddTrophy}
-            className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            className="neo-btn neo-btn-primary w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
           >
             {editingId ? (isBn ? 'আপডেট করুন' : 'Update') : (isBn ? 'যোগ করুন' : 'Add Trophy')}
           </button>
@@ -245,7 +245,7 @@ export default function AdminTrophyPage() {
         {trophies
           .sort((a, b) => b.year - a.year)
           .map((trophy) => (
-            <div key={trophy.id} className="p-4 rounded-lg bg-card border border-border space-y-3">
+            <div key={trophy.id} className="p-4 rounded-lg bg-card neo-soft border-border space-y-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <div className="text-4xl">{trophy.icon}</div>

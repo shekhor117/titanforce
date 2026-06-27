@@ -76,7 +76,7 @@ export default function ShopPage() {
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground flex-1 text-center">{isBn ? "জার্সি স্টোর" : "Jersey Store"}</h1>
             <Link
               href="/cart"
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative min-h-[44px] flex-shrink-0"
+              className="neo-btn neo-btn-primary flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors relative min-h-[44px] flex-shrink-0"
             >
               <ShoppingCart className="w-4 sm:w-5 h-4 sm:h-5" />
               <span className="hidden sm:inline text-xs sm:text-sm font-medium">{isBn ? "কার্ট" : "Cart"}</span>
@@ -212,7 +212,7 @@ export default function ShopPage() {
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute top-3 right-3 px-3 py-1 bg-primary text-foreground text-sm font-bold rounded-full">
+                      <div className="neo-btn neo-btn-primary absolute top-3 right-3 px-4 py-2 bg-primary text-foreground text-sm font-bold rounded-full">
                         ৳{product.price}
                       </div>
                     </div>

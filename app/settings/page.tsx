@@ -296,7 +296,7 @@ export default function SettingsPage() {
 
                         <button
                           onClick={() => setIsEditing(true)}
-                          className="w-full md:w-auto px-6 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
+                          className="neo-btn neo-btn-primary w-full md:w-auto px-4 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
                         >
                           <Settings className="w-4 h-4" />
                           {isBn ? "সম্পাদনা করুন" : "Edit Profile"}
@@ -314,7 +314,7 @@ export default function SettingsPage() {
                               name="name"
                               value={formData.name}
                               onChange={handleInputChange}
-                              className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                              className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                             />
                           </div>
 
@@ -328,7 +328,7 @@ export default function SettingsPage() {
                               value={formData.phone}
                               onChange={handleInputChange}
                               placeholder="+880 171 1234567"
-                              className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                              className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                             />
                           </div>
 
@@ -342,7 +342,7 @@ export default function SettingsPage() {
                               value={formData.address}
                               onChange={handleInputChange}
                               placeholder="City, Country"
-                              className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                              className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                             />
                           </div>
 
@@ -356,7 +356,7 @@ export default function SettingsPage() {
                               value={formData.website}
                               onChange={handleInputChange}
                               placeholder="https://example.com"
-                              className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                              className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                             />
                           </div>
 
@@ -369,7 +369,7 @@ export default function SettingsPage() {
                               name="dateOfBirth"
                               value={formData.dateOfBirth}
                               onChange={handleInputChange}
-                              className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                              className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                             />
                           </div>
                         </div>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                             onChange={handleInputChange}
                             placeholder="Tell us about yourself..."
                             rows={4}
-                            className="w-full px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
+                            className="w-full px-4 py-2 bg-background neo-input border rounded-lg text-foreground focus:outline-none transition-colors"
                           />
                         </div>
 
@@ -392,7 +392,7 @@ export default function SettingsPage() {
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 px-6 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="neo-btn neo-btn-primary flex-1 px-4 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                           >
                             {isSubmitting ? (
                               <>
@@ -409,7 +409,7 @@ export default function SettingsPage() {
                           <button
                             type="button"
                             onClick={() => setIsEditing(false)}
-                            className="px-6 py-2 bg-secondary text-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2"
+                            className="neo-btn px-secondary py-secondary bg-secondary text-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2"
                           >
                             <X className="w-4 h-4" />
                             {isBn ? "বাতিল করুন" : "Cancel"}
@@ -428,7 +428,7 @@ export default function SettingsPage() {
                     {isBn ? "নিরাপত্তা সেটিংস" : "Security Settings"}
                   </h2>
 
-                  <div className="bg-background rounded-lg p-6 border border-primary/20">
+                  <div className="bg-background rounded-lg p-6 neo-input border">
                     <div className="flex items-start gap-4">
                       <Lock className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
@@ -439,14 +439,14 @@ export default function SettingsPage() {
                           {isBn ? "আপনার অ্যাকাউন্টের নিরাপত্তার জন্য নিয়মিত আপনার পাসওয়ার্ড পরিবর্তন করুন।"
                             : "Regularly update your password to keep your account secure."}
                         </p>
-                        <button className="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium">
+                        <button className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium">
                           {isBn ? "পাসওয়ার্ড পরিবর্তন করুন" : "Change Password"}
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-background rounded-lg p-6 border border-primary/20">
+                  <div className="bg-background rounded-lg p-6 neo-input border">
                     <div className="flex items-start gap-4">
                       <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
@@ -457,7 +457,7 @@ export default function SettingsPage() {
                           {isBn ? "আপনার অ্যাকাউন্টে একটি অ���িরিক্ত নিরাপত্তা স্তর যোগ করুন।"
                             : "Add an extra layer of security to your account."}
                         </p>
-                        <button className="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium">
+                        <button className="neo-btn px-primary py-primary bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium">
                           {isBn ? "সক্ষম করুন" : "Enable"}
                         </button>
                       </div>
@@ -473,7 +473,7 @@ export default function SettingsPage() {
                     {isBn ? "আপনার পছন্দসমূহ" : "Your Preferences"}
                   </h2>
 
-                  <div className="bg-background rounded-lg p-6 border border-primary/20">
+                  <div className="bg-background rounded-lg p-6 neo-input border">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Heart className="w-5 h-5 text-primary" />
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-background rounded-lg p-6 border border-primary/20">
+                  <div className="bg-background rounded-lg p-6 neo-input border">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Settings className="w-5 h-5 text-primary" />

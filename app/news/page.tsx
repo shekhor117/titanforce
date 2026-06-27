@@ -104,7 +104,7 @@ export default function NewsPage() {
                   <Link
                     key={item.id}
                     href={`/news/${item.id}`}
-                    className="group relative overflow-hidden rounded-xl border border-border hover:border-primary/50 transition-all duration-300 bg-card hover:shadow-lg hover:shadow-primary/20"
+                    className="group relative overflow-hidden rounded-xl neo-soft border-border/50 transition-all duration-300 bg-card hover:shadow-lg hover:shadow-primary/20"
                   >
                     {/* Image Container */}
                     <div className="relative w-full aspect-video bg-gradient-to-br from-primary/20 to-background overflow-hidden">
@@ -201,7 +201,7 @@ export default function NewsPage() {
               />
               <button
                 type="submit"
-                className="neo-btn neo-btn-primary px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg transition-colors duration-300 whitespace-nowrap"
+                className="neo-btn neo-btn-primary neo-btn neo-btn-primary px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-lg transition-colors duration-300 whitespace-nowrap"
               >
                 Subscribe
               </button>

@@ -25,7 +25,7 @@ export default function CartPage() {
         </p>
         <Link
           href="/shop"
-          className="neo-btn neo-btn-primary px-6 py-3 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
+          className="neo-btn neo-btn-primary neo-btn neo-btn-primary px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5 rotate-180" />
           {isBn ? "শপে ফিরুন" : "Back to Shop"}
@@ -154,14 +154,14 @@ export default function CartPage() {
 
             <button
               onClick={() => router.push("/checkout")}
-              className="neo-btn neo-btn-primary w-full px-6 py-3 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors mb-3"
+              className="neo-btn neo-btn-primary neo-btn neo-btn-primary w-full px-4 py-2 bg-primary text-foreground font-bold rounded-lg hover:bg-primary/80 transition-colors mb-3"
             >
               {isBn ? "চেকআউট" : "Checkout"}
             </button>
 
             <button
               onClick={() => router.push("/shop")}
-              className="neo-btn neo-soft w-full px-6 py-3 bg-secondary text-foreground font-bold rounded-lg transition-colors"
+              className="neo-btn neo-soft neo-btn neo-soft w-full px-4 py-2 bg-secondary text-foreground font-bold rounded-lg transition-colors"
             >
               {isBn ? "শপিং চালিয়ে যান" : "Continue Shopping"}
             </button>

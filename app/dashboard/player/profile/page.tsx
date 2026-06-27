@@ -119,7 +119,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder={isBn ? "ফোন নম্বর" : "+880 XXXX XXXX"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -134,7 +134,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.age}
                 onChange={handleInputChange}
                 placeholder={isBn ? "বয়স" : "Age"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -147,7 +147,7 @@ export default function PlayerProfileEditPage() {
                 name="position"
                 value={formData.position}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-card text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-card text-foreground focus:outline-none transition"
               >
                 <option value="">{isBn ? "অবস্থান নির্বাচন করুন" : "Select position"}</option>
                 <option value="goalkeeper">{isBn ? "গোলকিপার" : "Goalkeeper"}</option>
@@ -168,7 +168,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.jersey}
                 onChange={handleInputChange}
                 placeholder={isBn ? "জার্সি নম্বর" : "Jersey number"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -183,7 +183,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.height}
                 onChange={handleInputChange}
                 placeholder={isBn ? "উচ্চতা" : "Height"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -198,7 +198,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.weight}
                 onChange={handleInputChange}
                 placeholder={isBn ? "ওজন" : "Weight"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -211,7 +211,7 @@ export default function PlayerProfileEditPage() {
                 name="foot"
                 value={formData.foot}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-card text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-card text-foreground focus:outline-none transition"
               >
                 <option value="">{isBn ? "পা নির্বাচন করুন" : "Select foot"}</option>
                 <option value="left">{isBn ? "বাম" : "Left"}</option>
@@ -231,7 +231,7 @@ export default function PlayerProfileEditPage() {
                 value={formData.experience}
                 onChange={handleInputChange}
                 placeholder={isBn ? "অভিজ্ঞতা" : "Years"}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition"
               />
             </div>
 
@@ -246,7 +246,7 @@ export default function PlayerProfileEditPage() {
                 onChange={handleInputChange}
                 placeholder={isBn ? "আপনার ঠিকানা" : "Your address"}
                 rows={3}
-                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none focus:border-primary transition resize-none"
+                className="w-full px-4 py-3 rounded border-2 border-secondary bg-transparent text-foreground focus:outline-none transition resize-none"
               />
             </div>
           </div>

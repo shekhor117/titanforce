@@ -146,21 +146,21 @@ export default function AdminPlayers() {
             placeholder={isBn ? "খুঁজুন..." : "Search..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border border-border rounded flex-1"
+            className="px-4 py-2 neo-soft border-border rounded flex-1"
           />
         </div>
 
         {showForm && (
           <div className="bg-muted p-4 rounded-lg mb-6 space-y-3">
-            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <input type="number" placeholder="Number" value={formData.number} onChange={(e) => setFormData({...formData, number: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <input type="text" placeholder="Position" value={formData.position} onChange={(e) => setFormData({...formData, position: e.target.value})} className="w-full px-3 py-2 border border-border rounded" />
-            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 border border-border rounded">
+            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <input type="number" placeholder="Number" value={formData.number} onChange={(e) => setFormData({...formData, number: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <input type="text" placeholder="Position" value={formData.position} onChange={(e) => setFormData({...formData, position: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
+            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 neo-soft border-border rounded">
               <option value="active">Active</option>
               <option value="injured">Injured</option>
               <option value="suspended">Suspended</option>
             </select>
-            <input type="number" placeholder="Goals" value={formData.goals} onChange={(e) => setFormData({...formData, goals: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 border border-border rounded" />
+            <input type="number" placeholder="Goals" value={formData.goals} onChange={(e) => setFormData({...formData, goals: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 neo-soft border-border rounded" />
             <div className="flex gap-2">
               <button onClick={handleSavePlayer} className="flex-1 bg-green-600 text-white py-2 rounded flex items-center justify-center gap-2">
                 <Save className="w-4 h-4" /> {isBn ? "সংরক্ষণ" : "Save"}
@@ -174,7 +174,7 @@ export default function AdminPlayers() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {filteredPlayers.map(player => (
-            <div key={player.id} className="border border-border rounded-lg p-4">
+            <div key={player.id} className="neo-soft border-border rounded-lg p-4">
               <h3 className="font-bold text-lg">{player.name} #{player.number}</h3>
               <p className="text-sm text-muted-foreground">{player.position}</p>
               <div className="flex gap-2 mt-3">

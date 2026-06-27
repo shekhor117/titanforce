@@ -120,7 +120,7 @@ export default function AdminRankingsPage() {
             className={`px-4 py-2 rounded-lg border-2 transition ${
               selectedPosition === pos
                 ? "border-primary bg-primary/10 text-primary"
-                : "border-secondary hover:border-primary/50"
+                : "border-secondary/50"
             }`}
           >
             {pos}

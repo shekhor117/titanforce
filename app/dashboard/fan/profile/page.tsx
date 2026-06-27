@@ -136,7 +136,7 @@ export default function FanProfilePage() {
               <div className="text-center md:text-left">
                 <h2 className="text-2xl font-bold text-foreground">{user.name}</h2>
                 <p className="text-foreground/60">{user.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold capitalize">
+                <span className="neo-btn neo-btn-primary inline-block mt-2 px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-semibold capitalize">
                   {isBn ? "অনুরাগী" : "Fan"}
                 </span>
               </div>
@@ -186,7 +186,7 @@ export default function FanProfilePage() {
                   placeholder={isBn ? "প্রিয় দল" : "Your favorite team"}
                   className={`w-full p-3 rounded-xl border-2 text-foreground transition ${
                     isEditing 
-                      ? "bg-background border-secondary focus:border-primary focus:outline-none" 
+                      ? "bg-background border-secondary focus:outline-none" 
                       : "bg-secondary/30 border-secondary opacity-60"
                   }`}
                 />
@@ -206,7 +206,7 @@ export default function FanProfilePage() {
                   placeholder={isBn ? "প্রিয় খেলোয়াড়" : "Your favorite player"}
                   className={`w-full p-3 rounded-xl border-2 text-foreground transition ${
                     isEditing 
-                      ? "bg-background border-secondary focus:border-primary focus:outline-none" 
+                      ? "bg-background border-secondary focus:outline-none" 
                       : "bg-secondary/30 border-secondary opacity-60"
                   }`}
                 />
@@ -226,7 +226,7 @@ export default function FanProfilePage() {
                   placeholder={isBn ? "আপনার শহর" : "Your city"}
                   className={`w-full p-3 rounded-xl border-2 text-foreground transition ${
                     isEditing 
-                      ? "bg-background border-secondary focus:border-primary focus:outline-none" 
+                      ? "bg-background border-secondary focus:outline-none" 
                       : "bg-secondary/30 border-secondary opacity-60"
                   }`}
                 />
@@ -247,7 +247,7 @@ export default function FanProfilePage() {
                 rows={4}
                 className={`w-full p-3 rounded-xl border-2 text-foreground transition resize-none ${
                   isEditing 
-                    ? "bg-background border-secondary focus:border-primary focus:outline-none" 
+                    ? "bg-background border-secondary focus:outline-none" 
                     : "bg-secondary/30 border-secondary opacity-60"
                 }`}
               />
@@ -260,7 +260,7 @@ export default function FanProfilePage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition disabled:opacity-50"
+                    className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <>
@@ -287,7 +287,7 @@ export default function FanProfilePage() {
                 <button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition"
+                  className="neo-btn px-primary py-primary bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition"
                 >
                   {isBn ? "প্রোফাইল সম্পাদনা করুন" : "Edit Profile"}
                 </button>

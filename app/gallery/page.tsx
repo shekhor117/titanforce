@@ -111,7 +111,7 @@ export default function GalleryPage() {
                   placeholder={isBn ? 'খুঁজুন...' : 'Search...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className='w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background'
+                  className='w-full pl-10 pr-4 py-2 rounded-lg neo-soft border-border bg-background'
                 />
               </div>
             </div>

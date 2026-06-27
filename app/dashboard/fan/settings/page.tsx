@@ -237,7 +237,7 @@ export default function FanSettingsPage() {
                   disabled={!isEditing}
                   className={`w-full p-3 rounded-xl border-2 text-foreground transition ${
                     isEditing
-                      ? "bg-background border-secondary focus:border-primary focus:outline-none"
+                      ? "bg-background border-secondary focus:outline-none"
                       : "bg-secondary/30 border-secondary opacity-60"
                   }`}
                 >
@@ -258,7 +258,7 @@ export default function FanSettingsPage() {
                   disabled={!isEditing}
                   className={`w-full p-3 rounded-xl border-2 text-foreground transition ${
                     isEditing
-                      ? "bg-background border-secondary focus:border-primary focus:outline-none"
+                      ? "bg-background border-secondary focus:outline-none"
                       : "bg-secondary/30 border-secondary opacity-60"
                   }`}
                 >
@@ -307,7 +307,7 @@ export default function FanSettingsPage() {
                       value={settings.currentPassword}
                       onChange={handleInputChange}
                       placeholder={isBn ? "বর্তমান পাসওয়ার্ড" : "Current password"}
-                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:border-primary focus:outline-none text-foreground"
+                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:outline-none text-foreground"
                     />
                   </div>
 
@@ -322,7 +322,7 @@ export default function FanSettingsPage() {
                       value={settings.newPassword}
                       onChange={handleInputChange}
                       placeholder={isBn ? "নতুন পাসওয়ার্ড" : "New password"}
-                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:border-primary focus:outline-none text-foreground"
+                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:outline-none text-foreground"
                     />
                   </div>
 
@@ -337,7 +337,7 @@ export default function FanSettingsPage() {
                       value={settings.confirmPassword}
                       onChange={handleInputChange}
                       placeholder={isBn ? "পাসওয়ার্ড নিশ্চিত করুন" : "Confirm password"}
-                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:border-primary focus:outline-none text-foreground"
+                      className="w-full p-3 rounded-xl border-2 bg-background border-secondary focus:outline-none text-foreground"
                     />
                   </div>
 
@@ -363,7 +363,7 @@ export default function FanSettingsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition disabled:opacity-50"
+                  className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
@@ -390,7 +390,7 @@ export default function FanSettingsPage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition"
+                className="neo-btn px-primary py-primary bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition"
               >
                 {isBn ? "সেটিংস সম্পাদনা করুন" : "Edit Settings"}
               </button>

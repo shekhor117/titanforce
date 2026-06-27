@@ -174,7 +174,7 @@ export default function UserSettings() {
                 <select
                   value={settings.profileVisibility}
                   onChange={(e) => handleSelectChange("profileVisibility", e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary focus:border-primary outline-none transition text-foreground"
+                  className="w-full px-4 py-2 rounded-lg bg-background border-2 border-secondary outline-none transition text-foreground"
                 >
                   <option value="public" className="text-foreground">
                     {isBn ? "সর্বজনীন" : "Public"}
@@ -197,10 +197,10 @@ export default function UserSettings() {
               {isBn ? "অ্যাকাউন্ট" : "Account"}
             </h2>
             <div className="space-y-4">
-              <button className="w-full px-4 py-2 rounded-lg border-2 border-secondary text-foreground hover:border-primary transition text-left font-medium">
+              <button className="w-full px-4 py-2 rounded-lg border-2 border-secondary text-foreground transition text-left font-medium">
                 {isBn ? "পাসওয়ার্ড পরিবর্তন করুন" : "Change Password"}
               </button>
-              <button className="w-full px-4 py-2 rounded-lg border-2 border-secondary text-foreground hover:border-primary transition text-left font-medium">
+              <button className="w-full px-4 py-2 rounded-lg border-2 border-secondary text-foreground transition text-left font-medium">
                 {isBn ? "দুই-ফ্যাক্টর প্রমাণীকরণ" : "Two-Factor Authentication"}
               </button>
               <button
@@ -224,7 +224,7 @@ export default function UserSettings() {
                 className={`px-4 py-2 rounded-lg font-medium transition ${
                   language === "en"
                     ? "bg-primary text-primary-foreground"
-                    : "border-2 border-secondary text-foreground hover:border-primary"
+                    : "border-2 border-secondary text-foreground"
                 }`}
               >
                 English
@@ -234,7 +234,7 @@ export default function UserSettings() {
                 className={`px-4 py-2 rounded-lg font-medium transition ${
                   language === "bn"
                     ? "bg-primary text-primary-foreground"
-                    : "border-2 border-secondary text-foreground hover:border-primary"
+                    : "border-2 border-secondary text-foreground"
                 }`}
               >
                 বাংলা

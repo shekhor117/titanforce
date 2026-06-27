@@ -224,7 +224,7 @@ export default function ProfilePage() {
                     {formData.name}
                   </h2>
                   <div className="flex flex-wrap gap-2">
-                    <div className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium border border-primary/30">
+                    <div className="neo-btn neo-btn-primary px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-medium neo-input/30">
                       {user.role || "user"}
                     </div>
                     {formData.position && (
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
+                    className="neo-btn neo-btn-primary neo-btn neo-btn-primary flex items-center gap-2 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary/80 transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                     {isBn ? "সম্পাদনা" : "Edit"}
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="neo-btn neo-btn-primary flex-1 px-6 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="neo-btn neo-btn-primary neo-btn neo-btn-primary flex-1 px-4 py-2 bg-primary text-foreground font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -475,7 +475,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="neo-btn neo-soft px-6 py-2 bg-secondary text-foreground font-medium rounded-lg transition-colors flex items-center gap-2"
+                  className="neo-btn neo-soft neo-btn neo-soft px-4 py-2 bg-secondary text-foreground font-medium rounded-lg transition-colors flex items-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   {isBn ? "বাতিল" : "Cancel"}

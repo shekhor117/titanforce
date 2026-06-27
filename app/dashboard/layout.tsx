@@ -99,7 +99,7 @@ function DashboardContent({
           </div>
 
           {/* Status Legend */}
-          <div className="mt-6 bg-card/50 rounded-lg p-4 border border-secondary">
+          <div className="mt-6 bg-card/50 rounded-lg p-4 neo-input">
             <h3 className={`text-sm font-semibold text-foreground mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "অনুমোদন প্রক্রিয়া" : "Approval Process"}
             </h3>
