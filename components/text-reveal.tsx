@@ -11,6 +11,7 @@ interface TextRevealProps {
   duration?: number
   staggerChildren?: number
   variant?: 'characters' | 'words' | 'lines'
+  once?: boolean
 }
 
 export function TextReveal({
@@ -21,6 +22,7 @@ export function TextReveal({
   duration = 0.05,
   staggerChildren = 0.02,
   variant = 'characters',
+  once = false,
 }: TextRevealProps) {
   const words = children.split(' ')
   const lines = children.split('\n')
@@ -55,7 +57,7 @@ export function TextReveal({
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once, margin: '-50px' }}
       >
         {children.split('').map((char, index) => (
           <motion.span key={`${char}-${index}`} variants={itemVariants}>
@@ -73,7 +75,7 @@ export function TextReveal({
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once, margin: '-50px' }}
       >
         {words.map((word, index) => (
           <motion.span key={`${word}-${index}`} variants={itemVariants}>
@@ -92,7 +94,7 @@ export function TextReveal({
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-50px' }}
+      viewport={{ once, margin: '-50px' }}
     >
       {lines.map((line, index) => (
         <motion.div key={`${line}-${index}`} variants={itemVariants}>

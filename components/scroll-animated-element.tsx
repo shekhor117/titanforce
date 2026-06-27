@@ -51,7 +51,7 @@ export function ScrollAnimatedElement({
   variant = 'fadeInUp',
   delay = 0,
   duration = 0.6,
-  once = true,
+  once = false,
   margin = '0px 0px -100px 0px',
 }: ScrollAnimatedElementProps) {
   const { ref, controls } = useScrollAnimation({ once, margin })

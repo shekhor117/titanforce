@@ -38,7 +38,7 @@ export function ScrollStaggerContainer({
   className,
   staggerDelay = 0.1,
   duration = 0.6,
-  once = true,
+  once = false,
   margin = '0px 0px -100px 0px',
   variant = 'fadeInUp',
 }: ScrollStaggerContainerProps) {
