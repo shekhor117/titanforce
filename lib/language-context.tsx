@@ -23,6 +23,7 @@ interface Translations {
   about: {
     location: string
     title: string
+    subtitle: string
     description: string
     players: string
     spirit: string
@@ -102,6 +103,7 @@ const translations: Record<Language, Translations> = {
     about: {
       location: "Est.2025 Mulikandi, Zakigonj, Sylhet",
       title: "ABOUT THE TEAM",
+      subtitle: "Neuromopishi",
       description: "We are a passionate football team from Mulikandi, Zakigonj, Sylhet. We play with heart, teamwork, and pride. Every match is a chance to represent our community and push our limits on the pitch.",
       players: "Players",
       spirit: "Spirit",
@@ -179,6 +181,7 @@ const translations: Record<Language, Translations> = {
     about: {
       location: "প্রতিষ্ঠা:২০২৫ মুলিকান্দি, জাকিগঞ্জ, সিলেট",
       title: "দল সম্পর্কে",
+      subtitle: "নিউরোমোপিশি",
       description: "আমরা মুলিকান্দি, জাকিগঞ্জ, সিলেটের একটি আবেগপূর্ণ ফুটবল ক্লাব। আমরা হৃদয়, দলবদ্ধতা এবং গর্বের সাথে খেলি। প্রতিটি ম্যাচ আমাদের সম্প্রদায়কে প্রতিনিধিত্ব করার এবং মাঠে আমাদের সীমা অতিক্রম করার সুযোগ।",
       players: "খেলোয়াড়",
       spirit: "স্পিরিট",
