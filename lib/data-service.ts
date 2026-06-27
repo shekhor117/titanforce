@@ -55,9 +55,20 @@ export interface Match {
   home_score: number | null | undefined
   away_score: number | null | undefined
   status: 'live' | 'completed' | 'upcoming'
+  result?: 'W' | 'L' | 'D'
   tournament?: string
-  home_lineup?: Array<{ name: string; number: number }>
-  away_lineup?: Array<{ name: string; number: number }>
+  home_lineup?: Array<{ player: string; name?: string; number: number; position?: string }>
+  away_lineup?: Array<{ player: string; name?: string; number: number; position?: string }>
+  homeGoals?: Array<{
+    player: string
+    minute: number
+    assist?: string
+  }>
+  awayGoals?: Array<{
+    player: string
+    minute: number
+    assist?: string
+  }>
   match_events?: Array<{
     player: string
     type: 'Goal' | 'Yellow Card' | 'Red Card' | 'Substitution'

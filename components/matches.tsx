@@ -246,7 +246,7 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
                             {selectedMatch.homeLineup?.map((player, i) => (
                               <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                                 <span className="text-primary font-bold w-6">#{player.number}</span>
-                                <span className="flex-1 text-foreground">{player.player}</span>
+                                <span className="flex-1 text-foreground">{player.player || player.name}</span>
                                 <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
                               </div>
                             ))}
@@ -261,7 +261,7 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
                               {selectedMatch.awayLineup?.map((player, i) => (
                                 <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
                                   <span className="text-primary font-bold w-6">#{player.number}</span>
-                                  <span className="flex-1 text-foreground">{player.player}</span>
+                                  <span className="flex-1 text-foreground">{player.player || player.name}</span>
                                   <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
                                 </div>
                               ))}
