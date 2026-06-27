@@ -52,7 +52,7 @@ export default function TeamSquadPage() {
       <Navbar />
       <main>
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 text-center pt-8 sm:pt-12 pb-4 sm:pb-6">
-          <button onClick={() => router.back()} className="inline-flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105">
+          <button onClick={() => router.back()} className="neo-btn inline-flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 rounded border-2 border-primary text-primary transition-all duration-300 transform hover:scale-105 active:scale-95">
             <ArrowLeft className="w-4 h-4 flex-shrink-0" />
             <span className={`text-xs sm:text-sm uppercase tracking-wider font-semibold ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
               {isBn ? "পিছনে" : "Back"}

@@ -56,7 +56,7 @@ export default function GalleryPage() {
         <div className='container px-4 py-4 flex items-center justify-between'>
           <button
             onClick={() => router.back()}
-            className='flex items-center gap-2 text-sm hover:text-foreground/80 transition'
+            className='neo-btn flex items-center gap-2 text-sm px-3 py-2 rounded transition-all duration-300 hover:scale-105 active:scale-95'
           >
             <ArrowLeft className='w-4 h-4' />
             {isBn ? 'ফিরে যান' : 'Back'}

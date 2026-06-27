@@ -81,10 +81,10 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 py-20 relative z-10">
         <button
           onClick={() => router.back()}
-          className="mb-8 inline-flex items-center gap-2 text-foreground/60 hover:text-foreground transition-colors group"
+          className="neo-btn mb-8 inline-flex items-center gap-2 text-primary px-4 py-2 rounded transition-all duration-300 hover:scale-105 active:scale-95"
           aria-label={isBn ? 'ফিরে যান' : 'Go back'}
         >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-medium">{isBn ? 'ফিরে যান' : 'Back'}</span>
         </button>
         <div className="text-center">
