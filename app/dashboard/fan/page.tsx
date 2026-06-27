@@ -11,6 +11,8 @@ import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
+import { EntranceReveal } from "@/components/entrance-reveal"
+import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 
 export default function FanDashboard() {
   const router = useRouter()
@@ -118,23 +120,24 @@ export default function FanDashboard() {
       </div>
 
       {/* Welcome Section */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h2 className={`text-2xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-          {isBn ? "স্বাগতম, " : "Welcome back, "} {user?.name}!
-        </h2>
+      <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <h2 className={`text-2xl font-semibold text-foreground mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+            {isBn ? "স্বাগতম, " : "Welcome back, "} {user?.name}!
+          </h2>
 
-        {/* Top Section - Key Metrics */}
-        <div className="mb-8">
-          <PerformanceMetrics metrics={metrics} language={language as "en" | "bn"} title={isBn ? "আপনার সম্প্রদায় পরিসংখ্যান" : "Your Community Stats"} />
-        </div>
-
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
-          {/* Left Column - Profile & Recommendations */}
-          <div className="lg:col-span-1 space-y-8">
-            <ProfileCompletion fields={profileFields} language={language as "en" | "bn"} />
-            <PersonalizedRecommendations recommendations={recommendations} language={language as "en" | "bn"} />
+          {/* Top Section - Key Metrics */}
+          <div className="mb-8">
+            <PerformanceMetrics metrics={metrics} language={language as "en" | "bn"} title={isBn ? "আপনার সম্প্রদায় পরিসংখ্যান" : "Your Community Stats"} />
           </div>
+
+          {/* Main Grid */}
+          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+            {/* Left Column - Profile & Recommendations */}
+            <div className="lg:col-span-1 space-y-8">
+              <ProfileCompletion fields={profileFields} language={language as "en" | "bn"} />
+              <PersonalizedRecommendations recommendations={recommendations} language={language as "en" | "bn"} />
+            </div>
 
           {/* Middle Column - Activity Feed */}
           <div className="lg:col-span-1">
@@ -156,7 +159,8 @@ export default function FanDashboard() {
             {isBn ? "সম্প্রদায় গিল্ড" : "Community Guild"}
           </Link>
         </div>
-      </div>
+        </div>
+      </EntranceReveal>
     </div>
   )
 }

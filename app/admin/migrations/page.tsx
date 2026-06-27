@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AlertCircle, CheckCircle, Loader } from 'lucide-react'
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function MigrationsPage() {
   const [loading, setLoading] = useState(false)

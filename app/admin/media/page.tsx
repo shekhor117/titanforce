@@ -6,6 +6,7 @@ import { Upload, X, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { getDataService } from "@/lib/data-service"
 import type { MediaItem } from "@/lib/data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminMedia() {
   const { language } = useLanguage()

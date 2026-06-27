@@ -8,6 +8,8 @@ import { useNewsItems } from '@/lib/use-data-store'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Search } from 'lucide-react'
+import { EntranceReveal } from '@/components/entrance-reveal'
+import { ScrollStaggerContainer } from '@/components/scroll-stagger-container'
 
 export default function NewsPage() {
   const { newsItems = [] } = useNewsItems()
@@ -96,11 +98,12 @@ export default function NewsPage() {
         </section>
 
         {/* News Grid */}
-        <section className="py-16 px-4 bg-background">
-          <div className="max-w-6xl mx-auto">
-            {filteredNews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredNews.map((item) => (
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+          <section className="py-16 px-4 bg-background">
+            <div className="max-w-6xl mx-auto">
+              {filteredNews.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredNews.map((item) => (
                   <Link
                     key={item.id}
                     href={`/news/${item.id}`}
@@ -180,9 +183,10 @@ export default function NewsPage() {
                     : 'Check back soon for updates'}
                 </p>
               </div>
-            )}
-          </div>
-        </section>
+              )}
+            </div>
+          </section>
+        </EntranceReveal>
 
         {/* Newsletter CTA Section */}
         <section className="py-16 px-4 bg-card border-y border-border">

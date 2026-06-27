@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { ToggleLeft, ToggleRight, Save, RefreshCw, Download, Upload, AlertCircle, Plus, Trash2, Edit2, X } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { PageEntrance } from '@/components/page-entrance'
 
 interface Feature {
   id: string

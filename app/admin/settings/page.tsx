@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { Save, Globe, Palette, Bell, Shield, RefreshCw } from "lucide-react"
 import { dataStore, SiteSettings } from "@/lib/data-store"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminSettingsPage() {
   const { language } = useLanguage()

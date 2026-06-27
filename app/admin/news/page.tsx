@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import NewsManager from '@/components/NewsManager'
 import { getDataService } from '@/lib/data-service'
 import type { NewsItem } from '@/lib/data-service'
+import { PageEntrance } from '@/components/page-entrance'
 
 interface NewsArticle {
   id: string
@@ -131,19 +132,21 @@ export default function AdminNewsPage() {
   }
 
   return (
-    <div className="p-6">
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
-      )}
-      
-      <NewsManager
-        articles={articles}
-        onAddArticle={handleAddArticle}
-        onUpdateArticle={handleUpdateArticle}
-        onDeleteArticle={handleDeleteArticle}
-      />
-    </div>
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <div className="p-6">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        
+        <NewsManager
+          articles={articles}
+          onAddArticle={handleAddArticle}
+          onUpdateArticle={handleUpdateArticle}
+          onDeleteArticle={handleDeleteArticle}
+        />
+      </div>
+    </PageEntrance>
   )
 }

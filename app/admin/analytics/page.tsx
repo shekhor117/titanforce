@@ -8,6 +8,7 @@ import {
   Handshake, Mail, Activity, Calendar, Clock, ArrowUp, ArrowDown, 
   Heart, Zap, Save, RefreshCw, Edit
 } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 interface TrainingSession {
   date: string

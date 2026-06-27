@@ -8,6 +8,7 @@ import {
   Download, Upload, RefreshCw, Trash2, Database, HardDrive, 
   Clock, Activity, Shield, AlertTriangle, CheckCircle, X, FileJson, Cog
 } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminSystemPage() {
   const { language } = useLanguage()

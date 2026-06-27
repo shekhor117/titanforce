@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { createClient } from "@/lib/supabase/client"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function ProfilePage() {
   const { user, isLoading, logout, profile, updatePlayerProfile } = useAuth()

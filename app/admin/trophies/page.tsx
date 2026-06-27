@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import TrophyDataService, { Trophy } from '@/lib/trophy-data-service'
 import { useLanguage } from '@/lib/language-context'
 import { Trash2, Star, Plus, X, ArrowLeft } from 'lucide-react'
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminTrophyPage() {
   const router = useRouter()

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/language-context'
 import { useMediaItems } from '@/lib/use-data-store'
 import { X, Search, ArrowLeft } from 'lucide-react'
+import { EntranceReveal } from '@/components/entrance-reveal'
 
 const Gallery3DScene = dynamic(() => import('@/components/3d-gallery-scene').then(mod => ({ default: mod.Gallery3DScene })), {
   loading: () => <div className="w-full h-72 bg-gradient-to-br from-slate-950 via-red-950 to-slate-950 rounded-lg" />,
@@ -115,7 +116,8 @@ export default function GalleryPage() {
       </section>
 
       {/* Main Content */}
-      <main className='container px-4 py-8'>
+      <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
+        <main className='container px-4 py-8'>
         {/* Search and Filter */}
         <div className='mb-8 space-y-4'>
           <div className='flex gap-4 flex-col md:flex-row'>
@@ -238,7 +240,8 @@ export default function GalleryPage() {
             </div>
           </div>
         )}
-      </main>
+        </main>
+      </EntranceReveal>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { getDataService } from "@/lib/data-service"
 import { Search, Mail, MailOpen, Trash2, Reply, Eye, Phone, Plus, X, Save, CheckCircle } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 interface ContactMessage {
   id: string

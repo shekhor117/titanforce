@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Trash2, ShoppingCart, ChevronLeft, Plus, Minus } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function CartPage() {
   const { language } = useLanguage()

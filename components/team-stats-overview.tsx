@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Trophy, Users, Target, Heart } from 'lucide-react'
 import TeamStatsService, { TeamStats } from '@/lib/team-stats-service'
 import { useLanguage } from '@/lib/language-context'
+import { EntranceReveal } from '@/components/entrance-reveal'
 
 export function TeamStatsOverview() {
   const { language } = useLanguage()
@@ -21,6 +22,7 @@ export function TeamStatsOverview() {
   }, [])
 
   return (
+    <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
     <section className="py-16 px-4 bg-card/50">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-[var(--font-display)] text-3xl md:text-5xl tracking-wide mb-12 text-center">
@@ -122,5 +124,6 @@ export function TeamStatsOverview() {
         ) : null}
       </div>
     </section>
+    </EntranceReveal>
   )
 }

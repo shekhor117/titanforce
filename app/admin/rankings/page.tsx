@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { BarChart4, Save, RefreshCw, ArrowUp, ArrowDown } from "lucide-react"
 import PlayerRankingService, { PlayerRanking } from "@/lib/player-ranking-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminRankingsPage() {
   const { language } = useLanguage()

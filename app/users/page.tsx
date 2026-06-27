@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Search, Users, Shield, Users2 } from 'lucide-react'
 import { getDataService, type AppUser } from '@/lib/data-service'
+import { PageEntrance } from '@/components/page-entrance'
 
 function UserCard({ user }: { user: AppUser }) {
   const roleColors: Record<string, string> = {

@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Layers, Save, RefreshCw, Plus, X } from "lucide-react"
 import { dataStore } from "@/lib/data-store"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminLineupPage() {
   const { language } = useLanguage()

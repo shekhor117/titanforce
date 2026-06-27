@@ -6,6 +6,7 @@ import { Matches } from "@/components/matches"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft } from "lucide-react"
+import { EntranceReveal } from "@/components/entrance-reveal"
 
 export default function FixturesResultsPage() {
   const router = useRouter()
@@ -62,7 +63,9 @@ export default function FixturesResultsPage() {
         </section>
 
         {/* Matches Section */}
-        <Matches />
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+          <Matches />
+        </EntranceReveal>
       </main>
       <Footer />
     </div>

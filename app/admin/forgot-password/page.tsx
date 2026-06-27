@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import { ForgotPasswordPage } from "@/components/forgot-password-page"
+import { PageEntrance } from "@/components/page-entrance"
 
 export const metadata: Metadata = {
   title: "Forgot Password | Titan Force FC Admin",
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <ForgotPasswordPage />
+  return (
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <ForgotPasswordPage />
+    </PageEntrance>
+  )
 }

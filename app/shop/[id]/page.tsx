@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Star, ShoppingCart, Check, ChevronLeft, AlertCircle } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function ProductDetailPage() {
   const { language } = useLanguage()

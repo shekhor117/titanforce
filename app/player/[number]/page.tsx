@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 import { useAdmin } from "@/lib/admin-context"
 import { getDataService } from "@/lib/data-service"
 import type { Player } from "@/lib/data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 // Player data from Supabase - no longer using hardcoded data
 

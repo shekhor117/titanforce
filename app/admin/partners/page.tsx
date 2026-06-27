@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, X, Save } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
 import type { Partner } from "@/lib/data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminPartners() {
   const { language } = useLanguage()

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import GalleryManager from '@/components/GalleryManager'
 import { getDataService } from '@/lib/data-service'
 import type { MediaItem as DBMediaItem } from '@/lib/data-service'
+import { PageEntrance } from '@/components/page-entrance'
 
 interface GalleryItem {
   id: string
@@ -100,19 +101,21 @@ export default function AdminGalleryPage() {
   }
 
   return (
-    <div className="p-6">
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
-      )}
-      
-      <GalleryManager
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <div className="p-6">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        
+        <GalleryManager
         items={items}
         onAddItem={handleAddItem}
         onUpdateItem={handleUpdateItem}
         onDeleteItem={handleDeleteItem}
       />
-    </div>
+      </div>
+    </PageEntrance>
   )
 }

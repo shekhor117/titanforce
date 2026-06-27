@@ -8,6 +8,8 @@ import { TrainingChart } from "@/components/training-chart"
 import { InjuryTracking } from "@/components/injury-tracking"
 import { BackButton } from "@/components/back-button"
 import { TeamStatsOverview } from "@/components/team-stats-overview"
+import { EntranceReveal } from "@/components/entrance-reveal"
+import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 
 export const metadata = {
   title: "Advanced Features | Titan Force FC",
@@ -19,6 +21,7 @@ export default function FeaturesPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
+        <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
         {/* Hero */}
         <section className="relative overflow-hidden py-20 px-4 text-center hero-gradient">
           {/* Video Background */}
@@ -70,6 +73,7 @@ export default function FeaturesPage() {
         <PlayerRanking />
         <TrainingChart />
         <InjuryTracking />
+        </EntranceReveal>
       </main>
       <Footer />
     </div>

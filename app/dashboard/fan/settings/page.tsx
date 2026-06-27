@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft, Home, LogOut, Save, X, Loader2, Bell, Lock, Eye, EyeOff } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function FanSettingsPage() {
   const router = useRouter()

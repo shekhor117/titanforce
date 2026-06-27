@@ -12,6 +12,7 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel'
 import { ArrowRight, Trophy } from 'lucide-react'
+import { EntranceReveal } from '@/components/entrance-reveal'
 
 export function TrophyTimeline() {
   const { language } = useLanguage()
@@ -45,6 +46,7 @@ export function TrophyTimeline() {
   }
 
   return (
+    <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
     <section className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
@@ -144,5 +146,6 @@ export function TrophyTimeline() {
         </div>
       </div>
     </section>
+    </EntranceReveal>
   )
 }

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Eye, CheckCircle, Truck, Package, AlertCircle, Search, Edit, Save, X, Phone, Mail, MapPin } from "lucide-react"
 import StoreDataService, { Order } from "@/lib/store-data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function StoreOrdersPage() {
   const { language } = useLanguage()
