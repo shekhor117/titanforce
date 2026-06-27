@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="scroll-smooth bg-gradient-to-r from-slate-950 via-purple-900 to-pink-600 min-h-screen" data-scroll-behavior="smooth">
+    <html lang="en" className="scroll-smooth bg-background min-h-screen" data-scroll-behavior="smooth">
       <head>
 
         {/* Google Search Console Verification */}
