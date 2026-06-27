@@ -31,6 +31,24 @@ export function Footer() {
   return (
     <footer className="bg-background text-foreground py-12 md:py-16 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Brand Section - Mobile */}
+        <div className="md:hidden mb-8 pb-8 border-b border-primary/10">
+          <Link href="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
+            <Image
+              src="/logos/titanforce-logo.svg"
+              alt="Titan Force Mulikandi Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </Link>
+          <h3 className="font-bold text-lg tracking-wide mb-2 text-foreground">TITAN FORCE</h3>
+          <p className="text-xs text-muted-foreground mb-1">MULIKANDI</p>
+          <p className="text-sm text-muted-foreground leading-relaxed mt-4">
+            Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
+          </p>
+        </div>
+
         {/* Main Footer Content */}
         <div className="grid grid-cols-3 md:grid-cols-4 gap-6 md:gap-12 mb-8 md:mb-12">
           
@@ -104,8 +122,8 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Social Media Links - Desktop Only */}
-        <div className="hidden md:flex flex-col items-center gap-6 mb-8">
+        {/* Social Media Links */}
+        <div className="flex flex-col items-center gap-6 mb-8">
           <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
