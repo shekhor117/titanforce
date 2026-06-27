@@ -71,13 +71,15 @@ export function Navbar() {
             href="/shop"
             className="neo-btn flex items-center gap-2 px-4 py-2 relative group"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <div className="relative">
+              <ShoppingBag className="w-4 h-4" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-3 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
+                  {cartItemCount > 9 ? "9+" : cartItemCount}
+                </span>
+              )}
+            </div>
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
           </Link>
           
           <ThemeToggle />
@@ -122,13 +124,15 @@ export function Navbar() {
             style={{ animationDelay: '300ms' }}
             onClick={() => setMobileMenuOpen(false)}
           >
-            <ShoppingBag className="w-4 h-4" />
+            <div className="relative">
+              <ShoppingBag className="w-4 h-4" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-3 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
+                  {cartItemCount > 9 ? "9+" : cartItemCount}
+                </span>
+              )}
+            </div>
             <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
-            {cartItemCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
           </Link>
           
           <div className="border-t border-secondary pt-4 mt-2 flex flex-col gap-3">
