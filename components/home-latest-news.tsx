@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { useNewsItems } from '@/lib/use-data-store'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
@@ -17,7 +18,13 @@ export function HomeLatestNews() {
     <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
+        <motion.div 
+          className="flex items-center justify-between mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          viewport={{ once: true, amount: 0.5 }}
+        >
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-accent rounded-full" />
             <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
@@ -31,7 +38,7 @@ export function HomeLatestNews() {
             View all news
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
         {/* News Grid */}
         <ScrollStaggerContainer 
