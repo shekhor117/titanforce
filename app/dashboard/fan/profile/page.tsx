@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft, Home, LogOut, Save, X, Loader2 } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function FanProfilePage() {
   const router = useRouter()

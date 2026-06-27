@@ -24,6 +24,7 @@ import {
   Lock,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function SettingsPage() {
   const { user, isLoading, profile } = useAuth()

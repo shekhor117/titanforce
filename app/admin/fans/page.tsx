@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { dataStore, Fan } from "@/lib/data-store"
 import { CheckCircle, XCircle, Clock, Users, Trash2, Edit, X, Save, Plus, Search } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminFans() {
   const { language } = useLanguage()

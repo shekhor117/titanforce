@@ -8,6 +8,7 @@ import { DataService, Player } from '@/lib/data-service'
 import SquadManager from '@/components/SquadManager'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { put } from '@vercel/blob'
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function SquadManagerAdminPage() {
   const { user, isLoading: authLoading } = useAuth()
@@ -260,7 +261,8 @@ export default function SquadManagerAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <div className="min-h-screen bg-background">
       {error && (
         <div className="mb-4 p-4 bg-destructive/10 border border-destructive rounded-lg flex gap-3">
           <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
@@ -284,6 +286,7 @@ export default function SquadManagerAdminPage() {
         onUpdatePlayer={handleUpdatePlayer}
         onDeletePlayer={handleDeletePlayer}
       />
-    </div>
+      </div>
+    </PageEntrance>
   )
 }

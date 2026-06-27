@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { AlertTriangle, Edit2, Save, X } from "lucide-react"
 import StoreDataService, { AdminProduct } from "@/lib/store-data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function StoreInventoryPage() {
   const { language } = useLanguage()

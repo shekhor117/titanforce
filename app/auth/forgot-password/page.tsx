@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")

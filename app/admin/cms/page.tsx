@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { FileText, BookOpen, Calendar } from 'lucide-react'
+import { PageEntrance } from '@/components/page-entrance'
 
 const ArticleManager = dynamic(() => import('@/components/cms/article-manager').then(mod => ({ default: mod.ArticleManager })), { ssr: false })
 const PageManager = dynamic(() => import('@/components/cms/page-manager').then(mod => ({ default: mod.PageManager })), { ssr: false })

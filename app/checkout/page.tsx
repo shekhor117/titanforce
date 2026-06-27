@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { ChevronLeft, Check, Loader2, AlertCircle } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function CheckoutPage() {
   const { language } = useLanguage()

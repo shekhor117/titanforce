@@ -11,6 +11,7 @@ import { PerformanceMetrics } from "@/components/dashboard/performance-metrics"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { UpcomingEvents } from "@/components/dashboard/upcoming-events"
 import { PersonalizedRecommendations } from "@/components/dashboard/personalized-recommendations"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function PartnerDashboard() {
   const router = useRouter()

@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Trophy, Save, RefreshCw, Star } from "lucide-react"
 import { dataStore } from "@/lib/data-store"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminMotmPage() {
   const { language } = useLanguage()

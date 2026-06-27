@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { Plus, Edit, Trash2, Save, X } from "lucide-react"
 import { getDataService } from "@/lib/data-service"
 import type { Player } from "@/lib/data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminPlayers() {
   const { language } = useLanguage()
@@ -129,7 +130,8 @@ export default function AdminPlayers() {
   )
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">{isBn ? "খেলোয়াড় পরিচালনা" : "Players"}</h1>
 
@@ -185,6 +187,7 @@ export default function AdminPlayers() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </PageEntrance>
   )
 }

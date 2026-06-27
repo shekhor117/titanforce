@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import { SignupPage } from "@/components/signup-page"
+import { PageEntrance } from "@/components/page-entrance"
 
 export const metadata: Metadata = {
   title: "Sign Up | Titan Force FC Admin",
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <SignupPage />
+  return (
+    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
+      <SignupPage />
+    </PageEntrance>
+  )
 }

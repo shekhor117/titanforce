@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { AlertCircle } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export const dynamic = "force-dynamic"
 

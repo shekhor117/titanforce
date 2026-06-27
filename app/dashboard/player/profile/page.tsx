@@ -9,6 +9,7 @@ import { Footer } from "@/components/footer"
 import { PhotoUpload } from "@/components/photo-upload"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function PlayerProfileEditPage() {
   const router = useRouter()

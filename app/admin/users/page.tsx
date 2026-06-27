@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { getDataService, AppUser } from "@/lib/data-service"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock, Loader2, AlertCircle } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminUsersPage() {
   const { language } = useLanguage()

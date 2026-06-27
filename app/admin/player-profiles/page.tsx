@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { Search, Edit, Eye, X, Save, User, Mail, Phone, MapPin, Calendar, Award, Trash2, Plus } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
+import { PageEntrance } from '@/components/page-entrance'
 
 interface PlayerProfile {
   id: string

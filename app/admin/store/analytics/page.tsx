@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { TrendingUp, Package, ShoppingCart, DollarSign } from "lucide-react"
 import StoreDataService from "@/lib/store-data-service"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function StoreSalesAnalyticsPage() {
   const { language } = useLanguage()

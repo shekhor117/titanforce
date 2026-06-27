@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { ArrowLeft, Save, Loader2 } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function UserProfile() {
   const router = useRouter()

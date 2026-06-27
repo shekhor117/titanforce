@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { LogOut, Home, User, ArrowLeft, Users, Zap, Award, Calendar, FileText, TrendingUp, MessageSquare, Trophy } from "lucide-react"
+import { PageEntrance } from '@/components/page-entrance'
 
 export default function UserDashboard() {
   const router = useRouter()
