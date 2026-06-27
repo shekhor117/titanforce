@@ -123,7 +123,7 @@ export function Squad() {
                 <Link
                   key={player.id}
                   href={`/player/${player.num}`}
-                  className={`card-glow rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 border-2 border-secondary bg-card transition-all duration-300 hover:-translate-y-1 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  className={`neo-soft p-3 sm:p-4 md:p-5 text-left block cursor-pointer ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                     }`}
                   style={{ transitionDelay: `${index * 50}ms` }}
                 >
@@ -191,7 +191,7 @@ export function Squad() {
           onClick={() => setSelectedPlayer(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-card border-2 border-primary rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto"
+            className="neo-panel relative w-full max-w-lg max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
