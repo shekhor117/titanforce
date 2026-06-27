@@ -178,6 +178,25 @@ export interface Injury {
   updated_at: string
 }
 
+export interface NewsUpdate {
+  id: string
+  title: string
+  content: string
+  summary?: string
+  category: 'match_update' | 'transfer_news' | 'injury_report' | 'general_news' | 'announcement'
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  featured: boolean
+  status: 'draft' | 'scheduled' | 'published' | 'archived'
+  published_by?: string
+  scheduled_at?: string
+  published_at?: string
+  image_url?: string
+  image_alt?: string
+  views_count: number
+  created_at: string
+  updated_at: string
+}
+
 // Callback types
 type DataCallback<T> = (data: T[]) => void
 type ErrorCallback = (error: Error) => void
@@ -1373,6 +1392,142 @@ export class DataService {
     } catch (err) {
       console.error("[v0] DataService searchAppUsers caught error:", err)
       return []
+    }
+  }
+
+  // News Updates
+  async getNewsUpdates(includeUnpublished = false): Promise<NewsUpdate[]> {
+    if (!this.supabase) {
+      return []
+    }
+    try {
+      let query = this.supabase.from('news_updates').select('*')
+
+      if (!includeUnpublished) {
+        query = query.eq('status', 'published')
+      }
+
+      const { data, error } = await query.order('published_at', { ascending: false, nullsFirst: false })
+
+      if (error) {
+        console.error("[v0] DataService getNewsUpdates error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (error) {
+      console.error("[v0] DataService getNewsUpdates caught error:", error)
+      return []
+    }
+  }
+
+  async createNewsUpdate(update: Omit<NewsUpdate, 'id' | 'created_at' | 'updated_at'>): Promise<NewsUpdate> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('news_updates')
+        .insert([update])
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService createNewsUpdate error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService createNewsUpdate caught error:", err)
+      throw err
+    }
+  }
+
+  async updateNewsUpdate(id: string, updates: Partial<NewsUpdate>): Promise<NewsUpdate> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('news_updates')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService updateNewsUpdate error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updateNewsUpdate caught error:", err)
+      throw err
+    }
+  }
+
+  async deleteNewsUpdate(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { error } = await this.supabase
+        .from('news_updates')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        console.error("[v0] DataService deleteNewsUpdate error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deleteNewsUpdate caught error:", err)
+      throw err
+    }
+  }
+
+  subscribeToNewsUpdates(callback: DataCallback<NewsUpdate>, onError?: ErrorCallback): () => void {
+    if (!this.supabase) {
+      return () => {}
+    }
+
+    try {
+      const existingChannel = this.subscriptions.get('news_updates')
+      if (existingChannel) {
+        try {
+          this.supabase.removeChannel(existingChannel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing old news_updates channel:", error)
+        }
+      }
+
+      const channel = this.supabase
+        .channel(`news_updates-changes-${Date.now()}-${Math.random()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'news_updates',
+          },
+          async () => {
+            try {
+              const updates = await this.getNewsUpdates(true)
+              callback(updates)
+            } catch (error) {
+              onError?.(error instanceof Error ? error : new Error(String(error)))
+            }
+          }
+        )
+        .subscribe()
+
+      this.subscriptions.set('news_updates', channel)
+
+      return () => {
+        try {
+          this.supabase.removeChannel(channel)
+        } catch (error) {
+          console.warn("[v0] DataService: Error removing news_updates channel:", error)
+        }
+        this.subscriptions.delete('news_updates')
+      }
+    } catch (error) {
+      onError?.(error instanceof Error ? error : new Error(String(error)))
+      return () => {}
     }
   }
 
