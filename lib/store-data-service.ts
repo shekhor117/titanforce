@@ -739,8 +739,43 @@ class StoreDataService {
     callback: (products: any[]) => void,
     onError?: (error: Error) => void
   ): () => void {
-    // Supabase subscriptions not available - return no-op cleanup function
-    return () => {}
+    try {
+      const supabase = createClient()
+      
+      // Skip subscription if Supabase is not available
+      if (!supabase) {
+        return () => {}
+      }
+      
+      // Wrap in try-catch to handle potential subscription errors
+      try {
+        const channel = supabase
+          .channel('products-sync')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'store_products' },
+            async () => {
+              try {
+                const products = await this.getProducts()
+                callback(products)
+              } catch (error) {
+                // Silently fail subscription updates
+              }
+            }
+          )
+          .subscribe()
+
+        return () => {
+          supabase.removeChannel(channel)
+        }
+      } catch (subscriptionError) {
+        // Silently fail if subscription setup fails
+        return () => {}
+      }
+    } catch (error) {
+      return () => {}
+    }
   }
+}
 
 export default new StoreDataService()
