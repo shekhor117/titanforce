@@ -39,8 +39,6 @@ export default function AdminGalleryPage() {
         image: item.url || '',
         category: item.category || 'General',
         date: new Date(item.created_at).toLocaleDateString(),
-        views: item.views || 0,
-        likes: item.likes || 0,
         description: item.description || '',
       }))
       
@@ -61,8 +59,6 @@ export default function AdminGalleryPage() {
         url: item.image,
         category: item.category,
         description: item.description || '',
-        views: 0,
-        likes: 0,
       })
       
       await loadGallery()

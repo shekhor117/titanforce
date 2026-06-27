@@ -44,14 +44,17 @@ export default function AdminAnalyticsPage() {
 
   useEffect(() => {
     setIsClient(true)
-    setPlayers(Array.isArray(dataStore.getPlayers()) ? dataStore.getPlayers() : [])
-    setMatches(Array.isArray(dataStore.getMatches()) ? dataStore.getMatches() : [])
-    setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
-    setPartners(Array.isArray(dataStore.getPartners()) ? dataStore.getPartners() : [])
-    setNews(Array.isArray(dataStore.getNews()) ? dataStore.getNews() : [])
-    setMedia(Array.isArray(dataStore.getMedia()) ? dataStore.getMedia() : [])
-    setContacts(Array.isArray(dataStore.getContacts()) ? dataStore.getContacts() : [])
-    setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
+    const loadData = async () => {
+      setPlayers(Array.isArray(await dataStore.getPlayers()) ? await dataStore.getPlayers() : [])
+      setMatches(Array.isArray(await dataStore.getMatches()) ? await dataStore.getMatches() : [])
+      setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
+      setPartners(Array.isArray(dataStore.getPartners()) ? dataStore.getPartners() : [])
+      setNews(Array.isArray(dataStore.getNews()) ? dataStore.getNews() : [])
+      setMedia(Array.isArray(dataStore.getMedia()) ? dataStore.getMedia() : [])
+      setContacts(Array.isArray(await dataStore.getContacts()) ? await dataStore.getContacts() : [])
+      setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
+    }
+    loadData()
   }, [])
 
   // Player Analytics State

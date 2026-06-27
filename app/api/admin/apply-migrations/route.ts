@@ -60,14 +60,12 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     // Check if table already exists
-    console.log('[v0] Checking if otp_codes table exists...')
     const { data: existingTable, error: checkError } = await supabase
       .from('otp_codes')
       .select('id')
       .limit(1)
 
     if (!checkError) {
-      console.log('[v0] OTP table already exists')
       return NextResponse.json(
         { 
           success: true,
@@ -78,7 +76,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log('[v0] OTP table does not exist yet, applying migrations...')
     
     // Execute each SQL statement
     let successCount = 0
@@ -86,7 +83,6 @@ export async function GET(request: NextRequest) {
 
     for (const sql of SQL_STATEMENTS) {
       try {
-        console.log('[v0] Executing SQL:', sql.substring(0, 60) + '...')
         
         const { error } = await supabase.rpc('exec', {
           sql_command: sql
@@ -106,14 +102,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify table was created
-    console.log('[v0] Verifying OTP table creation...')
     const { data: verifyData, error: verifyError } = await supabase
       .from('otp_codes')
       .select('id')
       .limit(1)
 
     if (!verifyError) {
-      console.log('[v0] ✓ OTP table created successfully!')
       return NextResponse.json(
         {
           success: true,

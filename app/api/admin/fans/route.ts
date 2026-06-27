@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    console.log('[v0] Fan created:', data)
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error:', error)
@@ -102,7 +101,6 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    console.log('[v0] Fan updated:', data)
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error:', error)
@@ -136,7 +134,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    console.log('[v0] Fan deleted:', fanId)
     return NextResponse.json({ success: true, id: fanId })
   } catch (error) {
     console.error('[v0] Unexpected error:', error)

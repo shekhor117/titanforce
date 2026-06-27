@@ -80,8 +80,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   // Store OTP in session (in production, send via email)
   const sendOTPEmail = async (emailAddress: string) => {
     try {
-      console.log('[v0] Calling send-otp API for:', emailAddress)
-      
       // Call the API route to send OTP via Supabase
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
@@ -97,7 +95,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       }
 
       const data = await response.json()
-      console.log('[v0] OTP sent successfully:', data)
 
       setOtpSentEmail(emailAddress)
       setOtpResendTimer(60) // 60 second cooldown
@@ -110,8 +107,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   // Verify OTP code via API
   const verifyOTPCode = async (code: string): Promise<boolean> => {
     try {
-      console.log('[v0] Verifying OTP code for:', otpSentEmail)
-      
       // Call the verify-otp API route
       const response = await fetch('/api/auth/verify-otp', {
         method: 'POST',
@@ -126,7 +121,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('[v0] OTP verification error:', errorData)
         setError(errorData.error || (isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed'))
         return false
       }
