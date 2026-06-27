@@ -6,7 +6,6 @@ import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
-import { motion, AnimatePresence } from "framer-motion"
 
 export function Matches() {
   const [isVisible, setIsVisible] = useState(false)
@@ -85,15 +84,12 @@ export function Matches() {
             matches.map((match, index) => {
             const statusStyle = getStatusColor(match)
             return (
-              <motion.button
+              <button
                 key={match.id}
                 onClick={() => setSelectedMatch(match)}
-                className="rounded-xl p-6 border-2 border-secondary bg-card hover:border-primary cursor-pointer w-full text-left"
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                whileHover={{ scale: 1.02, borderColor: 'var(--primary)' }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                viewport={{ once: true, margin: '-100px' }}
+                className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {/* Date & Time */}
@@ -128,7 +124,7 @@ export function Matches() {
                     </span>
                   </div>
                 </div>
-              </motion.button>
+              </button>
             )
           })
           ) : (
@@ -149,63 +145,55 @@ export function Matches() {
         )}
 
         {/* Match Details Modal */}
-        <AnimatePresence>
-          {selectedMatch && (
-            <motion.div 
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-              onClick={() => setSelectedMatch(null)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+        {selectedMatch && (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => setSelectedMatch(null)}
+          >
+            <div 
+              className="relative w-full max-w-2xl bg-card border-2 border-primary rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div 
-                className="relative w-full max-w-2xl bg-card border-2 border-primary rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}
-                initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0, y: 20 }}
-                transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+              <button
+                onClick={() => setSelectedMatch(null)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors"
               >
-                <button
-                  onClick={() => setSelectedMatch(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <X className="w-5 h-5" />
+              </button>
 
-                {/* Match Header */}
-                <div className="mb-6">
-                  <div className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-center mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {selectedMatch.home} <span className="text-primary">{getScoreDisplay(selectedMatch)}</span> {selectedMatch.away}
+              {/* Match Header */}
+              <div className="mb-6">
+                <div className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-center mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {selectedMatch.home} <span className="text-primary">{getScoreDisplay(selectedMatch)}</span> {selectedMatch.away}
+                </div>
+                <div className={`text-sm text-foreground/60 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                  {selectedMatch.date} {selectedMatch.time && `• ${selectedMatch.time}`} • {selectedMatch.venue}
+                </div>
+              </div>
+
+              {selectedMatch.status === "upcoming" ? (
+                <div className="space-y-6">
+                  <div className={`text-center text-foreground/70 py-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                    {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
                   </div>
-                  <div className={`text-sm text-foreground/60 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {selectedMatch.date} {selectedMatch.time && `• ${selectedMatch.time}`} • {selectedMatch.venue}
+                  
+                  {/* Match Prediction for Upcoming Matches */}
+                  <div className="p-4 rounded-xl bg-secondary/30">
+                    <MatchPrediction
+                      matchId={selectedMatch.id}
+                      homeTeam={selectedMatch.home}
+                      awayTeam={selectedMatch.away}
+                    />
                   </div>
                 </div>
-
-                {selectedMatch.status === "upcoming" ? (
-                  <div className="space-y-6">
-                    <div className={`text-center text-foreground/70 py-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
-                    </div>
-                    
-                    {/* Match Prediction for Upcoming Matches */}
-                    <div className="p-4 rounded-xl bg-secondary/30">
-                      <MatchPrediction
-                        matchId={selectedMatch.id}
-                        homeTeam={selectedMatch.home}
-                        awayTeam={selectedMatch.away}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    {/* Goals */}
-                    {(selectedMatch.homeGoals?.length || 0) > 0 && (
-                      <div>
-                        <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                          {isBn ? "গোলকারী" : "Goal Scorers"}
-                        </h3>
+              ) : (
+                <div className="space-y-6">
+                  {/* Goals */}
+                  {(selectedMatch.homeGoals?.length || 0) > 0 && (
+                    <div>
+                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                        {isBn ? "গোলকারী" : "Goal Scorers"}
+                      </h3>
                       <div className="space-y-2">
                         {selectedMatch.homeGoals?.map((goal, i) => (
                           <div key={i} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
@@ -278,10 +266,9 @@ export function Matches() {
                   )}
                 </div>
               )}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

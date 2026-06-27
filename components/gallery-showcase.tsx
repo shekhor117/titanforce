@@ -58,25 +58,26 @@ export function GalleryShowcase() {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {featuredItems.slice(0, 4).map((item: any, idx: number) => (
-            <div
+          {featuredItems.slice(0, 4).map((item: any) => (
+            <Link
               key={item.id}
+              href="/gallery"
+              className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300"
             >
-              <div className="group relative overflow-hidden rounded-lg border border-red-500/20 hover:border-red-500/50 transition-all duration-300 cursor-pointer">
-                <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">
-                  {item.imageUrl && (
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-125 transition-transform duration-700 will-change-transform"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-                  <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2">
-                    {item.title}
+              <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/30 to-black/50 overflow-hidden">
+                {item.imageUrl && (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
+                <h3 className="text-sm font-bold text-foreground group-hover:text-red-500 transition-colors line-clamp-2">
+                  {item.title}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
                   {item.type === 'match' && (isBn ? 'ম্যাচ' : 'Match')}
@@ -85,9 +86,8 @@ export function GalleryShowcase() {
                   {item.type === 'merchandise' && (isBn ? 'পণ্য' : 'Merchandise')}
                   {item.type === 'news' && (isBn ? 'খবর' : 'News')}
                 </p>
-                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
