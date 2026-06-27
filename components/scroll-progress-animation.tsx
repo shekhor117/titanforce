@@ -1,6 +1,7 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
+import { motion, useMotionValue, useTransform, useMotionTemplate } from 'framer-motion'
 
 interface ScrollProgressAnimationProps {
   children: React.ReactNode
@@ -8,17 +9,20 @@ interface ScrollProgressAnimationProps {
 }
 
 /**
- * Animation that triggers continuously as you scroll
- * Shows visual feedback based on scroll position and velocity
+ * ScrollProgressAnimation - উচ্চ দৃশ্যমান স্ক্রল অ্যানিমেশন
+ * প্রতিটি স্ক্রল করার সময় উপাদান অ্যানিমেট হয়
  */
 export function ScrollProgressAnimation({
   children,
   className = '',
 }: ScrollProgressAnimationProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [scrollData, setScrollData] = useState({ progress: 0, velocity: 0 })
-  const lastScrollY = useRef(0)
-  const lastTimestamp = useRef(0)
+  
+  // Motion values for smooth scroll-based animations
+  const scaleValue = useMotionValue(0.9)
+  const opacityValue = useMotionValue(0.5)
+  const yValue = useMotionValue(30)
+  const rotateValue = useMotionValue(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,49 +34,46 @@ export function ScrollProgressAnimation({
       const elementHeight = rect.height
       const windowHeight = window.innerHeight
 
-      // Calculate how far down the element is in the viewport (0 to 1)
+      // Calculate element visibility (0 = below viewport, 1 = centered, 0 = above viewport)
       const elementCenter = elementTop + elementHeight / 2
-      const viewportCenter = windowHeight / 2
-      const progress = Math.max(0, Math.min(1, 1 - (elementCenter - viewportCenter) / viewportCenter))
+      const distanceFromCenter = Math.abs(elementCenter - windowHeight / 2)
+      const maxDistance = windowHeight / 2 + elementHeight / 2
+      const progress = Math.max(0, Math.min(1, 1 - distanceFromCenter / maxDistance))
 
-      // Calculate velocity
-      const now = Date.now()
-      const deltaTime = now - lastTimestamp.current
-      const deltaScroll = window.scrollY - lastScrollY.current
-      const velocity = deltaTime > 0 ? Math.abs(deltaScroll / deltaTime) : 0
-
-      setScrollData({ progress, velocity })
-
-      lastScrollY.current = window.scrollY
-      lastTimestamp.current = now
-
-      // Apply dynamic styles based on scroll
-      element.style.opacity = String(0.5 + progress * 0.5)
-      element.style.transform = `translateY(${-progress * 20}px) scale(${0.95 + progress * 0.05})`
+      // Apply animations based on scroll progress
+      scaleValue.set(0.85 + progress * 0.15) // Scale from 0.85 to 1
+      opacityValue.set(0.3 + progress * 0.7) // Opacity from 0.3 to 1
+      yValue.set(50 * (1 - progress)) // Move up from 50px to 0px
+      rotateValue.set(progress * 2) // Slight rotation
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
+    handleScroll() // Call once on mount
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [scaleValue, opacityValue, yValue, rotateValue])
+
+  const shadowOpacity = useTransform(opacityValue, (value) => value * 0.3)
+  const filterBrightness = useTransform(opacityValue, (value) => 0.8 + value * 0.2)
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className={className}
       style={{
-        transition: 'all 0.1s ease-out',
-        willChange: 'transform, opacity',
+        scale: scaleValue,
+        opacity: opacityValue,
+        y: yValue,
+        rotate: rotateValue,
       }}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 
 /**
- * Creates a parallax effect that moves based on scroll
+ * ScrollParallax - প্যারালাক্স স্ক্রল ইফেক্ট
  */
 export function ScrollParallax({
   children,
@@ -84,6 +85,7 @@ export function ScrollParallax({
   speed?: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  const yValue = useMotionValue(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,47 +96,44 @@ export function ScrollParallax({
       const elementTop = rect.top
       const windowHeight = window.innerHeight
 
-      // Calculate offset based on position in viewport
-      const offset = (windowHeight - elementTop) * speed
+      // Calculate parallax offset
+      const offset = (windowHeight - elementTop) * speed * 0.5
 
-      element.style.transform = `translateY(${offset * 0.3}px)`
+      yValue.set(offset)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [speed])
+  }, [yValue, speed])
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className={className}
-      style={{
-        transition: 'transform 0.1s ease-out',
-        willChange: 'transform',
-      }}
+      style={{ y: yValue }}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 
 /**
- * Animates a counter based on scroll progress through an element
+ * ScrollCounter - স্ক্রল করার সময় সংখ্যা বৃদ্ধি করুন
  */
 export function ScrollCounter({
-  from = 0,
-  to = 100,
-  className = '',
+  end,
   suffix = '',
+  className = '',
 }: {
-  from?: number
-  to?: number
-  className?: string
+  end: number
   suffix?: string
+  className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const [count, setCount] = useState(from)
+  const countValue = useMotionValue(0)
+  const displayValue = useTransform(countValue, (value) => Math.floor(value))
 
   useEffect(() => {
     const handleScroll = () => {
@@ -146,94 +145,87 @@ export function ScrollCounter({
       const elementHeight = rect.height
       const windowHeight = window.innerHeight
 
-      // Calculate scroll progress through element
-      const elementBottom = elementTop + elementHeight
-      const progress = Math.max(
-        0,
-        Math.min(
-          1,
-          1 - (elementTop - windowHeight) / (elementHeight + windowHeight)
-        )
-      )
+      const elementCenter = elementTop + elementHeight / 2
+      const distanceFromCenter = Math.abs(elementCenter - windowHeight / 2)
+      const maxDistance = windowHeight / 2 + elementHeight / 2
+      const progress = Math.max(0, Math.min(1, 1 - distanceFromCenter / maxDistance))
 
-      const newCount = Math.floor(from + (to - from) * progress)
-      setCount(newCount)
+      countValue.set(end * progress)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [from, to])
+  }, [end, countValue])
 
   return (
-    <div ref={ref} className={className}>
-      {count}
+    <motion.div
+      ref={ref}
+      className={className}
+    >
+      {displayValue}
       {suffix}
-    </div>
+    </motion.div>
   )
 }
 
 /**
- * Creates a fill animation based on scroll progress
+ * ScrollFill - টপ থেকে বটম পর্যন্ত ফিল করুন
  */
 export function ScrollFill({
   children,
   className = '',
-  direction = 'top',
+  direction = 'vertical',
 }: {
   children: React.ReactNode
   className?: string
-  direction?: 'top' | 'bottom' | 'left' | 'right'
+  direction?: 'vertical' | 'horizontal'
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const fillRef = useRef<HTMLDivElement>(null)
+  const fillValue = useMotionValue(0)
 
   useEffect(() => {
     const handleScroll = () => {
       const element = ref.current
-      const fill = fillRef.current
-      if (!element || !fill) return
+      if (!element) return
 
       const rect = element.getBoundingClientRect()
       const elementTop = rect.top
       const elementHeight = rect.height
       const windowHeight = window.innerHeight
 
-      // Calculate scroll progress
       const elementCenter = elementTop + elementHeight / 2
-      const progress = Math.max(
-        0,
-        Math.min(1, 1 - (elementCenter - windowHeight / 2) / (windowHeight / 2))
-      )
+      const distanceFromCenter = Math.abs(elementCenter - windowHeight / 2)
+      const maxDistance = windowHeight / 2 + elementHeight / 2
+      const progress = Math.max(0, Math.min(1, 1 - distanceFromCenter / maxDistance))
 
-      const fillPercent = progress * 100
-
-      if (direction === 'top' || direction === 'bottom') {
-        fill.style.height = `${fillPercent}%`
-      } else {
-        fill.style.width = `${fillPercent}%`
-      }
+      fillValue.set(progress * 100)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [direction])
+  }, [fillValue])
+
+  const backgroundGradient = useMotionTemplate`linear-gradient(
+    ${direction === 'vertical' ? 'to bottom' : 'to right'},
+    rgb(220, 38, 38) 0%,
+    rgb(220, 38, 38) ${fillValue}%,
+    transparent ${fillValue}%,
+    transparent 100%
+  )`
 
   return (
-    <div ref={ref} className={className}>
-      <div
-        ref={fillRef}
-        className="absolute inset-0 bg-primary/20 transition-all duration-100"
-        style={{
-          [direction === 'top' || direction === 'bottom' ? 'height' : 'width']: '0%',
-          [direction === 'bottom' ? 'bottom' : direction === 'right' ? 'right' : 'top']: 0,
-          [direction === 'left' || direction === 'right' ? 'height' : 'width']: '100%',
-        }}
-      />
-      <div className="relative">{children}</div>
-    </div>
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{
+        backgroundImage: backgroundGradient,
+      }}
+    >
+      {children}
+    </motion.div>
   )
 }
