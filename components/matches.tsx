@@ -87,7 +87,7 @@ export function Matches() {
               <button
                 key={match.id}
                 onClick={() => setSelectedMatch(match)}
-                className={`rounded-xl p-6 border-2 border-secondary bg-card transition-all duration-600 hover:border-primary hover:-translate-y-1 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                className={`neo-card p-6 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
@@ -151,7 +151,7 @@ export function Matches() {
             onClick={() => setSelectedMatch(null)}
           >
             <div 
-              className="relative w-full max-w-2xl bg-card border-2 border-primary rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto"
+              className="neo-panel relative w-full max-w-2xl max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <button
