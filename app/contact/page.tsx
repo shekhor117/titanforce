@@ -51,6 +51,21 @@ export default function ContactPage() {
       }, 5000)
     } catch (err) {
       console.error('[v0] Error submitting contact form:', err)
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      
+      // Check for schema cache error - means migrations need to be run
+      if (errorMsg.includes('schema cache') || errorMsg.includes('contact_messages') || errorMsg.includes('relation')) {
+        setError(
+          isBn
+            ? '⚠️ ডাটাবেস সেটআপ প্রয়োজন। সেটআপ পেজে নিয়ে যাচ্ছে...'
+            : '⚠️ Database setup required. Redirecting to setup page...'
+        )
+        setTimeout(() => {
+          window.location.href = '/setup-database'
+        }, 1500)
+        return
+      }
+      
       setError(isBn ? 'বার্তা পাঠাতে ত্রুটি হয়েছে। দয়া করে পুনরায় চেষ্টা করুন।' : 'Error sending message. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -191,7 +206,7 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  placeholder={isBn ? 'বিষয় লিখুন' : 'Subject'}
+                  placeholder={isBn ? 'বিষয��� লিখুন' : 'Subject'}
                   className="neo-input w-full px-4 py-2 rounded-lg bg-background outline-none transition"
                 />
               </div>
