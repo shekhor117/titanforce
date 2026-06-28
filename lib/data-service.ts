@@ -312,6 +312,9 @@ export class DataService {
     }
     
     try {
+      // Cache for current players to avoid full refetch on every change
+      let cachedPlayers: Player[] = []
+      
       // Clean up any existing subscription first
       const existingChannel = this.subscriptions.get('players')
       if (existingChannel) {
@@ -331,16 +334,35 @@ export class DataService {
             schema: 'public',
             table: 'players',
           },
-          async (payload) => {
+          (payload) => {
             try {
-              const players = await this.getPlayers()
-              callback(players)
+              // Optimize: Use payload instead of full refetch
+              // Only refetch if it's an initial load or critical operation
+              if (payload.eventType === 'INSERT') {
+                cachedPlayers = [...cachedPlayers, payload.new as Player]
+              } else if (payload.eventType === 'UPDATE') {
+                cachedPlayers = cachedPlayers.map((p) =>
+                  p.id === (payload.new as Player).id ? (payload.new as Player) : p
+                )
+              } else if (payload.eventType === 'DELETE') {
+                cachedPlayers = cachedPlayers.filter((p) => p.id !== (payload.old as Player).id)
+              }
+              
+              callback(cachedPlayers)
+              console.log(`[v0] Player update: ${payload.eventType}`)
             } catch (error) {
               onError?.(error instanceof Error ? error : new Error(String(error)))
             }
           }
         )
         .on('subscribe', () => {
+          // Load initial data only once when subscription is established
+          this.getPlayers().then((players) => {
+            cachedPlayers = players
+            callback(players)
+          }).catch((error) => {
+            onError?.(error instanceof Error ? error : new Error(String(error)))
+          })
         })
         .on('unsubscribe', () => {
         })

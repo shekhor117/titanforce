@@ -6,16 +6,22 @@ import GalleryDataService from "@/lib/gallery-data-service"
 import TrophyDataService from "@/lib/trophy-data-service"
 import PlayerDataService from "@/lib/player-data-service"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown
 } from "lucide-react"
-import { useState, useEffect } from "react"
-import { PlayerStatsDashboard } from "@/components/player-stats-dashboard"
+import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
+
+// Dynamic imports for heavy components - loaded only when needed
+const PlayerStatsDashboard = dynamic(
+  () => import("@/components/player-stats-dashboard").then(mod => ({ default: mod.PlayerStatsDashboard })),
+  { loading: () => <div className="h-64 bg-secondary/50 rounded-lg animate-pulse" /> }
+)
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
@@ -35,65 +41,35 @@ export default function AdminDashboard() {
   const [storeOrders, setStoreOrders] = useState<any[]>([])
   
   useEffect(() => {
-    // Load player stats from Supabase
-    const loadData = async () => {
+    // Consolidate all data loading into a single effect
+    const loadAllData = async () => {
       try {
-        const stats = await PlayerDataService.getPlayerStats()
-        setPlayerStats(stats)
-      } catch (err) {
-      }
-    }
-    loadData()
-  }, [])
-  
-  useEffect(() => {
-    // Load gallery stats
-    const loadGalleryStats = async () => {
-      try {
-        const stats = await GalleryDataService.getGalleryStats()
-        setGalleryStats(stats)
-      } catch (err) {
-      }
-    }
-    loadGalleryStats()
-  }, [])
+        // Load all stats in parallel for better performance
+        const [playerStatsData, galleryStatsData, trophyStatsData, products, orders] = await Promise.all([
+          PlayerDataService.getPlayerStats(),
+          GalleryDataService.getGalleryStats(),
+          TrophyDataService.getTrophyStats(),
+          StoreDataService.getProducts(),
+          StoreDataService.getOrders(),
+        ])
 
-  useEffect(() => {
-    // Load trophy stats
-    const loadTrophyStats = async () => {
-      try {
-        const stats = await TrophyDataService.getTrophyStats()
-        setTrophyStats(stats)
-      } catch (err) {
-      }
-    }
-    loadTrophyStats()
-  }, [])
-
-  useEffect(() => {
-    // Load store products and orders
-    const loadStoreData = async () => {
-      try {
-        const products = await StoreDataService.getProducts()
-        const orders = await StoreDataService.getOrders()
+        setPlayerStats(playerStatsData)
+        setGalleryStats(galleryStatsData)
+        setTrophyStats(trophyStatsData)
         setStoreProducts(products)
         setStoreOrders(orders)
+
+        // Load local storage data
+        const { dataStore } = await import("@/lib/data-store")
+        setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
+        const contactsData = await dataStore.getContacts()
+        setContacts(Array.isArray(contactsData) ? contactsData : [])
+        setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
       } catch (err) {
+        console.error("[v0] Error loading dashboard data:", err)
       }
     }
-    loadStoreData()
-  }, [])
-  
-  useEffect(() => {
-    // Import dataStore to get local storage data
-    const loadLocalData = async () => {
-      const { dataStore } = await import("@/lib/data-store")
-      setFans(Array.isArray(dataStore.getFans()) ? dataStore.getFans() : [])
-      const contactsData = await dataStore.getContacts()
-      setContacts(Array.isArray(contactsData) ? contactsData : [])
-      setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
-    }
-    loadLocalData()
+    loadAllData()
   }, [])
 
   // Safely convert to arrays
