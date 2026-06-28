@@ -73,7 +73,7 @@ export default function UserDashboard() {
     {
       title: isBn ? "দলের খেলোয়াড়" : "Team Squad",
       description: isBn ? "সমস্ত খেলোয়াড় এবং পরিসংখ্যান" : "View all players & stats",
-      href: "/squad",
+      href: "/team-squad",
       icon: Users,
       color: "from-blue-600 to-blue-500"
     },
