@@ -1,49 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { validateMatch } from '@/lib/validation'
+import { validateUser } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient()
     const { searchParams } = new URL(request.url)
-    const matchId = searchParams.get('id')
+    const userId = searchParams.get('id')
 
-    // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    if (matchId) {
+    if (userId) {
       const { data, error } = await supabase
-        .from('matches')
+        .from('users')
         .select('*')
-        .eq('id', matchId)
+        .eq('id', userId)
         .single()
 
       if (error) {
-        console.error('[v0] Error fetching match:', error)
-        // Return 404 if no record found, 400 for other errors
+        console.error('[v0] Error fetching user:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
         return NextResponse.json({ error: error.message }, { status: statusCode })
       }
 
       return NextResponse.json(data)
-    } else {
-      const { data, error } = await supabase
-        .from('matches')
-        .select('*')
-        .order('date', { ascending: false })
-
-      if (error) {
-        console.error('[v0] Error fetching matches:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
-      }
-
-      return NextResponse.json(data)
     }
+
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('createdAt', { ascending: false })
+
+    if (error) {
+      console.error('[v0] Error fetching users:', error)
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+
+    return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
+    console.error('[v0] Unexpected error in GET /api/admin/users:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -59,26 +52,25 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    // Validate match data
-    const validation = validateMatch(body)
+    const validation = validateUser(body)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
     const { data, error } = await supabase
-      .from('matches')
+      .from('users')
       .insert([body])
       .select()
       .single()
 
     if (error) {
-      console.error('[v0] Error creating match:', error)
+      console.error('[v0] Error creating user:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
+    console.error('[v0] Unexpected error in POST /api/admin/users:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -96,30 +88,29 @@ export async function PUT(request: NextRequest) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
     }
 
-    // Validate match data (partial updates are OK)
-    const validation = validateMatch(updates)
+    const validation = validateUser(updates)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
     const { data, error } = await supabase
-      .from('matches')
+      .from('users')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
 
     if (error) {
-      console.error('[v0] Error updating match:', error)
+      console.error('[v0] Error updating user:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
+    console.error('[v0] Unexpected error in PUT /api/admin/users:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -134,25 +125,25 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const matchId = searchParams.get('id')
+    const userId = searchParams.get('id')
 
-    if (!matchId) {
-      return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })
+    if (!userId) {
+      return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
     }
 
     const { error } = await supabase
-      .from('matches')
+      .from('users')
       .delete()
-      .eq('id', matchId)
+      .eq('id', userId)
 
     if (error) {
-      console.error('[v0] Error deleting match:', error)
+      console.error('[v0] Error deleting user:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json({ success: true, id: matchId })
+    return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
+    console.error('[v0] Unexpected error in DELETE /api/admin/users:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

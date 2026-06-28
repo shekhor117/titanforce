@@ -1,6 +1,7 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
+import { validateProduct, validateOrder } from '@/lib/validation'
 
 export interface StoreProduct {
   id: string
@@ -365,6 +366,13 @@ class StoreDataService {
 
   async addProduct(product: Omit<StoreProduct, 'id' | 'createdAt'>): Promise<StoreProduct | null> {
     try {
+      // Validate product data
+      const validation = validateProduct(product)
+      if (!validation.isValid) {
+        console.error('[v0] Product validation failed:', validation.errors)
+        return null
+      }
+
       const supabase = createClient()
       if (!supabase) return null
 
@@ -417,23 +425,15 @@ class StoreDataService {
 
   async updateProduct(id: string, updates: Partial<StoreProduct>): Promise<StoreProduct | null> {
     try {
+      // Validate product data (partial updates are OK)
+      const validation = validateProduct(updates)
+      if (!validation.isValid) {
+        console.error('[v0] Product validation failed:', validation.errors)
+        return null
+      }
+
       const supabase = createClient()
       if (!supabase) return null
-
-      const updateData: Record<string, unknown> = {}
-      if (updates.name) updateData.name = updates.name
-      if (updates.description) updateData.description = updates.description
-      if (updates.category) updateData.category = updates.category
-      if (updates.price) updateData.price = updates.price
-      if (updates.imageUrl) updateData.image_url = updates.imageUrl
-      if (updates.sizes) updateData.sizes = updates.sizes
-      if (updates.colors) updateData.colors = updates.colors
-      if (updates.stock !== undefined) updateData.total_stock = updates.stock
-      if (updates.rating !== undefined) updateData.rating = updates.rating
-      if (updates.reviews !== undefined) updateData.reviews = updates.reviews
-      if (updates.features) updateData.features = updates.features
-      if (updates.sku) updateData.sku = updates.sku
-      if (updates.variants) updateData.variants = updates.variants
 
       const { data, error } = await supabase
         .from('products')
@@ -572,6 +572,13 @@ class StoreDataService {
 
   async createOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): Promise<Order | null> {
     try {
+      // Validate order data
+      const validation = validateOrder(order)
+      if (!validation.isValid) {
+        console.error('[v0] Order validation failed:', validation.errors)
+        return null
+      }
+
       const supabase = createClient()
       if (!supabase) return null
 

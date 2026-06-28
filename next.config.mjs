@@ -13,7 +13,6 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
   compress: true,
-  swcMinify: true,
   productionBrowserSourceMaps: false,
 }
 
