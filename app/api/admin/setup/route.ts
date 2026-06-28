@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateAdminSetup } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,11 +16,14 @@ export async function POST(request: NextRequest) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
   try {
-    const { email, password, name } = await request.json()
+    const body = await request.json()
+    const { email, password, name } = body
 
-    if (!email || !password) {
+    // Validate admin setup data
+    const validation = validateAdminSetup(body)
+    if (!validation.isValid) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Validation failed', details: validation.errors },
         { status: 400 }
       )
     }

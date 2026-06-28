@@ -145,3 +145,112 @@ function isValidUrl(url: string): boolean {
     return false
   }
 }
+
+export function validateAdminSetup(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.email || typeof data.email !== 'string') {
+    errors.email = 'Email is required'
+  } else if (!isValidEmail(data.email)) {
+    errors.email = 'Email must be valid'
+  }
+
+  if (!data.password || typeof data.password !== 'string') {
+    errors.password = 'Password is required'
+  } else if (data.password.length < 6) {
+    errors.password = 'Password must be at least 6 characters'
+  }
+
+  if (data.name && typeof data.name !== 'string') {
+    errors.name = 'Name must be a string'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateProduct(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'Product name is required'
+  }
+
+  if (!data.description || typeof data.description !== 'string' || data.description.trim().length === 0) {
+    errors.description = 'Product description is required'
+  }
+
+  if (!data.category || typeof data.category !== 'string') {
+    errors.category = 'Product category is required'
+  }
+
+  if (data.price === undefined || data.price === null) {
+    errors.price = 'Product price is required'
+  } else if (typeof data.price !== 'number' || data.price < 0) {
+    errors.price = 'Price must be a non-negative number'
+  }
+
+  if (data.stock !== undefined && data.stock !== null) {
+    if (typeof data.stock !== 'number' || data.stock < 0) {
+      errors.stock = 'Stock must be a non-negative number'
+    }
+  }
+
+  if (data.imageUrl && typeof data.imageUrl !== 'string') {
+    errors.imageUrl = 'Image URL must be a string'
+  } else if (data.imageUrl && !isValidUrl(data.imageUrl)) {
+    errors.imageUrl = 'Image URL must be valid'
+  }
+
+  if (data.sizes && !Array.isArray(data.sizes)) {
+    errors.sizes = 'Sizes must be an array'
+  }
+
+  if (data.colors && !Array.isArray(data.colors)) {
+    errors.colors = 'Colors must be an array'
+  }
+
+  if (data.rating !== undefined && (typeof data.rating !== 'number' || data.rating < 0 || data.rating > 5)) {
+    errors.rating = 'Rating must be between 0 and 5'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateOrder(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.customerName || typeof data.customerName !== 'string' || data.customerName.trim().length === 0) {
+    errors.customerName = 'Customer name is required'
+  }
+
+  if (!data.customerEmail || typeof data.customerEmail !== 'string') {
+    errors.customerEmail = 'Customer email is required'
+  } else if (!isValidEmail(data.customerEmail)) {
+    errors.customerEmail = 'Customer email must be valid'
+  }
+
+  if (!data.items || !Array.isArray(data.items) || data.items.length === 0) {
+    errors.items = 'Order must have at least one item'
+  }
+
+  if (data.total === undefined || data.total === null) {
+    errors.total = 'Order total is required'
+  } else if (typeof data.total !== 'number' || data.total < 0) {
+    errors.total = 'Order total must be a non-negative number'
+  }
+
+  if (data.status && !['pending', 'processing', 'shipped', 'delivered', 'cancelled'].includes(data.status)) {
+    errors.status = 'Invalid order status'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
