@@ -545,3 +545,82 @@ export function validateUser(data: any): ValidationResult {
     errors
   }
 }
+
+export function validateAnalytics(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (data.playerId && typeof data.playerId !== 'string') {
+    errors.playerId = 'Player ID must be a string'
+  }
+
+  if (data.sessions && !Array.isArray(data.sessions)) {
+    errors.sessions = 'Sessions must be an array'
+  }
+
+  if (data.avgFitness !== undefined && (typeof data.avgFitness !== 'number' || data.avgFitness < 0 || data.avgFitness > 100)) {
+    errors.avgFitness = 'Average fitness must be between 0 and 100'
+  }
+
+  if (data.avgIntensity !== undefined && (typeof data.avgIntensity !== 'number' || data.avgIntensity < 0 || data.avgIntensity > 100)) {
+    errors.avgIntensity = 'Average intensity must be between 0 and 100'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateFeature(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'Feature name is required'
+  }
+
+  if (data.description && typeof data.description !== 'string') {
+    errors.description = 'Description must be a string'
+  }
+
+  if (typeof data.enabled !== 'boolean') {
+    errors.enabled = 'Enabled must be a boolean'
+  }
+
+  if (!data.category || !['tools', 'analytics', 'engagement'].includes(data.category)) {
+    errors.category = 'Category must be one of: tools, analytics, engagement'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateSettings(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (data.siteName && typeof data.siteName !== 'string') {
+    errors.siteName = 'Site name must be a string'
+  }
+
+  if (data.siteDescription && typeof data.siteDescription !== 'string') {
+    errors.siteDescription = 'Site description must be a string'
+  }
+
+  if (data.primaryColor && !/^#[0-9A-F]{6}$/i.test(data.primaryColor)) {
+    errors.primaryColor = 'Primary color must be a valid hex color'
+  }
+
+  if (data.socialLinks && typeof data.socialLinks !== 'object') {
+    errors.socialLinks = 'Social links must be an object'
+  }
+
+  if (data.maintenanceMode && typeof data.maintenanceMode !== 'boolean') {
+    errors.maintenanceMode = 'Maintenance mode must be a boolean'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
