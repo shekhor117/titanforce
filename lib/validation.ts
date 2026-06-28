@@ -254,3 +254,113 @@ export function validateOrder(data: any): ValidationResult {
     errors
   }
 }
+
+export function validateNews(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+    errors.title = 'News title is required'
+  }
+
+  if (!data.content || typeof data.content !== 'string' || data.content.trim().length === 0) {
+    errors.content = 'News content is required'
+  }
+
+  if (data.image_url && typeof data.image_url !== 'string') {
+    errors.image_url = 'Image URL must be a string'
+  } else if (data.image_url && !isValidUrl(data.image_url)) {
+    errors.image_url = 'Image URL must be valid'
+  }
+
+  if (data.status && !['draft', 'published', 'archived'].includes(data.status)) {
+    errors.status = 'Invalid news status'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateMedia(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+    errors.title = 'Media title is required'
+  }
+
+  if (!data.url || typeof data.url !== 'string') {
+    errors.url = 'Media URL is required'
+  } else if (!isValidUrl(data.url)) {
+    errors.url = 'Media URL must be valid'
+  }
+
+  if (!data.type || typeof data.type !== 'string') {
+    errors.type = 'Media type is required'
+  }
+
+  if (data.description && typeof data.description !== 'string') {
+    errors.description = 'Description must be a string'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateTrophy(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'Trophy name is required'
+  }
+
+  if (!data.category || typeof data.category !== 'string') {
+    errors.category = 'Trophy category is required'
+  }
+
+  if (data.year === undefined || data.year === null) {
+    errors.year = 'Trophy year is required'
+  } else if (!Number.isInteger(Number(data.year)) || Number(data.year) < 1900 || Number(data.year) > new Date().getFullYear()) {
+    errors.year = 'Trophy year must be valid'
+  }
+
+  if (data.description && typeof data.description !== 'string') {
+    errors.description = 'Description must be a string'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateContact(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'Contact name is required'
+  }
+
+  if (!data.email || typeof data.email !== 'string') {
+    errors.email = 'Contact email is required'
+  } else if (!isValidEmail(data.email)) {
+    errors.email = 'Contact email must be valid'
+  }
+
+  if (!data.message || typeof data.message !== 'string' || data.message.trim().length === 0) {
+    errors.message = 'Message is required'
+  } else if (data.message.trim().length < 10) {
+    errors.message = 'Message must be at least 10 characters'
+  }
+
+  if (data.status && !['new', 'read', 'responded', 'archived'].includes(data.status)) {
+    errors.status = 'Invalid contact status'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
