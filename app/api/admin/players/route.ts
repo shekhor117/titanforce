@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching player:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        // Return 404 if no record found, 400 for other errors
+        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        return NextResponse.json({ error: error.message }, { status: statusCode })
       }
 
       return NextResponse.json(data)
