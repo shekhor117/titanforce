@@ -26,7 +26,7 @@ export function Footer() {
     { id: "contact", label: "Contact", href: "/about" },
     { id: "tickets", label: "Tickets", href: "/about" },
     { id: "shop", label: "Shop", href: "/shop" },
-    { id: "newsletter", label: "Newsletter", href: "/about" },
+    { id: "newsletter", label: "Newsletter", href: "/news" },
   ]
 
   return (
@@ -129,7 +129,7 @@ export function Footer() {
           <h3 className="text-foreground font-semibold">Follow Us</h3>
           <div className="flex gap-4">
             <a
-              href="https://facebook.com/titanforce"
+              href="https://facebook.com/TitanForceMulikandi"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
@@ -138,7 +138,7 @@ export function Footer() {
               <Facebook className="w-6 h-6" />
             </a>
             <a
-              href="https://tiktok.com/@titanforce"
+              href="https://tiktok.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
@@ -149,7 +149,7 @@ export function Footer() {
               </svg>
             </a>
             <a
-              href="https://instagram.com/titanforce"
+              href="https://instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
@@ -158,7 +158,7 @@ export function Footer() {
               <Instagram className="w-6 h-6" />
             </a>
             <a
-              href="https://youtube.com/@titanforce"
+              href="https://youtube.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-primary flex items-center justify-center hover:scale-110 transition-transform"
