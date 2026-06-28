@@ -364,3 +364,184 @@ export function validateContact(data: any): ValidationResult {
     errors
   }
 }
+
+export function validateInjury(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.playerId || typeof data.playerId !== 'string') {
+    errors.playerId = 'Player ID is required'
+  }
+
+  if (!data.injuryType || typeof data.injuryType !== 'string' || data.injuryType.trim().length === 0) {
+    errors.injuryType = 'Injury type is required'
+  }
+
+  if (!data.injuryDate || typeof data.injuryDate !== 'string') {
+    errors.injuryDate = 'Injury date is required'
+  }
+
+  if (data.status && !['active', 'recovering', 'recovered'].includes(data.status)) {
+    errors.status = 'Invalid injury status'
+  }
+
+  if (data.recoveryProgress !== undefined && (typeof data.recoveryProgress !== 'number' || data.recoveryProgress < 0 || data.recoveryProgress > 100)) {
+    errors.recoveryProgress = 'Recovery progress must be between 0 and 100'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateLineup(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.formation || typeof data.formation !== 'string') {
+    errors.formation = 'Formation is required'
+  }
+
+  if (!data.playerIds || !Array.isArray(data.playerIds)) {
+    errors.playerIds = 'Player IDs must be an array'
+  } else if (data.playerIds.length > 11) {
+    errors.playerIds = 'Lineup cannot have more than 11 players'
+  }
+
+  if (data.matchId && typeof data.matchId !== 'string') {
+    errors.matchId = 'Match ID must be a string'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateMotm(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.matchId || typeof data.matchId !== 'string') {
+    errors.matchId = 'Match ID is required'
+  }
+
+  if (!data.playerId || typeof data.playerId !== 'string') {
+    errors.playerId = 'Player ID is required'
+  }
+
+  if (data.rating !== undefined && (typeof data.rating !== 'number' || data.rating < 0 || data.rating > 10)) {
+    errors.rating = 'Rating must be between 0 and 10'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateRanking(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.playerId || typeof data.playerId !== 'string') {
+    errors.playerId = 'Player ID is required'
+  }
+
+  if (data.goals !== undefined && (typeof data.goals !== 'number' || data.goals < 0)) {
+    errors.goals = 'Goals must be a non-negative number'
+  }
+
+  if (data.assists !== undefined && (typeof data.assists !== 'number' || data.assists < 0)) {
+    errors.assists = 'Assists must be a non-negative number'
+  }
+
+  if (data.rank !== undefined && (typeof data.rank !== 'number' || data.rank < 1)) {
+    errors.rank = 'Rank must be a positive number'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateNewsUpdate(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+    errors.title = 'News update title is required'
+  }
+
+  if (!data.content || typeof data.content !== 'string' || data.content.trim().length === 0) {
+    errors.content = 'News update content is required'
+  }
+
+  if (data.imageUrl && typeof data.imageUrl !== 'string') {
+    errors.imageUrl = 'Image URL must be a string'
+  } else if (data.imageUrl && !isValidUrl(data.imageUrl)) {
+    errors.imageUrl = 'Image URL must be valid'
+  }
+
+  if (data.status && !['draft', 'published', 'archived'].includes(data.status)) {
+    errors.status = 'Invalid news update status'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validatePlayerProfile(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.userId || typeof data.userId !== 'string') {
+    errors.userId = 'User ID is required'
+  }
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'Player name is required'
+  }
+
+  if (data.position && typeof data.position !== 'string') {
+    errors.position = 'Position must be a string'
+  }
+
+  if (data.jerseyNumber !== undefined && (typeof data.jerseyNumber !== 'number' || data.jerseyNumber < 1 || data.jerseyNumber > 99)) {
+    errors.jerseyNumber = 'Jersey number must be between 1 and 99'
+  }
+
+  if (data.age !== undefined && (typeof data.age !== 'number' || data.age < 16 || data.age > 50)) {
+    errors.age = 'Age must be between 16 and 50'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
+
+export function validateUser(data: any): ValidationResult {
+  const errors: Record<string, string> = {}
+
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    errors.name = 'User name is required'
+  }
+
+  if (!data.email || typeof data.email !== 'string') {
+    errors.email = 'User email is required'
+  } else if (!isValidEmail(data.email)) {
+    errors.email = 'User email must be valid'
+  }
+
+  if (data.role && !['admin', 'user', 'moderator'].includes(data.role)) {
+    errors.role = 'Invalid user role'
+  }
+
+  if (data.status && !['active', 'inactive', 'suspended'].includes(data.status)) {
+    errors.status = 'Invalid user status'
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
+}
