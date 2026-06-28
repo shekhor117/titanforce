@@ -21,11 +21,6 @@ const nextConfig = {
   // Optimize fonts
   optimizeFonts: true,
 
-  // Power by React Compiler (stable in Next.js 16)
-  experimental: {
-    reactCompiler: true,
-  },
-
   // Enable SWR for data caching
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
