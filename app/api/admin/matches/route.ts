@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { validateMatch } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
@@ -56,6 +57,12 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Validate match data
+    const validation = validateMatch(body)
+    if (!validation.isValid) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+    }
+
     const { data, error } = await supabase
       .from('matches')
       .insert([body])
@@ -88,6 +95,12 @@ export async function PUT(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })
+    }
+
+    // Validate match data (partial updates are OK)
+    const validation = validateMatch(updates)
+    if (!validation.isValid) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
     const { data, error } = await supabase

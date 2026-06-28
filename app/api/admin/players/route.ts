@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { validatePlayer } from '@/lib/validation'
 
 // GET - Fetch all players or a specific player
 export async function GET(request: NextRequest) {
@@ -61,6 +62,12 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Validate player data
+    const validation = validatePlayer(body)
+    if (!validation.isValid) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+    }
+
     const { data, error } = await supabase
       .from('players')
       .insert([body])
@@ -96,6 +103,12 @@ export async function PUT(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ error: 'Missing player ID' }, { status: 400 })
+    }
+
+    // Validate player data (partial updates are OK)
+    const validation = validatePlayer(updates)
+    if (!validation.isValid) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
     const { data, error } = await supabase
