@@ -12,34 +12,6 @@ const standingsData = [
     points: 16,
     highlighted: true
   },
-  {
-    position: 2,
-    team: 'Greenfield FC',
-    played: 6,
-    goalDifference: '+6',
-    points: 13,
-  },
-  {
-    position: 3,
-    team: 'Riverside United',
-    played: 6,
-    goalDifference: '+3',
-    points: 10,
-  },
-  {
-    position: 4,
-    team: 'Blue Eagles',
-    played: 6,
-    goalDifference: '0',
-    points: 8,
-  },
-  {
-    position: 5,
-    team: 'United Stars',
-    played: 6,
-    goalDifference: '-5',
-    points: 6,
-  },
 ]
 
 export function HomeLeagueStandings() {
