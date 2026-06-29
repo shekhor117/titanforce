@@ -1,9 +1,17 @@
-"use client"
+'use client'
 
-import { useState, useMemo } from "react"
-import { X, TrendingUp, Users, Activity, Clock, MapPin, Shirt } from "lucide-react"
+import { useState } from "react"
+import { X, ArrowLeft, Play, Cloud } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import type { Match } from "@/lib/data-service"
+import { OverviewTab } from "./match-tabs/overview-tab"
+import { StatsTab } from "./match-tabs/stats-tab"
+import { TimelineTab } from "./match-tabs/timeline-tab"
+import { LineupsTab } from "./match-tabs/lineups-tab"
+import { PlayersTab } from "./match-tabs/players-tab"
+import { StandingsTab } from "./match-tabs/standings-tab"
+import { H2HTab } from "./match-tabs/h2h-tab"
+import { NewsTab } from "./match-tabs/news-tab"
 
 interface MatchDetailsProps {
   match: Match
@@ -11,494 +19,166 @@ interface MatchDetailsProps {
   isModal?: boolean
 }
 
-interface PlayerRating {
-  name: string
-  number: number
-  position: string
-  rating: number
-  team: 'home' | 'away'
-}
-
-// Mock function to calculate player ratings based on performance
-const generatePlayerRatings = (match: Match): PlayerRating[] => {
-  const ratings: PlayerRating[] = []
-  
-  const homeGoalScorers = new Set(match.homeGoals?.map(g => g.player) || [])
-  const awayGoalScorers = new Set(match.awayGoals?.map(g => g.player) || [])
-
-  match.home_lineup?.forEach((player) => {
-    const isGoalScorer = homeGoalScorers.has(player.player || player.name || '')
-    const baseRating = 6.5 + Math.random() * 2
-    const finalRating = isGoalScorer ? Math.min(9.5, baseRating + 1.5) : baseRating
-    
-    ratings.push({
-      name: player.player || player.name || 'Unknown',
-      number: player.number,
-      position: player.position || 'N/A',
-      rating: Math.round(finalRating * 10) / 10,
-      team: 'home'
-    })
-  })
-
-  match.away_lineup?.forEach((player) => {
-    const isGoalScorer = awayGoalScorers.has(player.player || player.name || '')
-    const baseRating = 6.5 + Math.random() * 2
-    const finalRating = isGoalScorer ? Math.min(9.5, baseRating + 1.5) : baseRating
-    
-    ratings.push({
-      name: player.player || player.name || 'Unknown',
-      number: player.number,
-      position: player.position || 'N/A',
-      rating: Math.round(finalRating * 10) / 10,
-      team: 'away'
-    })
-  })
-
-  return ratings
-}
-
-// Mock statistics generator
-const generateMatchStats = (match: Match) => {
-  const homeStats = {
-    possession: 45 + Math.random() * 20,
-    shots: Math.floor(8 + Math.random() * 12),
-    shotsOnTarget: Math.floor(2 + Math.random() * 6),
-    fouls: Math.floor(10 + Math.random() * 8),
-    corners: Math.floor(4 + Math.random() * 8),
-    passes: Math.floor(300 + Math.random() * 200),
-    tackles: Math.floor(15 + Math.random() * 10),
-    saves: Math.floor(2 + Math.random() * 4)
-  }
-
-  const awayStats = {
-    possession: 100 - homeStats.possession,
-    shots: Math.floor(8 + Math.random() * 12),
-    shotsOnTarget: Math.floor(2 + Math.random() * 6),
-    fouls: Math.floor(10 + Math.random() * 8),
-    corners: Math.floor(4 + Math.random() * 8),
-    passes: Math.floor(300 + Math.random() * 200),
-    tackles: Math.floor(15 + Math.random() * 10),
-    saves: Math.floor(2 + Math.random() * 4)
-  }
-
-  return { homeStats, awayStats }
-}
-
-const StatRow = ({ label, home, away }: { label: string; home: string | number; away: string | number }) => (
-  <div className="flex items-center justify-between py-3 px-4 border-b border-secondary/20 last:border-b-0">
-    <div className="text-sm text-foreground/70 w-1/3 text-right pr-4">{home}</div>
-    <div className="text-xs uppercase tracking-wider font-semibold text-primary w-1/3 text-center">{label}</div>
-    <div className="text-sm text-foreground/70 w-1/3 text-left pl-4">{away}</div>
-  </div>
-)
-
 export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsProps) {
-  const { language, t } = useLanguage()
-  const isBn = language === "bn"
-  const [activeTab, setActiveTab] = useState<'score' | 'stats' | 'lineups' | 'ratings'>('score')
-  
-  const playerRatings = useMemo(() => generatePlayerRatings(match), [match])
-  const { homeStats, awayStats } = useMemo(() => generateMatchStats(match), [match])
-
-  const getGoalTimeline = () => {
-    const goals = [
-      ...(match.homeGoals || []).map(g => ({ ...g, team: 'home' as const })),
-      ...(match.awayGoals || []).map(g => ({ ...g, team: 'away' as const }))
-    ]
-    return goals.sort((a, b) => (a.minute || 0) - (b.minute || 0))
-  }
-
-  const goals = getGoalTimeline()
-  const homeRatings = playerRatings.filter(r => r.team === 'home').sort((a, b) => b.rating - a.rating)
-  const awayRatings = playerRatings.filter(r => r.team === 'away').sort((a, b) => b.rating - a.rating)
-
-  const getRatingColor = (rating: number) => {
-    if (rating >= 8) return 'text-emerald-400'
-    if (rating >= 7) return 'text-blue-400'
-    if (rating >= 6) return 'text-yellow-400'
-    return 'text-orange-400'
-  }
+  const { isBn } = useLanguage()
+  const [activeTab, setActiveTab] = useState<'overview' | 'stats' | 'timeline' | 'lineups' | 'players' | 'standings' | 'h2h' | 'news'>('overview')
 
   const tabs = [
-    { id: 'score' as const, label: isBn ? 'গোল' : 'Score', icon: Activity },
-    { id: 'stats' as const, label: isBn ? 'পরিসংখ্যান' : 'Stats', icon: TrendingUp },
-    { id: 'lineups' as const, label: isBn ? 'লাইনআপ' : 'Lineups', icon: Shirt },
-    { id: 'ratings' as const, label: isBn ? 'রেটিং' : 'Ratings', icon: Users }
+    { id: 'overview' as const, label: isBn ? 'সংক্ষিপ্ত' : 'Overview' },
+    { id: 'stats' as const, label: isBn ? 'পরিসংখ্যান' : 'Stats' },
+    { id: 'timeline' as const, label: isBn ? 'সময়রেখা' : 'Timeline' },
+    { id: 'lineups' as const, label: isBn ? 'লাইনআপ' : 'Lineups' },
+    { id: 'players' as const, label: isBn ? 'খেলোয়াড়' : 'Players' },
+    { id: 'standings' as const, label: isBn ? 'টেবিল' : 'Standings' },
+    { id: 'h2h' as const, label: 'H2H' },
+    { id: 'news' as const, label: isBn ? 'খবর' : 'News' },
   ]
 
-  const content = (
-    <div className={`w-full ${isModal ? 'max-w-2xl' : 'max-w-4xl'} bg-background`}>
-      {isModal && onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors z-10"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      )}
+  const getScoreDisplay = () => {
+    if (match.home_score !== null && match.away_score !== null) {
+      return `${match.home_score} - ${match.away_score}`
+    }
+    return 'vs'
+  }
 
-      {/* Match Header */}
-      <div className="neo-panel p-6 mb-6">
-        <div className="text-center mb-6">
-          <div className="text-sm uppercase tracking-wider text-primary font-semibold mb-2">
-            {match.date} {match.time && `• ${match.time}`}
-          </div>
-          <div className="grid grid-cols-3 items-center gap-4 mb-4">
-            {/* Home Team */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-emerald-600 to-emerald-700 flex items-center justify-center mb-2">
-                <span className="text-white font-black text-xl">{match.home?.substring(0, 2).toUpperCase() || 'H'}</span>
+  const getStatusDisplay = () => {
+    if (match.status === 'completed') return isBn ? 'চূড়ান্ত' : 'FT'
+    if (match.status === 'live') return isBn ? 'লাইভ' : 'LIVE'
+    return ''
+  }
+
+  const containerClass = isModal
+    ? 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm'
+    : 'min-h-screen bg-background'
+
+  const contentClass = isModal
+    ? 'relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-lg bg-background neo-panel'
+    : 'w-full'
+
+  return (
+    <div className={containerClass} onClick={isModal ? onClose : undefined}>
+      <div className={contentClass} onClick={(e) => isModal && e.stopPropagation()}>
+        {/* Header */}
+        <div className="sticky top-0 z-40 bg-gradient-to-b from-background to-background/95 border-b border-secondary/30">
+          <div className="p-4 md:p-6">
+            {/* Back Button (only for non-modal) */}
+            {!isModal && onClose && (
+              <button
+                onClick={onClose}
+                className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors mb-4"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>{isBn ? 'ফিরে যান' : 'Back'}</span>
+              </button>
+            )}
+
+            {/* Close Button (only for modal) */}
+            {isModal && onClose && (
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+
+            {/* Match Title */}
+            <div className="text-center mb-4">
+              <div className={`text-xs uppercase tracking-wider font-semibold text-primary mb-2 ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                Premier League
               </div>
-              <h3 className="font-semibold text-foreground text-sm text-center">{match.home}</h3>
-            </div>
-
-            {/* Score */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-5xl font-[var(--font-display)] tracking-wider text-foreground mb-2">
-                <span className="text-primary">{match.home_score ?? '-'}</span>
-                <span className="text-foreground/50 mx-2">:</span>
-                <span className="text-primary">{match.away_score ?? '-'}</span>
+              <div className={`text-3xl md:text-4xl font-[var(--font-display)] tracking-wider mb-2 ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <span className="text-foreground">{match.home}</span>
+                <span className="mx-3 text-primary font-bold">{getScoreDisplay()}</span>
+                <span className="text-foreground">{match.away}</span>
               </div>
-              {match.status === 'live' && (
-                <div className="text-xs uppercase tracking-widest font-bold text-rose-400 animate-pulse">● LIVE</div>
-              )}
-              {match.status === 'completed' && (
-                <div className="text-xs uppercase tracking-widest font-semibold text-foreground/60">FINAL</div>
-              )}
-            </div>
-
-            {/* Away Team */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-700 flex items-center justify-center mb-2">
-                <span className="text-white font-black text-xl">{match.away?.substring(0, 2).toUpperCase() || 'A'}</span>
-              </div>
-              <h3 className="font-semibold text-foreground text-sm text-center">{match.away}</h3>
-            </div>
-          </div>
-
-          {/* Match Info */}
-          <div className="flex items-center justify-center gap-6 text-xs text-foreground/70">
-            {match.venue && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
+              <div className={`flex items-center justify-center gap-3 text-sm text-foreground/60 ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <span className="font-semibold">{getStatusDisplay()}</span>
+                <span>•</span>
                 <span>{match.venue}</span>
               </div>
+            </div>
+
+            {/* CTA Button */}
+            {match.status === 'completed' && (
+              <button className="w-full py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center justify-center gap-2 mb-4">
+                <Play className="w-4 h-4" />
+                {isBn ? 'হাইলাইট দেখুন' : 'Watch Highlights'}
+              </button>
             )}
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="border-t border-secondary/30 overflow-x-auto">
+            <div className="flex gap-1 px-4 md:px-6 py-2 min-w-max">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-foreground/60 hover:bg-secondary/30'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Match Status Badge */}
-        {match.result && match.status === 'completed' && (
-          <div className="text-center">
-            {match.result === 'W' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-                ✓ Win
-              </span>
-            )}
-            {match.result === 'L' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider">
-                ✗ Loss
-              </span>
-            )}
-            {match.result === 'D' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-semibold uppercase tracking-wider">
-                ≈ Draw
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+        {/* Tab Content */}
+        <div className="p-4 md:p-6">
+          {activeTab === 'overview' && <OverviewTab match={match} />}
+          {activeTab === 'stats' && <StatsTab match={match} />}
+          {activeTab === 'timeline' && <TimelineTab match={match} />}
+          {activeTab === 'lineups' && <LineupsTab match={match} />}
+          {activeTab === 'players' && <PlayersTab match={match} />}
+          {activeTab === 'standings' && <StandingsTab match={match} />}
+          {activeTab === 'h2h' && <H2HTab match={match} />}
+          {activeTab === 'news' && <NewsTab match={match} />}
+        </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 px-6 overflow-x-auto">
-        {tabs.map((tab) => {
-          const Icon = tab.icon
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm uppercase tracking-wider transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-primary text-background'
-                  : 'bg-secondary/30 text-foreground/70 hover:bg-secondary/50'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Content */}
-      <div className="px-6 pb-6">
-        {/* Goal Timeline Tab */}
-        {activeTab === 'score' && (
-          <div className="neo-panel p-6 space-y-6">
-            {match.status === 'upcoming' ? (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'ম্যাচ এখনও খেলা হয়নি' : 'Match not yet played'}</p>
+        {/* Footer */}
+        {match.status === 'completed' && (
+          <div className="border-t border-secondary/30 p-4 md:p-6 bg-secondary/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-6">
+              <div className={`${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <div className="text-foreground/60 text-xs uppercase tracking-wider mb-1">{isBn ? 'রেফারি' : 'Referee'}</div>
+                <div className="font-medium text-foreground">Michael Oliver</div>
               </div>
-            ) : goals.length > 0 ? (
-              <div className="space-y-4">
-                <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                  {isBn ? 'গোল ও ইভেন্টস' : 'Goal Timeline'}
-                </h3>
-                {goals.map((goal, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-4 p-4 rounded-lg bg-secondary/20 border border-secondary/30"
-                  >
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 flex-shrink-0">
-                      <span className="font-bold text-primary text-lg">{goal.minute}</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-foreground">{goal.player}</div>
-                      <div className="text-xs text-foreground/60 mt-1">
-                        {goal.assist && (
-                          <span>
-                            {isBn ? 'অ্যাসিস্ট' : 'Assist'}: {goal.assist}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className={`text-xs font-semibold uppercase px-3 py-1 rounded-full ${
-                      goal.team === 'home'
-                        ? 'bg-emerald-500/20 text-emerald-400'
-                        : 'bg-indigo-500/20 text-indigo-400'
-                    }`}>
-                      {goal.team === 'home' ? match.home : match.away}
-                    </div>
-                  </div>
-                ))}
+              <div className={`${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <div className="text-foreground/60 text-xs uppercase tracking-wider mb-1">{isBn ? 'স্টেডিয়াম' : 'Stadium'}</div>
+                <div className="font-medium text-foreground">{match.venue}</div>
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'কোন গোল নেই' : 'No goals scored'}</p>
+              <div className={`${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <div className="text-foreground/60 text-xs uppercase tracking-wider mb-1">{isBn ? 'দর্শক' : 'Attendance'}</div>
+                <div className="font-medium text-foreground">60,200</div>
               </div>
-            )}
-          </div>
-        )}
-
-        {/* Statistics Tab */}
-        {activeTab === 'stats' && (
-          <div className="neo-panel overflow-hidden">
-            <div className="grid md:grid-cols-2 gap-6 p-6">
-              {/* Home Stats */}
-              <div>
-                <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                  {match.home} {isBn ? 'পরিসংখ্যান' : 'Stats'}
-                </h3>
-                <div className="space-y-3">
-                  <StatRow label="Possession" home={`${Math.round(homeStats.possession)}%`} away={`${Math.round(awayStats.possession)}%`} />
-                  <StatRow label="Shots" home={homeStats.shots} away={awayStats.shots} />
-                  <StatRow label="On Target" home={homeStats.shotsOnTarget} away={awayStats.shotsOnTarget} />
-                  <StatRow label="Fouls" home={homeStats.fouls} away={awayStats.fouls} />
-                  <StatRow label="Corners" home={homeStats.corners} away={awayStats.corners} />
-                  <StatRow label="Passes" home={homeStats.passes} away={awayStats.passes} />
-                  <StatRow label="Tackles" home={homeStats.tackles} away={awayStats.tackles} />
-                  <StatRow label="Saves" home={homeStats.saves} away={awayStats.saves} />
-                </div>
-              </div>
-
-              {/* Visual comparison */}
-              <div className="space-y-4">
-                <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                  {isBn ? 'তুলনা' : 'Comparison'}
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { label: 'Possession', home: homeStats.possession, away: awayStats.possession, max: 100 },
-                    { label: 'Shots', home: homeStats.shots, away: awayStats.shots, max: 20 },
-                    { label: 'Accuracy', home: (homeStats.shotsOnTarget / homeStats.shots) * 100 || 0, away: (awayStats.shotsOnTarget / awayStats.shots) * 100 || 0, max: 100 }
-                  ].map((stat) => (
-                    <div key={stat.label}>
-                      <div className="text-xs font-semibold text-foreground/70 mb-2">{stat.label}</div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-secondary/30 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-emerald-500 h-full transition-all"
-                            style={{ width: `${Math.min(50, (stat.home / stat.max) * 50)}%` }}
-                          />
-                        </div>
-                        <div className="text-xs font-bold text-foreground/60 w-12 text-center">
-                          {Math.round(stat.home)}
-                        </div>
-                        <div className="flex-1 bg-secondary/30 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-indigo-500 h-full transition-all ml-auto"
-                            style={{ width: `${Math.min(50, (stat.away / stat.max) * 50)}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              <div className={`${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+                <div className="text-foreground/60 text-xs uppercase tracking-wider mb-1">{isBn ? 'আবহাওয়া' : 'Weather'}</div>
+                <div className="flex items-center gap-1 font-medium text-foreground">
+                  <Cloud className="w-4 h-4" />
+                  18°C
                 </div>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Lineups Tab */}
-        {activeTab === 'lineups' && (
-          <div className="neo-panel p-6">
-            {match.home_lineup || match.away_lineup ? (
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Home Lineup */}
-                {match.home_lineup && match.home_lineup.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.home} {isBn ? 'লাইনআপ' : 'Lineup'}
-                    </h3>
-                    <div className="space-y-2">
-                      {match.home_lineup.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-8 h-8 rounded bg-emerald-600 flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-bold text-xs">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.player || player.name}
-                            </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Away Lineup */}
-                {match.away_lineup && match.away_lineup.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.away} {isBn ? 'লাইনআপ' : 'Lineup'}
-                    </h3>
-                    <div className="space-y-2">
-                      {match.away_lineup.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-8 h-8 rounded bg-indigo-600 flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-bold text-xs">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.player || player.name}
-                            </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            <div className="space-y-2 text-xs text-foreground/60 border-t border-secondary/30 pt-4">
+              <div className="font-semibold text-foreground">{isBn ? 'ম্যাচ তথ্য' : 'Match Facts'}</div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-foreground text-xs">
+                <div>• {isBn ? 'দলের খেলা' : 'Man of the Match'}: Mohamed Salah</div>
+                <div>• {isBn ? 'দীর্ঘতম দখল' : 'Longest possession'}: 4m 32s</div>
+                <div>• {isBn ? 'সবচেয়ে দ্রুত লক্ষ্য' : 'Fastest goal'}: 12m</div>
+                <div>• {isBn ? 'সর্বোচ্চ গতি' : 'Highest speed'}: 33 km/h</div>
+                <div>• {isBn ? 'বেশি পাস' : 'Most passes'}: 87</div>
+                <div>• {isBn ? 'বেশি ট্যাকেল' : 'Most tackles'}: 9</div>
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'লাইনআপ পাওয়া যায়নি' : 'Lineups not available'}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Ratings Tab */}
-        {activeTab === 'ratings' && (
-          <div className="neo-panel p-6">
-            {playerRatings.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Home Ratings */}
-                {homeRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.home} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {homeRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-emerald-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
-                            </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
-                            </div>
-                          </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Away Ratings */}
-                {awayRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.away} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {awayRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-indigo-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
-                            </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
-                            </div>
-                          </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'রেটিং উপলব্ধ নেই' : 'Ratings not available'}</p>
-              </div>
-            )}
+            </div>
           </div>
         )}
       </div>
     </div>
   )
-
-  if (isModal) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
-        <div className="max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-          {content}
-        </div>
-      </div>
-    )
-  }
-
-  return content
 }
