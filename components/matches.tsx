@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
+import { MatchDetails } from "@/components/match-details"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
 
@@ -20,7 +21,135 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
   const isBn = language === "bn"
   
   // Use realtime hook for matches - automatically syncs when admin updates
-  const { matches, loading: isLoading, error } = useMatches()
+  const { matches: realMatches, loading: isLoading, error } = useMatches()
+  
+  // Demo matches for showcase when no real matches exist
+  const demoMatches: Match[] = [
+    {
+      id: 'demo-1',
+      home: 'Titan Force',
+      away: 'City United',
+      date: '2024-07-15',
+      time: '19:45',
+      venue: 'Mulikandi Stadium',
+      home_score: 3,
+      away_score: 1,
+      status: 'completed',
+      result: 'W',
+      homeGoals: [
+        { player: 'Md. Hasan', minute: 12, assist: 'Rahman' },
+        { player: 'Karim Ahmed', minute: 45, assist: undefined },
+        { player: 'Md. Hasan', minute: 67, assist: 'Sakib' }
+      ],
+      awayGoals: [
+        { player: 'Marcus Johnson', minute: 55, assist: undefined }
+      ],
+      home_lineup: [
+        { player: 'Md. Hasan', number: 10, position: 'FW' },
+        { player: 'Karim Ahmed', number: 9, position: 'FW' },
+        { player: 'Rahman', number: 7, position: 'MF' },
+        { player: 'Sakib', number: 8, position: 'MF' },
+        { player: 'Rashid', number: 5, position: 'DEF' },
+        { player: 'Hassan Ali', number: 4, position: 'DEF' },
+        { player: 'Jahid', number: 3, position: 'DEF' },
+        { player: 'Imran', number: 2, position: 'DEF' },
+        { player: 'Rahim', number: 1, position: 'GK' }
+      ],
+      away_lineup: [
+        { player: 'Marcus Johnson', number: 9, position: 'FW' },
+        { player: 'Tom Wilson', number: 10, position: 'FW' },
+        { player: 'David Smith', number: 7, position: 'MF' },
+        { player: 'Chris Brown', number: 8, position: 'MF' },
+        { player: 'John Davis', number: 5, position: 'DEF' },
+        { player: 'Peter Miller', number: 4, position: 'DEF' },
+        { player: 'Robert Taylor', number: 3, position: 'DEF' },
+        { player: 'James Anderson', number: 2, position: 'DEF' },
+        { player: 'Jack Wilson', number: 1, position: 'GK' }
+      ],
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-15T21:30:00Z'
+    },
+    {
+      id: 'demo-2',
+      home: 'Titan Force',
+      away: 'Diamond FC',
+      date: '2024-07-22',
+      time: '18:00',
+      venue: 'Mulikandi Stadium',
+      home_score: 2,
+      away_score: 2,
+      status: 'completed',
+      result: 'D',
+      homeGoals: [
+        { player: 'Karim Ahmed', minute: 20, assist: undefined },
+        { player: 'Md. Hasan', minute: 88, assist: 'Rahman' }
+      ],
+      awayGoals: [
+        { player: 'Alex Turner', minute: 35, assist: 'Carlos' },
+        { player: 'Oscar Mendez', minute: 76, assist: undefined }
+      ],
+      home_lineup: [
+        { player: 'Md. Hasan', number: 10, position: 'FW' },
+        { player: 'Karim Ahmed', number: 9, position: 'FW' },
+        { player: 'Rahman', number: 7, position: 'MF' },
+        { player: 'Sakib', number: 8, position: 'MF' },
+        { player: 'Rashid', number: 5, position: 'DEF' },
+        { player: 'Hassan Ali', number: 4, position: 'DEF' },
+        { player: 'Jahid', number: 3, position: 'DEF' },
+        { player: 'Imran', number: 2, position: 'DEF' },
+        { player: 'Rahim', number: 1, position: 'GK' }
+      ],
+      away_lineup: [
+        { player: 'Alex Turner', number: 9, position: 'FW' },
+        { player: 'Oscar Mendez', number: 10, position: 'FW' },
+        { player: 'Carlos', number: 7, position: 'MF' },
+        { player: 'Diego Sanchez', number: 8, position: 'MF' },
+        { player: 'Pablo Rodriguez', number: 5, position: 'DEF' },
+        { player: 'Miguel Garcia', number: 4, position: 'DEF' },
+        { player: 'Luis Moreno', number: 3, position: 'DEF' },
+        { player: 'Antonio Lopez', number: 2, position: 'DEF' },
+        { player: 'Fernando Ramos', number: 1, position: 'GK' }
+      ],
+      created_at: '2024-07-22T10:00:00Z',
+      updated_at: '2024-07-22T19:30:00Z'
+    },
+    {
+      id: 'demo-3',
+      home: 'Titan Force',
+      away: 'Highland Kings',
+      date: '2024-07-29',
+      time: '17:30',
+      venue: 'Away Stadium',
+      home_score: 1,
+      away_score: 2,
+      status: 'completed',
+      result: 'L',
+      homeGoals: [
+        { player: 'Rahman', minute: 42, assist: 'Karim Ahmed' }
+      ],
+      awayGoals: [
+        { player: 'Stuart Campbell', minute: 18, assist: undefined },
+        { player: 'Ross McIntosh', minute: 64, assist: 'Iain Robertson' }
+      ],
+      created_at: '2024-07-29T10:00:00Z',
+      updated_at: '2024-07-29T18:30:00Z'
+    },
+    {
+      id: 'demo-4',
+      home: 'Titan Force',
+      away: 'Victory Squad',
+      date: '2024-08-05',
+      time: '19:00',
+      venue: 'Mulikandi Stadium',
+      home_score: null,
+      away_score: null,
+      status: 'upcoming',
+      created_at: '2024-08-05T10:00:00Z',
+      updated_at: '2024-08-05T10:00:00Z'
+    }
+  ]
+  
+  const matches = realMatches && realMatches.length > 0 ? realMatches : demoMatches
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -153,128 +282,11 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
 
         {/* Match Details Modal */}
         {selectedMatch && (
-          <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-            onClick={() => setSelectedMatch(null)}
-          >
-            <div 
-              className="neo-panel relative w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setSelectedMatch(null)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Match Header */}
-              <div className="mb-6">
-                <div className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-center mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.home} <span className="text-primary">{getScoreDisplay(selectedMatch)}</span> {selectedMatch.away}
-                </div>
-                <div className={`text-sm text-foreground/60 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.date} {selectedMatch.time && `• ${selectedMatch.time}`} • {selectedMatch.venue}
-                </div>
-              </div>
-
-              {selectedMatch.status === "upcoming" ? (
-                <div className="space-y-6">
-                  <div className={`text-center text-foreground/70 py-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
-                  </div>
-                  
-                  {/* Match Prediction for Upcoming Matches */}
-                  <div className="p-4 rounded-xl bg-secondary/30">
-                    <MatchPrediction
-                      matchId={selectedMatch.id}
-                      homeTeam={selectedMatch.home}
-                      awayTeam={selectedMatch.away}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Goals */}
-                  {(selectedMatch.homeGoals?.length || 0) > 0 && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "গোলকারী" : "Goal Scorers"}
-                      </h3>
-                      <div className="space-y-2">
-                        {selectedMatch.homeGoals?.map((goal, i) => (
-                          <div key={i} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
-                        {selectedMatch.awayGoals?.map((goal, i) => (
-                          <div key={`away-${i}`} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Lineups */}
-                  {selectedMatch.homeLineup && selectedMatch.homeLineup.length > 0 && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "লাইনআপ" : "Lineups"}
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Home Lineup */}
-                        <div>
-                          <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.home}</div>
-                          <div className="space-y-2">
-                            {selectedMatch.homeLineup?.map((player, i) => (
-                              <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                <span className="text-primary font-bold w-6">#{player.number}</span>
-                                <span className="flex-1 text-foreground">{player.player || player.name}</span>
-                                <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Away Lineup */}
-                        {selectedMatch.awayLineup && selectedMatch.awayLineup.length > 0 && (
-                          <div>
-                            <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.away}</div>
-                            <div className="space-y-2">
-                              {selectedMatch.awayLineup?.map((player, i) => (
-                                <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                  <span className="text-primary font-bold w-6">#{player.number}</span>
-                                  <span className="flex-1 text-foreground">{player.player || player.name}</span>
-                                  <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+          <MatchDetails 
+            match={selectedMatch} 
+            onClose={() => setSelectedMatch(null)}
+            isModal={true}
+          />
         )}
       </div>
     </section>
