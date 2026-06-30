@@ -64,18 +64,19 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className="md:hidden fixed top-4 left-4 z-40">
+      <div className="md:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 rounded bg-primary text-primary-foreground"
+          className="p-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          aria-label="Toggle menu"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
       </div>
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-card border-r-2 border-primary p-6 overflow-y-auto transition-transform md:translate-x-0 ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-card border-r-2 border-primary p-6 overflow-y-auto transition-transform duration-300 z-40 md:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -90,18 +91,18 @@ export function AdminSidebar() {
         </div>
 
         {/* Menu Items */}
-        <nav className="space-y-2 mb-8">
+        <nav className="space-y-1 mb-8">
           {menuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded hover:bg-primary/10 hover:text-primary transition ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors ${
                 isBn ? "font-[var(--font-bengali)]" : ""
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
-              <span className="text-sm font-semibold uppercase tracking-wider">{item.label}</span>
+              <span className="text-base flex-shrink-0">{item.icon}</span>
+              <span className="text-xs font-semibold uppercase tracking-wider line-clamp-1">{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -110,12 +111,12 @@ export function AdminSidebar() {
         <button
           onClick={handleLogout}
           disabled={isLoading}
-          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-50 transition ${
+          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-50 transition-colors text-xs font-semibold uppercase ${
             isBn ? "font-[var(--font-bengali)]" : ""
           }`}
         >
           <LogOut className="w-4 h-4" />
-          <span className="text-sm font-semibold uppercase">{isBn ? "লগআউট" : "Logout"}</span>
+          <span>{isBn ? "লগআউট" : "Logout"}</span>
         </button>
       </aside>
 
