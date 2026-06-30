@@ -21,6 +21,7 @@ export function AdminSidebar() {
     { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽", restricted: false },
     { href: "/admin/squad-manager", label: isBn ? "স্কোয়াড ম্যানেজার" : "Squad Manager", icon: "🎯", restricted: false },
     { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆", restricted: true, category: "team" },
+    { href: "/admin/standings", label: isBn ? "স্ট্যান্ডিংস" : "Standings", icon: "📊", restricted: true, category: "team" },
     { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥", restricted: false },
     { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝", restricted: true, category: "team" },
     { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢", restricted: true, category: "team" },

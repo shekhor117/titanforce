@@ -2,19 +2,53 @@
 
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-const standingsData = [
-  {
-    position: 1,
-    team: 'Titan Force Mulikandi',
-    played: 6,
-    goalDifference: '+12',
-    points: 16,
-    highlighted: true
-  },
-]
+interface Standing {
+  id: string
+  position: number
+  team_name: string
+  played: number
+  won: number
+  drawn: number
+  lost: number
+  goals_for: number
+  goals_against: number
+  goal_difference: number
+  points: number
+  is_highlighted: boolean
+}
 
 export function HomeLeagueStandings() {
+  const [standings, setStandings] = useState<Standing[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadStandings = async () => {
+      try {
+        const response = await fetch('/api/standings')
+        if (response.ok) {
+          const data = await response.json()
+          setStandings(data.sort((a: Standing, b: Standing) => a.position - b.position))
+        }
+      } catch (error) {
+        console.error('[v0] Error loading standings:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadStandings()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="neo-card overflow-hidden h-full flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="neo-card overflow-hidden h-full flex flex-col">
       {/* Header */}
@@ -50,32 +84,40 @@ export function HomeLeagueStandings() {
 
           {/* Table Body */}
           <tbody>
-            {standingsData.map((row) => (
-              <tr
-                key={row.position}
-                className={`border-b border-accent/10 transition-colors ${
-                  row.highlighted
-                    ? 'bg-primary/10 hover:bg-primary/20'
-                    : 'hover:bg-muted/30'
-                }`}
-              >
-                <td className={`px-4 py-4 font-bold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
-                  {row.position}
-                </td>
-                <td className={`px-4 py-4 font-semibold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
-                  {row.team}
-                </td>
-                <td className={`px-4 py-4 text-center ${row.highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
-                  {row.played}
-                </td>
-                <td className={`px-4 py-4 text-center ${row.highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
-                  {row.goalDifference}
-                </td>
-                <td className={`px-4 py-4 text-center font-bold ${row.highlighted ? 'text-accent' : 'text-foreground'}`}>
-                  {row.points}
+            {standings.length > 0 ? (
+              standings.map((row) => (
+                <tr
+                  key={row.id}
+                  className={`border-b border-accent/10 transition-colors ${
+                    row.is_highlighted
+                      ? 'bg-primary/10 hover:bg-primary/20'
+                      : 'hover:bg-muted/30'
+                  }`}
+                >
+                  <td className={`px-4 py-4 font-bold ${row.is_highlighted ? 'text-accent' : 'text-foreground'}`}>
+                    {row.position}
+                  </td>
+                  <td className={`px-4 py-4 font-semibold ${row.is_highlighted ? 'text-accent' : 'text-foreground'}`}>
+                    {row.team_name}
+                  </td>
+                  <td className={`px-4 py-4 text-center ${row.is_highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
+                    {row.played}
+                  </td>
+                  <td className={`px-4 py-4 text-center ${row.is_highlighted ? 'text-accent' : 'text-muted-foreground'}`}>
+                    {row.goal_difference >= 0 ? '+' : ''}{row.goal_difference}
+                  </td>
+                  <td className={`px-4 py-4 text-center font-bold ${row.is_highlighted ? 'text-accent' : 'text-foreground'}`}>
+                    {row.points}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                  No standings data available
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
