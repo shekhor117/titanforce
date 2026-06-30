@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
+import { MatchDetails } from "@/components/match-details"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
 
@@ -153,128 +154,11 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
 
         {/* Match Details Modal */}
         {selectedMatch && (
-          <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-            onClick={() => setSelectedMatch(null)}
-          >
-            <div 
-              className="neo-panel relative w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setSelectedMatch(null)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Match Header */}
-              <div className="mb-6">
-                <div className={`text-2xl md:text-3xl font-[var(--font-display)] tracking-wider text-center mb-2 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.home} <span className="text-primary">{getScoreDisplay(selectedMatch)}</span> {selectedMatch.away}
-                </div>
-                <div className={`text-sm text-foreground/60 text-center ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {selectedMatch.date} {selectedMatch.time && `• ${selectedMatch.time}`} • {selectedMatch.venue}
-                </div>
-              </div>
-
-              {selectedMatch.status === "upcoming" ? (
-                <div className="space-y-6">
-                  <div className={`text-center text-foreground/70 py-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                    {isBn ? "এই ম্যাচটি এখনও খেলা হয়নি" : "Match not yet played"}
-                  </div>
-                  
-                  {/* Match Prediction for Upcoming Matches */}
-                  <div className="p-4 rounded-xl bg-secondary/30">
-                    <MatchPrediction
-                      matchId={selectedMatch.id}
-                      homeTeam={selectedMatch.home}
-                      awayTeam={selectedMatch.away}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Goals */}
-                  {(selectedMatch.homeGoals?.length || 0) > 0 && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "গোলকারী" : "Goal Scorers"}
-                      </h3>
-                      <div className="space-y-2">
-                        {selectedMatch.homeGoals?.map((goal, i) => (
-                          <div key={i} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
-                        {selectedMatch.awayGoals?.map((goal, i) => (
-                          <div key={`away-${i}`} className={`flex items-center justify-between p-3 rounded bg-secondary/30 text-sm ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                            <span className="text-foreground">{goal.player}</span>
-                            <div className="flex items-center gap-2">
-                              {goal.assist && (
-                                <span className="text-foreground/60 text-xs">
-                                  {isBn ? "অ্যাসিস্ট" : "Assist"}: {goal.assist}
-                                </span>
-                              )}
-                              <span className="text-primary font-semibold">{goal.minute}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Lineups */}
-                  {selectedMatch.homeLineup && selectedMatch.homeLineup.length > 0 && (
-                    <div>
-                      <h3 className={`text-xs uppercase tracking-wider font-semibold text-primary mb-3 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                        {isBn ? "লাইনআপ" : "Lineups"}
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Home Lineup */}
-                        <div>
-                          <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.home}</div>
-                          <div className="space-y-2">
-                            {selectedMatch.homeLineup?.map((player, i) => (
-                              <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                <span className="text-primary font-bold w-6">#{player.number}</span>
-                                <span className="flex-1 text-foreground">{player.player || player.name}</span>
-                                <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Away Lineup */}
-                        {selectedMatch.awayLineup && selectedMatch.awayLineup.length > 0 && (
-                          <div>
-                            <div className="text-sm font-semibold text-foreground mb-3">{selectedMatch.away}</div>
-                            <div className="space-y-2">
-                              {selectedMatch.awayLineup?.map((player, i) => (
-                                <div key={i} className={`flex items-center gap-2 p-2 rounded bg-secondary/20 text-xs ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                                  <span className="text-primary font-bold w-6">#{player.number}</span>
-                                  <span className="flex-1 text-foreground">{player.player || player.name}</span>
-                                  <span className="text-foreground/60 text-[10px] uppercase">{player.position}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+          <MatchDetails 
+            match={selectedMatch} 
+            onClose={() => setSelectedMatch(null)}
+            isModal={true}
+          />
         )}
       </div>
     </section>
