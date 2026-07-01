@@ -64,7 +64,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className="md:hidden fixed top-4 left-4 z-40">
+      <div className="md:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="p-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -76,12 +76,12 @@ export function AdminSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-card border-r-2 border-primary p-6 overflow-y-auto transition-transform duration-300 z-30 md:translate-x-0 ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-card border-r-2 border-primary p-6 overflow-y-auto transition-transform duration-300 z-40 md:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Logo */}
-        <div className="mb-8 mt-12 md:mt-0">
+        <div className="mb-8">
           <h2 className="font-[var(--font-display)] text-2xl tracking-wider text-primary">
             {isBn ? "অ্যাডমিন" : "ADMIN"}
           </h2>
@@ -123,7 +123,7 @@ export function AdminSidebar() {
       {/* Mobile Overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 md:hidden z-20"
+          className="fixed inset-0 bg-black/50 md:hidden z-30"
           onClick={() => setMobileOpen(false)}
         />
       )}
