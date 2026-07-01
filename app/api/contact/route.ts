@@ -12,33 +12,39 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
-    if (!supabase) {
-      // Fallback: return success without saving (localStorage handles it on client)
-      return NextResponse.json({ success: true, message: "Message received" })
+    try {
+      const supabase = await createClient()
+
+      // Try to save to Supabase
+      const { error } = await supabase
+        .from("contact_messages")
+        .insert({
+          user_id: userId,
+          name,
+          email,
+          message,
+          status: "unread",
+          created_at: new Date().toISOString(),
+        })
+
+      if (error) {
+        console.warn('[v0] Failed to save contact message to Supabase:', error.message)
+        // Still return success - client will retry or handle locally
+        return NextResponse.json({ success: true, message: "Message received", stored: false })
+      }
+
+      return NextResponse.json({ success: true, message: "Message saved successfully", stored: true })
+    } catch (dbError) {
+      const errorMessage = dbError instanceof Error ? dbError.message : 'Database error'
+      console.warn('[v0] Database not available:', errorMessage)
+      // Return success anyway - client handles fallback
+      return NextResponse.json({ success: true, message: "Message received", stored: false })
     }
-
-    // Try to save to Supabase
-    const { error } = await supabase
-      .from("contact_messages")
-      .insert({
-        user_id: userId,
-        name,
-        email,
-        message,
-        status: "unread",
-        created_at: new Date().toISOString(),
-      })
-
-    if (error) {
-      // Still return success - localStorage has already saved it
-      return NextResponse.json({ success: true, message: "Message received" })
-    }
-
-    return NextResponse.json({ success: true, message: "Message saved successfully" })
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to process message'
+    console.error('[v0] Contact API error:', errorMessage)
     return NextResponse.json(
-      { error: "Failed to process message" },
+      { error: errorMessage },
       { status: 500 }
     )
   }
