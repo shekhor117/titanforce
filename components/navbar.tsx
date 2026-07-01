@@ -105,42 +105,49 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary animate-in slide-in-from-top-2 duration-300">
-          {navLinks.map((link, index) => (
+        <div className="md:hidden px-2 sm:px-3 pb-6 flex flex-col gap-2 text-sm font-semibold uppercase tracking-wide border-t border-secondary/40 animate-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-60px)] overflow-y-auto">
+          {/* Navigation Links */}
+          <div className="flex flex-col gap-1 pb-2">
+            {navLinks.map((link, index) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors py-3.5 px-4 rounded-lg min-h-[48px] flex items-center duration-300 animate-in fade-in slide-in-from-left-4 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                style={{ animationDelay: `${index * 50}ms` }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          
+          {/* Store Link */}
+          <div className="border-t border-secondary/20 pt-2 mt-1">
             <Link
-              key={link.href}
-              href={link.href}
-              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-3 px-3 rounded min-h-[44px] flex items-center duration-300 animate-in fade-in slide-in-from-left-4 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              style={{ animationDelay: `${index * 50}ms` }}
+              href="/shop"
+              className="neo-btn flex items-center justify-center gap-2 px-4 py-3.5 relative min-h-[48px] animate-in fade-in slide-in-from-left-4 w-full"
+              style={{ animationDelay: '300ms' }}
               onClick={() => setMobileMenuOpen(false)}
             >
-              {link.label}
+              <div className="relative">
+                <ShoppingBag className="w-4 h-4" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-3 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
+                    {cartItemCount > 9 ? "9+" : cartItemCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
             </Link>
-          ))}
+          </div>
           
-          <Link
-            href="/shop"
-            className="neo-btn flex items-center gap-2 px-4 py-3 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
-            style={{ animationDelay: '300ms' }}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <div className="relative">
-              <ShoppingBag className="w-4 h-4" />
-              {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-3 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
-                  {cartItemCount > 9 ? "9+" : cartItemCount}
-                </span>
-              )}
-            </div>
-            <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
-          </Link>
-          
-          <div className="border-t border-secondary pt-4 mt-2 flex flex-col gap-3">
+          {/* Settings Section */}
+          <div className="border-t border-secondary/20 pt-3 mt-2 flex flex-col gap-3">
             <div className="w-full flex items-center gap-2">
               <ThemeToggle />
               <button
                 onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="neo-btn flex items-center justify-center gap-1.5 px-3 py-2 rounded-full flex-1 text-xs min-h-[44px]"
+                className="neo-btn flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg flex-1 text-xs min-h-[48px]"
                 aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -151,7 +158,7 @@ function NavbarComponent() {
             {user ? (
               <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
             ) : (
-              <Link href="/login" className="neo-btn flex items-center justify-center gap-1.5 px-4 py-3 rounded-full w-full text-xs min-h-[44px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/login" className="neo-btn flex items-center justify-center gap-1.5 px-4 py-3.5 rounded-lg w-full text-xs min-h-[48px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
                 {language === "bn" ? "লগইন" : "LOGIN"}
               </Link>
             )}
