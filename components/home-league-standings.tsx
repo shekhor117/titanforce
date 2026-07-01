@@ -22,7 +22,6 @@ interface Standing {
 export function HomeLeagueStandings() {
   const [standings, setStandings] = useState<Standing[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadStandings = async () => {
@@ -31,15 +30,9 @@ export function HomeLeagueStandings() {
         if (response.ok) {
           const data = await response.json()
           setStandings(data.sort((a: Standing, b: Standing) => a.position - b.position))
-          setError(null)
-        } else if (response.status === 503) {
-          setError('Database not configured')
-        } else {
-          setError('Unable to load standings')
         }
       } catch (error) {
         console.error('[v0] Error loading standings:', error)
-        setError('Unable to connect to standings service')
       } finally {
         setLoading(false)
       }
@@ -52,17 +45,6 @@ export function HomeLeagueStandings() {
     return (
       <div className="neo-card overflow-hidden h-full flex flex-col items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="neo-card overflow-hidden h-full flex flex-col items-center justify-center p-6">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">⚠️ {error}</p>
-          <p className="text-xs text-muted-foreground/60">Configure Supabase in project settings</p>
-        </div>
       </div>
     )
   }
