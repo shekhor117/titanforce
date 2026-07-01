@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migrate:apply": "node scripts/apply-otp-migration.js",
+    "migrate:status": "curl -s http://localhost:3000/api/admin/migrations-status | jq ."
   },
   "dependencies": {
     "swr": "^2.2.4",

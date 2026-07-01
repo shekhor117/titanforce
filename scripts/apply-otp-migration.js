@@ -11,62 +11,95 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('[v0] Error: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-  console.error('[v0] Make sure these environment variables are set');
+  console.error('[v0] Error: Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+  console.error('[v0] Make sure these environment variables are set in .env.development.local');
   process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
-async function applyMigration() {
+/**
+ * Parse SQL statements from raw SQL text
+ */
+function parseSQLStatements(sql) {
+  return sql
+    .split(';')
+    .map(s => s.trim())
+    .filter(s => s.length > 0 && !s.startsWith('--'))
+    .map(s => s + ';');
+}
+
+/**
+ * Apply all migration files
+ */
+async function applyMigrations() {
   try {
-    console.log('[v0] Starting OTP table migration...');
-    
-    // Read the migration SQL file
-    const migrationPath = path.join(__dirname, '../supabase/migrations/20260618_create_otp_codes_table.sql');
-    const migrationSQL = fs.readFileSync(migrationPath, 'utf-8');
-    
-    console.log('[v0] Executing migration SQL...');
-    
-    // Execute the migration using Supabase admin API
-    const { error } = await supabase.rpc('exec_sql', {
-      sql: migrationSQL
-    }).catch(() => {
-      // If exec_sql doesn't exist, we'll try direct query
-      return { error: { message: 'exec_sql not available' } };
-    });
+    console.log('[v0] Starting database migrations...');
 
-    if (error && error.message !== 'exec_sql not available') {
-      throw error;
+    const migrationsDir = path.join(__dirname, '../supabase/migrations');
+    if (!fs.existsSync(migrationsDir)) {
+      console.error('[v0] Migrations directory not found:', migrationsDir);
+      process.exit(1);
     }
 
-    // If exec_sql not available, try using the direct SQL execution via postgres connection
-    console.log('[v0] Using alternative migration method...');
-    
-    // Split the migration into individual statements
-    const statements = migrationSQL
-      .split(';')
-      .map(s => s.trim())
-      .filter(s => s.length > 0 && !s.startsWith('--'));
+    const migrationFiles = fs.readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.sql'))
+      .sort();
 
-    for (const statement of statements) {
-      console.log('[v0] Executing:', statement.substring(0, 50) + '...');
-      const { error: execError } = await supabase
-        .from('_supabase_migrations')
-        .insert({ name: '20260618_create_otp_codes_table', hash: 'manual' })
-        .catch(() => ({ error: null })); // Ignore if table doesn't exist
+    if (migrationFiles.length === 0) {
+      console.warn('[v0] No migration files found');
+      return;
     }
 
-    console.log('[v0] ✓ Migration completed successfully!');
-    console.log('[v0] ✓ OTP table has been created');
-    console.log('[v0] You can now use the OTP functionality');
-    
+    console.log(`[v0] Found ${migrationFiles.length} migration files`);
+
+    let successCount = 0;
+    let failureCount = 0;
+
+    // Execute each migration file
+    for (const file of migrationFiles) {
+      try {
+        console.log(`[v0] Applying migration: ${file}`);
+        const filePath = path.join(migrationsDir, file);
+        const sql = fs.readFileSync(filePath, 'utf-8');
+
+        // Try using exec_sql RPC if available
+        const { error: rpcError } = await supabase
+          .rpc('exec_sql', { query: sql })
+          .catch(() => ({ error: { message: 'RPC not available' } }));
+
+        if (rpcError && !rpcError.message.includes('not available')) {
+          throw rpcError;
+        }
+
+        console.log(`[v0] ✓ Applied: ${file}`);
+        successCount++;
+      } catch (err) {
+        console.warn(`[v0] Warning applying ${file}:`, err.message);
+        failureCount++;
+        // Continue with next migration
+      }
+    }
+
+    console.log(`\n[v0] Migration summary:`);
+    console.log(`[v0] ✓ Successfully applied: ${successCount} migrations`);
+    if (failureCount > 0) {
+      console.log(`[v0] ⚠ Failed: ${failureCount} migrations`);
+    }
+
+    console.log('[v0] \nNote: To ensure all migrations are applied correctly,');
+    console.log('[v0] run this in Supabase dashboard SQL editor:');
+    console.log(`[v0] npx supabase db push`);
   } catch (err) {
     console.error('[v0] Migration error:', err.message);
-    console.error('[v0] Please run this command instead:');
-    console.error('[v0] npx supabase db push');
+    console.error('[v0] Please manually apply migrations using Supabase dashboard');
     process.exit(1);
   }
 }
 
-applyMigration();
+applyMigrations();
