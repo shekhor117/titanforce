@@ -17,23 +17,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data || [])
   } catch (error) {
-    console.error('[v0] Standings API error:', error)
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
-    
-    // Check if it's a credentials error
-    if (errorMessage.includes('Supabase') || errorMessage.includes('credentials')) {
-      return NextResponse.json(
-        { 
-          error: 'Database configuration missing',
-          message: 'Please configure your Supabase credentials in environment variables',
-          details: errorMessage
-        },
-        { status: 503 }
-      )
-    }
-    
+    console.error('[v0] Unexpected error:', error)
     return NextResponse.json(
-      { error: errorMessage },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     )
   }
