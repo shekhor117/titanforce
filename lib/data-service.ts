@@ -1,6 +1,7 @@
 'use client'
 
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
+import { MOCK_PLAYERS } from '@/lib/mock-players'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 
 // Types
@@ -212,7 +213,7 @@ export class DataService {
   // Players
   async getPlayers(): Promise<Player[]> {
     if (!this.supabase) {
-      return []
+      return MOCK_PLAYERS
     }
     try {
       const { data, error } = await this.supabase
@@ -221,19 +222,19 @@ export class DataService {
         .order('num', { ascending: true })
 
       if (error) {
-        // If table doesn't exist, return empty array instead of logging error
+        // If table doesn't exist, return mock players for development
         if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
-          console.debug("[v0] Players table not yet created")
-          return []
+          console.debug("[v0] Players table not yet created, using mock data")
+          return MOCK_PLAYERS
         }
         console.error("[v0] DataService getPlayers error:", error)
-        return []
+        return MOCK_PLAYERS
       }
 
-      return data || []
+      return (data && data.length > 0) ? data : MOCK_PLAYERS
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
-      return []
+      return MOCK_PLAYERS
     }
   }
 
