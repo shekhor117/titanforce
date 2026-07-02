@@ -32,6 +32,14 @@ export async function POST(request: NextRequest) {
       .select()
 
     if (error) {
+      // If table doesn't exist, provide helpful error message
+      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+        console.debug('[v0] Standings table not yet created - migration needed')
+        return NextResponse.json(
+          { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
+          { status: 400 }
+        )
+      }
       console.error('[v0] Error creating standing:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
@@ -75,6 +83,14 @@ export async function PUT(request: NextRequest) {
       .select()
 
     if (error) {
+      // If table doesn't exist, provide helpful error message
+      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+        console.debug('[v0] Standings table not yet created - migration needed')
+        return NextResponse.json(
+          { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
+          { status: 400 }
+        )
+      }
       console.error('[v0] Error updating standing:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
@@ -105,6 +121,14 @@ export async function DELETE(request: NextRequest) {
       .eq('id', id)
 
     if (error) {
+      // If table doesn't exist, provide helpful error message
+      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+        console.debug('[v0] Standings table not yet created - migration needed')
+        return NextResponse.json(
+          { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
+          { status: 400 }
+        )
+      }
       console.error('[v0] Error deleting standing:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
