@@ -10,24 +10,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Handle global errors (but skip router errors during HMR)
-  useEffect(() => {
-    const handleError = (event: ErrorEvent) => {
-      // Skip router errors from HMR - they resolve themselves
-      if (event.error?.message?.includes("Router action dispatched before initialization")) {
-        console.debug("[v0] Skipping HMR router error - it will resolve automatically")
-        return
-      }
-
-      console.error("[v0] Global error caught:", event.error)
-      setHasError(true)
-      setErrorMessage(event.error?.message || "An unexpected error occurred")
-    }
-
-    window.addEventListener("error", handleError)
-    return () => window.removeEventListener("error", handleError)
-  }, [])
-
   // List of paths that don't need admin protection
   const publicPaths = ["/admin/login", "/admin/signup", "/admin/forgot-password", "/admin/reset-password"]
   const isPublicPage = publicPaths.some(path => pathname === path || pathname?.startsWith(path + "/"))
