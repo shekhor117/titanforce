@@ -94,10 +94,12 @@ export interface NewsItem {
   id: string
   title: string
   content: string
-  image_url?: string
-  author_id?: string
+  excerpt?: string
+  image?: string
+  category?: string
   status: 'draft' | 'published' | 'archived'
   featured: boolean
+  views?: number
   created_at: string
   updated_at: string
 }
@@ -653,10 +655,17 @@ export class DataService {
       const { data, error } = await query.order('created_at', { ascending: false })
 
       if (error) {
+        // If table doesn't exist, return empty array gracefully
+        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+          console.debug('[v0] News items table not yet created')
+          return []
+        }
+        console.error('[v0] Error fetching news items:', error)
         return []
       }
       return data || []
     } catch (error) {
+      console.error('[v0] Error fetching news items:', error)
       return []
     }
   }
@@ -669,7 +678,12 @@ export class DataService {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      if (error.code === 'PGRST205') {
+        throw new Error('News items table not yet created. Please run database migrations.')
+      }
+      throw error
+    }
     return data
   }
 
@@ -682,7 +696,12 @@ export class DataService {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      if (error.code === 'PGRST205') {
+        throw new Error('News items table not yet created. Please run database migrations.')
+      }
+      throw error
+    }
     return data
   }
 
@@ -693,7 +712,12 @@ export class DataService {
       .delete()
       .eq('id', id)
 
-    if (error) throw error
+    if (error) {
+      if (error.code === 'PGRST205') {
+        throw new Error('News items table not yet created. Please run database migrations.')
+      }
+      throw error
+    }
   }
 
   subscribeToNewsItems(callback: DataCallback<NewsItem>, onError?: ErrorCallback): () => void {
