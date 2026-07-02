@@ -23,10 +23,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data || [])
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
-      { status: 500 }
-    )
+    console.debug('[v0] Unexpected error:', error)
+    return NextResponse.json([])
   }
 }
