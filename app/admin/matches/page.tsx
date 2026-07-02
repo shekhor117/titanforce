@@ -63,7 +63,8 @@ export default function AdminMatchesPage() {
         const errorMessage = errorData.details 
           ? `${errorData.error}: ${JSON.stringify(errorData.details)}`
           : errorData.error || 'Failed to save match'
-        throw new Error(errorMessage)
+        setError(errorMessage)
+        return
       }
 
       await loadMatches()
@@ -71,7 +72,6 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to save match'
       console.error('[v0] Error saving match:', err)
       setError(errorMsg)
-      throw err
     }
   }
 
@@ -84,7 +84,8 @@ export default function AdminMatchesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to delete match')
+        setError(errorData.error || 'Failed to delete match')
+        return
       }
 
       await loadMatches()
@@ -92,7 +93,6 @@ export default function AdminMatchesPage() {
       const errorMsg = err instanceof Error ? err.message : 'Failed to delete match'
       console.error('[v0] Error deleting match:', err)
       setError(errorMsg)
-      throw err
     }
   }
 
