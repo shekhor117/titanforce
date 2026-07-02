@@ -5,13 +5,14 @@ import { useLanguage } from "@/lib/language-context"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { LogOut, Menu } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 export function AdminSidebar() {
   const { logout, isLoading, admin } = useAdmin()
   const { language } = useLanguage()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isBn = language === "bn"
   const isAdmin = admin?.role === "admin"
 
@@ -55,9 +56,19 @@ export function AdminSidebar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push("/admin/login")
       setMobileOpen(false)
+      
+      // Defer router navigation to ensure router is ready
+      if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current)
+      redirectTimeoutRef.current = setTimeout(() => {
+        try {
+          router.push("/admin/login")
+        } catch (err) {
+          console.debug("[v0] Logout redirect error:", err)
+        }
+      }, 0)
     } catch (err) {
+      console.debug("[v0] Logout error:", err)
     }
   }
 

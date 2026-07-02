@@ -10,18 +10,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Handle global errors
-  useEffect(() => {
-    const handleError = (event: ErrorEvent) => {
-      console.error("[v0] Global error caught:", event.error)
-      setHasError(true)
-      setErrorMessage(event.error?.message || "An unexpected error occurred")
-    }
-
-    window.addEventListener("error", handleError)
-    return () => window.removeEventListener("error", handleError)
-  }, [])
-
   // List of paths that don't need admin protection
   const publicPaths = ["/admin/login", "/admin/signup", "/admin/forgot-password", "/admin/reset-password"]
   const isPublicPage = publicPaths.some(path => pathname === path || pathname?.startsWith(path + "/"))

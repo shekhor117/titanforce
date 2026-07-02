@@ -31,8 +31,11 @@ export default function AdminMatchesPage() {
   const loadMatches = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/matches')
-      if (!response.ok) throw new Error('Failed to fetch matches')
+      const response = await fetch('/api/admin/matches')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to fetch matches')
+      }
       const data = await response.json()
       setMatches(data || [])
       setError(null)
@@ -47,10 +50,9 @@ export default function AdminMatchesPage() {
   const handleSaveMatch = async (match: MatchData) => {
     try {
       setError(null)
-      const url = match.id ? `/api/admin/matches` : `/api/admin/matches`
       const method = match.id ? 'PUT' : 'POST'
       
-      const response = await fetch(url, {
+      const response = await fetch('/api/admin/matches', {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(match)
@@ -58,13 +60,18 @@ export default function AdminMatchesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to save match')
+        const errorMessage = errorData.details 
+          ? `${errorData.error}: ${JSON.stringify(errorData.details)}`
+          : errorData.error || 'Failed to save match'
+        setError(errorMessage)
+        return
       }
 
       await loadMatches()
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to save match'
       console.error('[v0] Error saving match:', err)
-      throw err
+      setError(errorMsg)
     }
   }
 
@@ -77,13 +84,15 @@ export default function AdminMatchesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to delete match')
+        setError(errorData.error || 'Failed to delete match')
+        return
       }
 
       await loadMatches()
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete match'
       console.error('[v0] Error deleting match:', err)
-      throw err
+      setError(errorMsg)
     }
   }
 

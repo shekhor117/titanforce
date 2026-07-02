@@ -3,6 +3,9 @@
 import { useState, useMemo } from "react"
 import { X, TrendingUp, Users, Activity, Clock, MapPin, Shirt } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { MatchHero } from "@/components/match/match-hero"
+import { MatchStatsVisual } from "@/components/match/match-stats-visual"
+import { ScrollAnimatedElement } from "@/components/scroll-animated-element"
 import type { Match } from "@/lib/data-service"
 
 interface MatchDetailsProps {
@@ -137,77 +140,10 @@ export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsPr
         </button>
       )}
 
-      {/* Match Header */}
-      <div className="neo-panel p-6 mb-6">
-        <div className="text-center mb-6">
-          <div className="text-sm uppercase tracking-wider text-primary font-semibold mb-2">
-            {match.date} {match.time && `• ${match.time}`}
-          </div>
-          <div className="grid grid-cols-3 items-center gap-4 mb-4">
-            {/* Home Team */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-emerald-600 to-emerald-700 flex items-center justify-center mb-2">
-                <span className="text-white font-black text-xl">{match.home?.substring(0, 2).toUpperCase() || 'H'}</span>
-              </div>
-              <h3 className="font-semibold text-foreground text-sm text-center">{match.home}</h3>
-            </div>
-
-            {/* Score */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-5xl font-[var(--font-display)] tracking-wider text-foreground mb-2">
-                <span className="text-primary">{match.home_score ?? '-'}</span>
-                <span className="text-foreground/50 mx-2">:</span>
-                <span className="text-primary">{match.away_score ?? '-'}</span>
-              </div>
-              {match.status === 'live' && (
-                <div className="text-xs uppercase tracking-widest font-bold text-rose-400 animate-pulse">● LIVE</div>
-              )}
-              {match.status === 'completed' && (
-                <div className="text-xs uppercase tracking-widest font-semibold text-foreground/60">FINAL</div>
-              )}
-            </div>
-
-            {/* Away Team */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-700 flex items-center justify-center mb-2">
-                <span className="text-white font-black text-xl">{match.away?.substring(0, 2).toUpperCase() || 'A'}</span>
-              </div>
-              <h3 className="font-semibold text-foreground text-sm text-center">{match.away}</h3>
-            </div>
-          </div>
-
-          {/* Match Info */}
-          <div className="flex items-center justify-center gap-6 text-xs text-foreground/70">
-            {match.venue && (
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                <span>{match.venue}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Match Status Badge */}
-        {match.result && match.status === 'completed' && (
-          <div className="text-center">
-            {match.result === 'W' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-                ✓ Win
-              </span>
-            )}
-            {match.result === 'L' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider">
-                ✗ Loss
-              </span>
-            )}
-            {match.result === 'D' && (
-              <span className="inline-block px-4 py-2 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-semibold uppercase tracking-wider">
-                ≈ Draw
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Enhanced Match Hero */}
+      <ScrollAnimatedElement variant="fadeInUp" duration={0.6}>
+        <MatchHero match={match} />
+      </ScrollAnimatedElement>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 px-6 overflow-x-auto">
@@ -306,33 +242,36 @@ export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsPr
                 <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
                   {isBn ? 'তুলনা' : 'Comparison'}
                 </h3>
-                <div className="space-y-4">
-                  {[
-                    { label: 'Possession', home: homeStats.possession, away: awayStats.possession, max: 100 },
-                    { label: 'Shots', home: homeStats.shots, away: awayStats.shots, max: 20 },
-                    { label: 'Accuracy', home: (homeStats.shotsOnTarget / homeStats.shots) * 100 || 0, away: (awayStats.shotsOnTarget / awayStats.shots) * 100 || 0, max: 100 }
-                  ].map((stat) => (
-                    <div key={stat.label}>
-                      <div className="text-xs font-semibold text-foreground/70 mb-2">{stat.label}</div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-secondary/30 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-emerald-500 h-full transition-all"
-                            style={{ width: `${Math.min(50, (stat.home / stat.max) * 50)}%` }}
-                          />
-                        </div>
-                        <div className="text-xs font-bold text-foreground/60 w-12 text-center">
-                          {Math.round(stat.home)}
-                        </div>
-                        <div className="flex-1 bg-secondary/30 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-indigo-500 h-full transition-all ml-auto"
-                            style={{ width: `${Math.min(50, (stat.away / stat.max) * 50)}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  <MatchStatsVisual
+                    label="Possession"
+                    homeValue={Math.round(homeStats.possession)}
+                    awayValue={Math.round(awayStats.possession)}
+                    homeLabel={match.home}
+                    awayLabel={match.away}
+                    maxValue={100}
+                    isPercentage={true}
+                    animated={true}
+                  />
+                  <MatchStatsVisual
+                    label="Shots"
+                    homeValue={homeStats.shots}
+                    awayValue={awayStats.shots}
+                    homeLabel={match.home}
+                    awayLabel={match.away}
+                    maxValue={20}
+                    animated={true}
+                  />
+                  <MatchStatsVisual
+                    label="Accuracy"
+                    homeValue={Math.round((homeStats.shotsOnTarget / homeStats.shots) * 100) || 0}
+                    awayValue={Math.round((awayStats.shotsOnTarget / awayStats.shots) * 100) || 0}
+                    homeLabel={match.home}
+                    awayLabel={match.away}
+                    maxValue={100}
+                    isPercentage={true}
+                    animated={true}
+                  />
                 </div>
               </div>
             </div>
@@ -341,7 +280,8 @@ export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsPr
 
         {/* Lineups Tab */}
         {activeTab === 'lineups' && (
-          <div className="neo-panel p-6">
+          <ScrollAnimatedElement variant="fadeInUp" duration={0.5}>
+            <div className="neo-panel p-6">
             {match.home_lineup || match.away_lineup ? (
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Home Lineup */}
@@ -407,84 +347,87 @@ export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsPr
                 <p className="text-foreground/60">{isBn ? 'লাইনআপ পাওয়া যায়নি' : 'Lineups not available'}</p>
               </div>
             )}
-          </div>
+            </div>
+          </ScrollAnimatedElement>
         )}
 
         {/* Ratings Tab */}
         {activeTab === 'ratings' && (
-          <div className="neo-panel p-6">
-            {playerRatings.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Home Ratings */}
-                {homeRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.home} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {homeRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-emerald-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
+          <ScrollAnimatedElement variant="fadeInUp" duration={0.5}>
+            <div className="neo-panel p-6">
+              {playerRatings.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Home Ratings */}
+                  {homeRatings.length > 0 && (
+                    <div>
+                      <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
+                        {match.home} {isBn ? 'রেটিং' : 'Ratings'}
+                      </h3>
+                      <div className="space-y-3">
+                        {homeRatings.map((player, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-bold text-emerald-400">{player.number}</span>
                             </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
+                            <div className="flex-1">
+                              <div className="font-medium text-sm text-foreground">
+                                {player.name}
+                              </div>
+                              <div className="text-xs text-foreground/60 uppercase tracking-wider">
+                                {player.position}
+                              </div>
+                            </div>
+                            <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
+                              {player.rating.toFixed(1)}
                             </div>
                           </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Away Ratings */}
-                {awayRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.away} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {awayRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-indigo-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
+                  {/* Away Ratings */}
+                  {awayRatings.length > 0 && (
+                    <div>
+                      <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
+                        {match.away} {isBn ? 'রেটিং' : 'Ratings'}
+                      </h3>
+                      <div className="space-y-3">
+                        {awayRatings.map((player, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-bold text-indigo-400">{player.number}</span>
                             </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
+                            <div className="flex-1">
+                              <div className="font-medium text-sm text-foreground">
+                                {player.name}
+                              </div>
+                              <div className="text-xs text-foreground/60 uppercase tracking-wider">
+                                {player.position}
+                              </div>
+                            </div>
+                            <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
+                              {player.rating.toFixed(1)}
                             </div>
                           </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'রেটিং উপলব্ধ নেই' : 'Ratings not available'}</p>
-              </div>
-            )}
-          </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-foreground/60">{isBn ? 'রেটিং উপলব্ধ নেই' : 'Ratings not available'}</p>
+                </div>
+              )}
+            </div>
+          </ScrollAnimatedElement>
         )}
       </div>
     </div>

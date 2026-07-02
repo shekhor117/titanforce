@@ -77,23 +77,6 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
       <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
-        <Script
-          id="error-handler"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              const originalError = console.error;
-              console.error = function(...args) {
-                // Suppress error event objects that only have isTrusted property
-                if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null && 
-                    Object.keys(args[0]).length === 1 && args[0].isTrusted === true) {
-                  return;
-                }
-                originalError.apply(console, args);
-              };
-            `,
-          }}
-        />
         <ScrollAnimationProvider>
           <ThemeProvider>
             <TransitionProvider>

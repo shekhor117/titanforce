@@ -47,24 +47,32 @@ export function validatePlayer(data: any): ValidationResult {
 export function validateMatch(data: any): ValidationResult {
   const errors: Record<string, string> = {}
 
-  if (!data.home || typeof data.home !== 'string' || data.home.trim().length === 0) {
-    errors.home = 'Home team is required'
+  // Support both field naming conventions
+  const homeTeam = data.home || data.home_team
+  const awayTeam = data.away || data.away_team
+  const matchDate = data.date || data.match_date
+  const matchTime = data.time || data.match_time
+
+  if (!homeTeam || typeof homeTeam !== 'string' || homeTeam.trim().length === 0) {
+    errors.home_team = 'Home team is required'
   }
 
-  if (!data.away || typeof data.away !== 'string' || data.away.trim().length === 0) {
-    errors.away = 'Away team is required'
+  if (!awayTeam || typeof awayTeam !== 'string' || awayTeam.trim().length === 0) {
+    errors.away_team = 'Away team is required'
   }
 
-  if (!data.date || typeof data.date !== 'string') {
-    errors.date = 'Match date is required'
+  if (!matchDate || typeof matchDate !== 'string') {
+    errors.match_date = 'Match date is required'
   }
 
-  if (!data.time || typeof data.time !== 'string') {
-    errors.time = 'Match time is required'
+  // Match time is optional for upcoming matches
+  if (matchTime && typeof matchTime !== 'string') {
+    errors.match_time = 'Match time must be a string'
   }
 
-  if (!data.venue || typeof data.venue !== 'string' || data.venue.trim().length === 0) {
-    errors.venue = 'Venue is required'
+  // Venue is optional
+  if (data.venue && typeof data.venue !== 'string') {
+    errors.venue = 'Venue must be a string'
   }
 
   if (data.home_score !== undefined && data.home_score !== null && (typeof data.home_score !== 'number' || data.home_score < 0)) {
@@ -75,7 +83,7 @@ export function validateMatch(data: any): ValidationResult {
     errors.away_score = 'Away score must be a non-negative number'
   }
 
-  if (data.status && !['live', 'completed', 'upcoming'].includes(data.status)) {
+  if (data.status && !['live', 'completed', 'upcoming', 'postponed'].includes(data.status)) {
     errors.status = 'Invalid match status'
   }
 
