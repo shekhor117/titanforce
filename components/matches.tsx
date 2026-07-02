@@ -5,6 +5,8 @@ import { X } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { MatchPrediction } from "@/components/match-prediction"
 import { MatchDetails } from "@/components/match-details"
+import { EnhancedMatchCard } from "@/components/match/enhanced-match-card"
+import { ScrollAnimatedElement } from "@/components/scroll-animated-element"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
 
@@ -89,68 +91,26 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
               </p>
             </div>
           ) : matches.length > 0 ? (
-            matches.map((match, index) => {
-            const statusStyle = getStatusColor(match)
-            return (
-              <button
+            matches.map((match, index) => (
+              <ScrollAnimatedElement
                 key={match.id}
-                onClick={() => setSelectedMatch(match)}
-                className={`neo-card p-6 cursor-pointer w-full text-left ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                  }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
+                variant="fadeInUp"
+                delay={index * 0.08}
+                duration={0.5}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {/* Date & Time */}
-                  <div className="flex flex-col justify-center">
-                    <div className={`text-xs uppercase tracking-wider font-semibold text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.date}
-                    </div>
-                    <div className={`text-sm text-foreground/70 mt-1 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.time}
-                    </div>
-                  </div>
-
-                  {/* Match Score */}
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <div className="font-[var(--font-display)] text-2xl tracking-wider text-center text-foreground">
-                      {match.home}{" "}
-                      <span className="text-primary">{getScoreDisplay(match)}</span>{" "}
-                      {match.away}
-                    </div>
-                    <div className={`text-xs text-foreground/60 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                      {match.venue}
-                    </div>
-                  </div>
-
-                  {/* Status Badge */}
-                  <div className="flex items-center justify-end">
-                    <span
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-                      style={{ background: statusStyle.bg, color: statusStyle.text }}
-                    >
-                      {statusStyle.label}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            )
-          })
+                <EnhancedMatchCard
+                  match={match}
+                  onClick={() => setSelectedMatch(match)}
+                  animated={isVisible}
+                />
+              </ScrollAnimatedElement>
+            ))
           ) : (
-            <div className="text-center py-12 text-foreground/60">
-              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-                {isBn ? "কোন ম্যাচ পাওয়া যায়নি" : "No matches found"}
-              </p>
+            <div className="text-center py-12">
+              <p className="text-foreground/60">{isBn ? "কোন ম্যাচ নেই" : "No matches found"}</p>
             </div>
           )}
         </div>
-
-        {matches.length === 0 && (
-          <div className="text-center py-12 text-foreground/60">
-            <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-              {isBn ? "কোন ম্যাচ নির্ধারিত নেই" : "No matches scheduled"}
-            </p>
-          </div>
-        )}
 
         {/* Match Details Modal */}
         {selectedMatch && (
