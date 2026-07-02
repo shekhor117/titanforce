@@ -235,6 +235,11 @@ export class DataService {
         .order('num', { ascending: true })
 
       if (error) {
+        // If table doesn't exist, return empty array instead of logging error
+        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+          console.debug("[v0] Players table not yet created")
+          return []
+        }
         console.error("[v0] DataService getPlayers error:", error)
         return []
       }
@@ -397,10 +402,17 @@ export class DataService {
         .order('date', { ascending: false })
 
       if (error) {
+        // If table doesn't exist, return empty array gracefully
+        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+          console.debug("[v0] Matches table not yet created")
+          return []
+        }
+        console.error("[v0] DataService getMatches error:", error)
         return []
       }
       return data || []
     } catch (error) {
+      console.error("[v0] DataService getMatches caught error:", error)
       return []
     }
   }

@@ -303,7 +303,14 @@ class StoreDataService {
         .order('rating', { ascending: false })
         .limit(limit)
 
-      if (error) throw error
+      if (error) {
+        // If table doesn't exist, return empty array gracefully
+        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
+          console.debug("[v0] Products table not yet created")
+          return []
+        }
+        throw error
+      }
 
       return (data || []).map(p => ({
         id: p.id,
@@ -323,6 +330,11 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
+      // Check if this is a missing table error
+      if (error?.code === 'PGRST205' || error?.message?.includes('Could not find the table')) {
+        console.debug("[v0] Products table not yet created")
+        return []
+      }
       console.error('Error fetching featured products:', error)
       return []
     }

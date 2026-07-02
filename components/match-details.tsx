@@ -355,77 +355,77 @@ export function MatchDetails({ match, onClose, isModal = false }: MatchDetailsPr
         {activeTab === 'ratings' && (
           <ScrollAnimatedElement variant="fadeInUp" duration={0.5}>
             <div className="neo-panel p-6">
-            {playerRatings.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Home Ratings */}
-                {homeRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.home} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {homeRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-emerald-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
+              {playerRatings.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Home Ratings */}
+                  {homeRatings.length > 0 && (
+                    <div>
+                      <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
+                        {match.home} {isBn ? 'রেটিং' : 'Ratings'}
+                      </h3>
+                      <div className="space-y-3">
+                        {homeRatings.map((player, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-bold text-emerald-400">{player.number}</span>
                             </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
+                            <div className="flex-1">
+                              <div className="font-medium text-sm text-foreground">
+                                {player.name}
+                              </div>
+                              <div className="text-xs text-foreground/60 uppercase tracking-wider">
+                                {player.position}
+                              </div>
+                            </div>
+                            <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
+                              {player.rating.toFixed(1)}
                             </div>
                           </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Away Ratings */}
-                {awayRatings.length > 0 && (
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
-                      {match.away} {isBn ? 'রেটিং' : 'Ratings'}
-                    </h3>
-                    <div className="space-y-3">
-                      {awayRatings.map((player, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
-                        >
-                          <div className="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-indigo-400">{player.number}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm text-foreground">
-                              {player.name}
+                  {/* Away Ratings */}
+                  {awayRatings.length > 0 && (
+                    <div>
+                      <h3 className="text-sm uppercase tracking-wider font-semibold text-primary mb-4">
+                        {match.away} {isBn ? 'রেটিং' : 'Ratings'}
+                      </h3>
+                      <div className="space-y-3">
+                        {awayRatings.map((player, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-bold text-indigo-400">{player.number}</span>
                             </div>
-                            <div className="text-xs text-foreground/60 uppercase tracking-wider">
-                              {player.position}
+                            <div className="flex-1">
+                              <div className="font-medium text-sm text-foreground">
+                                {player.name}
+                              </div>
+                              <div className="text-xs text-foreground/60 uppercase tracking-wider">
+                                {player.position}
+                              </div>
+                            </div>
+                            <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
+                              {player.rating.toFixed(1)}
                             </div>
                           </div>
-                          <div className={`text-lg font-bold ${getRatingColor(player.rating)}`}>
-                            {player.rating.toFixed(1)}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-foreground/60">{isBn ? 'রেটিং উপলব্ধ নেই' : 'Ratings not available'}</p>
-              </div>
-            )}
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-foreground/60">{isBn ? 'রেটিং উপলব্ধ নেই' : 'Ratings not available'}</p>
+                </div>
+              )}
             </div>
           </ScrollAnimatedElement>
         )}
