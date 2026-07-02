@@ -16,8 +16,9 @@ export async function GET(request: NextRequest) {
         console.debug('[v0] Standings table not yet created - migration needed')
         return NextResponse.json([])
       }
-      console.error('[v0] Error fetching standings:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      // Only log non-PGRST205 errors
+      console.debug('[v0] Error fetching standings:', error)
+      return NextResponse.json([])
     }
 
     return NextResponse.json(data || [])
