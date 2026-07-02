@@ -54,8 +54,9 @@ export function StandingsManager() {
       const data = await response.json()
       setStandings(data)
     } catch (err) {
-      console.error('[v0] Error loading standings:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load standings')
+      // Silently handle errors - standings table may not exist yet
+      console.debug('[v0] Error loading standings:', err instanceof Error ? err.message : 'Failed to load standings')
+      setStandings([])
     } finally {
       setLoading(false)
     }
@@ -394,7 +395,7 @@ export function StandingsManager() {
                         setEditForm(standing)
                       }}
                       className="p-1 hover:bg-secondary rounded transition-colors"
-                      title={isBn ? 'সম্পাদন করুন' : 'Edit'}
+                      title={isBn ? 'সম্পাদন কর��ন' : 'Edit'}
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>

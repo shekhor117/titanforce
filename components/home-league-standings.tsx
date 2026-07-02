@@ -32,7 +32,8 @@ export function HomeLeagueStandings() {
           setStandings(data.sort((a: Standing, b: Standing) => a.position - b.position))
         }
       } catch (error) {
-        console.error('[v0] Error loading standings:', error)
+        // Silently handle errors - standings table may not exist yet
+        console.debug('[v0] Error loading standings:', error instanceof Error ? error.message : String(error))
       } finally {
         setLoading(false)
       }

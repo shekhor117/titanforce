@@ -11,9 +11,9 @@ export async function GET(request: NextRequest) {
       .order('position', { ascending: true })
 
     if (error) {
-      // If table doesn't exist, return empty array gracefully
-      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('no such table')) {
-        console.debug('[v0] Standings table not yet created - run migration in Supabase')
+      // If table doesn't exist, return empty array gracefully (don't log as error)
+      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('no such table') || error.message?.includes('schema cache')) {
+        console.debug('[v0] Standings table not yet created - migration needed')
         return NextResponse.json([])
       }
       console.error('[v0] Error fetching standings:', error)
