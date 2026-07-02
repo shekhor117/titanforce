@@ -81,7 +81,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching products:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error fetching products:', error) }
       return []
     }
   }
@@ -118,7 +118,7 @@ class StoreDataService {
         createdAt: data.created_at ? new Date(data.created_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching product:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error fetching product:', error) }
       return undefined
     }
   }
@@ -154,7 +154,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching products by category:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error fetching products by category:', error) }
       return []
     }
   }
@@ -190,7 +190,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error searching products:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error searching products:', error) }
       return []
     }
   }
@@ -250,7 +250,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error filtering products:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error filtering products:', error) }
       return []
     }
   }
@@ -290,7 +290,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching related products:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error fetching related products:', error) }
       return []
     }
   }
@@ -334,12 +334,13 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      // Check if this is a missing table error
-      if (error?.code === 'PGRST205' || error?.message?.includes('Could not find the table')) {
+      // Check if this is a missing table error - if so, don't log as error
+      if (error?.code === 'PGRST205' || error?.message?.includes('Could not find the table') || error?.message?.includes('schema cache')) {
         console.debug("[v0] Products table not yet created")
         return []
       }
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching featured products:', error) }
+      // Only log non-PGRST205 errors
+      console.debug('Error fetching featured products:', error)
       return []
     }
   }
@@ -375,7 +376,7 @@ class StoreDataService {
         createdAt: p.created_at ? new Date(p.created_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching new arrivals:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error fetching new arrivals:', error) }
       return []
     }
   }
@@ -385,7 +386,7 @@ class StoreDataService {
       // Validate product data
       const validation = validateProduct(product)
       if (!validation.isValid) {
-        if (!this.isTableNotFoundError(error)) { console.error('[v0] Product validation failed:', validation.errors) }
+        console.debug('[v0] Product validation failed:', validation.errors)
         return null
       }
 
@@ -434,7 +435,7 @@ class StoreDataService {
         createdAt: data.created_at ? new Date(data.created_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error adding product:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error adding product:', error) }
       return null
     }
   }
@@ -444,7 +445,7 @@ class StoreDataService {
       // Validate product data (partial updates are OK)
       const validation = validateProduct(updates)
       if (!validation.isValid) {
-        if (!this.isTableNotFoundError(error)) { console.error('[v0] Product validation failed:', validation.errors) }
+        console.debug('[v0] Product validation failed:', validation.errors)
         return null
       }
 
@@ -478,7 +479,7 @@ class StoreDataService {
         createdAt: data.created_at ? new Date(data.created_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error updating product:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error updating product:', error) }
       return null
     }
   }
@@ -496,7 +497,7 @@ class StoreDataService {
       if (error) throw error
       return true
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error deleting product:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error deleting product:', error) }
       return false
     }
   }
@@ -508,7 +509,7 @@ class StoreDataService {
 
       return (await this.updateProduct(productId, { stock: product.stock + quantity })) !== null
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error updating stock:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error updating stock:', error) }
       return false
     }
   }
@@ -544,7 +545,7 @@ class StoreDataService {
         updatedAt: o.updated_at ? new Date(o.updated_at) : undefined
       }))
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching orders:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Orders table not yet created') } else { console.debug('Error fetching orders:', error) }
       return []
     }
   }
@@ -581,7 +582,7 @@ class StoreDataService {
         updatedAt: data.updated_at ? new Date(data.updated_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error fetching order:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Orders table not yet created') } else { console.debug('Error fetching order:', error) }
       return undefined
     }
   }
@@ -591,7 +592,7 @@ class StoreDataService {
       // Validate order data
       const validation = validateOrder(order)
       if (!validation.isValid) {
-        if (!this.isTableNotFoundError(error)) { console.error('[v0] Order validation failed:', validation.errors) }
+        console.debug('[v0] Order validation failed:', validation.errors)
         return null
       }
 
@@ -639,7 +640,7 @@ class StoreDataService {
         updatedAt: data.updated_at ? new Date(data.updated_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error creating order:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Orders table not yet created') } else { console.debug('Error creating order:', error) }
       return null
     }
   }
@@ -676,7 +677,7 @@ class StoreDataService {
         updatedAt: data.updated_at ? new Date(data.updated_at) : undefined
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error updating order status:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Orders table not yet created') } else { console.debug('Error updating order status:', error) }
       return null
     }
   }
@@ -714,7 +715,7 @@ class StoreDataService {
         monthlyRevenue: totalSales
       }
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error getting store stats:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Tables not yet created') } else { console.debug('Error getting store stats:', error) }
       return {
         totalSales: 0,
         totalOrders: 0,
@@ -732,7 +733,7 @@ class StoreDataService {
       const products = await this.getProducts()
       return products.filter(p => p.stock <= threshold)
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error getting low stock products:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error getting low stock products:', error) }
       return []
     }
   }
@@ -752,7 +753,7 @@ class StoreDataService {
 
       return (await this.updateProduct(productId, { variants: updatedVariants })) !== null
     } catch (error) {
-      if (!this.isTableNotFoundError(error)) { console.error('Error updating inventory:', error) }
+      if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error updating inventory:', error) }
       return false
     }
   }
