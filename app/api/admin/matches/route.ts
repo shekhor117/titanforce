@@ -31,15 +31,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const matchId = searchParams.get('id')
 
-    // Check admin authentication (if Supabase is configured)
-    try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      // For development, allow access even if not authenticated if Supabase not configured
-      if (authError || !user) {
-        console.debug('[v0] No authenticated user, proceeding with demo data')
-      }
-    } catch (e) {
-      console.debug('[v0] Auth check failed, proceeding anyway:', e)
+    // Check admin authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     if (matchId) {
@@ -64,12 +59,7 @@ export async function GET(request: NextRequest) {
         .order('date', { ascending: false })
 
       if (error) {
-        console.debug('[v0] Error fetching matches:', error)
-        // If table doesn't exist or other query error, return empty array for now
-        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
-          console.debug("[v0] Matches table not yet created, returning empty array")
-          return NextResponse.json([])
-        }
+        console.error('[v0] Error fetching matches:', error)
         return NextResponse.json({ error: error.message }, { status: 400 })
       }
 
@@ -85,14 +75,9 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createClient()
 
-    // Allow requests for development purposes
-    try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      if (authError || !user) {
-        console.debug('[v0] No authenticated user for POST')
-      }
-    } catch (e) {
-      console.debug('[v0] Auth check failed on POST:', e)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     let body = await request.json()
@@ -143,14 +128,9 @@ export async function PUT(request: NextRequest) {
   try {
     const supabase = createClient()
 
-    // Allow requests for development purposes
-    try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      if (authError || !user) {
-        console.debug('[v0] No authenticated user for PUT')
-      }
-    } catch (e) {
-      console.debug('[v0] Auth check failed on PUT:', e)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -206,14 +186,9 @@ export async function DELETE(request: NextRequest) {
   try {
     const supabase = createClient()
 
-    // Allow requests for development purposes
-    try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      if (authError || !user) {
-        console.debug('[v0] No authenticated user for DELETE')
-      }
-    } catch (e) {
-      console.debug('[v0] Auth check failed on DELETE:', e)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
