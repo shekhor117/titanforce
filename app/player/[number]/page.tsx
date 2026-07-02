@@ -131,8 +131,8 @@ export default function PlayerProfile() {
             {/* Player Image */}
             {player.image_url ? (
               <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
-                <div className="relative w-48 sm:w-56 md:w-64 lg:w-72 h-64 sm:h-80 md:h-96 lg:h-full rounded-3xl border-4 border-primary shadow-2xl overflow-hidden">
-                  <Image src={player.image_url} alt={player.full_name} fill className="object-cover object-center" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 60vw, 40vw" priority />
+                <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 border-primary shadow-2xl overflow-hidden">
+                  <Image src={player.image_url} alt={player.full_name} fill className="object-cover object-top" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 60vw, 40vw" priority />
                 </div>
               </div>
             ) : (
