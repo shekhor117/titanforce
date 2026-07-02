@@ -67,6 +67,11 @@ class OptimizedDataService {
       const { data, error } = await query
 
       if (error) {
+        // If table doesn't exist, don't log as error - this is expected during initial setup
+        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('schema cache')) {
+          console.debug(`[v0] Table '${table}' not yet created, returning cached or empty data`)
+          return cached?.data || []
+        }
         console.error(`[v0] Error fetching ${table}:`, error)
         // Return stale cache if available, otherwise empty array
         return cached?.data || []
@@ -80,6 +85,11 @@ class OptimizedDataService {
 
       return data || []
     } catch (err) {
+      // If table doesn't exist, don't log as error - this is expected during initial setup
+      if (err?.code === 'PGRST205' || err?.message?.includes('Could not find the table') || err?.message?.includes('schema cache')) {
+        console.debug(`[v0] Table '${table}' not yet created (exception), returning cached or empty data`)
+        return cached?.data || []
+      }
       console.error(`[v0] Exception fetching ${table}:`, err)
       return cached?.data || []
     }

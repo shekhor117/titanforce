@@ -48,7 +48,7 @@ export interface Order {
 
 class StoreDataService {
   private isTableNotFoundError(error: any): boolean {
-    return error?.code === 'PGRST205' || error?.message?.includes('Could not find the table')
+    return error?.code === 'PGRST205' || error?.message?.includes('Could not find the table') || error?.message?.includes('schema cache')
   }
 
   async getProducts(): Promise<StoreProduct[]> {
