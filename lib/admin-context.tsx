@@ -41,9 +41,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     const initializeAuth = async () => {
       try {
-        // If Supabase is not configured, mark as initialized immediately
+        // If Supabase is not configured, use development demo admin for testing
         if (!isConfigured) {
           if (isMounted) {
+            // In development mode, allow demo admin access
+            const demoAdmin: AuthUser = {
+              id: "demo-admin-dev",
+              email: "admin@titanforce.com",
+              name: "Demo Admin",
+              role: "admin",
+              emailVerified: true
+            }
+            setAdmin(demoAdmin)
             setIsInitialized(true)
           }
           return
