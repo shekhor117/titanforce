@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useAdmin } from "@/lib/admin-context"
 import { useRouter, usePathname } from "next/navigation"
 
@@ -8,8 +8,9 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   const { admin, isInitialized } = useAdmin()
   const router = useRouter()
   const pathname = usePathname()
-  const [isRedirecting, setIsRedirecting] = useState(false)
   const [isClient, setIsClient] = useState(false)
+  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hasRedirectedRef = useRef(false)
 
   // Ensure we're on the client before using router
   useEffect(() => {
@@ -17,28 +18,40 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   }, [])
 
   useEffect(() => {
-    if (!isClient) return
+    if (!isClient || hasRedirectedRef.current) return
 
     // Check if we're on a public admin page
     const isPublicPage = pathname?.includes("/admin/login") || 
                          pathname?.includes("/admin/signup") || 
                          pathname?.includes("/admin/forgot-password")
 
-    // If initialization is complete, immediately proceed with redirect logic
-    if (isInitialized) {
-      if (!admin && !isRedirecting && !isPublicPage) {
-        setIsRedirecting(true)
-        router.push("/admin/login")
-      }
+    // Only attempt redirect when initialization is complete AND we're not logged in
+    if (isInitialized && !admin && !isPublicPage) {
+      // Use a small delay to ensure router is fully initialized
+      if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current)
+      
+      redirectTimeoutRef.current = setTimeout(() => {
+        try {
+          hasRedirectedRef.current = true
+          router.push("/admin/login")
+        } catch (error) {
+          console.error("[v0] Failed to redirect:", error)
+          hasRedirectedRef.current = false
+        }
+      }, 0)
     }
-  }, [isClient, admin, isInitialized, isRedirecting, router, pathname])
+
+    return () => {
+      if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current)
+    }
+  }, [isClient, admin, isInitialized, router, pathname])
 
   // If we have admin data, render immediately
   if (admin) {
     return <>{children}</>
   }
 
-  // During initialization, show minimal loading (max 1 second visible)
+  // During initialization, show minimal loading
   if (!isInitialized && isClient) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -49,7 +62,7 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     )
   }
 
-  // If client-side and initialized but no admin, redirect happening
+  // If client-side and initialized but no admin, redirect is happening
   if (isClient && isInitialized && !admin) {
     return null
   }

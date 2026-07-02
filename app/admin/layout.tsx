@@ -10,9 +10,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Handle global errors
+  // Handle global errors (but skip router errors during HMR)
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
+      // Skip router errors from HMR - they resolve themselves
+      if (event.error?.message?.includes("Router action dispatched before initialization")) {
+        console.debug("[v0] Skipping HMR router error - it will resolve automatically")
+        return
+      }
+
       console.error("[v0] Global error caught:", event.error)
       setHasError(true)
       setErrorMessage(event.error?.message || "An unexpected error occurred")
