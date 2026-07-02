@@ -402,9 +402,8 @@ export class DataService {
         .order('date', { ascending: false })
 
       if (error) {
-        // If table doesn't exist, return empty array gracefully
+        // If table doesn't exist, return empty array gracefully (no error logging)
         if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
-          console.debug("[v0] Matches table not yet created")
           return []
         }
         console.error("[v0] DataService getMatches error:", error)
@@ -412,7 +411,9 @@ export class DataService {
       }
       return data || []
     } catch (error) {
-      console.error("[v0] DataService getMatches caught error:", error)
+      if (!(error?.code === 'PGRST205' || error?.message?.includes('Could not find the table'))) {
+        console.error("[v0] DataService getMatches caught error:", error)
+      }
       return []
     }
   }
