@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validateMatch } from '@/lib/validation'
 
 // Helper to map database fields to admin form fields
@@ -27,15 +27,19 @@ function mapMatchData(dbMatch: any) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
     const { searchParams } = new URL(request.url)
     const matchId = searchParams.get('id')
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
+      console.error('[v0] Auth error:', authError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    // Use admin client for querying
+    const supabase = createAdminClient()
 
     if (matchId) {
       const { data, error } = await supabase
@@ -66,21 +70,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json((data || []).map(mapMatchData))
     }
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error in GET:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
+      console.error('[v0] Auth error:', authError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    let body = await request.json()
+    const body = await request.json()
 
     // Validate match data
     const validation = validateMatch(body)
@@ -106,6 +114,9 @@ export async function POST(request: NextRequest) {
       goals: body.goals || []
     }
 
+    // Use admin client for database operations
+    const supabase = createAdminClient()
+
     const { data, error } = await supabase
       .from('matches')
       .insert([matchData])
@@ -119,17 +130,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error in POST:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
+      console.error('[v0] Auth error:', authError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -163,6 +178,9 @@ export async function PUT(request: NextRequest) {
     if (updates.statistics_data !== undefined) matchData.statistics_data = updates.statistics_data
     if (updates.goals !== undefined) matchData.goals = updates.goals
 
+    // Use admin client for database operations
+    const supabase = createAdminClient()
+
     const { data, error } = await supabase
       .from('matches')
       .update(matchData)
@@ -177,17 +195,21 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error in PUT:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
+      console.error('[v0] Auth error:', authError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -197,6 +219,9 @@ export async function DELETE(request: NextRequest) {
     if (!matchId) {
       return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })
     }
+
+    // Use admin client for database operations
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('matches')
@@ -210,7 +235,10 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true, id: matchId })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error in DELETE:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }

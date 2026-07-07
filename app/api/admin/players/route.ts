@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePlayer } from '@/lib/validation'
 
 // GET - Fetch all players or a specific player
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
     const { searchParams } = new URL(request.url)
     const playerId = searchParams.get('id')
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    // Use admin client for database queries
+    const supabase = createAdminClient()
 
     if (playerId) {
       // Fetch specific player
@@ -46,18 +49,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data)
     }
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 // POST - Create a new player
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -69,6 +75,9 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    // Use admin client for database operations
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('players')
@@ -84,18 +93,21 @@ export async function POST(request: NextRequest) {
     console.log('[v0] Player created:', data)
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 // PUT - Update a player
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -113,6 +125,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
+    // Use admin client for database operations
+    const supabase = createAdminClient()
+
     const { data, error } = await supabase
       .from('players')
       .update(updates)
@@ -128,18 +143,21 @@ export async function PUT(request: NextRequest) {
     console.log('[v0] Player updated:', data)
     return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
 // DELETE - Delete a player
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -150,6 +168,9 @@ export async function DELETE(request: NextRequest) {
     if (!playerId) {
       return NextResponse.json({ error: 'Missing player ID' }, { status: 400 })
     }
+
+    // Use admin client for database operations
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('players')
@@ -164,7 +185,10 @@ export async function DELETE(request: NextRequest) {
     console.log('[v0] Player deleted:', playerId)
     return NextResponse.json({ success: true, id: playerId })
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
