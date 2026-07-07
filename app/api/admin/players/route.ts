@@ -5,7 +5,7 @@ import { validatePlayer } from '@/lib/validation'
 // GET - Fetch all players or a specific player
 export async function GET(request: NextRequest) {
   try {
-    const userClient = createClient()
+    const userClient = await createClient()
     const { searchParams } = new URL(request.url)
     const playerId = searchParams.get('id')
 
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 // POST - Create a new player
 export async function POST(request: NextRequest) {
   try {
-    const userClient = createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
     const { data: { user }, error: authError } = await userClient.auth.getUser()
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 // PUT - Update a player
 export async function PUT(request: NextRequest) {
   try {
-    const userClient = createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
     const { data: { user }, error: authError } = await userClient.auth.getUser()
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a player
 export async function DELETE(request: NextRequest) {
   try {
-    const userClient = createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
     const { data: { user }, error: authError } = await userClient.auth.getUser()
