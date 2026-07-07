@@ -14,6 +14,7 @@ export interface Player {
   age?: number
   hometown?: string
   foot?: 'Left' | 'Right' | 'Both'
+  strong_foot?: 'Left' | 'Right' | 'Both'
   goals: number
   assists: number
   image_url?: string
@@ -37,6 +38,9 @@ export interface Player {
   defending?: number
   physical?: number
   date_of_birth?: string
+  dob?: string
+  height?: number
+  weight?: number
   join_date?: string
   season_year?: string
   club?: string

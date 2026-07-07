@@ -207,6 +207,61 @@ export default function PlayerEditPage() {
                   className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">{isBn ? 'জন্ম তারিখ' : 'Date of Birth'}</label>
+                <input
+                  type="date"
+                  name="date_of_birth"
+                  value={player.date_of_birth || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">{isBn ? 'জাতীয়তা' : 'Nationality'}</label>
+                <input
+                  type="text"
+                  name="nationality"
+                  value={player.nationality || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">{isBn ? 'উচ্চতা (সেমি)' : 'Height (cm)'}</label>
+                <input
+                  type="number"
+                  name="height"
+                  value={player.height || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 194"
+                  className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">{isBn ? 'ওজন (কেজি)' : 'Weight (kg)'}</label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={player.weight || ''}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 88"
+                  className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">{isBn ? 'শক্তিশালী পা' : 'Strong Foot'}</label>
+                <select
+                  name="strong_foot"
+                  value={player.strong_foot || 'Right'}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+                >
+                  <option value="Right">{isBn ? 'ডান' : 'Right'}</option>
+                  <option value="Left">{isBn ? 'বাম' : 'Left'}</option>
+                  <option value="Both">{isBn ? 'উভয়' : 'Both'}</option>
+                </select>
+              </div>
             </div>
             <div className="mt-6">
               <label className="block text-sm font-semibold mb-2">{isBn ? 'জীবনী' : 'Biography'}</label>

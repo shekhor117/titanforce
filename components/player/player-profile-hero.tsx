@@ -72,11 +72,15 @@ export function PlayerProfileHero({ player }: PlayerProfileHeroProps) {
               </div>
               <div>
                 <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'উচ্চতা' : 'Height'}</p>
-                <p className="text-sm md:text-base font-semibold">{player.height || 'N/A'}</p>
+                <p className="text-sm md:text-base font-semibold">
+                  {player.height ? `${(player.height / 100).toFixed(2)} m` : 'N/A'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'ওজন' : 'Weight'}</p>
-                <p className="text-sm md:text-base font-semibold">{player.weight || 'N/A'}</p>
+                <p className="text-sm md:text-base font-semibold">
+                  {player.weight ? `${player.weight} kg` : 'N/A'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'শক্তিশালী পা' : 'Strong Foot'}</p>
