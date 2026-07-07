@@ -131,14 +131,22 @@ export default function PlayerProfile() {
             {/* Player Image */}
             {player.image_url ? (
               <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
-                <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 border-primary shadow-2xl overflow-hidden">
-                  <Image src={player.image_url} alt={player.full_name} fill className="object-cover object-top" sizes="(max-width: 640px) 85vw, (max-width: 1024px) 60vw, 40vw" priority />
+                <div className="relative w-48 sm:w-56 md:w-64 lg:w-72 aspect-[3/4] rounded-3xl border-4 border-primary shadow-2xl overflow-hidden bg-secondary/10">
+                  <Image 
+                    src={player.image_url} 
+                    alt={player.full_name} 
+                    fill 
+                    className="object-cover object-center" 
+                    sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 288px"
+                    priority
+                    quality={90}
+                  />
                 </div>
               </div>
             ) : (
               <div className="w-full md:w-auto md:flex-shrink-0 py-6 sm:py-8 md:py-10 flex justify-center md:justify-start">
-                <div className="w-48 sm:w-56 md:w-64 lg:w-72 rounded-3xl border-4 border-primary shadow-2xl bg-secondary/30 flex items-center justify-center aspect-square">
-                  <span className="font-[var(--font-display)] text-7xl sm:text-8xl text-primary">#{player.num}</span>
+                <div className="w-48 sm:w-56 md:w-64 lg:w-72 aspect-[3/4] rounded-3xl border-4 border-primary shadow-2xl bg-gradient-to-br from-secondary/40 to-secondary/20 flex items-center justify-center">
+                  <span className="font-[var(--font-display)] text-6xl sm:text-7xl md:text-8xl text-primary/50">#{player.num}</span>
                 </div>
               </div>
             )}
