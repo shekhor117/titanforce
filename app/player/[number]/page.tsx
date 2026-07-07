@@ -153,14 +153,14 @@ export default function PlayerProfile() {
 
             {/* Info */}
             <div className="flex-1 pb-6 sm:pb-8 md:pb-10">
-              <p className="uppercase tracking-[0.2em] text-white/60 text-xs sm:text-sm mb-2">Titan Force FC</p>
-              <h1 className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl font-black uppercase text-white mb-4">
+              <p className="uppercase tracking-[0.2em] text-white/80 text-xs sm:text-sm mb-3 font-semibold">Titan Force FC</p>
+              <h1 className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl font-black uppercase text-white mb-4 drop-shadow-lg">
                 {player.full_name.split(" ")[0]}
               </h1>
-              <div className={`flex flex-wrap gap-3 mb-6 text-xs sm:text-sm text-white/70 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                <span className="text-primary font-bold">#{player.num}</span>
-                <span>{player.position}</span>
-                <span>Bangladesh</span>
+              <div className={`flex flex-wrap gap-3 mb-6 text-xs sm:text-sm text-white/85 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
+                <span className="text-yellow-300 font-bold text-sm sm:text-base">#{player.num}</span>
+                <span className="text-white/90 font-medium">{player.position}</span>
+                <span className="text-white/90">Bangladesh</span>
               </div>
               <PlayerRating playerId={player.num.toString()} playerName={player.full_name} size="lg" />
             </div>
@@ -189,7 +189,7 @@ export default function PlayerProfile() {
           ].map(tab => {
             const TabIcon = tab.icon
             return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-lg" : "bg-secondary/50 text-foreground/80 hover:bg-secondary"}`}>
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all ${activeTab === tab.id ? "bg-primary text-white shadow-lg" : "bg-secondary/30 text-foreground hover:bg-secondary/60"}`}>
                 <TabIcon className="w-4 h-4" />
                 <span className={isBn ? "font-[var(--font-bengali)]" : ""}>{tab.label}</span>
               </button>
@@ -200,8 +200,8 @@ export default function PlayerProfile() {
         {/* OVERVIEW TAB */}
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-            <div className="glass-card rounded-2xl p-4 sm:p-6 md:p-8">
-              <h3 className={`text-lg sm:text-xl font-bold mb-6 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{isBn ? "বিবরণ" : "Details"}</h3>
+            <div className="glass-card rounded-2xl p-4 sm:p-6 md:p-8 border border-secondary/40">
+              <h3 className={`text-lg sm:text-xl font-bold mb-6 text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{isBn ? "বিবরণ" : "Details"}</h3>
               <div className="space-y-3 text-sm">
                 {[
                   ["Full Name", player.full_name],
@@ -211,17 +211,17 @@ export default function PlayerProfile() {
                   ["Status", player.status || "Active"],
                 ].map(([label, value], idx) => (
                   <div key={idx} className="flex justify-between border-b border-secondary/30 pb-2">
-                    <span className="text-foreground/60">{label}</span>
-                    <span className="font-semibold">{value}</span>
+                    <span className="text-foreground/70 font-medium">{label}</span>
+                    <span className="font-semibold text-foreground">{value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="lg:col-span-2">
-              <div className="glass-card rounded-2xl p-4 sm:p-6 md:p-8">
-                <h3 className={`text-lg sm:text-2xl font-bold mb-4 ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{isBn ? "জীবনী" : "Biography"}</h3>
-                <p className="text-foreground/80">{player.bio || "No bio available."}</p>
+              <div className="glass-card rounded-2xl p-4 sm:p-6 md:p-8 border border-secondary/40">
+                <h3 className={`text-lg sm:text-2xl font-bold mb-4 text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>{isBn ? "জীবনী" : "Biography"}</h3>
+                <p className="text-foreground/85 leading-relaxed">{player.bio || "No bio available."}</p>
               </div>
             </div>
           </div>
