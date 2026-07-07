@@ -274,7 +274,7 @@ export default function AdminHonourPage() {
                     </p>
                   )}
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-4">
                     <button
                       onClick={() => handleEditHonour(honour)}
                       className="flex-1 bg-primary/20 text-primary py-2 rounded font-semibold hover:bg-primary/40 transition"
@@ -288,6 +288,12 @@ export default function AdminHonourPage() {
                       {isBn ? 'মুছুন' : 'Delete'}
                     </button>
                   </div>
+                  <button
+                    onClick={() => router.push(`/admin/honours/${honour.id}/players`)}
+                    className="w-full bg-secondary/30 text-foreground py-2 rounded font-semibold hover:bg-secondary/60 transition text-sm"
+                  >
+                    {isBn ? '✏️ খেলোয়াড় পরিচালনা করুন' : '✏️ Manage Players'}
+                  </button>
                 </div>
               ))}
             </div>

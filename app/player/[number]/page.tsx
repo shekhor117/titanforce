@@ -198,8 +198,8 @@ export default function PlayerProfile() {
         )}
 
         {/* Honours Tab */}
-        {activeTab === 'honours' && (
-          <PlayerHonoursSection />
+        {activeTab === 'honours' && player && (
+          <PlayerHonoursSection playerId={player.id} />
         )}
       </div>
     </div>
