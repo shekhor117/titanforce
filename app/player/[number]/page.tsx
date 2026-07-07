@@ -115,7 +115,6 @@ export default function PlayerProfile() {
             { id: 'stats', label: isBn ? 'পরিসংখ্যান' : 'Stats' },
             { id: 'career', label: isBn ? 'ক্যারিয়ার' : 'Career' },
             { id: 'skills', label: isBn ? 'দক্ষতা' : 'Skills' },
-            { id: 'position', label: isBn ? 'অবস্থান' : 'Position' },
             { id: 'news', label: isBn ? 'সংবাদ' : 'News' },
             { id: 'honours', label: isBn ? 'সম্মাননা' : 'Honours' },
           ].map(tab => (
@@ -191,11 +190,6 @@ export default function PlayerProfile() {
             </div>
             <PlayerPositionDiagram player={player} />
           </div>
-        )}
-
-        {/* Position Tab */}
-        {activeTab === 'position' && (
-          <PlayerPositionDiagram player={player} />
         )}
 
         {/* News Tab */}
