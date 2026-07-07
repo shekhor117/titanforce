@@ -8,6 +8,8 @@ import { PlayerProfileHero } from '@/components/player/player-profile-hero'
 import { PlayerAttributesChart } from '@/components/player/player-attributes-chart'
 import { PlayerCareerStats } from '@/components/player/player-career-stats'
 import { PlayerPositionDiagram } from '@/components/player/player-position-diagram'
+import { PlayerNewsSection } from '@/components/player/player-news-section'
+import { PlayerHonoursSection } from '@/components/player/player-honours-section'
 import { useEffect, useState } from 'react'
 import { getDataService } from '@/lib/data-service'
 import type { Player } from '@/lib/data-service'
@@ -107,20 +109,23 @@ export default function PlayerProfile() {
         <PlayerProfileHero player={player} />
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-2 md:gap-3 border-b border-secondary pb-4">
+        <div className="flex flex-wrap gap-2 md:gap-4 border-b border-secondary pb-4 overflow-x-auto">
           {[
             { id: 'overview', label: isBn ? 'সংক্ষিপ্তি' : 'Overview' },
-            { id: 'stats', label: isBn ? 'পরিসংখ্যান' : 'Statistics' },
+            { id: 'stats', label: isBn ? 'পরিসংখ্যান' : 'Stats' },
+            { id: 'career', label: isBn ? 'ক্যারিয়ার' : 'Career' },
             { id: 'skills', label: isBn ? 'দক্ষতা' : 'Skills' },
             { id: 'position', label: isBn ? 'অবস্থান' : 'Position' },
+            { id: 'news', label: isBn ? 'সংবাদ' : 'News' },
+            { id: 'honours', label: isBn ? 'সম্মাননা' : 'Honours' },
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold text-sm md:text-base transition-all ${
+              className={`px-3 md:px-5 py-2 md:py-3 font-semibold text-sm md:text-base transition-all whitespace-nowrap border-b-2 ${
                 activeTab === tab.id
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-secondary/30 text-foreground hover:bg-secondary/60'
+                  ? 'border-b-primary text-primary'
+                  : 'border-b-transparent text-foreground/70 hover:text-foreground'
               }`}
             >
               {tab.label}
@@ -165,17 +170,42 @@ export default function PlayerProfile() {
 
         {/* Statistics Tab */}
         {activeTab === 'stats' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2">
+              <PlayerCareerStats player={player} />
+            </div>
+            <PlayerHonoursSection />
+          </div>
+        )}
+
+        {/* Career Tab */}
+        {activeTab === 'career' && (
           <PlayerCareerStats player={player} />
         )}
 
         {/* Skills Tab */}
         {activeTab === 'skills' && (
-          <PlayerAttributesChart player={player} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2">
+              <PlayerAttributesChart player={player} />
+            </div>
+            <PlayerPositionDiagram player={player} />
+          </div>
         )}
 
         {/* Position Tab */}
         {activeTab === 'position' && (
           <PlayerPositionDiagram player={player} />
+        )}
+
+        {/* News Tab */}
+        {activeTab === 'news' && (
+          <PlayerNewsSection playerName={player.full_name} limit={6} />
+        )}
+
+        {/* Honours Tab */}
+        {activeTab === 'honours' && (
+          <PlayerHonoursSection />
         )}
       </div>
     </div>

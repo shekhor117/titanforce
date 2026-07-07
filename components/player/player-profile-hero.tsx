@@ -67,8 +67,20 @@ export function PlayerProfileHero({ player }: PlayerProfileHeroProps) {
                 <p className="text-sm md:text-base font-semibold">{player.hometown || 'Bangladesh'}</p>
               </div>
               <div>
-                <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'বয়স' : 'Age'}</p>
-                <p className="text-sm md:text-base font-semibold">{player.age || 'N/A'}</p>
+                <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'জন্ম তারিখ' : 'Date of Birth'}</p>
+                <p className="text-sm md:text-base font-semibold">{player.dob || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'উচ্চতা' : 'Height'}</p>
+                <p className="text-sm md:text-base font-semibold">{player.height || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'ওজন' : 'Weight'}</p>
+                <p className="text-sm md:text-base font-semibold">{player.weight || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'শক্তিশালী পা' : 'Strong Foot'}</p>
+                <p className="text-sm md:text-base font-semibold">{player.strong_foot || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{isBn ? 'অবস্থান' : 'Position'}</p>
