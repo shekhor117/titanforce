@@ -63,23 +63,23 @@ export function FeaturedPlayers() {
     <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
       <section
         ref={containerRef}
-        className="py-12 sm:py-16 px-3 sm:px-4 bg-gradient-to-br from-card/50 to-background"
+        className="py-12 md:py-16 px-3 md:px-4 bg-gradient-to-br from-card/50 to-background"
       >
       {/* Header */}
       <div
-        className={`text-center mb-8 sm:mb-12 transition-all duration-600 ${
+        className={`text-center mb-8 md:mb-12 transition-all duration-600 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
         <p
-          className={`text-xs sm:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${
+          className={`text-xs md:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary ${
             isBn ? "font-[var(--font-bengali)]" : ""
           }`}
         >
           {isBn ? "শীর্ষ খেলোয়াড়" : "Featured Players"}
         </p>
         <h2
-          className={`text-3xl sm:text-4xl md:text-5xl tracking-wide text-foreground ${
+          className={`text-3xl md:text-4xl lg:text-5xl tracking-wide text-foreground ${
             isBn ? "font-[var(--font-bengali)] font-bold" : "font-[var(--font-display)]"
           }`}
         >
@@ -110,7 +110,7 @@ export function FeaturedPlayers() {
             <Link
               key={player.id}
               href={`/player/${player.num}`}
-              className={`flex-shrink-0 w-full sm:w-80 group/card snap-center transition-all duration-600 ${
+              className={`flex-shrink-0 w-full md:w-80 group/card snap-center transition-all duration-600 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
@@ -144,8 +144,8 @@ export function FeaturedPlayers() {
                 </div>
 
                 {/* Player Info */}
-                <div className="p-4 sm:p-5">
-                  <h3 className="font-[var(--font-display)] text-xl sm:text-2xl tracking-wider text-foreground font-bold mb-1">
+                <div className="p-4 md:p-5">
+                  <h3 className="font-[var(--font-display)] text-xl md:text-2xl tracking-wider text-foreground font-bold mb-1">
                     {player.name.toUpperCase()}
                   </h3>
                   <p className="text-sm uppercase tracking-wider text-foreground/70 mb-3">
@@ -184,10 +184,10 @@ export function FeaturedPlayers() {
       </div>
 
       {/* View All Link */}
-      <div className="flex justify-center mt-8 sm:mt-12">
+      <div className="flex justify-center mt-8 md:mt-12">
         <Link
           href="#squad"
-          className="neo-btn px-6 sm:px-8 py-3"
+          className="neo-btn px-6 md:px-8 py-3"
         >
           {isBn ? "সমস্ত খেলোয়াড় দেখুন" : "View All Players"}
         </Link>

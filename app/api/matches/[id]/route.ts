@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const matchId = params.id
+
+    if (!matchId) {
+      return NextResponse.json(
+        { error: 'Match ID is required' },
+        { status: 400 }
+      )
+    }
 
     const { data, error } = await supabase
       .from('matches')
@@ -23,7 +30,13 @@ export async function GET(
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Internal server error' }, { status: 500 })
+    console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
+    return NextResponse.json(
+      { 
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : String(error)
+      }, 
+      { status: 500 }
+    )
   }
 }

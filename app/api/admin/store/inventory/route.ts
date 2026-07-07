@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 // GET - Fetch inventory
 export async function GET(request: NextRequest) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('[v0] Unexpected error in GET:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 
@@ -109,6 +109,6 @@ export async function PUT(request: NextRequest) {
     })
   } catch (error) {
     console.error('[v0] Unexpected error in PUT:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }

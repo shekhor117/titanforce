@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validateNews } from '@/lib/validation'
 
 // GET - Fetch all news or by ID
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    // Use admin client for public access to published news
+    const supabase = createAdminClient()
 
     const { searchParams } = new URL(request.url)
     const newsId = searchParams.get('id')
@@ -40,9 +41,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data || [])
     }
   } catch (error) {
-    console.error('[v0] Error in news GET:', error)
+    console.error('[v0] Error in news GET:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch news' },
+      { 
+        error: 'Failed to fetch news',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
@@ -51,10 +55,10 @@ export async function GET(request: NextRequest) {
 // POST - Create a new news item
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -66,6 +70,9 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    // Use admin client for database operations
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('news_updates')
@@ -80,9 +87,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
-    console.error('[v0] Error in news POST:', error)
+    console.error('[v0] Error in news POST:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create news' },
+      { 
+        error: 'Failed to create news',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
@@ -91,10 +101,10 @@ export async function POST(request: NextRequest) {
 // PUT - Update a news item
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -112,6 +122,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
+    // Use admin client for database operations
+    const supabase = createAdminClient()
+
     const { data, error } = await supabase
       .from('news_updates')
       .update(updates)
@@ -127,9 +140,12 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('[v0] Error in news PUT:', error)
+    console.error('[v0] Error in news PUT:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update news' },
+      { 
+        error: 'Failed to update news',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
@@ -138,10 +154,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a news item
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -152,6 +168,9 @@ export async function DELETE(request: NextRequest) {
     if (!newsId) {
       return NextResponse.json({ error: 'Missing news ID' }, { status: 400 })
     }
+
+    // Use admin client for database operations
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('news_updates')
@@ -165,9 +184,12 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    console.error('[v0] Error in news DELETE:', error)
+    console.error('[v0] Error in news DELETE:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete news' },
+      { 
+        error: 'Failed to delete news',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }

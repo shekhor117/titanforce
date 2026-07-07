@@ -86,14 +86,7 @@ export function HomeShopLatest() {
                       />
                     ) : null}
                     {/* Fallback gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-900/40 to-black/60 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-2xl text-red-500/20 font-bold mb-1">📦</div>
-                        <p className="text-xs text-white/30">Product</p>
-                      </div>
-                    </div>
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-900/40 to-black/60" />
                   </div>
 
                   {/* Product Info */}

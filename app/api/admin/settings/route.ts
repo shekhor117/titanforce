@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validateSettings } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in settings GET:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 
@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in settings PUT:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }
 
@@ -122,6 +122,6 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in settings PATCH:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
   }
 }

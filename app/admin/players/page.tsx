@@ -1,193 +1,177 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useLanguage } from "@/lib/language-context"
-import { Plus, Edit, Trash2, Save, X } from "lucide-react"
-import { getDataService } from "@/lib/data-service"
-import type { Player } from "@/lib/data-service"
-import { PageEntrance } from '@/components/page-entrance'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft, Edit2, Eye } from 'lucide-react'
+import { useLanguage } from '@/lib/language-context'
+import { getDataService } from '@/lib/data-service'
+import type { Player } from '@/lib/data-service'
 
-export default function AdminPlayers() {
+export default function AdminPlayersPage() {
   const { language } = useLanguage()
-  const isBn = language === "bn"
-  const [showForm, setShowForm] = useState(false)
-  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
+  const isBn = language === 'bn'
   const [players, setPlayers] = useState<Player[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    number: "",
-    position: "",
-    status: "active" as "active" | "injured" | "suspended",
-    bio: "",
-    image_url: "",
-    goals: 0,
-    assists: 0,
-    appearances: 0,
-  })
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterPosition, setFilterPosition] = useState<string>('all')
 
   useEffect(() => {
-    loadPlayers()
+    const fetchPlayers = async () => {
+      try {
+        setLoading(true)
+        const service = getDataService()
+        const data = await service.getPlayers()
+        setPlayers(data)
+      } catch (error) {
+        console.error('[v0] Error fetching players:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlayers()
   }, [])
 
-  const loadPlayers = async () => {
-    try {
-      setIsLoading(true)
-      const dataService = getDataService()
-      const data = await dataService.getPlayers()
-      setPlayers(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error("[v0] Error loading players:", error)
-    } finally {
-      setIsLoading(false)
-    }
+  const filteredPlayers = players.filter(player => {
+    const matchesSearch = player.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      player.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      player.num.toString().includes(searchTerm)
+    const matchesFilter = filterPosition === 'all' || player.position === filterPosition
+    return matchesSearch && matchesFilter
+  })
+
+  const positions = [...new Set(players.map(p => p.position))].sort()
+  const stats = {
+    total: players.length,
+    goals: players.reduce((sum, p) => sum + (p.goals || 0), 0),
+    assists: players.reduce((sum, p) => sum + (p.assists || 0), 0),
+    totalAppearances: players.reduce((sum, p) => sum + (p.appearances || 0), 0),
   }
-
-  const handleSavePlayer = async () => {
-    if (!formData.name || !formData.number) {
-      alert(isBn ? "নাম এবং নম্বর প্রয়োজন" : "Name and number are required")
-      return
-    }
-
-    try {
-      const dataService = getDataService()
-      const playerData = {
-        name: formData.name,
-        number: parseInt(formData.number),
-        position: formData.position || "Forward",
-        status: formData.status,
-        bio: formData.bio,
-        image_url: formData.image_url,
-        goals: formData.goals,
-        assists: formData.assists,
-        appearances: formData.appearances,
-      }
-
-      if (editingPlayer) {
-        await dataService.updatePlayer(editingPlayer.id, playerData)
-      } else {
-        await dataService.createPlayer(playerData)
-      }
-
-      await loadPlayers()
-      resetForm()
-      alert(isBn ? "সংরক্ষণ সফল" : "Saved successfully")
-    } catch (error) {
-      console.error("[v0] Error saving player:", error)
-      alert(isBn ? "ত্রুটি হয়েছে: " + String(error) : "Error occurred: " + String(error))
-    }
-  }
-
-  const handleEditPlayer = (player: Player) => {
-    setEditingPlayer(player)
-    setFormData({
-      name: player.name,
-      number: player.number.toString(),
-      position: player.position || "",
-      status: player.status || "active",
-      bio: player.bio || "",
-      image_url: player.image_url || "",
-      goals: player.goals || 0,
-      assists: player.assists || 0,
-      appearances: player.appearances || 0,
-    })
-    setShowForm(true)
-  }
-
-  const handleDeletePlayer = async (id: string) => {
-    if (!confirm(isBn ? "নিশ্চিত?" : "Are you sure?")) return
-
-    try {
-      const dataService = getDataService()
-      await dataService.deletePlayer(id)
-      await loadPlayers()
-    } catch (error) {
-      console.error("[v0] Error deleting player:", error)
-      alert(isBn ? "ত্রুটি: " + String(error) : "Error: " + String(error))
-    }
-  }
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      number: "",
-      position: "",
-      status: "active",
-      bio: "",
-      image_url: "",
-      goals: 0,
-      assists: 0,
-      appearances: 0,
-    })
-    setEditingPlayer(null)
-    setShowForm(false)
-  }
-
-  const filteredPlayers = players.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
 
   return (
-    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
-      <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">{isBn ? "খেলোয়াড় পরিচালনা" : "Players"}</h1>
-
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded"
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <div className="bg-secondary/20 border-b border-secondary sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <Link
+            href="/admin"
+            className="neo-btn flex items-center gap-2 text-primary px-3 py-2 rounded"
           >
-            <Plus className="w-4 h-4" />
-            {isBn ? "নতুন যোগ করুন" : "Add"}
-          </button>
+            <ArrowLeft className="w-4 h-4" />
+            <span>{isBn ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
+          </Link>
+          <h1 className="text-2xl font-bold">{isBn ? 'খেলোয়াড় ব্যবস্থাপনা' : 'Manage Players'}</h1>
+          <div></div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="neo-card p-6 rounded-2xl">
+            <p className="text-foreground/60 text-sm mb-2">{isBn ? 'মোট খেলোয়াড়' : 'Total Players'}</p>
+            <p className="text-3xl font-bold text-primary">{stats.total}</p>
+          </div>
+          <div className="neo-card p-6 rounded-2xl">
+            <p className="text-foreground/60 text-sm mb-2">{isBn ? 'মোট গোল' : 'Total Goals'}</p>
+            <p className="text-3xl font-bold text-green-400">{stats.goals}</p>
+          </div>
+          <div className="neo-card p-6 rounded-2xl">
+            <p className="text-foreground/60 text-sm mb-2">{isBn ? 'মোট সহায়তা' : 'Total Assists'}</p>
+            <p className="text-3xl font-bold text-blue-400">{stats.assists}</p>
+          </div>
+          <div className="neo-card p-6 rounded-2xl">
+            <p className="text-foreground/60 text-sm mb-2">{isBn ? 'ম্যাচ সংখ্যা' : 'Appearances'}</p>
+            <p className="text-3xl font-bold text-yellow-400">{stats.totalAppearances}</p>
+          </div>
+        </div>
+
+        {/* Search and Filter */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
-            placeholder={isBn ? "খুঁজুন..." : "Search..."}
+            placeholder={isBn ? 'খেলোয়াড়ের নাম বা অবস্থান খুঁজুন...' : 'Search players by name or position...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 neo-soft border-border rounded flex-1"
+            className="px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
           />
+          <select
+            value={filterPosition}
+            onChange={(e) => setFilterPosition(e.target.value)}
+            className="px-4 py-3 bg-secondary/30 border border-secondary/60 rounded-lg focus:outline-none focus:border-primary"
+          >
+            <option value="all">{isBn ? 'সমস্ত অবস্থান' : 'All Positions'}</option>
+            {positions.map(pos => (
+              <option key={pos} value={pos}>{pos}</option>
+            ))}
+          </select>
         </div>
 
-        {showForm && (
-          <div className="bg-muted p-4 rounded-lg mb-6 space-y-3">
-            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
-            <input type="number" placeholder="Number" value={formData.number} onChange={(e) => setFormData({...formData, number: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
-            <input type="text" placeholder="Position" value={formData.position} onChange={(e) => setFormData({...formData, position: e.target.value})} className="w-full px-3 py-2 neo-soft border-border rounded" />
-            <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as any})} className="w-full px-3 py-2 neo-soft border-border rounded">
-              <option value="active">Active</option>
-              <option value="injured">Injured</option>
-              <option value="suspended">Suspended</option>
-            </select>
-            <input type="number" placeholder="Goals" value={formData.goals} onChange={(e) => setFormData({...formData, goals: parseInt(e.target.value) || 0})} className="w-full px-3 py-2 neo-soft border-border rounded" />
-            <div className="flex gap-2">
-              <button onClick={handleSavePlayer} className="flex-1 bg-green-600 text-white py-2 rounded flex items-center justify-center gap-2">
-                <Save className="w-4 h-4" /> {isBn ? "সংরক্ষণ" : "Save"}
-              </button>
-              <button onClick={resetForm} className="flex-1 bg-gray-600 text-white py-2 rounded">
-                {isBn ? "বাতিল" : "Cancel"}
-              </button>
+        {/* Players Table */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="neo-card rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-secondary/30 border-b border-secondary">
+                  <tr>
+                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-foreground/80">#</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-foreground/80">{isBn ? 'নাম' : 'Name'}</th>
+                    <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-foreground/80">{isBn ? 'অবস্থান' : 'Position'}</th>
+                    <th className="px-4 md:px-6 py-4 text-center text-sm font-semibold text-foreground/80">{isBn ? 'গোল' : 'Goals'}</th>
+                    <th className="px-4 md:px-6 py-4 text-center text-sm font-semibold text-foreground/80">{isBn ? 'সহায়তা' : 'Assists'}</th>
+                    <th className="hidden md:table-cell px-4 md:px-6 py-4 text-center text-sm font-semibold text-foreground/80">{isBn ? 'ম্যাচ' : 'Apps'}</th>
+                    <th className="hidden lg:table-cell px-4 md:px-6 py-4 text-center text-sm font-semibold text-foreground/80">{isBn ? 'রেটিং' : 'Rating'}</th>
+                    <th className="px-4 md:px-6 py-4 text-right text-sm font-semibold text-foreground/80">{isBn ? 'পদক্ষেপ' : 'Actions'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPlayers.map((player) => (
+                    <tr
+                      key={player.id}
+                      className="border-b border-secondary/30 hover:bg-secondary/20 transition"
+                    >
+                      <td className="px-4 md:px-6 py-4 font-bold text-primary">#{player.num}</td>
+                      <td className="px-4 md:px-6 py-4 font-semibold">{player.full_name}</td>
+                      <td className="px-4 md:px-6 py-4 text-foreground/80">{player.position}</td>
+                      <td className="px-4 md:px-6 py-4 text-center text-green-400 font-bold">{player.goals || 0}</td>
+                      <td className="px-4 md:px-6 py-4 text-center text-blue-400 font-bold">{player.assists || 0}</td>
+                      <td className="hidden md:table-cell px-4 md:px-6 py-4 text-center text-foreground/80">{player.appearances || 0}</td>
+                      <td className="hidden lg:table-cell px-4 md:px-6 py-4 text-center text-yellow-400 font-bold">{player.average_rating?.toFixed(1) || 'N/A'}</td>
+                      <td className="px-4 md:px-6 py-4 flex justify-end gap-2">
+                        <Link
+                          href={`/player/${player.num}`}
+                          className="p-2 bg-secondary/30 text-foreground rounded hover:bg-secondary/60 transition"
+                          title={isBn ? 'দেখুন' : 'View'}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          href={`/admin/players/${player.num}/edit`}
+                          className="p-2 bg-primary/20 text-primary rounded hover:bg-primary/40 transition"
+                          title={isBn ? 'সম্পাদনা করুন' : 'Edit'}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+
+            {filteredPlayers.length === 0 && (
+              <div className="p-8 text-center text-foreground/60">
+                {isBn ? 'কোনো খেলোয়াড় পাওয়া যায়নি' : 'No players found'}
+              </div>
+            )}
           </div>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {filteredPlayers.map(player => (
-            <div key={player.id} className="neo-soft border-border rounded-lg p-4">
-              <h3 className="font-bold text-lg">{player.name} #{player.number}</h3>
-              <p className="text-sm text-muted-foreground">{player.position}</p>
-              <div className="flex gap-2 mt-3">
-                <button onClick={() => handleEditPlayer(player)} className="flex-1 bg-blue-600 text-white py-2 rounded text-sm">Edit</button>
-                <button onClick={() => handleDeletePlayer(player.id)} className="flex-1 bg-red-600 text-white py-2 rounded text-sm">Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
-      </div>
-    </PageEntrance>
+    </div>
   )
 }

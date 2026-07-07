@@ -3,7 +3,7 @@
 import { useLanguage } from "@/lib/language-context"
 import StoreDataService from "@/lib/store-data-service"
 import GalleryDataService from "@/lib/gallery-data-service"
-import TrophyDataService from "@/lib/trophy-data-service"
+import HonourDataService from "@/lib/honour-data-service"
 import PlayerDataService from "@/lib/player-data-service"
 import Link from "next/link"
 import dynamic from "next/dynamic"
@@ -36,7 +36,7 @@ export default function AdminDashboard() {
   const [activityLog, setActivityLog] = useState<any[]>([])
   const [playerStats, setPlayerStats] = useState({ total: 0, active: 0, injured: 0, suspended: 0, byCategory: { GK: 0, DEF: 0, MID: 0, FWD: 0 } })
   const [galleryStats, setGalleryStats] = useState({ total: 0, featured: 0, byType: {} })
-  const [trophyStats, setTrophyStats] = useState({ total: 0, featured: 0, byCategory: {} })
+  const [honourStats, setHonourStats] = useState({ total: 0, featured: 0, byCategory: {} })
   const [storeProducts, setStoreProducts] = useState<any[]>([])
   const [storeOrders, setStoreOrders] = useState<any[]>([])
   
@@ -45,17 +45,17 @@ export default function AdminDashboard() {
     const loadAllData = async () => {
       try {
         // Load all stats in parallel for better performance
-        const [playerStatsData, galleryStatsData, trophyStatsData, products, orders] = await Promise.all([
+        const [playerStatsData, galleryStatsData, honourStatsData, products, orders] = await Promise.all([
           PlayerDataService.getPlayerStats(),
           GalleryDataService.getGalleryStats(),
-          TrophyDataService.getTrophyStats(),
+          HonourDataService.getHonourStats(),
           StoreDataService.getProducts(),
           StoreDataService.getOrders(),
         ])
 
         setPlayerStats(playerStatsData)
         setGalleryStats(galleryStatsData)
-        setTrophyStats(trophyStatsData)
+        setHonourStats(honourStatsData)
         setStoreProducts(products)
         setStoreOrders(orders)
 
@@ -170,14 +170,14 @@ export default function AdminDashboard() {
       subtext: `${galleryStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
     {
-      label: isBn ? "ট্রফি" : "Trophies",
-      value: trophyStats.total.toString(),
+      label: isBn ? "সম্মাননা" : "Honours",
+      value: honourStats.total.toString(),
       icon: <Trophy className="w-6 h-6" />,
-      href: "/admin/trophies",
+      href: "/admin/honours",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/10",
       borderColor: "border-yellow-500/30",
-      subtext: `${trophyStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
+      subtext: `${honourStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
   ]
 
