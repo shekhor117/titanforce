@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -8,17 +7,14 @@ export async function GET(request: NextRequest) {
 
     if (!supabaseUrl || !supabaseServiceKey) {
       return NextResponse.json(
-        { error: 'Missing Supabase credentials' },
+        { 
+          success: false,
+          error: 'Missing Supabase credentials',
+          message: 'NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required'
+        },
         { status: 500 }
       )
     }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      }
-    })
 
     // SQL statements to fix RLS issues
     const SQL_STATEMENTS = [
@@ -90,53 +86,59 @@ export async function GET(request: NextRequest) {
     ]
 
     const results = []
-    let failedCount = 0
+    let successCount = 0
 
+    // Execute each SQL statement via Supabase API
     for (const sql of SQL_STATEMENTS) {
       try {
-        const { error } = await supabase.rpc('exec', {
-          sql_command: sql
-        }).catch(() => {
-          // If rpc doesn't exist, try direct approach
-          return { error: null }
+        const response = await fetch(`${supabaseUrl}/rest/v1/rpc/exec_sql`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseServiceKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ query: sql })
         })
 
-        if (error) {
-          console.error('[v0] SQL error:', error, 'Statement:', sql)
+        if (response.ok) {
+          successCount++
           results.push({
-            sql: sql.substring(0, 50) + '...',
-            status: 'error',
-            error: error.message
-          })
-          failedCount++
-        } else {
-          results.push({
-            sql: sql.substring(0, 50) + '...',
+            sql: sql.substring(0, 60) + '...',
             status: 'success'
+          })
+        } else {
+          const errorData = await response.text()
+          console.error('[v0] SQL error:', response.status, errorData)
+          results.push({
+            sql: sql.substring(0, 60) + '...',
+            status: 'error',
+            error: `HTTP ${response.status}`
           })
         }
       } catch (err) {
         console.error('[v0] Execution error:', err)
         results.push({
-          sql: sql.substring(0, 50) + '...',
+          sql: sql.substring(0, 60) + '...',
           status: 'error',
           error: err instanceof Error ? err.message : 'Unknown error'
         })
-        failedCount++
       }
     }
+
+    const failedCount = SQL_STATEMENTS.length - successCount
 
     return NextResponse.json(
       {
         success: failedCount === 0,
         totalStatements: SQL_STATEMENTS.length,
-        successCount: SQL_STATEMENTS.length - failedCount,
+        successCount,
         failedCount,
         results,
         message: failedCount === 0 
-          ? 'RLS policies fixed successfully' 
-          : `${failedCount} statement(s) failed. Please apply the migration manually.`,
-        helpText: 'Run the migration file: supabase/migrations/20260707_fix_news_items_rls.sql'
+          ? 'RLS policies fixed successfully!' 
+          : `${failedCount} statement(s) failed.`,
+        helpText: failedCount > 0 ? 'Try applying the migration manually: npx supabase db push' : 'All migrations applied successfully'
       },
       { status: failedCount === 0 ? 200 : 207 }
     )
@@ -144,9 +146,10 @@ export async function GET(request: NextRequest) {
     console.error('[v0] RLS fix error:', error)
     return NextResponse.json(
       {
+        success: false,
         error: error instanceof Error ? error.message : 'RLS fix failed',
-        message: 'Please run the migration manually using Supabase dashboard or CLI',
-        helpText: 'Run: npx supabase db push'
+        message: 'Please run the migration manually',
+        helpText: 'Option 1: npx supabase db push\nOption 2: Apply migration file manually in Supabase dashboard'
       },
       { status: 500 }
     )
