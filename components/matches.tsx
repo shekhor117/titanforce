@@ -102,6 +102,7 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
                   match={match}
                   onClick={() => setSelectedMatch(match)}
                   animated={isVisible}
+                  fullPageLink={true}
                 />
               </ScrollAnimatedElement>
             ))

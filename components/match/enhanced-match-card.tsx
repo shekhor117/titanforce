@@ -1,16 +1,19 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { Match } from '@/lib/data-service'
 import { useLanguage } from '@/lib/language-context'
-import { Clock, MapPin, Trophy } from 'lucide-react'
+import { Clock, MapPin, Trophy, ArrowRight } from 'lucide-react'
 
 interface EnhancedMatchCardProps {
   match: Match
   onClick?: () => void
   animated?: boolean
+  fullPageLink?: boolean
 }
 
-export function EnhancedMatchCard({ match, onClick, animated = true }: EnhancedMatchCardProps) {
+export function EnhancedMatchCard({ match, onClick, animated = true, fullPageLink = false }: EnhancedMatchCardProps) {
+  const router = useRouter()
   const { language } = useLanguage()
   const isBn = language === 'bn'
 
@@ -33,10 +36,18 @@ export function EnhancedMatchCard({ match, onClick, animated = true }: EnhancedM
 
   const status = getStatusDisplay()
 
+  const handleClick = () => {
+    if (fullPageLink) {
+      router.push(`/match/${match.id}`)
+    } else if (onClick) {
+      onClick()
+    }
+  }
+
   return (
     <button
-      onClick={onClick}
-      className={`w-full neo-card p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-102 active:scale-98 ${
+      onClick={handleClick}
+      className={`w-full neo-card p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-102 active:scale-98 group ${
         animated ? 'opacity-100 translate-y-0' : ''
       }`}
     >
