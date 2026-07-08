@@ -77,7 +77,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <WebsiteSidebar />
-      <main className="lg:ml-64">
+      <main className="lg:ml-64 pt-0">
         <Hero skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
