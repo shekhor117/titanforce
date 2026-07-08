@@ -3,6 +3,7 @@
 import { useState, useEffect, lazy, Suspense } from "react"
 import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
+import { Sidebar } from "@/components/sidebar"
 import { Hero } from "@/components/hero"
 import { ClubInfoSection } from "@/components/club-info-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
@@ -77,7 +78,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
+      <Sidebar />
+      <main className="md:ml-64">
         <Hero skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
