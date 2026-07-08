@@ -26,35 +26,35 @@ export function PlayersGrid() {
     : []
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-background">
+    <section className="py-16 md:py-24 px-4 md:px-6 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div 
-          className="flex items-center justify-between mb-12"
+          className="flex items-center justify-between mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           viewport={{ once: true, amount: 0.5 }}
         >
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-1 h-7 md:h-8 bg-accent rounded-full" />
+            <h2 className="text-3xl md:text-5xl font-black text-foreground uppercase tracking-wider">
               Players
             </h2>
           </div>
           <Link
             href="/team-squad"
-            className="text-accent hover:text-primary text-sm font-semibold flex items-center gap-2 transition-colors group"
+            className="text-accent hover:text-primary text-xs md:text-sm font-bold flex items-center gap-2 transition-colors group"
           >
             View all players
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
 
         {/* Players Carousel */}
         <ScrollAnimatedElement variant="fadeInUp">
           {activePlayers.length > 0 ? (
-            <div className="relative px-12">
+            <div className="relative px-4 md:px-12">
             <Carousel
               opts={{
                 align: "start",
@@ -65,7 +65,7 @@ export function PlayersGrid() {
             >
               <CarouselContent className="-ml-4">
                 {activePlayers.map((player, idx) => (
-                  <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
+                  <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/5">
                     <ScrollProgressAnimation delay={idx * 0.05} animationType="scale">
                     <Link
                       href={`/player/${player.num}`}
@@ -75,7 +75,7 @@ export function PlayersGrid() {
                       }}
                     >
                       {/* Player Card */}
-                      <div className="neo-floating relative overflow-hidden h-full pointer-events-none">
+                      <div className="neo-floating relative overflow-hidden h-full pointer-events-none shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                         {/* Jersey Number - Top Badge */}
                         <div className="absolute top-2 right-2 z-10 flex gap-2">
                           <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
@@ -122,10 +122,10 @@ export function PlayersGrid() {
                 ))}
               </CarouselContent>
               <CarouselPrevious 
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-600/20 hover:bg-red-600/40 border-red-500/50 text-white h-10 w-10 rounded-full"
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-accent/30 hover:bg-accent/50 border-accent/60 text-white h-11 w-11 rounded-full transition-all duration-300"
               />
               <CarouselNext 
-                className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-600/20 hover:bg-red-600/40 border-red-500/50 text-white h-10 w-10 rounded-full"
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-accent/30 hover:bg-accent/50 border-accent/60 text-white h-11 w-11 rounded-full transition-all duration-300"
               />
             </Carousel>
           </div>

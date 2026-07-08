@@ -1436,3 +1436,64 @@ canvas {
     inset -1px -1px 0 rgba(255, 255, 255, 0.5),
     inset 1px 1px 0 rgba(0, 0, 0, 0.03);
 }
+
+/* ===== ENHANCED SECTION STYLING FOR DRIBBBLE DESIGN ===== */
+
+/* Section header with accent bar */
+.section-header-enhanced {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-header-enhanced::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Enhanced card hover effect with glow */
+.card-enhanced:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(217, 30, 63, 0.25), 0 0 30px rgba(217, 30, 63, 0.15);
+}
+
+/* Typography enhancements for better hierarchy */
+.title-primary {
+  font-size: clamp(1.875rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.title-secondary {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Enhanced spacing for sections */
+.section-spacing-enhanced {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section-spacing-enhanced {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* Smooth scroll behavior for section transitions */
+.section-transition {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.section-transition:hover {
+  background-color: rgba(217, 30, 63, 0.02);
+}

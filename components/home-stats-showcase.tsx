@@ -41,21 +41,24 @@ export function HomeStatsShowcase() {
   ]
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-background">
+    <section className="py-16 md:py-24 px-4 md:px-6 bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
               <ScrollProgressAnimation key={index} className="h-full">
               <div
-                className="neo-card flex flex-col items-center justify-center p-4 md:p-6 text-center"
+                className="neo-card flex flex-col items-center justify-center p-6 md:p-8 text-center group transition-all duration-300 hover:shadow-lg hover:scale-105"
               >
-                <Icon className={`w-8 h-8 md:w-10 md:h-10 mb-3 ${stat.color} group-hover:text-primary transition-colors`} />
-                <p className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                <div className="relative mb-4">
+                  <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Icon className={`w-8 h-8 md:w-10 md:h-10 ${stat.color} group-hover:text-primary transition-colors duration-300 relative z-10`} />
+                </div>
+                <p className="text-3xl md:text-4xl font-black text-foreground mb-2 leading-tight">
                   {stat.value}
                 </p>
-                <p className="text-xs md:text-sm uppercase tracking-[0.15em] font-semibold text-muted-foreground">
+                <p className="text-xs md:text-sm uppercase tracking-[0.15em] font-bold text-muted-foreground">
                   {stat.label}
                 </p>
               </div>

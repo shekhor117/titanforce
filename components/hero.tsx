@@ -19,12 +19,12 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
           alt="Titan Force Mulikandi players celebrating"
           fill
           priority
-          className="object-cover object-[70%_top] sm:object-top opacity-80 sm:opacity-90"
+          className="object-cover object-[70%_top] sm:object-top opacity-85 sm:opacity-95"
         />
-        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/60 to-background/30 sm:to-transparent" />
       </div>
 
-      <div className="relative container mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-24 grid lg:grid-cols-[1.3fr_0.7fr] gap-8 lg:gap-10 min-h-[560px] sm:min-h-[680px]">
+      <div className="relative container mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-16 sm:pb-28 grid lg:grid-cols-[1.3fr_0.7fr] gap-8 lg:gap-12 min-h-[560px] sm:min-h-[700px]">
         <div className="flex flex-col justify-center">
           <motion.div 
             className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6 w-fit"

@@ -15,34 +15,34 @@ export function HomeLatestNews() {
   const topNews = newsItems.slice(0, 4)
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-background">
+    <section className="py-16 md:py-24 px-4 md:px-6 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div 
-          className="flex items-center justify-between mb-12"
+          className="flex items-center justify-between mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           viewport={{ once: true, amount: 0.5 }}
         >
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-1 h-7 md:h-8 bg-accent rounded-full" />
+            <h2 className="text-3xl md:text-5xl font-black text-foreground uppercase tracking-wider">
               Latest News
             </h2>
           </div>
           <Link
             href="/news"
-            className="text-accent hover:text-primary text-sm font-semibold flex items-center gap-2 transition-colors group"
+            className="text-accent hover:text-primary text-xs md:text-sm font-bold flex items-center gap-2 transition-colors group"
           >
             View all news
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
 
         {/* News Grid */}
         <ScrollStaggerContainer 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
           staggerDelay={0.1}
           variant="fadeInUp"
         >

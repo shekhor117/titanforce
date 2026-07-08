@@ -38,13 +38,13 @@ export function GalleryShowcase() {
   })) : DEFAULT_FEATURED_ITEMS
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-background">
+    <section className="py-16 md:py-24 px-4 md:px-6 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-accent rounded-full" />
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
+        <div className="flex items-center justify-between mb-16">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-1 h-7 md:h-8 bg-accent rounded-full" />
+            <h2 className="text-3xl md:text-5xl font-black text-foreground uppercase tracking-wider">
               {isBn ? 'গ্যালারি' : 'Gallery'}
             </h2>
           </div>
