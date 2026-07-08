@@ -14,11 +14,6 @@ const clubInfoData = [
     value: 'MULIKANDI',
   },
   {
-    icon: Award,
-    label: 'COLORS',
-    value: 'RED & BLACK',
-  },
-  {
     icon: Heart,
     label: 'MOTTO',
     value: 'ONE TEAM, ONE DREAM',
