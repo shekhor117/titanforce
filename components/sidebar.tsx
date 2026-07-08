@@ -32,8 +32,8 @@ function SidebarComponent() {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-[64px] sm:top-[72px] h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] w-64 bg-background border-r border-border/50 z-40 transform transition-transform duration-300 md:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`fixed right-0 top-[64px] sm:top-[72px] h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] w-64 bg-background border-l border-border/50 z-40 transform transition-transform duration-300 md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
         }`}
       >
         <div className="flex flex-col h-full overflow-y-auto">
@@ -101,7 +101,7 @@ function SidebarComponent() {
 
       {/* Mobile Menu Toggle Button */}
       <button
-        className="md:hidden fixed left-4 top-4 z-50 p-2 text-foreground hover:bg-muted rounded transition-colors"
+        className="md:hidden fixed right-4 top-4 z-50 p-2 text-foreground hover:bg-muted rounded transition-colors"
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle sidebar"
         aria-expanded={sidebarOpen}

@@ -79,7 +79,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Sidebar />
-      <main className="md:ml-64">
+      <main className="md:mr-64">
         <Hero skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
