@@ -1,22 +1,34 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, lazy, Suspense } from "react"
 import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
-import { HeroNewDesign } from "@/components/hero-new-design"
-import { AboutSectionNew } from "@/components/about-section-new"
-import { ClubStatsSection } from "@/components/club-stats-section-new"
-import { MatchResultsGrid } from "@/components/match-results-grid-new"
-import { TeamRosterGrid } from "@/components/team-roster-grid-new"
-import { ChallengesSection } from "@/components/challenges-section-new"
-import { SpotlightSection } from "@/components/spotlight-section-new"
-import { NewsletterSection } from "@/components/newsletter-section-new"
-import { FooterNew } from "@/components/footer-new"
+import { Hero } from "@/components/hero"
+import { ClubInfoSection } from "@/components/club-info-section"
+import { HomeNextFixture } from "@/components/home-next-fixture"
+import { HomeLatestNews } from "@/components/home-latest-news"
+import { HomeLeagueStandings } from "@/components/home-league-standings"
+import { HomeAboutGallery } from "@/components/home-about-gallery"
+import { HomeStatsShowcase } from "@/components/home-stats-showcase"
+import { Contact } from "@/components/contact"
+import { Footer } from "@/components/footer"
 
-// Lazy load contact form
-const Contact = dynamic(() => import("@/components/contact").then(m => ({ default: m.Contact })), { 
+// Lazy load heavy animation components with loading delay
+const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { 
   ssr: false,
   loading: () => <div className="h-64 bg-card animate-pulse rounded-lg" />
+})
+const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+})
+const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { 
+  ssr: false,
+  loading: () => <div className="h-80 bg-card animate-pulse rounded-lg" />
+})
+const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
 })
 
 export default function Home() {
@@ -66,22 +78,44 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main>
-        {/* Redesigned Landing Page Sections */}
-        <HeroNewDesign skipAnimation={hasSeenAnimation} />
-        <AboutSectionNew />
-        <ClubStatsSection />
-        <MatchResultsGrid />
-        <TeamRosterGrid />
-        <ChallengesSection />
-        <SpotlightSection />
-        <NewsletterSection />
+        <Hero skipAnimation={hasSeenAnimation} />
+        <ClubInfoSection />
         
-        {/* Contact Section */}
+        {/* Three Column Section */}
+        <section className="py-12 md:py-16 px-4 bg-background">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <HomeNextFixture />
+              <HomeLeagueStandings />
+            </div>
+          </div>
+        </section>
+
+        <HomeLatestNews />
+        
         <Suspense fallback={<div className="py-12 bg-background" />}>
-          <Contact />
+          <PremiumMatchStats />
         </Suspense>
+        
+        <Suspense fallback={<div className="py-12 bg-background" />}>
+          <PlayersGrid />
+        </Suspense>
+        
+        <HomeAboutGallery />
+        
+        <HomeStatsShowcase />
+        
+        <Suspense fallback={<div className="py-12 bg-background" />}>
+          <HomeShopLatest />
+        </Suspense>
+        
+        <Suspense fallback={<div className="py-12 bg-background" />}>
+          <GalleryShowcase />
+        </Suspense>
+        
+        <Contact />
       </main>
-      <FooterNew />
+      <Footer />
     </div>
   )
 }
