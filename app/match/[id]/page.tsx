@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { Navbar } from '@/components/navbar'
+import { WebsiteSidebar } from '@/components/website-sidebar'
 import { Footer } from '@/components/footer'
 import { ArrowLeft, Loader, MapPin, Clock, Users, Activity, Trophy, BarChart3, TrendingUp } from 'lucide-react'
 import { useMatches } from '@/lib/use-data-store'
@@ -66,8 +66,8 @@ export default function MatchDetailsPage() {
   if (!selectedMatch) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <WebsiteSidebar />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:ml-64">
           <div className="text-center">
             <p className="text-foreground/60 mb-6">{isBn ? 'ম্যাচ পাওয়া যায়নি' : 'Match not found'}</p>
             <button
@@ -100,9 +100,9 @@ export default function MatchDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <WebsiteSidebar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:ml-64">
         {/* Back Button */}
         <div className="py-6 border-b border-secondary/20">
           <button

@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar"
+import { WebsiteSidebar } from "@/components/website-sidebar"
 import { Footer } from "@/components/footer"
 import { LineupBuilder } from "@/components/lineup-builder"
 import { TacticalBoard } from "@/components/tactical-board"
@@ -19,8 +19,8 @@ export const metadata = {
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
+      <WebsiteSidebar />
+      <main className="lg:ml-64">
         {/* Hero */}
         <section className="relative overflow-hidden py-20 px-4 text-center">
           <div className="max-w-6xl mx-auto relative z-10">

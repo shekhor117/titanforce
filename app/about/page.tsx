@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
-import { Navbar } from "@/components/navbar"
+import { WebsiteSidebar } from "@/components/website-sidebar"
 import { Footer } from "@/components/footer"
 import { AboutPageContent } from "@/components/about-page-content"
 import { EntranceReveal } from "@/components/entrance-reveal"
@@ -12,8 +12,8 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
+      <WebsiteSidebar />
+      <main className="lg:ml-64">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-[46px] md:py-[46px] pb-4 px-4">
           <div className="max-w-6xl mx-auto text-center">

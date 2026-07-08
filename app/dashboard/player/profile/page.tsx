@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
-import { Navbar } from "@/components/navbar"
+import { WebsiteSidebar } from "@/components/website-sidebar"
 import { Footer } from "@/components/footer"
 import { PhotoUpload } from "@/components/photo-upload"
 import { ArrowLeft } from "lucide-react"
@@ -66,8 +66,8 @@ export default function PlayerProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-16">
+      <WebsiteSidebar />
+      <main className="max-w-6xl mx-auto px-4 py-16 lg:ml-64">
         {/* Header */}
         <div className="mb-12">
           <button onClick={() => router.back()} className="inline-flex items-center gap-2 px-4 py-2 rounded border-2 border-primary text-primary hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 mb-8">

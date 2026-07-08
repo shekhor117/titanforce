@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Navbar } from '@/components/navbar'
+import { WebsiteSidebar } from '@/components/website-sidebar'
 import { Footer } from '@/components/footer'
 import { BackButton } from '@/components/back-button'
 import { useNewsItems } from '@/lib/use-data-store'
@@ -29,8 +29,8 @@ export default function NewsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
+      <WebsiteSidebar />
+      <main className="lg:ml-64">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 px-4 text-center hero-gradient">
           {/* Animated Background */}

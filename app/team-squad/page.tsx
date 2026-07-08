@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Navbar } from "@/components/navbar"
+import { WebsiteSidebar } from "@/components/website-sidebar"
 import { Squad } from "@/components/squad"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/lib/language-context"
@@ -49,8 +49,8 @@ export default function TeamSquadPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main>
+      <WebsiteSidebar />
+      <main className="lg:ml-64">
         <div className="relative max-w-6xl mx-auto px-3 sm:px-4 text-center pt-8 sm:pt-12 pb-4 sm:pb-6">
           <button onClick={() => router.back()} className="neo-btn inline-flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 rounded border-2 border-primary text-primary transition-all duration-300 transform hover:scale-105 active:scale-95">
             <ArrowLeft className="w-4 h-4 flex-shrink-0" />
