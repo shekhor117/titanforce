@@ -1,15 +1,20 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
+import dynamic from 'next/dynamic'
 import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
-import { AdminProvider } from '@/lib/admin-context'
 import { TransitionProvider } from '@/lib/transition-context'
 import { ThemeProvider } from '@/lib/theme-context'
 import { CartProvider } from '@/lib/cart-context'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ScrollAnimationProvider } from '@/components/scroll-animation-provider'
+
+// Lazy load AdminProvider to reduce initial bundle
+const AdminProvider = dynamic(() => import('@/lib/admin-context').then(m => ({ default: m.AdminProvider })), {
+  ssr: true,
+})
 
 import { generatePageMetadata, getOrganizationSchema, defaultViewport } from '@/lib/seo-utils'
 import './globals.css'

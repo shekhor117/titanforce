@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 /**
  * ScrollAnimationProvider
  * Enables smooth scroll animations globally across the website
- * Uses GPU-accelerated transforms for optimal performance
+ * Uses GPU-accelerated transforms and optimized scroll behavior
  */
 export function ScrollAnimationProvider({
   children,
@@ -13,14 +13,11 @@ export function ScrollAnimationProvider({
   children: React.ReactNode
 }) {
   useEffect(() => {
-    // Enable smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth'
-
-    // Optimize performance with GPU acceleration hints
+    // Inject optimized CSS for scroll performance
     const style = document.createElement('style')
     style.textContent = `
-      * {
-        will-change: auto;
+      html {
+        scroll-behavior: smooth;
       }
       
       [data-scroll-animate] {
@@ -28,18 +25,25 @@ export function ScrollAnimationProvider({
       }
       
       @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        
         * {
           animation-duration: 0.01ms !important;
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
         }
       }
     `
     document.head.appendChild(style)
 
     return () => {
-      document.head.removeChild(style)
+      try {
+        document.head.removeChild(style)
+      } catch (e) {
+        // Silently ignore cleanup errors
+      }
     }
   }, [])
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 
 interface TextRevealProps {
@@ -14,7 +14,7 @@ interface TextRevealProps {
   once?: boolean
 }
 
-export function TextReveal({
+function TextRevealComponent({
   children,
   className = '',
   as: Component = 'div',
@@ -24,10 +24,10 @@ export function TextReveal({
   variant = 'characters',
   once = false,
 }: TextRevealProps) {
-  const words = children.split(' ')
-  const lines = children.split('\n')
+  const words = useMemo(() => children.split(' '), [children])
+  const lines = useMemo(() => children.split('\n'), [children])
 
-  const containerVariants = {
+  const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -36,9 +36,9 @@ export function TextReveal({
         delayChildren: delay,
       },
     },
-  }
+  }), [staggerChildren, delay])
 
-  const itemVariants = {
+  const itemVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
@@ -48,7 +48,7 @@ export function TextReveal({
         ease: 'easeOut',
       },
     },
-  }
+  }), [duration])
 
   if (variant === 'characters') {
     return (
@@ -104,3 +104,5 @@ export function TextReveal({
     </motion.div>
   )
 }
+
+export const TextReveal = memo(TextRevealComponent)

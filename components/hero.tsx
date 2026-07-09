@@ -19,6 +19,9 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
           alt="Titan Force Mulikandi players celebrating"
           fill
           priority
+          quality={75}
+          placeholder="empty"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
           className="object-cover object-[70%_top] sm:object-top opacity-80 sm:opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
