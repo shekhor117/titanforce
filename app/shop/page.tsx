@@ -9,6 +9,15 @@ import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
+import { dataStore } from "@/lib/data-store"
+
+const defaultCategories = [
+  { id: "all", label: (isBn: boolean) => isBn ? "সব" : "All" },
+  { id: "home", label: (isBn: boolean) => isBn ? "হোম" : "Home" },
+  { id: "away", label: (isBn: boolean) => isBn ? "অ্যাওয়ে" : "Away" },
+  { id: "training", label: (isBn: boolean) => isBn ? "প্রশিক্ষণ" : "Training" },
+  { id: "retro", label: (isBn: boolean) => isBn ? "রেট্রো" : "Retro" }
+]
 
 export default function ShopPage() {
   const { language } = useLanguage()
@@ -19,14 +28,25 @@ export default function ShopPage() {
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "rating">("rating")
   const [products, setProducts] = useState<StoreProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [categories, setCategories] = useState<any[]>([])
 
-  const categories = [
-    { id: "all", label: isBn ? "সব" : "All" },
-    { id: "home", label: isBn ? "হোম" : "Home" },
-    { id: "away", label: isBn ? "অ্যাওয়ে" : "Away" },
-    { id: "training", label: isBn ? "প্রশিক্ষণ" : "Training" },
-    { id: "retro", label: isBn ? "রেট্রো" : "Retro" }
-  ]
+  useEffect(() => {
+    try {
+      const adminCategories = dataStore.getShopCategories()
+      const categoryList = [
+        { id: "all", label: isBn ? "সব" : "All" }
+      ]
+      adminCategories.forEach(cat => {
+        if (cat.isActive) {
+          categoryList.push({ id: cat.slug, label: cat.name })
+        }
+      })
+      setCategories(categoryList.length > 1 ? categoryList : defaultCategories.map(c => ({ id: c.id, label: c.label(isBn) })))
+    } catch (err) {
+      console.log('[v0] Failed to load categories:', err)
+      setCategories(defaultCategories.map(c => ({ id: c.id, label: c.label(isBn) })))
+    }
+  }, [isBn])
 
   // Load products from Supabase with realtime updates
   useEffect(() => {

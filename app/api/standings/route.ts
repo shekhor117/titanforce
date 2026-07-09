@@ -12,18 +12,25 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       // If table doesn't exist, return empty array gracefully (don't log as error)
-      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('no such table') || error.message?.includes('schema cache')) {
-        console.debug('[v0] Standings table not yet created - migration needed')
+      if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('no such table') || error.message?.includes('schema cache') || error.message?.includes('Your project')) {
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('[v0] Standings table not available - using localStorage fallback')
+        }
         return NextResponse.json([])
       }
-      // Only log non-PGRST205 errors
-      console.debug('[v0] Error fetching standings:', error)
+      // Only log non-PGRST205 errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[v0] Error fetching standings:', error)
+      }
       return NextResponse.json([])
     }
 
     return NextResponse.json(data || [])
   } catch (error) {
-    console.debug('[v0] Unexpected error:', error)
+    // Silently fail in development and return empty array
+    if (process.env.NODE_ENV === 'development') {
+      console.debug('[v0] Error in standings API:', error instanceof Error ? error.message : 'Unknown error')
+    }
     return NextResponse.json([])
   }
 }

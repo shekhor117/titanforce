@@ -1,107 +1,82 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import NewsUpdatesManager from '@/components/NewsUpdatesManager'
-import { getDataService } from '@/lib/data-service'
-import type { NewsUpdate } from '@/lib/data-service'
-import { PageEntrance } from '@/components/page-entrance'
+import { useLanguage } from '@/lib/language-context'
+import { dataStore, NewsUpdate } from '@/lib/data-store'
+import { Plus, Edit2, Trash2 } from 'lucide-react'
 
-export default function AdminNewsUpdatesPage() {
-  const service = getDataService()
+export default function NewsUpdatesPage() {
+  const { language } = useLanguage()
+  const isBn = language === 'bn'
+  const [isClient, setIsClient] = useState(false)
   const [updates, setUpdates] = useState<NewsUpdate[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [formData, setFormData] = useState({ title: '', content: '', category: '', author: '', featured: false, publishedAt: new Date().toISOString().split('T')[0] })
 
   useEffect(() => {
-    loadNewsUpdates()
+    setIsClient(true)
+    loadUpdates()
   }, [])
 
-  const loadNewsUpdates = async () => {
-    const retryOperation = async (operation: () => Promise<any>, maxRetries = 3): Promise<any> => {
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          return await operation()
-        } catch (err) {
-          if (i === maxRetries - 1) throw err
-          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
-        }
-      }
-    }
-
+  const loadUpdates = () => {
     try {
-      setLoading(true)
-      const newsUpdates = await retryOperation(() => service.getNewsUpdates(true))
-      setUpdates(newsUpdates || [])
-      setError(null)
+      const data = dataStore.getNewsUpdates()
+      setUpdates(data)
     } catch (err) {
-      console.error('[v0] Error loading news updates:', err)
-      setError('Failed to load news updates')
-    } finally {
-      setLoading(false)
+      console.log('[v0] Failed to load updates')
     }
   }
 
-  const handleAddUpdate = async (
-    update: Omit<NewsUpdate, 'id' | 'created_at' | 'updated_at'>
-  ) => {
-    try {
-      await service.createNewsUpdate({
-        ...update,
-        published_by: undefined,
+  const handleAdd = () => {
+    if (formData.title && formData.content) {
+      const newUpdate = dataStore.addNewsUpdate({
+        ...formData,
+        publishedAt: new Date(formData.publishedAt).toISOString()
       })
-      await loadNewsUpdates()
-    } catch (err) {
-      console.error('[v0] Error adding news update:', err)
-      setError('Failed to add news update')
+      setUpdates([...updates, newUpdate])
+      setFormData({ title: '', content: '', category: '', author: '', featured: false, publishedAt: new Date().toISOString().split('T')[0] })
     }
   }
 
-  const handleUpdateUpdate = async (update: NewsUpdate) => {
-    try {
-      const { id, created_at, updated_at, ...rest } = update
-      await service.updateNewsUpdate(id, rest)
-      await loadNewsUpdates()
-    } catch (err) {
-      console.error('[v0] Error updating news update:', err)
-      setError('Failed to update news update')
-    }
+  const handleDelete = (id: string) => {
+    dataStore.deleteNewsUpdate(id)
+    setUpdates(updates.filter(u => u.id !== id))
   }
 
-  const handleDeleteUpdate = async (id: string) => {
-    try {
-      await service.deleteNewsUpdate(id)
-      await loadNewsUpdates()
-    } catch (err) {
-      console.error('[v0] Error deleting news update:', err)
-      setError('Failed to delete news update')
-    }
+  const handleUpdate = (id: string) => {
+    dataStore.updateNewsUpdate(id, formData)
+    setUpdates(updates.map(u => u.id === id ? { ...u, ...formData } : u))
+    setEditingId(null)
+    setFormData({ title: '', content: '', category: '', author: '', featured: false, publishedAt: new Date().toISOString().split('T')[0] })
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl">Loading news updates...</div>
-      </div>
-    )
-  }
+  if (!isClient) return null
 
   return (
-    <PageEntrance delay={0.2} duration={0.6} variant="fadeInUp">
-      <div className="p-6">
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
-        <NewsUpdatesManager
-          updates={updates}
-          onAddUpdate={handleAddUpdate}
-          onUpdateUpdate={handleUpdateUpdate}
-          onDeleteUpdate={handleDeleteUpdate}
-          isLoading={loading}
-        />
+    <div className='space-y-6 p-6'>
+      <h1 className='font-[var(--font-display)] text-3xl tracking-wider'>{isBn ? 'সংবাদ আপডেট' : 'News Updates'}</h1>
+      
+      <div className='rounded-lg border-2 border-secondary bg-card p-6 space-y-4'>
+        <input type='text' placeholder={isBn ? 'শিরোনাম' : 'Title'} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className='w-full bg-secondary text-foreground px-3 py-2 rounded border border-secondary' />
+        <textarea placeholder={isBn ? 'বিষয়বস্তু' : 'Content'} value={formData.content} onChange={(e) => setFormData({...formData, content: e.target.value})} className='w-full bg-secondary text-foreground px-3 py-2 rounded border border-secondary h-24' />
+        <input type='text' placeholder={isBn ? 'বিভাগ' : 'Category'} value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className='w-full bg-secondary text-foreground px-3 py-2 rounded border border-secondary' />
+        <input type='text' placeholder={isBn ? 'লেখক' : 'Author'} value={formData.author} onChange={(e) => setFormData({...formData, author: e.target.value})} className='w-full bg-secondary text-foreground px-3 py-2 rounded border border-secondary' />
+        <input type='date' value={formData.publishedAt} onChange={(e) => setFormData({...formData, publishedAt: e.target.value})} className='w-full bg-secondary text-foreground px-3 py-2 rounded border border-secondary' />
+        <label className='flex items-center gap-2'><input type='checkbox' checked={formData.featured} onChange={(e) => setFormData({...formData, featured: e.target.checked})} />{isBn ? 'বৈশিষ্ট্যযুক্ত' : 'Featured'}</label>
+        <button onClick={editingId ? () => handleUpdate(editingId) : handleAdd} className='bg-accent text-white px-4 py-2 rounded flex items-center gap-2 w-full justify-center'><Plus className='w-4 h-4' />{isBn ? 'সংরক্ষণ করুন' : 'Save'}</button>
       </div>
-    </PageEntrance>
+
+      <div className='space-y-2'>
+        {updates.map(update => (
+          <div key={update.id} className='flex items-center justify-between bg-secondary p-4 rounded-lg'>
+            <div><p className='font-semibold'>{update.title}</p><p className='text-xs text-muted-foreground'>{update.category}</p></div>
+            <div className='flex gap-2'>
+              <button onClick={() => {setEditingId(update.id); setFormData({title: update.title, content: update.content, category: update.category, author: update.author || '', featured: update.featured, publishedAt: update.publishedAt.split('T')[0]})}} className='p-2 hover:bg-accent/20 rounded'><Edit2 className='w-4 h-4' /></button>
+              <button onClick={() => handleDelete(update.id)} className='p-2 hover:bg-red-500/20 rounded text-red-400'><Trash2 className='w-4 h-4' /></button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
