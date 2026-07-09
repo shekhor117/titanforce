@@ -14,7 +14,7 @@ interface MatchData {
   match_time?: string
   venue?: string
   league?: string
-  status?: 'upcoming' | 'live' | 'completed' | 'postponed'
+  status?: 'upcoming' | 'live' | 'completed'
   result?: 'W' | 'D' | 'L'
   [key: string]: any
 }

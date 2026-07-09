@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS matches (
   date TEXT NOT NULL,
   time TEXT,
   venue TEXT,
-  status TEXT CHECK (status IN ('upcoming', 'live', 'completed')) DEFAULT 'upcoming',
+  status TEXT CHECK (status IN ('upcoming', 'live', 'completed', 'postponed')) DEFAULT 'upcoming',
   result TEXT CHECK (result IN ('W', 'L', 'D', NULL)) DEFAULT NULL,
   season_year TEXT,
   notes TEXT,

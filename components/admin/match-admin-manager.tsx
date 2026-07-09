@@ -17,7 +17,7 @@ interface Match {
   match_time?: string
   venue?: string
   league?: string
-  status?: 'upcoming' | 'live' | 'completed' | 'postponed'
+  status?: 'upcoming' | 'live' | 'completed'
   result?: 'W' | 'D' | 'L'
   referee?: string
   attendance?: number
@@ -381,7 +381,6 @@ function BasicMatchForm({ match, onChange, isBn }: { match: Match; onChange: (fi
             <option value="upcoming">Upcoming</option>
             <option value="live">Live</option>
             <option value="completed">Completed</option>
-            <option value="postponed">Postponed</option>
           </select>
         </div>
         <div>
