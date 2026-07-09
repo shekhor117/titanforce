@@ -37,7 +37,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true
     let subscription: any = null
-    let timeoutId: NodeJS.Timeout | null = null
     
     const initializeAuth = async () => {
       try {
@@ -51,7 +50,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         const supabase = getSupabaseClient()
         
-        // Set up auth state change listener
+        // Mark as initialized immediately to prevent timeout warnings
+        if (isMounted) {
+          setIsInitialized(true)
+        }
+        
+        // Set up auth state change listener (non-blocking)
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
             if (!isMounted) return
@@ -79,7 +83,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session
+        // Check for existing session (fire and forget - don't block on this)
         supabase.auth.getSession().then(({ data }) => {
           if (!isMounted) return
           
@@ -99,24 +103,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
               setAdmin(null)
             }
           }
-          
-          // Mark as initialized after session check completes
-          if (isMounted) {
-            setIsInitialized(true)
-          }
         }).catch(() => {
-          // On error, mark as initialized
-          if (isMounted) {
-            setIsInitialized(true)
-          }
+          // Silently ignore session check errors
         })
-        
-        // Safety timeout - if initialization takes longer than 8 seconds, force it
-        timeoutId = setTimeout(() => {
-          if (isMounted && !isInitialized) {
-            setIsInitialized(true)
-          }
-        }, 8000)
       } catch (err) {
         // Handle initialization error silently
         if (isMounted) setIsInitialized(true)
@@ -127,7 +116,6 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     
     return () => {
       isMounted = false
-      if (timeoutId) clearTimeout(timeoutId)
       if (subscription) {
         subscription.unsubscribe()
       }
