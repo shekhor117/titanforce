@@ -45,10 +45,19 @@ export default function PlayerEditPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!player) return
     const { name, value } = e.target
-    setPlayer({
-      ...player,
-      [name]: name.includes('_id') || name.includes('num') || name.includes('age') ? parseInt(value) : value,
-    })
+    
+    // Handle numeric fields
+    if (name.includes('_id') || name.includes('num') || name.includes('age') || name.includes('height') || name.includes('weight')) {
+      setPlayer({
+        ...player,
+        [name]: value === '' ? null : parseInt(value),
+      })
+    } else {
+      setPlayer({
+        ...player,
+        [name]: value,
+      })
+    }
   }
 
   const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +65,7 @@ export default function PlayerEditPage() {
     const { name, value } = e.target
     setPlayer({
       ...player,
-      [name]: parseInt(value),
+      [name]: value === '' ? null : parseInt(value),
     })
   }
 
@@ -66,13 +75,22 @@ export default function PlayerEditPage() {
       setSaving(true)
       setError(null)
       
-      // Exclude positions array from the update payload
+      // Exclude positions array and clean NaN/invalid values
       const { positions, ...playerData } = player
+      
+      // Remove NaN values and keep only valid data
+      const cleanedData = Object.fromEntries(
+        Object.entries(playerData).filter(([, value]) => {
+          if (value === null || value === undefined) return true
+          if (typeof value === 'number' && isNaN(value)) return false
+          return true
+        })
+      )
       
       const response = await fetch(`/api/admin/players/${player.num}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(playerData),
+        body: JSON.stringify(cleanedData),
       })
 
       if (!response.ok) {
