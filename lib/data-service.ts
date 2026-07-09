@@ -247,7 +247,20 @@ export class DataService {
         return []
       }
 
-      return data || []
+      // Fetch positions for all players
+      const playersWithPositions = await Promise.all(
+        (data || []).map(async (player) => {
+          try {
+            const positions = await this.getPlayerPositions(player.id)
+            return { ...player, positions }
+          } catch (err) {
+            console.warn("[v0] Failed to fetch positions for player", player.id)
+            return { ...player, positions: [] }
+          }
+        })
+      )
+
+      return playersWithPositions
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
       return []
@@ -309,6 +322,124 @@ export class DataService {
       }
     } catch (err) {
       console.error("[v0] DataService deletePlayer caught error:", err)
+      throw err
+    }
+  }
+
+  // Player Positions
+  async getPlayerPositions(playerId: string): Promise<PlayerPosition[]> {
+    if (!this.supabase) {
+      return []
+    }
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .select('*')
+        .eq('player_id', playerId)
+        .order('is_primary', { ascending: false })
+        .order('created_at', { ascending: true })
+
+      if (error) {
+        if (error.code === 'PGRST205') {
+          console.debug("[v0] Player positions table not yet created")
+          return []
+        }
+        console.error("[v0] DataService getPlayerPositions error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getPlayerPositions caught error:", err)
+      return []
+    }
+  }
+
+  async addPlayerPosition(position: Omit<PlayerPosition, 'id' | 'created_at' | 'updated_at'>): Promise<PlayerPosition> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .insert([position])
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService addPlayerPosition error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService addPlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async updatePlayerPosition(id: string, updates: Partial<PlayerPosition>): Promise<PlayerPosition> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService updatePlayerPosition error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updatePlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async deletePlayerPosition(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { error } = await this.supabase
+        .from('player_positions')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        console.error("[v0] DataService deletePlayerPosition error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deletePlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async setPlayerPositionPrimary(playerId: string, positionId: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      // First, unset any current primary position for this player
+      const { error: unsetError } = await this.supabase
+        .from('player_positions')
+        .update({ is_primary: false })
+        .eq('player_id', playerId)
+
+      if (unsetError) {
+        console.error("[v0] DataService setPlayerPositionPrimary unset error:", unsetError)
+        throw unsetError
+      }
+
+      // Then set the new primary position
+      const { error: setError } = await this.supabase
+        .from('player_positions')
+        .update({ is_primary: true })
+        .eq('id', positionId)
+
+      if (setError) {
+        console.error("[v0] DataService setPlayerPositionPrimary set error:", setError)
+        throw setError
+      }
+    } catch (err) {
+      console.error("[v0] DataService setPlayerPositionPrimary caught error:", err)
       throw err
     }
   }
