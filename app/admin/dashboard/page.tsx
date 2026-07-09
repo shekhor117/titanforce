@@ -11,7 +11,7 @@ import {
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
-  Flame, Send
+  Flame, Send, Settings, Type, MessageSquare, Share2, Award
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -350,12 +350,44 @@ export default function AdminDashboard() {
       bgColor: "bg-green-500/10"
     },
     { 
-      label: isBn ? "সেট��ংস এবং কনফিগ" : "Settings & Config", 
-      description: isBn ? "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন" : "Configure application settings",
-      href: "/admin/settings", 
-      icon: <Cog className="w-5 h-5" />,
+      label: isBn ? "সাইট সেটিংস" : "Site Settings", 
+      description: isBn ? "ওয়েবসাইট কনফিগারেশন" : "Configure website settings",
+      href: "/admin/site-settings", 
+      icon: <Settings className="w-5 h-5" />,
       color: "text-pink-400",
       bgColor: "bg-pink-500/10"
+    },
+    { 
+      label: isBn ? "পৃষ্ঠা বিষয়বস্তু" : "Page Content", 
+      description: isBn ? "আমাদের সম্পর্কে পৃষ্ঠা পরিচালনা করুন" : "Manage about page content",
+      href: "/admin/about", 
+      icon: <Type className="w-5 h-5" />,
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10"
+    },
+    { 
+      label: isBn ? "ব্যানার ও স্লাইডার" : "Banners", 
+      description: isBn ? "পৃষ্ঠার ব্যানার পরিচালনা করুন" : "Manage page banners",
+      href: "/admin/banners", 
+      icon: <Image className="w-5 h-5" />,
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10"
+    },
+    { 
+      label: isBn ? "পর্যালোচনা ও প্রশংসাপত্র" : "Testimonials", 
+      description: isBn ? "গ্রাহক প্রশংসাপত্র পরিচালনা করুন" : "Manage customer testimonials",
+      href: "/admin/testimonials", 
+      icon: <Award className="w-5 h-5" />,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10"
+    },
+    { 
+      label: isBn ? "সোশ্যাল মিডিয়া" : "Social Links", 
+      description: isBn ? "সোশ্যাল মিডিয়া লিংক পরিচালনা করুন" : "Manage social media links",
+      href: "/admin/social-links", 
+      icon: <Share2 className="w-5 h-5" />,
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10"
     },
   ]
 

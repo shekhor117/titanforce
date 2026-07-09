@@ -446,6 +446,80 @@ export interface NewsletterCampaign {
   updatedAt: string
 }
 
+// About Page Content type
+export interface AboutContent {
+  id: string
+  title: string
+  description: string
+  content: string
+  image?: string
+  sections: Array<{
+    heading: string
+    text: string
+  }>
+  createdAt: string
+  updatedAt: string
+}
+
+// Site Settings type
+export interface SiteSettings {
+  id: string
+  siteName: string
+  siteDescription: string
+  logo?: string
+  favicon?: string
+  primaryColor?: string
+  secondaryColor?: string
+  contactEmail?: string
+  contactPhone?: string
+  address?: string
+  timezone?: string
+  currency?: string
+  maintenanceMode?: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Banner/Hero Content type
+export interface Banner {
+  id: string
+  title: string
+  description?: string
+  image?: string
+  link?: string
+  buttonText?: string
+  page: "home" | "shop" | "team" | "news" | "gallery"
+  order: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Testimonial/Review type
+export interface Testimonial {
+  id: string
+  author: string
+  role?: string
+  content: string
+  rating?: number // 1-5
+  image?: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Social Media Links type
+export interface SocialLink {
+  id: string
+  platform: "facebook" | "twitter" | "instagram" | "youtube" | "tiktok" | "linkedin"
+  url: string
+  displayName?: string
+  order: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -465,6 +539,11 @@ const STORAGE_KEYS = {
   challenges: "titanforce_challenges",
   motm: "titanforce_motm",
   newsletters: "titanforce_newsletters",
+  aboutContent: "titanforce_about_content",
+  siteSettings: "titanforce_site_settings",
+  banners: "titanforce_banners",
+  testimonials: "titanforce_testimonials",
+  socialLinks: "titanforce_social_links",
   visitorId: "titanforce_visitor_id"
 }
 
@@ -1001,6 +1080,133 @@ export const dataStore = {
     dataStore.setNewsletters(newsletters.filter(n => n.id !== id))
     if (newsletter) {
       dataStore.addActivityLog({ action: "delete", entity: "newsletter", entityId: id, description: `Deleted newsletter "${newsletter.title}"` })
+    }
+  },
+
+  // About Content CRUD
+  getAboutContent: (): AboutContent[] => getFromStorage(STORAGE_KEYS.aboutContent, []),
+  setAboutContent: (content: AboutContent[]) => setToStorage(STORAGE_KEYS.aboutContent, content),
+  addAboutContent: (content: Omit<AboutContent, "id" | "createdAt" | "updatedAt">) => {
+    const allContent = dataStore.getAboutContent()
+    const newContent = { ...content, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setAboutContent([...allContent, newContent])
+    dataStore.addActivityLog({ action: "create", entity: "about", entityId: newContent.id, description: `Added about section "${content.title}"` })
+    return newContent
+  },
+  updateAboutContent: (id: string, updates: Partial<AboutContent>) => {
+    const content = dataStore.getAboutContent()
+    const index = content.findIndex(c => c.id === id)
+    if (index !== -1) {
+      const oldTitle = content[index].title
+      content[index] = { ...content[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setAboutContent(content)
+      dataStore.addActivityLog({ action: "update", entity: "about", entityId: id, description: `Updated about section "${oldTitle}"` })
+    }
+  },
+  deleteAboutContent: (id: string) => {
+    const content = dataStore.getAboutContent()
+    const item = content.find(c => c.id === id)
+    dataStore.setAboutContent(content.filter(c => c.id !== id))
+    if (item) {
+      dataStore.addActivityLog({ action: "delete", entity: "about", entityId: id, description: `Deleted about section "${item.title}"` })
+    }
+  },
+
+  // Site Settings CRUD
+  getSiteSettings: (): SiteSettings | null => getFromStorage(STORAGE_KEYS.siteSettings, null),
+  setSiteSettings: (settings: SiteSettings) => setToStorage(STORAGE_KEYS.siteSettings, settings),
+  updateSiteSettings: (updates: Partial<SiteSettings>) => {
+    const current = dataStore.getSiteSettings() || { id: "1", siteName: "Titan Force", siteDescription: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setSiteSettings(updated)
+    dataStore.addActivityLog({ action: "update", entity: "settings", entityId: "1", description: "Updated site settings" })
+    return updated
+  },
+
+  // Banner CRUD
+  getBanners: (): Banner[] => getFromStorage(STORAGE_KEYS.banners, []),
+  setBanners: (banners: Banner[]) => setToStorage(STORAGE_KEYS.banners, banners),
+  addBanner: (banner: Omit<Banner, "id" | "createdAt" | "updatedAt">) => {
+    const banners = dataStore.getBanners()
+    const newBanner = { ...banner, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setBanners([...banners, newBanner])
+    dataStore.addActivityLog({ action: "create", entity: "banner", entityId: newBanner.id, description: `Added banner "${banner.title}" for ${banner.page}` })
+    return newBanner
+  },
+  updateBanner: (id: string, updates: Partial<Banner>) => {
+    const banners = dataStore.getBanners()
+    const index = banners.findIndex(b => b.id === id)
+    if (index !== -1) {
+      const oldTitle = banners[index].title
+      banners[index] = { ...banners[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setBanners(banners)
+      dataStore.addActivityLog({ action: "update", entity: "banner", entityId: id, description: `Updated banner "${oldTitle}"` })
+    }
+  },
+  deleteBanner: (id: string) => {
+    const banners = dataStore.getBanners()
+    const banner = banners.find(b => b.id === id)
+    dataStore.setBanners(banners.filter(b => b.id !== id))
+    if (banner) {
+      dataStore.addActivityLog({ action: "delete", entity: "banner", entityId: id, description: `Deleted banner "${banner.title}"` })
+    }
+  },
+
+  // Testimonial CRUD
+  getTestimonials: (): Testimonial[] => getFromStorage(STORAGE_KEYS.testimonials, []),
+  setTestimonials: (testimonials: Testimonial[]) => setToStorage(STORAGE_KEYS.testimonials, testimonials),
+  addTestimonial: (testimonial: Omit<Testimonial, "id" | "createdAt" | "updatedAt">) => {
+    const testimonials = dataStore.getTestimonials()
+    const newTestimonial = { ...testimonial, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setTestimonials([...testimonials, newTestimonial])
+    dataStore.addActivityLog({ action: "create", entity: "testimonial", entityId: newTestimonial.id, description: `Added testimonial from "${testimonial.author}"` })
+    return newTestimonial
+  },
+  updateTestimonial: (id: string, updates: Partial<Testimonial>) => {
+    const testimonials = dataStore.getTestimonials()
+    const index = testimonials.findIndex(t => t.id === id)
+    if (index !== -1) {
+      const oldAuthor = testimonials[index].author
+      testimonials[index] = { ...testimonials[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setTestimonials(testimonials)
+      dataStore.addActivityLog({ action: "update", entity: "testimonial", entityId: id, description: `Updated testimonial from "${oldAuthor}"` })
+    }
+  },
+  deleteTestimonial: (id: string) => {
+    const testimonials = dataStore.getTestimonials()
+    const testimonial = testimonials.find(t => t.id === id)
+    dataStore.setTestimonials(testimonials.filter(t => t.id !== id))
+    if (testimonial) {
+      dataStore.addActivityLog({ action: "delete", entity: "testimonial", entityId: id, description: `Deleted testimonial from "${testimonial.author}"` })
+    }
+  },
+
+  // Social Links CRUD
+  getSocialLinks: (): SocialLink[] => getFromStorage(STORAGE_KEYS.socialLinks, []),
+  setSocialLinks: (links: SocialLink[]) => setToStorage(STORAGE_KEYS.socialLinks, links),
+  addSocialLink: (link: Omit<SocialLink, "id" | "createdAt" | "updatedAt">) => {
+    const links = dataStore.getSocialLinks()
+    const newLink = { ...link, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setSocialLinks([...links, newLink])
+    dataStore.addActivityLog({ action: "create", entity: "sociallink", entityId: newLink.id, description: `Added ${link.platform} social link` })
+    return newLink
+  },
+  updateSocialLink: (id: string, updates: Partial<SocialLink>) => {
+    const links = dataStore.getSocialLinks()
+    const index = links.findIndex(l => l.id === id)
+    if (index !== -1) {
+      const oldPlatform = links[index].platform
+      links[index] = { ...links[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setSocialLinks(links)
+      dataStore.addActivityLog({ action: "update", entity: "sociallink", entityId: id, description: `Updated ${oldPlatform} social link` })
+    }
+  },
+  deleteSocialLink: (id: string) => {
+    const links = dataStore.getSocialLinks()
+    const link = links.find(l => l.id === id)
+    dataStore.setSocialLinks(links.filter(l => l.id !== id))
+    if (link) {
+      dataStore.addActivityLog({ action: "delete", entity: "sociallink", entityId: id, description: `Deleted ${link.platform} social link` })
     }
   },
 
