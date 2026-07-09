@@ -10,7 +10,8 @@ import dynamic from "next/dynamic"
 import { 
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
-  Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown
+  Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
+  Flame, Send
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -277,6 +278,22 @@ export default function AdminDashboard() {
       bgColor: "bg-yellow-500/10"
     },
     { 
+      label: isBn ? "চ্যালেঞ্জ এবং লক্ষ্য" : "Challenges & Goals", 
+      description: isBn ? "দলের চ্যালেঞ্জ এবং মাইলফলক পরিচালনা করুন" : "Manage team challenges and milestones",
+      href: "/admin/challenges", 
+      icon: <Flame className="w-5 h-5" />,
+      color: "text-red-400",
+      bgColor: "bg-red-500/10"
+    },
+    { 
+      label: isBn ? "নিউজলেটার" : "Newsletter", 
+      description: isBn ? "ইমেইল ক্যাম্পেইন এবং প্রচার পরিচালনা করুন" : "Manage email campaigns and newsletters",
+      href: "/admin/newsletter", 
+      icon: <Send className="w-5 h-5" />,
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10"
+    },
+    { 
       label: isBn ? "লাইনআপ বিল্ডার" : "Lineup Builder", 
       description: isBn ? "দল গঠন এবং ট্যাকটিক্স সেট করুন" : "Build team formations and tactics",
       href: "/admin/lineup", 
@@ -513,7 +530,7 @@ export default function AdminDashboard() {
         <div className="rounded-xl border-2 border-secondary bg-card p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className={`font-[var(--font-display)] text-2xl tracking-wider text-foreground ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-              {isBn ? "সাম্প্রতিক কার্যকলাপ" : "Recent Activity"}
+              {isBn ? "���াম্প্রতিক কার্যকলাপ" : "Recent Activity"}
             </h2>
             <Link 
               href="/admin/system"
