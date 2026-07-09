@@ -1,3 +1,5 @@
+'use client'
+
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { LineupBuilder } from "@/components/lineup-builder"
@@ -10,13 +12,28 @@ import { BackButton } from "@/components/back-button"
 import { TeamStatsOverview } from "@/components/team-stats-overview"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
+import { useState, useEffect } from "react"
+import { dataStore } from "@/lib/data-store"
 
-export const metadata = {
-  title: "Advanced Features | Titan Force FC",
-  description: "Explore advanced features including lineup builder, tactical board, match voting, player rankings, training performance, and injury tracking.",
-}
+const defaultTitle = "TEAM FEATURES"
+const defaultDescription = "Explore our comprehensive suite of tools for lineup building, tactical planning, player analytics, and more."
 
 export default function FeaturesPage() {
+  const [heroTitle, setHeroTitle] = useState(defaultTitle)
+  const [heroDescription, setHeroDescription] = useState(defaultDescription)
+
+  useEffect(() => {
+    try {
+      const content = dataStore.getFeaturePageContent()
+      if (content) {
+        setHeroTitle(content.heroTitle)
+        setHeroDescription(content.heroDescription)
+      }
+    } catch (err) {
+      console.log('[v0] Failed to load features content')
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -30,10 +47,10 @@ export default function FeaturesPage() {
             ADVANCED TOOLS
           </p>
           <h1 className="font-[var(--font-display)] text-5xl md:text-7xl tracking-wide text-foreground mb-4">
-            TEAM FEATURES
+            {heroTitle}
           </h1>
           <p className="text-foreground/70 max-w-xl mx-auto">
-            Explore our comprehensive suite of tools for lineup building, tactical planning, player analytics, and more.
+            {heroDescription}
           </p>
         </section>
 

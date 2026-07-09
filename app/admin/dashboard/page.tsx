@@ -11,7 +11,7 @@ import {
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
-  Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon
+  Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon, Grid3X3, BookOpen
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -404,6 +404,30 @@ export default function AdminDashboard() {
       icon: <BarChart4 className="w-5 h-5" />,
       color: "text-lime-400",
       bgColor: "bg-lime-500/10"
+    },
+    { 
+      label: isBn ? "ফুটার" : "Footer", 
+      description: isBn ? "ফুটার কন্টেন্ট পরিচালনা করুন" : "Manage footer content",
+      href: "/admin/footer", 
+      icon: <Type className="w-5 h-5" />,
+      color: "text-indigo-400",
+      bgColor: "bg-indigo-500/10"
+    },
+    { 
+      label: isBn ? "বিভাগ" : "Shop Categories", 
+      description: isBn ? "পণ্য বিভাগ পরিচালনা করুন" : "Manage product categories",
+      href: "/admin/shop-categories", 
+      icon: <Grid3X3 className="w-5 h-5" />,
+      color: "text-violet-400",
+      bgColor: "bg-violet-500/10"
+    },
+    { 
+      label: isBn ? "বৈশিষ্ট্য সামগ্রী" : "Features Content", 
+      description: isBn ? "বৈশিষ্ট্য পৃষ্ঠার সামগ্রী পরিচালনা করুন" : "Manage features page content",
+      href: "/admin/features-content", 
+      icon: <BookOpen className="w-5 h-5" />,
+      color: "text-rose-400",
+      bgColor: "bg-rose-500/10"
     },
   ]
 

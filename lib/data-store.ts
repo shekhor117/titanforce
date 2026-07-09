@@ -546,6 +546,46 @@ export interface Statistics {
   updatedAt: string
 }
 
+// Footer Content type
+export interface FooterContent {
+  id: string
+  brandDescription: string
+  quickLinks: Array<{ label: string; href: string }>
+  aboutLinks: Array<{ label: string; href: string }>
+  supportLinks: Array<{ label: string; href: string }>
+  companyLinks: Array<{ label: string; href: string }>
+  createdAt: string
+  updatedAt: string
+}
+
+// Shop Category type
+export interface ShopCategory {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  image?: string
+  order: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Features Page Content type
+export interface FeaturePageContent {
+  id: string
+  heroTitle: string
+  heroDescription: string
+  heroImage?: string
+  sections: Array<{
+    title: string
+    description: string
+    icon?: string
+  }>
+  createdAt: string
+  updatedAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -572,6 +612,9 @@ const STORAGE_KEYS = {
   socialLinks: "titanforce_social_links",
   clubInfo: "titanforce_club_info",
   statistics: "titanforce_statistics",
+  footerContent: "titanforce_footer_content",
+  shopCategories: "titanforce_shop_categories",
+  featurePageContent: "titanforce_feature_page_content",
   visitorId: "titanforce_visitor_id"
 }
 
@@ -1273,6 +1316,73 @@ export const dataStore = {
     const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
     dataStore.setStatistics(updated)
     dataStore.addActivityLog({ action: "update", entity: "statistics", entityId: "1", description: "Updated club statistics" })
+    return updated
+  },
+
+  // Footer Content CRUD
+  getFooterContent: (): FooterContent | null => getFromStorage(STORAGE_KEYS.footerContent, null),
+  setFooterContent: (content: FooterContent) => setToStorage(STORAGE_KEYS.footerContent, content),
+  updateFooterContent: (updates: Partial<FooterContent>) => {
+    const current = dataStore.getFooterContent() || {
+      id: "1",
+      brandDescription: "Pride of Mulikandi. Power of the Titans. We are more than a club. We are a legacy in the making.",
+      quickLinks: [],
+      aboutLinks: [],
+      supportLinks: [],
+      companyLinks: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setFooterContent(updated)
+    dataStore.addActivityLog({ action: "update", entity: "footercontent", entityId: "1", description: "Updated footer content" })
+    return updated
+  },
+
+  // Shop Categories CRUD
+  getShopCategories: (): ShopCategory[] => getFromStorage(STORAGE_KEYS.shopCategories, []),
+  setShopCategories: (categories: ShopCategory[]) => setToStorage(STORAGE_KEYS.shopCategories, categories),
+  addShopCategory: (category: Omit<ShopCategory, "id" | "createdAt" | "updatedAt">) => {
+    const categories = dataStore.getShopCategories()
+    const newCategory = { ...category, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setShopCategories([...categories, newCategory])
+    dataStore.addActivityLog({ action: "create", entity: "shopcategory", entityId: newCategory.id, description: `Added category "${category.name}"` })
+    return newCategory
+  },
+  updateShopCategory: (id: string, updates: Partial<ShopCategory>) => {
+    const categories = dataStore.getShopCategories()
+    const index = categories.findIndex(c => c.id === id)
+    if (index !== -1) {
+      const oldName = categories[index].name
+      categories[index] = { ...categories[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setShopCategories(categories)
+      dataStore.addActivityLog({ action: "update", entity: "shopcategory", entityId: id, description: `Updated category "${oldName}"` })
+    }
+  },
+  deleteShopCategory: (id: string) => {
+    const categories = dataStore.getShopCategories()
+    const category = categories.find(c => c.id === id)
+    dataStore.setShopCategories(categories.filter(c => c.id !== id))
+    if (category) {
+      dataStore.addActivityLog({ action: "delete", entity: "shopcategory", entityId: id, description: `Deleted category "${category.name}"` })
+    }
+  },
+
+  // Feature Page Content CRUD
+  getFeaturePageContent: (): FeaturePageContent | null => getFromStorage(STORAGE_KEYS.featurePageContent, null),
+  setFeaturePageContent: (content: FeaturePageContent) => setToStorage(STORAGE_KEYS.featurePageContent, content),
+  updateFeaturePageContent: (updates: Partial<FeaturePageContent>) => {
+    const current = dataStore.getFeaturePageContent() || {
+      id: "1",
+      heroTitle: "TEAM FEATURES",
+      heroDescription: "Explore the cutting-edge tools and services that power the Titan Force",
+      sections: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setFeaturePageContent(updated)
+    dataStore.addActivityLog({ action: "update", entity: "featurepage", entityId: "1", description: "Updated features page content" })
     return updated
   },
 

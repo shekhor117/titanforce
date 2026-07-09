@@ -1,12 +1,28 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Facebook, Instagram, Youtube } from "lucide-react"
 import { EntranceReveal } from "@/components/entrance-reveal"
+import { dataStore } from "@/lib/data-store"
+
+const defaultBrandDescription = "Pride of Mulikandi. Power of the Titans. Join the family and rise with us."
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const [brandDescription, setBrandDescription] = useState(defaultBrandDescription)
+
+  useEffect(() => {
+    try {
+      const footerContent = dataStore.getFooterContent()
+      if (footerContent?.brandDescription) {
+        setBrandDescription(footerContent.brandDescription)
+      }
+    } catch (err) {
+      console.log('[v0] Failed to load footer content')
+    }
+  }, [])
 
   const clubLinks = [
     { id: "about", label: "About", href: "/about" },
@@ -47,7 +63,7 @@ export function Footer() {
           <h3 className="font-bold text-lg tracking-wide mb-2 text-foreground">TITAN FORCE</h3>
           <p className="text-xs text-muted-foreground mb-1">MULIKANDI</p>
           <p className="text-sm text-muted-foreground leading-relaxed mt-4">
-            Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
+            {brandDescription}
           </p>
         </div>
 
@@ -68,7 +84,7 @@ export function Footer() {
             <h3 className="font-bold text-lg tracking-wide mb-2 text-foreground">TITAN FORCE</h3>
             <p className="text-xs text-muted-foreground mb-1">MULIKANDI</p>
             <p className="text-sm text-muted-foreground leading-relaxed mt-4">
-              Pride of Mulikandi. Power of the Titans. Join the family and rise with us.
+              {brandDescription}
             </p>
           </div>
 
