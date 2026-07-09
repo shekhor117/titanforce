@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { getDataService } from '@/lib/data-service'
+import { PlayerPositionManager } from '@/components/admin/player-position-manager'
 import type { Player } from '@/lib/data-service'
 
 export default function PlayerEditPage() {
@@ -335,6 +336,14 @@ export default function PlayerEditPage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Position Manager */}
+          <div className="neo-card p-6 md:p-8 rounded-2xl">
+            <h2 className={`text-2xl font-bold mb-6 ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+              {isBn ? 'অবস্থান পরিচালনা' : 'Manage Positions'}
+            </h2>
+            <PlayerPositionManager playerNum={player.num} />
           </div>
 
           {/* Save Button */}

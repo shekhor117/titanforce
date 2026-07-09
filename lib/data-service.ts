@@ -4,6 +4,18 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 
 // Types
+export interface PlayerPosition {
+  id: string
+  player_id: string
+  position_name: string
+  x_coordinate: number
+  y_coordinate: number
+  is_primary: boolean
+  description?: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Player {
   id: string
   num: number
@@ -45,6 +57,7 @@ export interface Player {
   season_year?: string
   club?: string
   nationality?: string
+  positions?: PlayerPosition[]
   created_at: string
   updated_at: string
 }

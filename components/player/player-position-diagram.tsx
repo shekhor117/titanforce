@@ -1,7 +1,8 @@
 'use client'
 
-import { Player } from '@/lib/data-service'
+import { Player, PlayerPosition } from '@/lib/data-service'
 import { useLanguage } from '@/lib/language-context'
+import { PositionBadge } from './position-badge'
 
 interface PlayerPositionDiagramProps {
   player: Player
@@ -32,17 +33,65 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
       'FWD': { x: 50, y: 85 },
       'MID': { x: 50, y: 55 },
       'DEF': { x: 50, y: 30 },
+      'AM': { x: 50, y: 65 },
     }
     return positionMap[position] || { x: 50, y: 50 }
   }
 
-  const coords = getPositionCoordinates(player.position)
+  // Use stored positions if available, otherwise create default from primary position
+  const positionsToDisplay: Array<PlayerPosition & { position_name?: string }> = player.positions && player.positions.length > 0
+    ? player.positions
+    : [{
+        id: 'default',
+        player_id: player.id,
+        position_name: player.position,
+        x_coordinate: getPositionCoordinates(player.position).x,
+        y_coordinate: getPositionCoordinates(player.position).y,
+        is_primary: true,
+        created_at: player.created_at,
+        updated_at: player.updated_at,
+      }]
+
+  // Get primary position for display
+  const primaryPosition = positionsToDisplay.find(p => p.is_primary) || positionsToDisplay[0]
+  const secondaryPositions = positionsToDisplay.filter(p => !p.is_primary)
 
   return (
     <div className="neo-card p-6 md:p-8 rounded-2xl">
       <h3 className={`text-xl md:text-2xl font-bold text-foreground mb-6 uppercase tracking-wider ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
         {isBn ? 'অবস্থান' : 'Position'}
       </h3>
+
+      {/* Position Info */}
+      <div className="mb-6 space-y-3">
+        <div className="flex items-center gap-3 p-3 bg-red-600/20 border border-red-500/40 rounded-lg">
+          <div className="w-4 h-4 bg-red-600 rounded-full flex items-center justify-center">
+            <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-xs text-foreground/60 uppercase">{isBn ? 'প্রধান অবস্থান' : 'Primary'}</p>
+            <p className="text-lg font-bold text-foreground">{primaryPosition.position_name}</p>
+          </div>
+        </div>
+
+        {secondaryPositions.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs text-foreground/60 uppercase">{isBn ? 'অন্যান্য' : 'Others'}</p>
+            <div className="flex flex-wrap gap-2">
+              {secondaryPositions.map(pos => (
+                <span
+                  key={pos.id}
+                  className="px-3 py-1 bg-gray-600/40 text-foreground/80 text-sm rounded-full border border-gray-500/30"
+                >
+                  {pos.position_name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="relative w-full aspect-[2/3] bg-gradient-to-b from-green-800 to-green-900 rounded-lg border-2 border-green-600/60 overflow-hidden">
         {/* Field lines - FotMob style */}
@@ -85,22 +134,26 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
           <circle cx="100" cy="100" r="1.5" fill="none" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="0.5" />
         </svg>
 
-        {/* Player position indicator */}
-        <div
-          className="absolute w-12 h-12 md:w-14 md:h-14 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
-          style={{ left: `${coords.x}%`, top: `${coords.y}%` }}
-        >
-          <div className="w-full h-full rounded-full bg-blue-500 border-3 border-blue-300 shadow-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm md:text-base">#{player.num}</span>
-          </div>
+        {/* Position badges */}
+        <div className="absolute inset-0">
+          {positionsToDisplay.map(pos => (
+            <PositionBadge
+              key={pos.id}
+              number={player.num}
+              position={pos.position_name || ''}
+              isPrimary={pos.is_primary}
+              x={pos.x_coordinate}
+              y={pos.y_coordinate}
+            />
+          ))}
         </div>
       </div>
 
       <div className="mt-6 pt-4 border-t border-secondary/30">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-foreground/60 uppercase mb-2">{isBn ? 'অবস্থান' : 'Position'}</p>
-            <p className="text-lg font-bold text-foreground">{player.position}</p>
+            <p className="text-xs text-foreground/60 uppercase mb-2">{isBn ? 'প্রধান অবস্থান' : 'Primary Position'}</p>
+            <p className="text-lg font-bold text-foreground">{primaryPosition.position_name}</p>
           </div>
           <div>
             <p className="text-xs text-foreground/60 uppercase mb-2">{isBn ? 'পছন্দের পা' : 'Preferred Foot'}</p>
