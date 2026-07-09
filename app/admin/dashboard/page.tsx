@@ -13,7 +13,8 @@ import {
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
   Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon, Grid3X3, BookOpen,
   MessageCircle, ThumbsUp, Check, Lock, Mail as MailIcon, UserCheck, Calendar as CalendarIcon,
-  Briefcase, Users as UsersIcon, Star, Zap as ZapIcon, TrendingUp as TrendingUpIcon2, MapPin
+  Briefcase, Users as UsersIcon, Star, Zap as ZapIcon, TrendingUp as TrendingUpIcon2, MapPin,
+  Gamepad2, Shirt, Users as PeopleIcon, HelpCircle, Radio, Gift, Image as ImageIcon, MessageSquare as CommentsIcon
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -336,7 +337,7 @@ export default function AdminDashboard() {
       bgColor: "bg-purple-500/10"
     },
     { 
-      label: isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management", 
+      label: isBn ? "ব্যবহারকারী ���্যবস্থাপনা" : "User Management", 
       description: isBn ? "সমস্ত ব্যবহ��রকারী অ্যাকাউন্ট পরিচালন��� করুন" : "Manage all user accounts",
       href: "/admin/users", 
       icon: <Users className="w-5 h-5" />,
@@ -534,6 +535,102 @@ export default function AdminDashboard() {
       icon: <ZapIcon className="w-5 h-5" />,
       color: "text-fuchsia-400",
       bgColor: "bg-fuchsia-500/10"
+    },
+    { 
+      label: isBn ? "ঋতু" : "Seasons", 
+      description: isBn ? "লীগ ঋতু পরিচালনা করুন" : "Manage seasons and leagues",
+      href: "/admin/seasons", 
+      icon: <Gamepad2 className="w-5 h-4" />,
+      color: "text-slate-400",
+      bgColor: "bg-slate-500/10"
+    },
+    { 
+      label: isBn ? "প্রশিক্ষণ" : "Training", 
+      description: isBn ? "প্রশিক্ষণ প্রোগ্রাম পরিচালনা করুন" : "Manage training programs",
+      href: "/admin/training-programs", 
+      icon: <Shirt className="w-5 h-4" />,
+      color: "text-stone-400",
+      bgColor: "bg-stone-500/10"
+    },
+    { 
+      label: isBn ? "ইভেন্ট" : "Match Events", 
+      description: isBn ? "ম্যাচ ইভেন্ট রেকর্ড করুন" : "Record match events",
+      href: "/admin/match-events", 
+      icon: <Clock className="w-5 h-4" />,
+      color: "text-sky-400",
+      bgColor: "bg-sky-500/10"
+    },
+    { 
+      label: isBn ? "টিকেট" : "Tickets", 
+      description: isBn ? "ম্যাচ টিকেট পরিচালনা করুন" : "Manage match tickets",
+      href: "/admin/tickets", 
+      icon: <Layers className="w-5 h-4" />,
+      color: "text-emerald-400",
+      bgColor: "bg-emerald-500/10"
+    },
+    { 
+      label: isBn ? "পণ্যসম্ভার" : "Merchandise", 
+      description: isBn ? "ক্লাব পণ্য পরিচালনা করুন" : "Manage club merchandise",
+      href: "/admin/merchandise", 
+      icon: <ShoppingBag className="w-5 h-4" />,
+      color: "text-indigo-400",
+      bgColor: "bg-indigo-500/10"
+    },
+    { 
+      label: isBn ? "প্রশিক্ষক" : "Coaches", 
+      description: isBn ? "প্রশিক্ষক দল পরিচালনা করুন" : "Manage coaching staff",
+      href: "/admin/coaching-staff", 
+      icon: <PeopleIcon className="w-5 h-4" />,
+      color: "text-violet-400",
+      bgColor: "bg-violet-500/10"
+    },
+    { 
+      label: isBn ? "ফ্যান ক্লাব" : "Fan Clubs", 
+      description: isBn ? "ফ্যান ক্লাব পরিচালনা করুন" : "Manage fan clubs",
+      href: "/admin/fan-clubs", 
+      icon: <Heart className="w-5 h-4" />,
+      color: "text-red-400",
+      bgColor: "bg-red-500/10"
+    },
+    { 
+      label: isBn ? "পোল" : "Polls", 
+      description: isBn ? "সমীক্ষা এবং পোল পরিচালনা করুন" : "Manage polls and surveys",
+      href: "/admin/polls", 
+      icon: <HelpCircle className="w-5 h-4" />,
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10"
+    },
+    { 
+      label: isBn ? "তহবিল" : "Fundraisers", 
+      description: isBn ? "তহবিল সংগ্রহ পরিচালনা করুন" : "Manage fundraisers",
+      href: "/admin/fundraisers", 
+      icon: <Gift className="w-5 h-4" />,
+      color: "text-lime-400",
+      bgColor: "bg-lime-500/10"
+    },
+    { 
+      label: isBn ? "গ্যালারি" : "Gallery Cats", 
+      description: isBn ? "গ্যালারি বিভাগ পরিচালনা করুন" : "Manage gallery categories",
+      href: "/admin/gallery-categories", 
+      icon: <ImageIcon className="w-5 h-4" />,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10"
+    },
+    { 
+      label: isBn ? "সম্প্রচার" : "Broadcasts", 
+      description: isBn ? "লাইভ সম্প্রচার পরিচালনা করুন" : "Manage live broadcasts",
+      href: "/admin/broadcasts", 
+      icon: <Radio className="w-5 h-4" />,
+      color: "text-red-500",
+      bgColor: "bg-red-500/10"
+    },
+    { 
+      label: isBn ? "মন্তব্য" : "Comments", 
+      description: isBn ? "মন্তব্য এবং পর্যালোচনা পরিচালনা করুন" : "Manage comments and reviews",
+      href: "/admin/comments", 
+      icon: <CommentsIcon className="w-5 h-4" />,
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10"
     },
   ]
 
