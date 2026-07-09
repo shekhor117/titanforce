@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Users, MapPin, Award, Heart, Users2 } from 'lucide-react'
+import { dataStore } from '@/lib/data-store'
 
-const clubInfoData = [
+const defaultClubInfoData = [
   {
     icon: Users,
     label: 'FOUNDED',
@@ -26,6 +28,24 @@ const clubInfoData = [
 ]
 
 export function ClubInfoSection() {
+  const [clubInfoData, setClubInfoData] = useState(defaultClubInfoData)
+
+  useEffect(() => {
+    try {
+      const clubInfo = dataStore.getClubInfo()
+      if (clubInfo) {
+        setClubInfoData([
+          { icon: Users, label: 'FOUNDED', value: clubInfo.founded },
+          { icon: MapPin, label: 'HOME GROUND', value: clubInfo.homeGround },
+          { icon: Heart, label: 'MOTTO', value: clubInfo.motto },
+          { icon: Users2, label: 'COMMUNITY', value: clubInfo.community },
+        ])
+      }
+    } catch (err) {
+      console.log('[v0] Failed to load club info:', err)
+    }
+  }, [])
+
   return (
     <section className="bg-background py-12 px-4">
       <div className="max-w-7xl mx-auto">

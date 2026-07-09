@@ -520,6 +520,32 @@ export interface SocialLink {
   updatedAt: string
 }
 
+// Club Info type
+export interface ClubInfo {
+  id: string
+  founded: string
+  homeGround: string
+  motto: string
+  community: string
+  createdAt: string
+  updatedAt: string
+}
+
+// Statistics/Stats type
+export interface Statistics {
+  id: string
+  totalPlayers: number
+  totalWins: number
+  totalTeams: number
+  totalFans: number
+  trophies?: number
+  matches?: number
+  goals?: number
+  description?: string
+  createdAt: string
+  updatedAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -544,6 +570,8 @@ const STORAGE_KEYS = {
   banners: "titanforce_banners",
   testimonials: "titanforce_testimonials",
   socialLinks: "titanforce_social_links",
+  clubInfo: "titanforce_club_info",
+  statistics: "titanforce_statistics",
   visitorId: "titanforce_visitor_id"
 }
 
@@ -1208,6 +1236,44 @@ export const dataStore = {
     if (link) {
       dataStore.addActivityLog({ action: "delete", entity: "sociallink", entityId: id, description: `Deleted ${link.platform} social link` })
     }
+  },
+
+  // Club Info CRUD
+  getClubInfo: (): ClubInfo | null => getFromStorage(STORAGE_KEYS.clubInfo, null),
+  setClubInfo: (info: ClubInfo) => setToStorage(STORAGE_KEYS.clubInfo, info),
+  updateClubInfo: (updates: Partial<ClubInfo>) => {
+    const current = dataStore.getClubInfo() || { 
+      id: "1", 
+      founded: "2025", 
+      homeGround: "Mulikandi", 
+      motto: "One Team, One Dream",
+      community: "Stronger Together",
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setClubInfo(updated)
+    dataStore.addActivityLog({ action: "update", entity: "clubinfo", entityId: "1", description: "Updated club information" })
+    return updated
+  },
+
+  // Statistics CRUD
+  getStatistics: (): Statistics | null => getFromStorage(STORAGE_KEYS.statistics, null),
+  setStatistics: (stats: Statistics) => setToStorage(STORAGE_KEYS.statistics, stats),
+  updateStatistics: (updates: Partial<Statistics>) => {
+    const current = dataStore.getStatistics() || { 
+      id: "1", 
+      totalPlayers: 120, 
+      totalWins: 15, 
+      totalTeams: 8,
+      totalFans: 1000,
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setStatistics(updated)
+    dataStore.addActivityLog({ action: "update", entity: "statistics", entityId: "1", description: "Updated club statistics" })
+    return updated
   },
 
   // Export all data

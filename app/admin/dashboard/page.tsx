@@ -11,7 +11,7 @@ import {
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
-  Flame, Send, Settings, Type, MessageSquare, Share2, Award
+  Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -388,6 +388,22 @@ export default function AdminDashboard() {
       icon: <Share2 className="w-5 h-5" />,
       color: "text-cyan-400",
       bgColor: "bg-cyan-500/10"
+    },
+    { 
+      label: isBn ? "ক্লাব তথ্য" : "Club Info", 
+      description: isBn ? "ক্লাব তথ্য এবং পরিচয় পরিচালনা করুন" : "Manage club information",
+      href: "/admin/club-info", 
+      icon: <Info className="w-5 h-5" />,
+      color: "text-emerald-400",
+      bgColor: "bg-emerald-500/10"
+    },
+    { 
+      label: isBn ? "পরিসংখ্যান" : "Statistics", 
+      description: isBn ? "ক্লাব পরিসংখ্যান পরিচালনা করুন" : "Manage club statistics",
+      href: "/admin/statistics", 
+      icon: <BarChart4 className="w-5 h-5" />,
+      color: "text-lime-400",
+      bgColor: "bg-lime-500/10"
     },
   ]
 
