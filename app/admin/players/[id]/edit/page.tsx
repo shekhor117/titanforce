@@ -65,14 +65,19 @@ export default function PlayerEditPage() {
     try {
       setSaving(true)
       setError(null)
+      
+      // Exclude positions array from the update payload
+      const { positions, ...playerData } = player
+      
       const response = await fetch(`/api/admin/players/${player.num}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(player),
+        body: JSON.stringify(playerData),
       })
 
       if (!response.ok) {
-        throw new Error(isBn ? 'আপডেট ব্যর্থ হয়েছে' : 'Failed to update player')
+        const errorData = await response.json()
+        throw new Error(errorData.error || (isBn ? 'আপডেট ব্যর্থ হয়েছে' : 'Failed to update player'))
       }
 
       setSuccess(true)
@@ -80,6 +85,7 @@ export default function PlayerEditPage() {
         router.back()
       }, 2000)
     } catch (err) {
+      console.error('[v0] Error saving player:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setSaving(false)
