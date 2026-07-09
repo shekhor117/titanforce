@@ -4,6 +4,77 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 
 // Types
+export interface PlayerPosition {
+  id: string
+  player_id: string
+  position_name: string
+  x_coordinate: number
+  y_coordinate: number
+  is_primary: boolean
+  description?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Injury {
+  id: string
+  player_id: string
+  injury_type: string
+  injury_date: string
+  status: 'active' | 'recovering' | 'recovered'
+  recovery_progress: number
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Honour {
+  id: string
+  name: string
+  year: number
+  category: 'league' | 'cup' | 'championship' | 'tournament'
+  description?: string
+  icon?: string
+  runners_up?: string
+  featured: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface PlayerHonour {
+  id: string
+  player_id: string
+  honour_id: string
+  performance_notes?: string
+  created_at: string
+}
+
+export interface Trophy {
+  id: string
+  name: string
+  year: number
+  category: 'league' | 'cup' | 'championship' | 'tournament'
+  description?: string
+  icon?: string
+  runners_up?: string
+  featured: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AppUser {
+  id: string
+  email: string
+  username: string
+  password_hash: string
+  role: 'admin' | 'manager' | 'viewer'
+  full_name?: string
+  is_active: boolean
+  last_login?: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Player {
   id: string
   num: number
@@ -45,6 +116,7 @@ export interface Player {
   season_year?: string
   club?: string
   nationality?: string
+  positions?: PlayerPosition[]
   created_at: string
   updated_at: string
 }
@@ -234,7 +306,20 @@ export class DataService {
         return []
       }
 
-      return data || []
+      // Fetch positions for all players
+      const playersWithPositions = await Promise.all(
+        (data || []).map(async (player) => {
+          try {
+            const positions = await this.getPlayerPositions(player.id)
+            return { ...player, positions }
+          } catch (err) {
+            console.warn("[v0] Failed to fetch positions for player", player.id)
+            return { ...player, positions: [] }
+          }
+        })
+      )
+
+      return playersWithPositions
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
       return []
@@ -298,6 +383,271 @@ export class DataService {
       console.error("[v0] DataService deletePlayer caught error:", err)
       throw err
     }
+  }
+
+  // Player Positions
+  async getPlayerPositions(playerId: string): Promise<PlayerPosition[]> {
+    if (!this.supabase) {
+      return []
+    }
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .select('*')
+        .eq('player_id', playerId)
+        .order('is_primary', { ascending: false })
+        .order('created_at', { ascending: true })
+
+      if (error) {
+        if (error.code === 'PGRST205') {
+          console.debug("[v0] Player positions table not yet created")
+          return []
+        }
+        console.error("[v0] DataService getPlayerPositions error:", error)
+        return []
+      }
+
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getPlayerPositions caught error:", err)
+      return []
+    }
+  }
+
+  async addPlayerPosition(position: Omit<PlayerPosition, 'id' | 'created_at' | 'updated_at'>): Promise<PlayerPosition> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .insert([position])
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService addPlayerPosition error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService addPlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async updatePlayerPosition(id: string, updates: Partial<PlayerPosition>): Promise<PlayerPosition> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { data, error } = await this.supabase
+        .from('player_positions')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error("[v0] DataService updatePlayerPosition error:", error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error("[v0] DataService updatePlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async deletePlayerPosition(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      const { error } = await this.supabase
+        .from('player_positions')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        console.error("[v0] DataService deletePlayerPosition error:", error)
+        throw error
+      }
+    } catch (err) {
+      console.error("[v0] DataService deletePlayerPosition caught error:", err)
+      throw err
+    }
+  }
+
+  async setPlayerPositionPrimary(playerId: string, positionId: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    try {
+      // First, unset any current primary position for this player
+      const { error: unsetError } = await this.supabase
+        .from('player_positions')
+        .update({ is_primary: false })
+        .eq('player_id', playerId)
+
+      if (unsetError) {
+        console.error("[v0] DataService setPlayerPositionPrimary unset error:", unsetError)
+        throw unsetError
+      }
+
+      // Then set the new primary position
+      const { error: setError } = await this.supabase
+        .from('player_positions')
+        .update({ is_primary: true })
+        .eq('id', positionId)
+
+      if (setError) {
+        console.error("[v0] DataService setPlayerPositionPrimary set error:", setError)
+        throw setError
+      }
+    } catch (err) {
+      console.error("[v0] DataService setPlayerPositionPrimary caught error:", err)
+      throw err
+    }
+  }
+
+  // Injuries
+  async getInjuries(): Promise<Injury[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('injuries')
+        .select('*')
+        .order('injury_date', { ascending: false })
+      if (error) {
+        if (error.code === 'PGRST205') return []
+        console.error("[v0] DataService getInjuries error:", error)
+        return []
+      }
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getInjuries caught error:", err)
+      return []
+    }
+  }
+
+  async addInjury(injury: Omit<Injury, 'id' | 'created_at' | 'updated_at'>): Promise<Injury> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('injuries')
+      .insert([injury])
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async updateInjury(id: string, updates: Partial<Injury>): Promise<Injury> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('injuries')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async deleteInjury(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase.from('injuries').delete().eq('id', id)
+    if (error) throw error
+  }
+
+  // Honours
+  async getHonours(): Promise<Honour[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('honours')
+        .select('*')
+        .order('year', { ascending: false })
+      if (error) {
+        if (error.code === 'PGRST205') return []
+        console.error("[v0] DataService getHonours error:", error)
+        return []
+      }
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getHonours caught error:", err)
+      return []
+    }
+  }
+
+  async addHonour(honour: Omit<Honour, 'id' | 'created_at' | 'updated_at'>): Promise<Honour> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('honours')
+      .insert([honour])
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async updateHonour(id: string, updates: Partial<Honour>): Promise<Honour> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('honours')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async deleteHonour(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase.from('honours').delete().eq('id', id)
+    if (error) throw error
+  }
+
+  // Trophies
+  async getTrophies(): Promise<Trophy[]> {
+    if (!this.supabase) return []
+    try {
+      const { data, error } = await this.supabase
+        .from('trophies')
+        .select('*')
+        .order('year', { ascending: false })
+      if (error) {
+        if (error.code === 'PGRST205') return []
+        console.error("[v0] DataService getTrophies error:", error)
+        return []
+      }
+      return data || []
+    } catch (err) {
+      console.error("[v0] DataService getTrophies caught error:", err)
+      return []
+    }
+  }
+
+  async addTrophy(trophy: Omit<Trophy, 'id' | 'created_at' | 'updated_at'>): Promise<Trophy> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('trophies')
+      .insert([trophy])
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async updateTrophy(id: string, updates: Partial<Trophy>): Promise<Trophy> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { data, error } = await this.supabase
+      .from('trophies')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  }
+
+  async deleteTrophy(id: string): Promise<void> {
+    if (!this.supabase) throw new Error('Supabase not configured')
+    const { error } = await this.supabase.from('trophies').delete().eq('id', id)
+    if (error) throw error
   }
 
   subscribeToPlayers(callback: DataCallback<Player>, onError?: ErrorCallback): () => void {

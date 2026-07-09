@@ -9,44 +9,46 @@ export async function PUT(
     const supabase = createAdminClient()
     const playerNum = parseInt(params.num)
 
-    if (!playerNum) {
+    if (!playerNum || isNaN(playerNum)) {
       return NextResponse.json(
-        { error: 'Player number is required' },
+        { error: 'Player number is required and must be valid' },
         { status: 400 }
       )
     }
 
     const body = await request.json()
 
+    // Build update object with only defined fields, filtering out NaN values
+    const updateData: Record<string, any> = {
+      updated_at: new Date().toISOString(),
+    }
+
+    // List of allowed fields to update
+    const allowedFields = [
+      'full_name', 'name', 'position', 'age', 'hometown', 'bio',
+      'goals', 'assists', 'appearances', 'minutes_played', 'pass_accuracy',
+      'chances_created', 'yellow_cards', 'red_cards', 'pace', 'shooting',
+      'passing', 'dribbling', 'defending', 'physical', 'foot', 'status',
+      'image_url', 'club', 'nationality', 'date_of_birth', 'join_date'
+    ]
+
+    // Only include fields that are present and valid in the request
+    for (const field of allowedFields) {
+      if (field in body) {
+        const value = body[field]
+        // Skip NaN or undefined values
+        if (value !== undefined && (typeof value !== 'number' || !isNaN(value))) {
+          updateData[field] = value
+        }
+      }
+    }
+
+    console.log('[v0] Updating player', playerNum, 'with data:', updateData)
+
     // Update player in database
     const { data, error } = await supabase
       .from('players')
-      .update({
-        full_name: body.full_name,
-        name: body.name,
-        position: body.position,
-        age: body.age,
-        hometown: body.hometown,
-        bio: body.bio,
-        goals: body.goals,
-        assists: body.assists,
-        appearances: body.appearances,
-        minutes_played: body.minutes_played,
-        pass_accuracy: body.pass_accuracy,
-        chances_created: body.chances_created,
-        yellow_cards: body.yellow_cards,
-        red_cards: body.red_cards,
-        pace: body.pace,
-        shooting: body.shooting,
-        passing: body.passing,
-        dribbling: body.dribbling,
-        defending: body.defending,
-        physical: body.physical,
-        foot: body.foot,
-        status: body.status,
-        image_url: body.image_url,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('num', playerNum)
       .select()
 
@@ -58,10 +60,17 @@ export async function PUT(
       )
     }
 
+    if (!data || data.length === 0) {
+      return NextResponse.json(
+        { error: 'Player not found' },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json(
       { 
         message: 'Player updated successfully',
-        data: data?.[0]
+        data: data[0]
       },
       { status: 200 }
     )

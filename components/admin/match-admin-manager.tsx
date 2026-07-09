@@ -66,7 +66,17 @@ export function MatchAdminManager({ matches, onSave, onDelete }: MatchAdminManag
 
     setLoading(true)
     try {
-      await onSave(editingMatch)
+      // Clean match data before sending - handle type conversion
+      const cleanedMatch = {
+        ...editingMatch,
+        // Convert numeric strings to numbers, handling empty values
+        home_score: editingMatch.home_score !== undefined && editingMatch.home_score !== '' ? Number(editingMatch.home_score) : null,
+        away_score: editingMatch.away_score !== undefined && editingMatch.away_score !== '' ? Number(editingMatch.away_score) : null,
+        attendance: editingMatch.attendance !== undefined && editingMatch.attendance !== '' ? Number(editingMatch.attendance) : null,
+        weather_temp: editingMatch.weather_temp !== undefined && editingMatch.weather_temp !== '' ? Number(editingMatch.weather_temp) : null,
+      }
+      
+      await onSave(cleanedMatch)
       setIsFormOpen(false)
       setEditingMatch(null)
     } catch (err) {

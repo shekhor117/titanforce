@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { getDataService } from '@/lib/data-service'
+import { PlayerPositionManager } from '@/components/admin/player-position-manager'
 import type { Player } from '@/lib/data-service'
 
 export default function PlayerEditPage() {
@@ -44,10 +45,19 @@ export default function PlayerEditPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!player) return
     const { name, value } = e.target
-    setPlayer({
-      ...player,
-      [name]: name.includes('_id') || name.includes('num') || name.includes('age') ? parseInt(value) : value,
-    })
+    
+    // Handle numeric fields
+    if (name.includes('_id') || name.includes('num') || name.includes('age') || name.includes('height') || name.includes('weight')) {
+      setPlayer({
+        ...player,
+        [name]: value === '' ? null : parseInt(value),
+      })
+    } else {
+      setPlayer({
+        ...player,
+        [name]: value,
+      })
+    }
   }
 
   const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +65,7 @@ export default function PlayerEditPage() {
     const { name, value } = e.target
     setPlayer({
       ...player,
-      [name]: parseInt(value),
+      [name]: value === '' ? null : parseInt(value),
     })
   }
 
@@ -64,14 +74,28 @@ export default function PlayerEditPage() {
     try {
       setSaving(true)
       setError(null)
+      
+      // Exclude positions array and clean NaN/invalid values
+      const { positions, ...playerData } = player
+      
+      // Remove NaN values and keep only valid data
+      const cleanedData = Object.fromEntries(
+        Object.entries(playerData).filter(([, value]) => {
+          if (value === null || value === undefined) return true
+          if (typeof value === 'number' && isNaN(value)) return false
+          return true
+        })
+      )
+      
       const response = await fetch(`/api/admin/players/${player.num}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(player),
+        body: JSON.stringify(cleanedData),
       })
 
       if (!response.ok) {
-        throw new Error(isBn ? 'আপডেট ব্যর্থ হয়েছে' : 'Failed to update player')
+        const errorData = await response.json()
+        throw new Error(errorData.error || (isBn ? 'আপডেট ব্যর্থ হয়েছে' : 'Failed to update player'))
       }
 
       setSuccess(true)
@@ -79,6 +103,7 @@ export default function PlayerEditPage() {
         router.back()
       }, 2000)
     } catch (err) {
+      console.error('[v0] Error saving player:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setSaving(false)
@@ -335,6 +360,14 @@ export default function PlayerEditPage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Position Manager */}
+          <div className="neo-card p-6 md:p-8 rounded-2xl">
+            <h2 className={`text-2xl font-bold mb-6 ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+              {isBn ? 'অবস্থান পরিচালনা' : 'Manage Positions'}
+            </h2>
+            <PlayerPositionManager playerNum={player.num} />
           </div>
 
           {/* Save Button */}
