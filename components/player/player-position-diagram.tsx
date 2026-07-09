@@ -44,16 +44,45 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
         {isBn ? 'অবস্থান' : 'Position'}
       </h3>
 
-      <div className="relative w-full aspect-[2/3] bg-gradient-to-b from-green-900/30 to-green-800/20 rounded-lg border-2 border-green-600/40 overflow-hidden">
-        {/* Field lines */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <div className="relative w-full aspect-[2/3] bg-gradient-to-b from-green-800 to-green-900 rounded-lg border-2 border-green-600/60 overflow-hidden">
+        {/* Field lines - FotMob style */}
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+          {/* Field background */}
+          <rect width="100" height="100" fill="#1b5e35" />
+          
+          {/* Subtle grid pattern */}
+          <defs>
+            <pattern id="fieldGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(74, 222, 128, 0.08)" strokeWidth="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100" height="100" fill="url(#fieldGrid)" />
+          
+          {/* Boundary lines */}
+          <rect x="0" y="0" width="100" height="100" fill="none" stroke="rgba(74, 222, 128, 0.4)" strokeWidth="1.5" />
+          
           {/* Center line */}
-          <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(34, 197, 94, 0.2)" strokeWidth="0.5" />
+          <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(74, 222, 128, 0.3)" strokeWidth="0.8" />
+          
           {/* Center circle */}
-          <circle cx="50" cy="50" r="15" fill="none" stroke="rgba(34, 197, 94, 0.2)" strokeWidth="0.5" />
+          <circle cx="50" cy="50" r="12" fill="none" stroke="rgba(74, 222, 128, 0.35)" strokeWidth="0.8" />
+          
+          {/* Center spot */}
+          <circle cx="50" cy="50" r="1.5" fill="rgba(74, 222, 128, 0.5)" />
+          
           {/* Penalty boxes */}
-          <rect x="0" y="35" width="20" height="30" fill="none" stroke="rgba(34, 197, 94, 0.2)" strokeWidth="0.5" />
-          <rect x="80" y="35" width="20" height="30" fill="none" stroke="rgba(34, 197, 94, 0.2)" strokeWidth="0.5" />
+          <rect x="0" y="35" width="18" height="30" fill="none" stroke="rgba(74, 222, 128, 0.3)" strokeWidth="0.8" />
+          <rect x="82" y="35" width="18" height="30" fill="none" stroke="rgba(74, 222, 128, 0.3)" strokeWidth="0.8" />
+          
+          {/* Goal areas */}
+          <rect x="0" y="42" width="8" height="16" fill="none" stroke="rgba(74, 222, 128, 0.25)" strokeWidth="0.6" />
+          <rect x="92" y="42" width="8" height="16" fill="none" stroke="rgba(74, 222, 128, 0.25)" strokeWidth="0.6" />
+          
+          {/* Corner arcs */}
+          <circle cx="0" cy="0" r="1.5" fill="none" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="0.5" />
+          <circle cx="100" cy="0" r="1.5" fill="none" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="0.5" />
+          <circle cx="0" cy="100" r="1.5" fill="none" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="0.5" />
+          <circle cx="100" cy="100" r="1.5" fill="none" stroke="rgba(74, 222, 128, 0.2)" strokeWidth="0.5" />
         </svg>
 
         {/* Player position indicator */}
