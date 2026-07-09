@@ -123,6 +123,31 @@ export async function POST(request: NextRequest) {
     if (body.result !== undefined && body.result !== null) matchData.result = body.result
     if (body.season_year !== undefined && body.season_year !== null) matchData.season_year = body.season_year
     if (body.notes !== undefined && body.notes !== null) matchData.notes = body.notes
+    if (body.referee !== undefined && body.referee !== null) matchData.referee = body.referee
+    if (body.weather_condition !== undefined && body.weather_condition !== null) matchData.weather_condition = body.weather_condition
+    
+    // Handle statistics fields
+    const statsFields = ['home_possession', 'away_possession', 'home_shots', 'away_shots', 'home_shots_on_target', 'away_shots_on_target',
+                        'home_corners', 'away_corners', 'home_fouls', 'away_fouls', 'home_yellow_cards', 'away_yellow_cards', 'home_red_cards', 'away_red_cards']
+    for (const field of statsFields) {
+      if (body[field] !== undefined && body[field] !== null && !isNaN(Number(body[field]))) {
+        matchData[field] = Number(body[field])
+      }
+    }
+    
+    // Handle decimal fields
+    const decimalFields = ['home_pass_accuracy', 'away_pass_accuracy', 'home_xg', 'away_xg', 'weather_wind_speed']
+    for (const field of decimalFields) {
+      if (body[field] !== undefined && body[field] !== null && !isNaN(Number(body[field]))) {
+        matchData[field] = parseFloat(body[field])
+      }
+    }
+    
+    // Handle JSON fields
+    if (body.home_lineup !== undefined && body.home_lineup !== null) matchData.home_lineup = body.home_lineup
+    if (body.away_lineup !== undefined && body.away_lineup !== null) matchData.away_lineup = body.away_lineup
+    if (body.goals !== undefined && body.goals !== null) matchData.goals = body.goals
+    if (body.events !== undefined && body.events !== null) matchData.events = body.events
 
     // Use admin client for database operations
     const supabase = createAdminClient()
@@ -194,9 +219,43 @@ export async function PUT(request: NextRequest) {
     if (updates.result !== undefined && updates.result !== null) matchData.result = updates.result
     if (updates.season_year !== undefined && updates.season_year !== null) matchData.season_year = updates.season_year
     if (updates.notes !== undefined && updates.notes !== null) matchData.notes = updates.notes
+    if (updates.referee !== undefined && updates.referee !== null) matchData.referee = updates.referee
+    if (updates.weather_condition !== undefined && updates.weather_condition !== null) matchData.weather_condition = updates.weather_condition
+    
+    // Handle possession and shot statistics
+    if (updates.home_possession !== undefined && updates.home_possession !== null && !isNaN(Number(updates.home_possession))) {
+      matchData.home_possession = Number(updates.home_possession)
+    }
+    if (updates.away_possession !== undefined && updates.away_possession !== null && !isNaN(Number(updates.away_possession))) {
+      matchData.away_possession = Number(updates.away_possession)
+    }
+    
+    // Handle additional statistics
+    const statsFields = ['home_shots', 'away_shots', 'home_shots_on_target', 'away_shots_on_target', 'home_corners', 'away_corners', 
+                         'home_fouls', 'away_fouls', 'home_yellow_cards', 'away_yellow_cards', 'home_red_cards', 'away_red_cards']
+    for (const field of statsFields) {
+      if (updates[field] !== undefined && updates[field] !== null && !isNaN(Number(updates[field]))) {
+        matchData[field] = Number(updates[field])
+      }
+    }
+    
+    // Handle pass accuracy and xG
+    const decimalFields = ['home_pass_accuracy', 'away_pass_accuracy', 'home_xg', 'away_xg', 'weather_wind_speed']
+    for (const field of decimalFields) {
+      if (updates[field] !== undefined && updates[field] !== null && !isNaN(Number(updates[field]))) {
+        matchData[field] = parseFloat(updates[field])
+      }
+    }
+    
+    // Handle JSON fields (lineup, goals, events)
+    if (updates.home_lineup !== undefined && updates.home_lineup !== null) matchData.home_lineup = updates.home_lineup
+    if (updates.away_lineup !== undefined && updates.away_lineup !== null) matchData.away_lineup = updates.away_lineup
+    if (updates.goals !== undefined && updates.goals !== null) matchData.goals = updates.goals
+    if (updates.events !== undefined && updates.events !== null) matchData.events = updates.events
+    
+    // Legacy field names support
     if (updates.lineup_data !== undefined && updates.lineup_data !== null) matchData.lineup_data = updates.lineup_data
     if (updates.statistics_data !== undefined && updates.statistics_data !== null) matchData.statistics_data = updates.statistics_data
-    if (updates.goals !== undefined && updates.goals !== null) matchData.goals = updates.goals
     
     // Always add updated_at timestamp
     matchData.updated_at = new Date().toISOString()
