@@ -92,20 +92,8 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* Hero Section with Video Background */}
+      {/* Hero Section */}
       <section className="hero-gradient relative overflow-hidden py-8 sm:py-12 md:py-16 lg:py-24">
-        {/* Video Background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
-        >
-          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/web%20video%202-oXW9XpXlAXTxqLFZzIUur2nfSGubDR.mp4" type="video/mp4" />
-        </video>
-
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-1">
           <div className="absolute top-[-100px] left-[-100px] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
