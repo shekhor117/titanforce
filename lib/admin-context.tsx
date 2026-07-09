@@ -37,7 +37,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true
     let subscription: any = null
-    let timeoutId: any = null
+    let timeoutId: NodeJS.Timeout | null = null
     
     const initializeAuth = async () => {
       try {
@@ -51,15 +51,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         const supabase = getSupabaseClient()
         
-        // Safety timeout - if initialization takes more than 5 seconds, mark as initialized anyway
-        timeoutId = setTimeout(() => {
-          if (isMounted && !isInitialized) {
-            console.warn('[v0] Admin initialization timeout - marking as initialized')
-            setIsInitialized(true)
-          }
-        }, 5000)
-        
-        // Set up auth state change listener first (non-blocking)
+        // Set up auth state change listener
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
           async (_event, session) => {
             if (!isMounted) return
@@ -87,8 +79,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session (non-blocking) with timeout
-        const sessionPromise = supabase.auth.getSession().then(({ data }) => {
+        // Check for existing session
+        supabase.auth.getSession().then(({ data }) => {
           if (!isMounted) return
           
           if (data.session?.user) {
@@ -112,24 +104,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           if (isMounted) {
             setIsInitialized(true)
           }
-        })
-
-        // Timeout for session check - if it takes longer than 3 seconds, mark as initialized anyway
-        const sessionTimeout = new Promise<void>((resolve) => {
-          setTimeout(() => {
-            if (isMounted) {
-              setIsInitialized(true)
-            }
-            resolve()
-          }, 3000)
-        })
-
-        Promise.race([sessionPromise, sessionTimeout]).catch(() => {
-          // Even on error, mark as initialized
+        }).catch(() => {
+          // On error, mark as initialized
           if (isMounted) {
             setIsInitialized(true)
           }
         })
+        
+        // Safety timeout - if initialization takes longer than 8 seconds, force it
+        timeoutId = setTimeout(() => {
+          if (isMounted && !isInitialized) {
+            setIsInitialized(true)
+          }
+        }, 8000)
       } catch (err) {
         // Handle initialization error silently
         if (isMounted) setIsInitialized(true)
