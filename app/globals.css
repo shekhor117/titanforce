@@ -111,18 +111,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Respect user's motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 * {
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
@@ -150,7 +138,7 @@ html {
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.3s ease both;
+  animation: fadeUp 0.4s ease both;
   will-change: transform, opacity;
 }
 
@@ -201,7 +189,7 @@ html {
 }
 
 .animate-smooth-fade-in {
-  animation: smoothFadeIn 0.2s ease-out;
+  animation: smoothFadeIn 0.3s ease-out;
   will-change: opacity;
 }
 
@@ -249,7 +237,7 @@ canvas {
 }
 
 .hover-lift:hover {
-  animation: lift 0.15s ease forwards;
+  animation: lift 0.2s ease forwards;
   will-change: transform;
 }
 

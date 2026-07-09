@@ -30,7 +30,7 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
             className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6 w-fit"
             initial={{ opacity: skipAnimation ? 1 : 0, x: skipAnimation ? 0 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.05, duration: 0.4 }}
+            transition={{ delay: 0.1 }}
             viewport={{ once: true }}
           >
             <span className="h-px w-6 sm:w-8 bg-red-600" /> RISE LIKE TITANS
@@ -74,7 +74,7 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
             className="mt-5 sm:mt-6 text-muted-foreground max-w-md text-sm leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.4 }}
+            transition={{ delay: 0.6 }}
             viewport={{ once: true }}
           >
             Pride of Mulikandi. Power of the Titans. We are more than a club. We are a legacy in the making.
@@ -83,14 +83,14 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
             className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.4 }}
+            transition={{ delay: 0.8 }}
             viewport={{ once: true }}
           >
             <TransitionLink href="/team-squad" className="no-underline">
               <motion.button 
                 className="neo-btn-primary neo-btn group inline-flex items-center gap-2 px-5 sm:px-6 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em]"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 OUR PLAYER
               </motion.button>
@@ -98,8 +98,8 @@ function HeroComponent({ skipAnimation = false }: HeroProps) {
             <TransitionLink href="/fixtures-results" className="no-underline">
               <motion.button 
                 className="neo-btn inline-flex items-center gap-3 px-4 sm:px-5 py-3 text-[11px] sm:text-xs font-bold tracking-[0.2em]"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 MATCHES
               </motion.button>
