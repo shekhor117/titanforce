@@ -5,6 +5,9 @@ import dynamic from "next/dynamic"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { ClubInfoSection } from "@/components/club-info-section"
+import { HomeAboutSection } from "@/components/home-about-section"
+import { HomeMatchResults } from "@/components/home-match-results"
+import { HomeChallengesSection } from "@/components/home-challenges-section"
 import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
@@ -80,6 +83,15 @@ export default function Home() {
       <main>
         <Hero skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
+        
+        {/* About Section */}
+        <HomeAboutSection />
+        
+        {/* Match Results */}
+        <HomeMatchResults />
+        
+        {/* Challenges Section */}
+        <HomeChallengesSection />
         
         {/* Three Column Section */}
         <section className="py-12 md:py-16 px-4 bg-background">
