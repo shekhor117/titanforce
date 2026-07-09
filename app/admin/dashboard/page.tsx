@@ -12,7 +12,8 @@ import {
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
   Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon, Grid3X3, BookOpen,
-  MessageCircle, ThumbsUp, Check, Lock, Mail as MailIcon, UserCheck
+  MessageCircle, ThumbsUp, Check, Lock, Mail as MailIcon, UserCheck, Calendar as CalendarIcon,
+  Briefcase, Users as UsersIcon, Star, Zap as ZapIcon, TrendingUp as TrendingUpIcon2, MapPin
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -336,7 +337,7 @@ export default function AdminDashboard() {
     },
     { 
       label: isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management", 
-      description: isBn ? "সমস্ত ব্যবহারকারী অ্যাকাউন্ট পরিচালন��� করুন" : "Manage all user accounts",
+      description: isBn ? "সমস্ত ব্যবহ��রকারী অ্যাকাউন্ট পরিচালন��� করুন" : "Manage all user accounts",
       href: "/admin/users", 
       icon: <Users className="w-5 h-5" />,
       color: "text-cyan-400",
@@ -485,6 +486,54 @@ export default function AdminDashboard() {
       icon: <UserCheck className="w-5 h-5" />,
       color: "text-teal-400",
       bgColor: "bg-teal-500/10"
+    },
+    { 
+      label: isBn ? "ইভেন্ট" : "Events", 
+      description: isBn ? "ক্লাব ইভেন্ট এবং ক্যালেন্ডার পরিচালনা করুন" : "Manage club events and calendar",
+      href: "/admin/events", 
+      icon: <CalendarIcon className="w-5 h-5" />,
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/10"
+    },
+    { 
+      label: isBn ? "স্পন্সর" : "Sponsors", 
+      description: isBn ? "স্পন্সরশিপ এবং অংশীদারিত্ব পরিচালনা করুন" : "Manage sponsorships and partnerships",
+      href: "/admin/sponsors", 
+      icon: <Briefcase className="w-5 h-5" />,
+      color: "text-amber-400",
+      bgColor: "bg-amber-500/10"
+    },
+    { 
+      label: isBn ? "সদস্যতা" : "Subscriptions", 
+      description: isBn ? "ব্যবহারকারী সদস্যতা পরিচালনা করুন" : "Manage user subscriptions",
+      href: "/admin/subscriptions", 
+      icon: <Bell className="w-5 h-5" />,
+      color: "text-pink-400",
+      bgColor: "bg-pink-500/10"
+    },
+    { 
+      label: isBn ? "অর্জন" : "Achievements", 
+      description: isBn ? "ব্যাজ এবং অর্জন পরিচালনা করুন" : "Manage badges and achievements",
+      href: "/admin/achievements", 
+      icon: <Star className="w-5 h-5" />,
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-500/10"
+    },
+    { 
+      label: isBn ? "ভেন্যু" : "Venues", 
+      description: isBn ? "স্টেডিয়াম এবং ভেন্যু তথ্য পরিচালনা করুন" : "Manage stadiums and venues",
+      href: "/admin/venues", 
+      icon: <MapPin className="w-5 h-5" />,
+      color: "text-green-400",
+      bgColor: "bg-green-500/10"
+    },
+    { 
+      label: isBn ? "কর্মক্ষমতা" : "Performance", 
+      description: isBn ? "পারফরম্যান্স মেট্রিক্স ট্র্যাক করুন" : "Track performance metrics",
+      href: "/admin/performance-metrics", 
+      icon: <ZapIcon className="w-5 h-5" />,
+      color: "text-fuchsia-400",
+      bgColor: "bg-fuchsia-500/10"
     },
   ]
 

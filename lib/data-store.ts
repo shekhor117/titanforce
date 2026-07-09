@@ -758,6 +758,86 @@ export interface UserRole {
   updatedAt: string
 }
 
+// Event/Calendar type
+export interface Event {
+  id: string
+  title: string
+  description: string
+  date: string
+  time: string
+  location: string
+  type: "match" | "training" | "media" | "community" | "other"
+  isPublished: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Sponsor type
+export interface Sponsor {
+  id: string
+  name: string
+  logo?: string
+  description: string
+  website?: string
+  contactEmail?: string
+  tier: "platinum" | "gold" | "silver" | "bronze"
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Subscription type
+export interface Subscription {
+  id: string
+  userId: string
+  email: string
+  type: "newsletter" | "match-updates" | "offers" | "all"
+  isActive: boolean
+  subscribedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+// Achievement/Badge type
+export interface Achievement {
+  id: string
+  title: string
+  description: string
+  icon?: string
+  category: "player" | "team" | "milestone" | "special"
+  criteria?: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Venue/Stadium type
+export interface Venue {
+  id: string
+  name: string
+  address: string
+  city: string
+  capacity: number
+  facilities: string[]
+  coordinates?: { lat: number; lng: number }
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Performance Metric type
+export interface PerformanceMetric {
+  id: string
+  playerId?: string
+  matchId?: string
+  metricType: "speed" | "accuracy" | "possession" | "assists" | "passes" | "tackles"
+  value: number
+  unit: string
+  recordedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -800,6 +880,12 @@ const STORAGE_KEYS = {
   trophies: "titanforce_trophies",
   emailTemplates: "titanforce_email_templates",
   userRoles: "titanforce_user_roles",
+  events: "titanforce_events",
+  sponsors: "titanforce_sponsors",
+  subscriptions: "titanforce_subscriptions",
+  achievements: "titanforce_achievements",
+  venues: "titanforce_venues",
+  performanceMetrics: "titanforce_performance_metrics",
   visitorId: "titanforce_visitor_id"
 }
 
@@ -1918,6 +2004,172 @@ export const dataStore = {
     if (role) {
       dataStore.addActivityLog({ action: "delete", entity: "userrole", entityId: id, description: `Deleted user role "${role.name}"` })
     }
+  },
+
+  // Event CRUD
+  getEvents: (): Event[] => getFromStorage(STORAGE_KEYS.events, []),
+  setEvents: (events: Event[]) => setToStorage(STORAGE_KEYS.events, events),
+  addEvent: (event: Omit<Event, "id" | "createdAt" | "updatedAt">) => {
+    const events = dataStore.getEvents()
+    const newEvent = { ...event, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setEvents([...events, newEvent])
+    dataStore.addActivityLog({ action: "create", entity: "event", entityId: newEvent.id, description: `Added event "${event.title}"` })
+    return newEvent
+  },
+  updateEvent: (id: string, updates: Partial<Event>) => {
+    const events = dataStore.getEvents()
+    const index = events.findIndex(e => e.id === id)
+    if (index !== -1) {
+      const oldTitle = events[index].title
+      events[index] = { ...events[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setEvents(events)
+      dataStore.addActivityLog({ action: "update", entity: "event", entityId: id, description: `Updated event "${oldTitle}"` })
+    }
+  },
+  deleteEvent: (id: string) => {
+    const events = dataStore.getEvents()
+    const event = events.find(e => e.id === id)
+    dataStore.setEvents(events.filter(e => e.id !== id))
+    if (event) {
+      dataStore.addActivityLog({ action: "delete", entity: "event", entityId: id, description: `Deleted event "${event.title}"` })
+    }
+  },
+
+  // Sponsor CRUD
+  getSponsors: (): Sponsor[] => getFromStorage(STORAGE_KEYS.sponsors, []),
+  setSponsors: (sponsors: Sponsor[]) => setToStorage(STORAGE_KEYS.sponsors, sponsors),
+  addSponsor: (sponsor: Omit<Sponsor, "id" | "createdAt" | "updatedAt">) => {
+    const sponsors = dataStore.getSponsors()
+    const newSponsor = { ...sponsor, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setSponsors([...sponsors, newSponsor])
+    dataStore.addActivityLog({ action: "create", entity: "sponsor", entityId: newSponsor.id, description: `Added sponsor "${sponsor.name}"` })
+    return newSponsor
+  },
+  updateSponsor: (id: string, updates: Partial<Sponsor>) => {
+    const sponsors = dataStore.getSponsors()
+    const index = sponsors.findIndex(s => s.id === id)
+    if (index !== -1) {
+      const oldName = sponsors[index].name
+      sponsors[index] = { ...sponsors[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setSponsors(sponsors)
+      dataStore.addActivityLog({ action: "update", entity: "sponsor", entityId: id, description: `Updated sponsor "${oldName}"` })
+    }
+  },
+  deleteSponsor: (id: string) => {
+    const sponsors = dataStore.getSponsors()
+    const sponsor = sponsors.find(s => s.id === id)
+    dataStore.setSponsors(sponsors.filter(s => s.id !== id))
+    if (sponsor) {
+      dataStore.addActivityLog({ action: "delete", entity: "sponsor", entityId: id, description: `Deleted sponsor "${sponsor.name}"` })
+    }
+  },
+
+  // Subscription CRUD
+  getSubscriptions: (): Subscription[] => getFromStorage(STORAGE_KEYS.subscriptions, []),
+  setSubscriptions: (subscriptions: Subscription[]) => setToStorage(STORAGE_KEYS.subscriptions, subscriptions),
+  addSubscription: (subscription: Omit<Subscription, "id" | "createdAt" | "updatedAt">) => {
+    const subscriptions = dataStore.getSubscriptions()
+    const newSubscription = { ...subscription, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setSubscriptions([...subscriptions, newSubscription])
+    dataStore.addActivityLog({ action: "create", entity: "subscription", entityId: newSubscription.id, description: `Added subscription for ${subscription.email}` })
+    return newSubscription
+  },
+  updateSubscription: (id: string, updates: Partial<Subscription>) => {
+    const subscriptions = dataStore.getSubscriptions()
+    const index = subscriptions.findIndex(s => s.id === id)
+    if (index !== -1) {
+      subscriptions[index] = { ...subscriptions[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setSubscriptions(subscriptions)
+      dataStore.addActivityLog({ action: "update", entity: "subscription", entityId: id, description: "Updated subscription" })
+    }
+  },
+  deleteSubscription: (id: string) => {
+    const subscriptions = dataStore.getSubscriptions()
+    dataStore.setSubscriptions(subscriptions.filter(s => s.id !== id))
+    dataStore.addActivityLog({ action: "delete", entity: "subscription", entityId: id, description: "Deleted subscription" })
+  },
+
+  // Achievement CRUD
+  getAchievements: (): Achievement[] => getFromStorage(STORAGE_KEYS.achievements, []),
+  setAchievements: (achievements: Achievement[]) => setToStorage(STORAGE_KEYS.achievements, achievements),
+  addAchievement: (achievement: Omit<Achievement, "id" | "createdAt" | "updatedAt">) => {
+    const achievements = dataStore.getAchievements()
+    const newAchievement = { ...achievement, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setAchievements([...achievements, newAchievement])
+    dataStore.addActivityLog({ action: "create", entity: "achievement", entityId: newAchievement.id, description: `Added achievement "${achievement.title}"` })
+    return newAchievement
+  },
+  updateAchievement: (id: string, updates: Partial<Achievement>) => {
+    const achievements = dataStore.getAchievements()
+    const index = achievements.findIndex(a => a.id === id)
+    if (index !== -1) {
+      const oldTitle = achievements[index].title
+      achievements[index] = { ...achievements[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setAchievements(achievements)
+      dataStore.addActivityLog({ action: "update", entity: "achievement", entityId: id, description: `Updated achievement "${oldTitle}"` })
+    }
+  },
+  deleteAchievement: (id: string) => {
+    const achievements = dataStore.getAchievements()
+    const achievement = achievements.find(a => a.id === id)
+    dataStore.setAchievements(achievements.filter(a => a.id !== id))
+    if (achievement) {
+      dataStore.addActivityLog({ action: "delete", entity: "achievement", entityId: id, description: `Deleted achievement "${achievement.title}"` })
+    }
+  },
+
+  // Venue CRUD
+  getVenues: (): Venue[] => getFromStorage(STORAGE_KEYS.venues, []),
+  setVenues: (venues: Venue[]) => setToStorage(STORAGE_KEYS.venues, venues),
+  addVenue: (venue: Omit<Venue, "id" | "createdAt" | "updatedAt">) => {
+    const venues = dataStore.getVenues()
+    const newVenue = { ...venue, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setVenues([...venues, newVenue])
+    dataStore.addActivityLog({ action: "create", entity: "venue", entityId: newVenue.id, description: `Added venue "${venue.name}"` })
+    return newVenue
+  },
+  updateVenue: (id: string, updates: Partial<Venue>) => {
+    const venues = dataStore.getVenues()
+    const index = venues.findIndex(v => v.id === id)
+    if (index !== -1) {
+      const oldName = venues[index].name
+      venues[index] = { ...venues[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setVenues(venues)
+      dataStore.addActivityLog({ action: "update", entity: "venue", entityId: id, description: `Updated venue "${oldName}"` })
+    }
+  },
+  deleteVenue: (id: string) => {
+    const venues = dataStore.getVenues()
+    const venue = venues.find(v => v.id === id)
+    dataStore.setVenues(venues.filter(v => v.id !== id))
+    if (venue) {
+      dataStore.addActivityLog({ action: "delete", entity: "venue", entityId: id, description: `Deleted venue "${venue.name}"` })
+    }
+  },
+
+  // Performance Metric CRUD
+  getPerformanceMetrics: (): PerformanceMetric[] => getFromStorage(STORAGE_KEYS.performanceMetrics, []),
+  setPerformanceMetrics: (metrics: PerformanceMetric[]) => setToStorage(STORAGE_KEYS.performanceMetrics, metrics),
+  addPerformanceMetric: (metric: Omit<PerformanceMetric, "id" | "createdAt" | "updatedAt">) => {
+    const metrics = dataStore.getPerformanceMetrics()
+    const newMetric = { ...metric, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setPerformanceMetrics([...metrics, newMetric])
+    dataStore.addActivityLog({ action: "create", entity: "performancemetric", entityId: newMetric.id, description: `Added performance metric for ${metric.metricType}` })
+    return newMetric
+  },
+  updatePerformanceMetric: (id: string, updates: Partial<PerformanceMetric>) => {
+    const metrics = dataStore.getPerformanceMetrics()
+    const index = metrics.findIndex(m => m.id === id)
+    if (index !== -1) {
+      metrics[index] = { ...metrics[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setPerformanceMetrics(metrics)
+      dataStore.addActivityLog({ action: "update", entity: "performancemetric", entityId: id, description: "Updated performance metric" })
+    }
+  },
+  deletePerformanceMetric: (id: string) => {
+    const metrics = dataStore.getPerformanceMetrics()
+    dataStore.setPerformanceMetrics(metrics.filter(m => m.id !== id))
+    dataStore.addActivityLog({ action: "delete", entity: "performancemetric", entityId: id, description: "Deleted performance metric" })
   },
 
   // Export all data
