@@ -97,22 +97,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Map field names from admin form to database schema
-    const matchData = {
+    const matchData: Record<string, any> = {
       home: body.home_team || body.home,
       away: body.away_team || body.away,
       date: body.match_date || body.date,
-      time: body.match_time || body.time,
+      time: body.match_time || body.time || '',
       venue: body.venue || '',
       status: body.status || 'upcoming',
-      home_score: body.home_score,
-      away_score: body.away_score,
-      result: body.result,
-      season_year: body.season_year,
-      notes: body.notes,
       lineup_data: body.lineup_data || {},
       statistics_data: body.statistics_data || {},
       goals: body.goals || []
     }
+    
+    // Handle optional numeric fields
+    if (body.home_score !== undefined && body.home_score !== null && !isNaN(Number(body.home_score))) {
+      matchData.home_score = Number(body.home_score)
+    }
+    if (body.away_score !== undefined && body.away_score !== null && !isNaN(Number(body.away_score))) {
+      matchData.away_score = Number(body.away_score)
+    }
+    if (body.attendance !== undefined && body.attendance !== null && !isNaN(Number(body.attendance))) {
+      matchData.attendance = Number(body.attendance)
+    }
+    
+    if (body.result !== undefined && body.result !== null) matchData.result = body.result
+    if (body.season_year !== undefined && body.season_year !== null) matchData.season_year = body.season_year
+    if (body.notes !== undefined && body.notes !== null) matchData.notes = body.notes
 
     // Use admin client for database operations
     const supabase = createAdminClient()
@@ -167,16 +177,31 @@ export async function PUT(request: NextRequest) {
     if (updates.away_team || updates.away) matchData.away = updates.away_team || updates.away
     if (updates.match_date || updates.date) matchData.date = updates.match_date || updates.date
     if (updates.match_time || updates.time) matchData.time = updates.match_time || updates.time
-    if (updates.venue !== undefined) matchData.venue = updates.venue
-    if (updates.status !== undefined) matchData.status = updates.status
-    if (updates.home_score !== undefined) matchData.home_score = updates.home_score
-    if (updates.away_score !== undefined) matchData.away_score = updates.away_score
-    if (updates.result !== undefined) matchData.result = updates.result
-    if (updates.season_year !== undefined) matchData.season_year = updates.season_year
-    if (updates.notes !== undefined) matchData.notes = updates.notes
-    if (updates.lineup_data !== undefined) matchData.lineup_data = updates.lineup_data
-    if (updates.statistics_data !== undefined) matchData.statistics_data = updates.statistics_data
-    if (updates.goals !== undefined) matchData.goals = updates.goals
+    if (updates.venue !== undefined && updates.venue !== null && updates.venue !== '') matchData.venue = updates.venue
+    if (updates.status !== undefined && updates.status !== null) matchData.status = updates.status
+    
+    // Handle numeric fields - skip NaN values
+    if (updates.home_score !== undefined && updates.home_score !== null && !isNaN(Number(updates.home_score))) {
+      matchData.home_score = Number(updates.home_score)
+    }
+    if (updates.away_score !== undefined && updates.away_score !== null && !isNaN(Number(updates.away_score))) {
+      matchData.away_score = Number(updates.away_score)
+    }
+    if (updates.attendance !== undefined && updates.attendance !== null && !isNaN(Number(updates.attendance))) {
+      matchData.attendance = Number(updates.attendance)
+    }
+    
+    if (updates.result !== undefined && updates.result !== null) matchData.result = updates.result
+    if (updates.season_year !== undefined && updates.season_year !== null) matchData.season_year = updates.season_year
+    if (updates.notes !== undefined && updates.notes !== null) matchData.notes = updates.notes
+    if (updates.lineup_data !== undefined && updates.lineup_data !== null) matchData.lineup_data = updates.lineup_data
+    if (updates.statistics_data !== undefined && updates.statistics_data !== null) matchData.statistics_data = updates.statistics_data
+    if (updates.goals !== undefined && updates.goals !== null) matchData.goals = updates.goals
+    
+    // Always add updated_at timestamp
+    matchData.updated_at = new Date().toISOString()
+
+    console.log('[v0] Updating match', id, 'with data:', matchData)
 
     // Use admin client for database operations
     const supabase = createAdminClient()
