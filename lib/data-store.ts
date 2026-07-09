@@ -394,6 +394,158 @@ export interface NewsReaction {
   timestamp: string
 }
 
+// Challenge/Goals type
+export interface Challenge {
+  id: string
+  title: string
+  description: string
+  icon?: string
+  targetValue?: number
+  currentValue?: number
+  deadline?: string
+  status: "active" | "completed" | "upcoming"
+  category: "team" | "player" | "milestone"
+  reward?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// MOTM (Man of the Match) type
+export interface MOTM {
+  id: string
+  matchId: string
+  playerId: string
+  playerName: string
+  rating: number // 1-10
+  stats?: {
+    passes?: number
+    tackles?: number
+    goals?: number
+    assists?: number
+    shotAccuracy?: string
+  }
+  notes?: string
+  votesCount?: number
+  createdAt: string
+  updatedAt: string
+}
+
+// Newsletter Campaign type
+export interface NewsletterCampaign {
+  id: string
+  title: string
+  subject: string
+  content: string
+  recipients: string[] // emails
+  status: "draft" | "scheduled" | "sent"
+  scheduledFor?: string
+  sentAt?: string
+  openRate?: number
+  clickRate?: number
+  createdAt: string
+  updatedAt: string
+}
+
+// About Page Content type
+export interface AboutContent {
+  id: string
+  title: string
+  description: string
+  content: string
+  image?: string
+  sections: Array<{
+    heading: string
+    text: string
+  }>
+  createdAt: string
+  updatedAt: string
+}
+
+// Site Settings type
+export interface SiteSettings {
+  id: string
+  siteName: string
+  siteDescription: string
+  logo?: string
+  favicon?: string
+  primaryColor?: string
+  secondaryColor?: string
+  contactEmail?: string
+  contactPhone?: string
+  address?: string
+  timezone?: string
+  currency?: string
+  maintenanceMode?: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Banner/Hero Content type
+export interface Banner {
+  id: string
+  title: string
+  description?: string
+  image?: string
+  link?: string
+  buttonText?: string
+  page: "home" | "shop" | "team" | "news" | "gallery"
+  order: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Testimonial/Review type
+export interface Testimonial {
+  id: string
+  author: string
+  role?: string
+  content: string
+  rating?: number // 1-5
+  image?: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Social Media Links type
+export interface SocialLink {
+  id: string
+  platform: "facebook" | "twitter" | "instagram" | "youtube" | "tiktok" | "linkedin"
+  url: string
+  displayName?: string
+  order: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Club Info type
+export interface ClubInfo {
+  id: string
+  founded: string
+  homeGround: string
+  motto: string
+  community: string
+  createdAt: string
+  updatedAt: string
+}
+
+// Statistics/Stats type
+export interface Statistics {
+  id: string
+  totalPlayers: number
+  totalWins: number
+  totalTeams: number
+  totalFans: number
+  trophies?: number
+  matches?: number
+  goals?: number
+  description?: string
+  createdAt: string
+  updatedAt: string
+}
+
 // Storage keys
 const STORAGE_KEYS = {
   players: "titanforce_players",
@@ -410,6 +562,16 @@ const STORAGE_KEYS = {
   playerVotes: "titanforce_player_votes",
   matchVotes: "titanforce_match_votes",
   newsReactions: "titanforce_news_reactions",
+  challenges: "titanforce_challenges",
+  motm: "titanforce_motm",
+  newsletters: "titanforce_newsletters",
+  aboutContent: "titanforce_about_content",
+  siteSettings: "titanforce_site_settings",
+  banners: "titanforce_banners",
+  testimonials: "titanforce_testimonials",
+  socialLinks: "titanforce_social_links",
+  clubInfo: "titanforce_club_info",
+  statistics: "titanforce_statistics",
   visitorId: "titanforce_visitor_id"
 }
 
@@ -845,6 +1007,273 @@ export const dataStore = {
       const contacts = (getFromStorage(STORAGE_KEYS.contacts, []) as ContactMessage[]).filter(c => c.id !== id)
       setToStorage(STORAGE_KEYS.contacts, contacts)
     }
+  },
+
+  // Challenges CRUD
+  getChallenges: (): Challenge[] => getFromStorage(STORAGE_KEYS.challenges, []),
+  setChallenges: (challenges: Challenge[]) => setToStorage(STORAGE_KEYS.challenges, challenges),
+  addChallenge: (challenge: Omit<Challenge, "id" | "createdAt" | "updatedAt">) => {
+    const challenges = dataStore.getChallenges()
+    const newChallenge = {
+      ...challenge,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    dataStore.setChallenges([...challenges, newChallenge])
+    dataStore.addActivityLog({ action: "create", entity: "challenge", entityId: newChallenge.id, description: `Added challenge "${challenge.title}"` })
+    return newChallenge
+  },
+  updateChallenge: (id: string, updates: Partial<Challenge>) => {
+    const challenges = dataStore.getChallenges()
+    const index = challenges.findIndex(c => c.id === id)
+    if (index !== -1) {
+      const oldTitle = challenges[index].title
+      challenges[index] = { ...challenges[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setChallenges(challenges)
+      dataStore.addActivityLog({ action: "update", entity: "challenge", entityId: id, description: `Updated challenge "${oldTitle}"` })
+    }
+  },
+  deleteChallenge: (id: string) => {
+    const challenges = dataStore.getChallenges()
+    const challenge = challenges.find(c => c.id === id)
+    dataStore.setChallenges(challenges.filter(c => c.id !== id))
+    if (challenge) {
+      dataStore.addActivityLog({ action: "delete", entity: "challenge", entityId: id, description: `Deleted challenge "${challenge.title}"` })
+    }
+  },
+
+  // MOTM CRUD
+  getMOTMs: (): MOTM[] => getFromStorage(STORAGE_KEYS.motm, []),
+  setMOTMs: (motms: MOTM[]) => setToStorage(STORAGE_KEYS.motm, motms),
+  addMOTM: (motm: Omit<MOTM, "id" | "createdAt" | "updatedAt">) => {
+    const motms = dataStore.getMOTMs()
+    const newMOTM = {
+      ...motm,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    dataStore.setMOTMs([...motms, newMOTM])
+    dataStore.addActivityLog({ action: "create", entity: "motm", entityId: newMOTM.id, description: `Added MOTM for ${motm.playerName}` })
+    return newMOTM
+  },
+  updateMOTM: (id: string, updates: Partial<MOTM>) => {
+    const motms = dataStore.getMOTMs()
+    const index = motms.findIndex(m => m.id === id)
+    if (index !== -1) {
+      const oldPlayer = motms[index].playerName
+      motms[index] = { ...motms[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setMOTMs(motms)
+      dataStore.addActivityLog({ action: "update", entity: "motm", entityId: id, description: `Updated MOTM for ${oldPlayer}` })
+    }
+  },
+  deleteMOTM: (id: string) => {
+    const motms = dataStore.getMOTMs()
+    const motm = motms.find(m => m.id === id)
+    dataStore.setMOTMs(motms.filter(m => m.id !== id))
+    if (motm) {
+      dataStore.addActivityLog({ action: "delete", entity: "motm", entityId: id, description: `Deleted MOTM for ${motm.playerName}` })
+    }
+  },
+
+  // Newsletter CRUD
+  getNewsletters: (): NewsletterCampaign[] => getFromStorage(STORAGE_KEYS.newsletters, []),
+  setNewsletters: (newsletters: NewsletterCampaign[]) => setToStorage(STORAGE_KEYS.newsletters, newsletters),
+  addNewsletter: (newsletter: Omit<NewsletterCampaign, "id" | "createdAt" | "updatedAt">) => {
+    const newsletters = dataStore.getNewsletters()
+    const newNewsletter = {
+      ...newsletter,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    dataStore.setNewsletters([...newsletters, newNewsletter])
+    dataStore.addActivityLog({ action: "create", entity: "newsletter", entityId: newNewsletter.id, description: `Created newsletter "${newsletter.title}"` })
+    return newNewsletter
+  },
+  updateNewsletter: (id: string, updates: Partial<NewsletterCampaign>) => {
+    const newsletters = dataStore.getNewsletters()
+    const index = newsletters.findIndex(n => n.id === id)
+    if (index !== -1) {
+      const oldTitle = newsletters[index].title
+      newsletters[index] = { ...newsletters[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setNewsletters(newsletters)
+      dataStore.addActivityLog({ action: "update", entity: "newsletter", entityId: id, description: `Updated newsletter "${oldTitle}"` })
+    }
+  },
+  deleteNewsletter: (id: string) => {
+    const newsletters = dataStore.getNewsletters()
+    const newsletter = newsletters.find(n => n.id === id)
+    dataStore.setNewsletters(newsletters.filter(n => n.id !== id))
+    if (newsletter) {
+      dataStore.addActivityLog({ action: "delete", entity: "newsletter", entityId: id, description: `Deleted newsletter "${newsletter.title}"` })
+    }
+  },
+
+  // About Content CRUD
+  getAboutContent: (): AboutContent[] => getFromStorage(STORAGE_KEYS.aboutContent, []),
+  setAboutContent: (content: AboutContent[]) => setToStorage(STORAGE_KEYS.aboutContent, content),
+  addAboutContent: (content: Omit<AboutContent, "id" | "createdAt" | "updatedAt">) => {
+    const allContent = dataStore.getAboutContent()
+    const newContent = { ...content, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setAboutContent([...allContent, newContent])
+    dataStore.addActivityLog({ action: "create", entity: "about", entityId: newContent.id, description: `Added about section "${content.title}"` })
+    return newContent
+  },
+  updateAboutContent: (id: string, updates: Partial<AboutContent>) => {
+    const content = dataStore.getAboutContent()
+    const index = content.findIndex(c => c.id === id)
+    if (index !== -1) {
+      const oldTitle = content[index].title
+      content[index] = { ...content[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setAboutContent(content)
+      dataStore.addActivityLog({ action: "update", entity: "about", entityId: id, description: `Updated about section "${oldTitle}"` })
+    }
+  },
+  deleteAboutContent: (id: string) => {
+    const content = dataStore.getAboutContent()
+    const item = content.find(c => c.id === id)
+    dataStore.setAboutContent(content.filter(c => c.id !== id))
+    if (item) {
+      dataStore.addActivityLog({ action: "delete", entity: "about", entityId: id, description: `Deleted about section "${item.title}"` })
+    }
+  },
+
+  // Site Settings CRUD
+  getSiteSettings: (): SiteSettings | null => getFromStorage(STORAGE_KEYS.siteSettings, null),
+  setSiteSettings: (settings: SiteSettings) => setToStorage(STORAGE_KEYS.siteSettings, settings),
+  updateSiteSettings: (updates: Partial<SiteSettings>) => {
+    const current = dataStore.getSiteSettings() || { id: "1", siteName: "Titan Force", siteDescription: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setSiteSettings(updated)
+    dataStore.addActivityLog({ action: "update", entity: "settings", entityId: "1", description: "Updated site settings" })
+    return updated
+  },
+
+  // Banner CRUD
+  getBanners: (): Banner[] => getFromStorage(STORAGE_KEYS.banners, []),
+  setBanners: (banners: Banner[]) => setToStorage(STORAGE_KEYS.banners, banners),
+  addBanner: (banner: Omit<Banner, "id" | "createdAt" | "updatedAt">) => {
+    const banners = dataStore.getBanners()
+    const newBanner = { ...banner, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setBanners([...banners, newBanner])
+    dataStore.addActivityLog({ action: "create", entity: "banner", entityId: newBanner.id, description: `Added banner "${banner.title}" for ${banner.page}` })
+    return newBanner
+  },
+  updateBanner: (id: string, updates: Partial<Banner>) => {
+    const banners = dataStore.getBanners()
+    const index = banners.findIndex(b => b.id === id)
+    if (index !== -1) {
+      const oldTitle = banners[index].title
+      banners[index] = { ...banners[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setBanners(banners)
+      dataStore.addActivityLog({ action: "update", entity: "banner", entityId: id, description: `Updated banner "${oldTitle}"` })
+    }
+  },
+  deleteBanner: (id: string) => {
+    const banners = dataStore.getBanners()
+    const banner = banners.find(b => b.id === id)
+    dataStore.setBanners(banners.filter(b => b.id !== id))
+    if (banner) {
+      dataStore.addActivityLog({ action: "delete", entity: "banner", entityId: id, description: `Deleted banner "${banner.title}"` })
+    }
+  },
+
+  // Testimonial CRUD
+  getTestimonials: (): Testimonial[] => getFromStorage(STORAGE_KEYS.testimonials, []),
+  setTestimonials: (testimonials: Testimonial[]) => setToStorage(STORAGE_KEYS.testimonials, testimonials),
+  addTestimonial: (testimonial: Omit<Testimonial, "id" | "createdAt" | "updatedAt">) => {
+    const testimonials = dataStore.getTestimonials()
+    const newTestimonial = { ...testimonial, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setTestimonials([...testimonials, newTestimonial])
+    dataStore.addActivityLog({ action: "create", entity: "testimonial", entityId: newTestimonial.id, description: `Added testimonial from "${testimonial.author}"` })
+    return newTestimonial
+  },
+  updateTestimonial: (id: string, updates: Partial<Testimonial>) => {
+    const testimonials = dataStore.getTestimonials()
+    const index = testimonials.findIndex(t => t.id === id)
+    if (index !== -1) {
+      const oldAuthor = testimonials[index].author
+      testimonials[index] = { ...testimonials[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setTestimonials(testimonials)
+      dataStore.addActivityLog({ action: "update", entity: "testimonial", entityId: id, description: `Updated testimonial from "${oldAuthor}"` })
+    }
+  },
+  deleteTestimonial: (id: string) => {
+    const testimonials = dataStore.getTestimonials()
+    const testimonial = testimonials.find(t => t.id === id)
+    dataStore.setTestimonials(testimonials.filter(t => t.id !== id))
+    if (testimonial) {
+      dataStore.addActivityLog({ action: "delete", entity: "testimonial", entityId: id, description: `Deleted testimonial from "${testimonial.author}"` })
+    }
+  },
+
+  // Social Links CRUD
+  getSocialLinks: (): SocialLink[] => getFromStorage(STORAGE_KEYS.socialLinks, []),
+  setSocialLinks: (links: SocialLink[]) => setToStorage(STORAGE_KEYS.socialLinks, links),
+  addSocialLink: (link: Omit<SocialLink, "id" | "createdAt" | "updatedAt">) => {
+    const links = dataStore.getSocialLinks()
+    const newLink = { ...link, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    dataStore.setSocialLinks([...links, newLink])
+    dataStore.addActivityLog({ action: "create", entity: "sociallink", entityId: newLink.id, description: `Added ${link.platform} social link` })
+    return newLink
+  },
+  updateSocialLink: (id: string, updates: Partial<SocialLink>) => {
+    const links = dataStore.getSocialLinks()
+    const index = links.findIndex(l => l.id === id)
+    if (index !== -1) {
+      const oldPlatform = links[index].platform
+      links[index] = { ...links[index], ...updates, updatedAt: new Date().toISOString() }
+      dataStore.setSocialLinks(links)
+      dataStore.addActivityLog({ action: "update", entity: "sociallink", entityId: id, description: `Updated ${oldPlatform} social link` })
+    }
+  },
+  deleteSocialLink: (id: string) => {
+    const links = dataStore.getSocialLinks()
+    const link = links.find(l => l.id === id)
+    dataStore.setSocialLinks(links.filter(l => l.id !== id))
+    if (link) {
+      dataStore.addActivityLog({ action: "delete", entity: "sociallink", entityId: id, description: `Deleted ${link.platform} social link` })
+    }
+  },
+
+  // Club Info CRUD
+  getClubInfo: (): ClubInfo | null => getFromStorage(STORAGE_KEYS.clubInfo, null),
+  setClubInfo: (info: ClubInfo) => setToStorage(STORAGE_KEYS.clubInfo, info),
+  updateClubInfo: (updates: Partial<ClubInfo>) => {
+    const current = dataStore.getClubInfo() || { 
+      id: "1", 
+      founded: "2025", 
+      homeGround: "Mulikandi", 
+      motto: "One Team, One Dream",
+      community: "Stronger Together",
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setClubInfo(updated)
+    dataStore.addActivityLog({ action: "update", entity: "clubinfo", entityId: "1", description: "Updated club information" })
+    return updated
+  },
+
+  // Statistics CRUD
+  getStatistics: (): Statistics | null => getFromStorage(STORAGE_KEYS.statistics, null),
+  setStatistics: (stats: Statistics) => setToStorage(STORAGE_KEYS.statistics, stats),
+  updateStatistics: (updates: Partial<Statistics>) => {
+    const current = dataStore.getStatistics() || { 
+      id: "1", 
+      totalPlayers: 120, 
+      totalWins: 15, 
+      totalTeams: 8,
+      totalFans: 1000,
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    }
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() }
+    dataStore.setStatistics(updated)
+    dataStore.addActivityLog({ action: "update", entity: "statistics", entityId: "1", description: "Updated club statistics" })
+    return updated
   },
 
   // Export all data

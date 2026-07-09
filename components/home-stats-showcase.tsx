@@ -1,44 +1,39 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Users, Trophy, Users2, Heart, MapPin } from 'lucide-react'
 import { usePlayers } from '@/lib/use-data-store'
 import { ScrollProgressAnimation } from '@/components/scroll-progress-animation'
+import { dataStore } from '@/lib/data-store'
+
+const defaultStats = [
+  { icon: Users, value: '120+', label: 'PLAYERS', color: 'text-accent' },
+  { icon: Trophy, value: '15+', label: 'WINS', color: 'text-accent' },
+  { icon: Users2, value: '8', label: 'TEAMS', color: 'text-accent' },
+  { icon: Heart, value: '1', label: 'GOAL ONE VISION', color: 'text-accent' },
+  { icon: MapPin, value: '1000+', label: 'FANS', color: 'text-accent' },
+]
 
 export function HomeStatsShowcase() {
   const { players } = usePlayers()
+  const [stats, setStats] = useState(defaultStats)
 
-  const stats = [
-    {
-      icon: Users,
-      value: '120+',
-      label: 'PLAYERS',
-      color: 'text-accent'
-    },
-    {
-      icon: Trophy,
-      value: '15+',
-      label: 'WINS',
-      color: 'text-accent'
-    },
-    {
-      icon: Users2,
-      value: '8',
-      label: 'TEAMS',
-      color: 'text-accent'
-    },
-    {
-      icon: Heart,
-      value: '1',
-      label: 'GOAL ONE VISION',
-      color: 'text-accent'
-    },
-    {
-      icon: MapPin,
-      value: '1000+',
-      label: 'FANS',
-      color: 'text-accent'
-    },
-  ]
+  useEffect(() => {
+    try {
+      const statistics = dataStore.getStatistics()
+      if (statistics) {
+        setStats([
+          { icon: Users, value: `${statistics.totalPlayers}+`, label: 'PLAYERS', color: 'text-accent' },
+          { icon: Trophy, value: `${statistics.totalWins}+`, label: 'WINS', color: 'text-accent' },
+          { icon: Users2, value: `${statistics.totalTeams}`, label: 'TEAMS', color: 'text-accent' },
+          { icon: Heart, value: `${statistics.trophies || 1}`, label: 'GOAL ONE VISION', color: 'text-accent' },
+          { icon: MapPin, value: `${statistics.totalFans}+`, label: 'FANS', color: 'text-accent' },
+        ])
+      }
+    } catch (err) {
+      console.log('[v0] Failed to load statistics:', err)
+    }
+  }, [])
 
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
