@@ -52,10 +52,35 @@ export default function AdminMatchesPage() {
       setError(null)
       const method = match.id ? 'PUT' : 'POST'
       
+      // Map admin form fields to database schema
+      const dbMatch = {
+        id: match.id,
+        home: match.home_team,
+        away: match.away_team,
+        date: match.match_date,
+        time: match.match_time,
+        venue: match.venue,
+        home_score: match.home_score,
+        away_score: match.away_score,
+        status: match.status,
+        result: match.result,
+        league: match.league,
+        tournament: match.tournament,
+        referee: match.referee,
+        attendance: match.attendance,
+        weather: match.weather,
+        match_type: match.match_type,
+        man_of_the_match: match.man_of_the_match,
+        notes: match.notes,
+        lineup_data: match.lineup_data || {},
+        statistics_data: match.statistics_data || {},
+        goals: match.goals || []
+      }
+      
       const response = await fetch('/api/admin/matches', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(match)
+        body: JSON.stringify(dbMatch)
       })
 
       if (!response.ok) {

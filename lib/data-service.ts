@@ -61,6 +61,12 @@ export interface Match {
   status: 'live' | 'completed' | 'upcoming'
   result?: 'W' | 'L' | 'D'
   tournament?: string
+  match_type?: string
+  referee?: string
+  attendance?: number
+  weather?: string
+  man_of_the_match?: string
+  notes?: string
   home_lineup?: Array<{ player: string; name?: string; number: number; position?: string }>
   away_lineup?: Array<{ player: string; name?: string; number: number; position?: string }>
   homeGoals?: Array<{
@@ -78,6 +84,13 @@ export interface Match {
     type: 'Goal' | 'Yellow Card' | 'Red Card' | 'Substitution'
     minute: number
     team: 'Home' | 'Away'
+  }>
+  lineup_data?: Record<string, any>
+  statistics_data?: Record<string, any>
+  goals?: Array<{
+    player: string
+    minute: number
+    assist?: string
   }>
   created_at: string
   updated_at: string
