@@ -11,7 +11,8 @@ import {
   Users, Trophy, Handshake, Newspaper, Image, Cog, ArrowRight, 
   TrendingUp, Calendar, Mail, Activity, BarChart3, Clock, Bell, Zap,
   Heart, Target, AlertCircle, Layers, BarChart4, Frown, Edit, ShoppingBag, Package, Boxes, TrendingDown,
-  Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon, Grid3X3, BookOpen
+  Flame, Send, Settings, Type, MessageSquare, Share2, Award, Info, TrendingUpIcon, Grid3X3, BookOpen,
+  MessageCircle, ThumbsUp, Check, Lock, Mail as MailIcon, UserCheck
 } from "lucide-react"
 import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
@@ -335,7 +336,7 @@ export default function AdminDashboard() {
     },
     { 
       label: isBn ? "ব্যবহারকারী ব্যবস্থাপনা" : "User Management", 
-      description: isBn ? "সমস্ত ব্যবহারকারী অ্যাকাউন্ট পরিচালনা করুন" : "Manage all user accounts",
+      description: isBn ? "সমস্ত ব্যবহারকারী অ্যাকাউন্ট পরিচালন��� করুন" : "Manage all user accounts",
       href: "/admin/users", 
       icon: <Users className="w-5 h-5" />,
       color: "text-cyan-400",
@@ -428,6 +429,62 @@ export default function AdminDashboard() {
       icon: <BookOpen className="w-5 h-5" />,
       color: "text-rose-400",
       bgColor: "bg-rose-500/10"
+    },
+    { 
+      label: isBn ? "সংবাদ আপডেট" : "News Updates", 
+      description: isBn ? "সংবাদ আপডেট পরিচালনা করুন" : "Manage news updates",
+      href: "/admin/news-updates", 
+      icon: <MessageCircle className="w-5 h-5" />,
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10"
+    },
+    { 
+      label: isBn ? "খেলোয়াড় রেটিং" : "Player Ratings", 
+      description: isBn ? "খেলোয়াড় রেটিং পরিচালনা করুন" : "Manage player ratings",
+      href: "/admin/player-ratings", 
+      icon: <ThumbsUp className="w-5 h-5" />,
+      color: "text-yellow-400",
+      bgColor: "bg-yellow-500/10"
+    },
+    { 
+      label: isBn ? "খেলোয়াড় ভোট" : "Player Votes", 
+      description: isBn ? "খেলোয়াড় ভোট পরিচালনা করুন" : "Manage player votes",
+      href: "/admin/player-votes", 
+      icon: <Check className="w-5 h-5" />,
+      color: "text-green-400",
+      bgColor: "bg-green-500/10"
+    },
+    { 
+      label: isBn ? "ম্যাচ ভোট" : "Match Votes", 
+      description: isBn ? "ম্যাচ ভোট পরিচালনা করুন" : "Manage match votes",
+      href: "/admin/match-votes", 
+      icon: <Check className="w-5 h-5" />,
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10"
+    },
+    { 
+      label: isBn ? "সংবাদ প্রতিক্রিয়া" : "News Reactions", 
+      description: isBn ? "সংবাদ প্রতিক্রিয়া পরিচালনা করুন" : "Manage news reactions",
+      href: "/admin/news-reactions", 
+      icon: <Heart className="w-5 h-5" />,
+      color: "text-red-400",
+      bgColor: "bg-red-500/10"
+    },
+    { 
+      label: isBn ? "ইমেইল টেমপ্লেট" : "Email Templates", 
+      description: isBn ? "ইমেইল টেমপ্লেট পরিচালনা করুন" : "Manage email templates",
+      href: "/admin/email-templates", 
+      icon: <MailIcon className="w-5 h-5" />,
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10"
+    },
+    { 
+      label: isBn ? "ব্যবহারকারী ভূমিকা" : "User Roles", 
+      description: isBn ? "ব্যবহারকারী ভূমিকা এবং অনুমতি পরিচালনা করুন" : "Manage user roles and permissions",
+      href: "/admin/user-roles", 
+      icon: <UserCheck className="w-5 h-5" />,
+      color: "text-teal-400",
+      bgColor: "bg-teal-500/10"
     },
   ]
 
