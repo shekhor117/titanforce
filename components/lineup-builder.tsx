@@ -142,24 +142,45 @@ export function LineupBuilder() {
         return
       }
 
-      // Capture the field as image
+      // Capture the field as image using html2canvas
       const canvas = await html2canvas(fieldElement, {
         backgroundColor: "#1a472a",
         scale: 2,
         logging: false,
         useCORS: true,
         allowTaint: true,
+        removeContainer: false,
+        imageTimeout: 0,
+        ignoreElements: (element) => {
+          const classList = element.className
+          return typeof classList === "string" && classList.includes("hidden")
+        },
       })
 
-      // Create download link
-      const link = document.createElement("a")
-      link.download = `lineup-${selectedFormation}-${new Date().getTime()}.png`
-      link.href = canvas.toDataURL("image/png")
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      // Convert canvas to PNG blob
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          alert(isBn ? "ইমেজ তৈরি ব্যর্থ" : "Image creation failed")
+          return
+        }
+
+        // Create blob URL for PNG download
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `lineup-${selectedFormation}-${Date.now()}.png`
+        
+        // Trigger download
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        
+        // Cleanup blob URL
+        URL.revokeObjectURL(url)
+      }, "image/png", 1.0)
+
     } catch (error) {
-      console.error("[v0] Download failed:", error)
+      console.error("[v0] Lineup download error:", error)
       alert(isBn ? "ডাউনলোড ব্যর্থ হয়েছে" : "Download failed")
     }
   }
@@ -254,6 +275,7 @@ export function LineupBuilder() {
                 {isBn ? "সংরক্ষণ" : "Save"}
               </button>
               <button
+                type="button"
                 onClick={handleDownloadLineup}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-accent text-accent-foreground hover:opacity-90 transition text-sm font-semibold"
               >
