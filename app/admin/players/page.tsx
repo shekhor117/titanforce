@@ -1,36 +1,48 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Edit2, Eye } from 'lucide-react'
+import { ArrowLeft, Edit2, Eye, RefreshCw } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
-import { getDataService } from '@/lib/data-service'
 import type { Player } from '@/lib/data-service'
+import { useAdminSync } from '@/lib/use-admin-sync'
+import { AdminSyncStatus, SyncIndicator } from '@/components/admin-sync-status'
 
 export default function AdminPlayersPage() {
   const { language } = useLanguage()
   const isBn = language === 'bn'
-  const [players, setPlayers] = useState<Player[]>([])
-  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterPosition, setFilterPosition] = useState<string>('all')
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        setLoading(true)
-        const service = getDataService()
-        const data = await service.getPlayers()
-        setPlayers(data)
-      } catch (error) {
-        console.error('[v0] Error fetching players:', error)
-      } finally {
-        setLoading(false)
-      }
+  // Use admin sync hook for real-time data synchronization
+  const {
+    data: players,
+    status,
+    lastSyncTime,
+    pendingChanges,
+    conflictedItems,
+    refresh,
+    hasPendingChanges,
+    hasConflicts,
+    getPendingCount,
+    getConflictCount,
+  } = useAdminSync<Player>({
+    tableName: 'players',
+    refreshInterval: 30000, // Refresh every 30 seconds
+    onError: (error) => {
+      console.error('[v0] Admin sync error for players:', error)
+    },
+  })
+
+  const handleRefresh = async () => {
+    try {
+      setIsRefreshing(true)
+      await refresh()
+    } finally {
+      setIsRefreshing(false)
     }
-
-    fetchPlayers()
-  }, [])
+  }
 
   const filteredPlayers = players.filter(player => {
     const matchesSearch = player.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,18 +64,55 @@ export default function AdminPlayersPage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="bg-secondary/20 border-b border-secondary sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/admin"
-            className="neo-btn flex items-center gap-2 text-primary px-3 py-2 rounded"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>{isBn ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
-          </Link>
-          <h1 className="text-2xl font-bold">{isBn ? 'খেলোয়াড় ব্যবস্থাপনা' : 'Manage Players'}</h1>
-          <div></div>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <Link
+              href="/admin"
+              className="neo-btn flex items-center gap-2 text-primary px-3 py-2 rounded"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>{isBn ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}</span>
+            </Link>
+            <h1 className="text-2xl font-bold">{isBn ? 'খেলোয়াড় ব্যবস্থাপনা' : 'Manage Players'}</h1>
+            <div className="flex items-center gap-2">
+              <SyncIndicator status={status} />
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing || status === 'syncing'}
+                className="p-2 hover:bg-secondary/40 rounded-lg transition-colors disabled:opacity-50"
+                title="Manually refresh"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing || status === 'syncing' ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Sync Status Alert */}
+          {(hasPendingChanges() || hasConflicts()) && (
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded p-3 text-sm text-yellow-400">
+              {hasConflicts() && (
+                <p>⚠️ {getConflictCount()} conflicts detected - please resolve</p>
+              )}
+              {hasPendingChanges() && (
+                <p>{getPendingCount()} changes pending sync</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Sync Status Indicator */}
+      {status === 'error' && (
+        <div className="bg-red-500/10 border-b border-red-500/30 px-4 py-3 text-sm text-red-400">
+          ❌ Sync error - please try refreshing or check your connection
+        </div>
+      )}
+
+      {status === 'offline' && (
+        <div className="bg-yellow-500/10 border-b border-yellow-500/30 px-4 py-3 text-sm text-yellow-400">
+          📡 You are offline - changes will sync when connection is restored
+        </div>
+      )}
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -109,7 +158,7 @@ export default function AdminPlayersPage() {
         </div>
 
         {/* Players Table */}
-        {loading ? (
+        {status === 'syncing' && players.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
           </div>
