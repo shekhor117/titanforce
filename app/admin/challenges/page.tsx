@@ -15,11 +15,11 @@ export default function ChallengesAdminPage() {
     title: '',
     description: '',
     icon: '',
-    targetValue: '',
-    currentValue: '',
+    targetValue: 0,
+    currentValue: 0,
     deadline: '',
-    status: 'active' as const,
-    category: 'team' as const,
+    status: 'active' as 'active' | 'completed' | 'upcoming',
+    category: 'team' as 'team' | 'player' | 'milestone',
     reward: ''
   })
   const [loading, setLoading] = useState(true)

@@ -3,11 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { num: string } }
+  { params }: { params: Promise<{ num: string }> }
 ) {
   try {
     const supabase = await createClient()
-    const playerNum = parseInt(params.num)
+    const resolvedParams = await params
+    const playerNum = parseInt(resolvedParams.num)
 
     // Get player
     const { data: player, error: playerError } = await supabase
@@ -41,11 +42,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { num: string } }
+  { params }: { params: Promise<{ num: string }> }
 ) {
   try {
     const supabase = await createClient()
-    const playerNum = parseInt(params.num)
+    const resolvedParams = await params
+    const playerNum = parseInt(resolvedParams.num)
     const { position_name, x_coordinate, y_coordinate, is_primary, description } = await request.json()
 
     // Validate input
@@ -99,10 +101,11 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { num: string } }
+  { params }: { params: Promise<{ num: string }> }
 ) {
   try {
     const supabase = await createClient()
+    await params
     const { positionId, position_name, x_coordinate, y_coordinate, is_primary, description } = await request.json()
 
     if (!positionId) {
@@ -155,10 +158,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { num: string } }
+  { params }: { params: Promise<{ num: string }> }
 ) {
   try {
     const supabase = await createClient()
+    await params
     const { positionId } = await request.json()
 
     if (!positionId) {

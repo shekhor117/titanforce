@@ -1,11 +1,10 @@
 "use client"
 
-import { Player } from "@/lib/data-store"
 import { useLanguage } from "@/lib/language-context"
 import { TrendingUp, Target, Activity, Trophy, Clock, AlertCircle } from "lucide-react"
 
 interface PlayerStatsDashboardProps {
-  players: Player[]
+  players: any[]
 }
 
 export function PlayerStatsDashboard({ players }: PlayerStatsDashboardProps) {

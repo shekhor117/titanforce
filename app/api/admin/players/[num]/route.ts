@@ -3,7 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { num: string } }
+  { params }: { params: Promise<{ num: string }> }
 ) {
   try {
     // Check authentication
@@ -14,7 +14,8 @@ export async function PUT(
     }
 
     const supabase = createAdminClient()
-    const playerNum = parseInt(params.num)
+    const resolvedParams = await params
+    const playerNum = parseInt(resolvedParams.num)
 
     if (!playerNum || isNaN(playerNum)) {
       return NextResponse.json(
