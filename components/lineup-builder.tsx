@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react"
 import { Users, RotateCcw, Save, Trash2, Download } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import html2canvas from "html2canvas"
 
 interface Player {
   id: number
@@ -131,45 +132,28 @@ export function LineupBuilder() {
     }
   }
 
-  const handleDownloadLineup = () => {
+  const fieldRef = useRef<HTMLDivElement>(null)
+
+  const handleDownloadLineup = async () => {
     try {
-      const lineupData = {
-        formation: selectedFormation,
-        players: fieldPositions
-          .filter(p => p.player)
-          .map(p => ({
-            position: { x: p.x, y: p.y },
-            player: {
-              id: p.player!.id,
-              name: p.player!.name,
-              number: p.player!.number,
-              position: p.player!.position,
-            },
-          })),
-        timestamp: new Date().toISOString(),
+      const fieldElement = fieldRef.current
+      if (!fieldElement) {
+        alert(isBn ? "ফিল্ড খুঁজে পাওয়া যায়নি" : "Field element not found")
+        return
       }
 
-      const jsonString = JSON.stringify(lineupData, null, 2)
-      const blob = new Blob([jsonString], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
+      // Capture the field as image
+      const canvas = await html2canvas(fieldElement, {
+        backgroundColor: "#1a472a",
+        scale: 2,
+        logging: false,
+      })
+
+      // Create download link
       const link = document.createElement("a")
-      link.href = url
-      link.download = `lineup-${selectedFormation}-${new Date().getTime()}.json`
-      
-      // Use a more reliable method that works in all contexts
-      if (typeof window !== 'undefined' && document.body) {
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      } else {
-        // Fallback for edge cases
-        link.click()
-      }
-      
-      // Cleanup - use setTimeout to ensure click completes first
-      setTimeout(() => {
-        URL.revokeObjectURL(url)
-      }, 100)
+      link.download = `lineup-${selectedFormation}-${new Date().getTime()}.png`
+      link.href = canvas.toDataURL("image/png")
+      link.click()
     } catch (error) {
       console.error("[v0] Download failed:", error)
       alert(isBn ? "ডাউনলোড ব্যর্থ হয়েছে" : "Download failed")
@@ -278,6 +262,7 @@ export function LineupBuilder() {
           {/* Football Field */}
           <div className="lg:col-span-2">
             <div
+              ref={fieldRef}
               className="relative w-full aspect-[3/4] rounded-xl overflow-hidden"
               style={{
                 background: "linear-gradient(to bottom, #1a472a 0%, #2d5a3d 50%, #1a472a 100%)",

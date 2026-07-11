@@ -9,7 +9,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "swr": "^2.2.4",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
@@ -56,6 +55,7 @@
     "embla-carousel-react": "8.6.0",
     "framer-motion": "^12.38.0",
     "glob": "^13.0.6",
+    "html2canvas": "^1.4.1",
     "input-otp": "1.4.2",
     "lucide-react": "^0.564.0",
     "motion": "^12.40.0",
@@ -70,6 +70,7 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
     "sonner": "^1.7.1",
+    "swr": "^2.2.4",
     "tailwind-merge": "^3.3.1",
     "three": "^0.184.0",
     "uuid": "^14.0.0",
