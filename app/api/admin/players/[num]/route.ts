@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: { num: string } }
 ) {
   try {
+    // Check authentication
+    const userClient = await createClient()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const supabase = createAdminClient()
     const playerNum = parseInt(params.num)
 
@@ -67,13 +74,8 @@ export async function PUT(
       )
     }
 
-    return NextResponse.json(
-      { 
-        message: 'Player updated successfully',
-        data: data[0]
-      },
-      { status: 200 }
-    )
+    console.log('[v0] Player updated successfully:', data[0])
+    return NextResponse.json(data[0], { status: 200 })
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
