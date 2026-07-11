@@ -5,7 +5,15 @@ import { validateTrophy } from '@/lib/validation'
 // GET - Fetch all trophies or by ID
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
+    
+    // Check admin authentication
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const supabase = createAdminClient()
 
     const { searchParams } = new URL(request.url)
     const trophyId = searchParams.get('id')
@@ -51,10 +59,10 @@ export async function GET(request: NextRequest) {
 // POST - Create a new trophy
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -66,6 +74,8 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('trophies')
@@ -91,13 +101,15 @@ export async function POST(request: NextRequest) {
 // PUT - Update a trophy
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const supabase = createAdminClient()
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -138,10 +150,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a trophy
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -152,6 +164,8 @@ export async function DELETE(request: NextRequest) {
     if (!trophyId) {
       return NextResponse.json({ error: 'Missing trophy ID' }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('trophies')
