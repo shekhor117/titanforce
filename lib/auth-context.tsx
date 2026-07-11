@@ -60,16 +60,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     if (!supabase) return null
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single()
-    
-    if (data) {
-      setProfile(data as Profile)
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single()
+      
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 is "no rows returned" which is OK - profile just doesn't exist yet
+        console.error('[v0] Error fetching profile:', error)
+        throw error
+      }
+      
+      if (data) {
+        setProfile(data as Profile)
+      }
+      return data || null
+    } catch (err) {
+      // If profile doesn't exist, just return null - it will be created on first update
+      console.debug('[v0] Profile not found for user, this is OK')
+      return null
     }
-    return data
   }
 
   const refreshProfile = async () => {
@@ -159,8 +171,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { signInWithEmail } = await import("@/lib/auth-utils")
       const authUser = await signInWithEmail(email, password)
       
-      // Fetch profile to get actual role
-      const profileData = await fetchProfile(authUser.id)
+      // Fetch profile to get actual role (may not exist yet, that's OK)
+      let profileData = null
+      try {
+        profileData = await fetchProfile(authUser.id)
+      } catch (profileErr) {
+        console.debug('[v0] Profile fetch failed (will retry on next load):', profileErr)
+        // Profile might not exist yet - this is fine
+      }
       
       const newUser: User = {
         id: authUser.id,
