@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (newsId) {
       // Fetch specific news
       const { data, error } = await supabase
-        .from('news_updates')
+        .from('news_items')
         .select('*')
         .eq('id', newsId)
         .single()
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Fetch all news
       const { data, error } = await supabase
-        .from('news_updates')
+        .from('news_items')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -75,13 +75,14 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .insert([body])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating news:', error)
+      console.error('[v0] Table: news_items, Error code:', error.code)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
@@ -126,7 +127,7 @@ export async function PUT(request: NextRequest) {
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .update(updates)
       .eq('id', id)
       .select()
@@ -173,7 +174,7 @@ export async function DELETE(request: NextRequest) {
     const supabase = createAdminClient()
 
     const { error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .delete()
       .eq('id', newsId)
 
