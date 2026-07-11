@@ -147,13 +147,17 @@ export function LineupBuilder() {
         backgroundColor: "#1a472a",
         scale: 2,
         logging: false,
+        useCORS: true,
+        allowTaint: true,
       })
 
       // Create download link
       const link = document.createElement("a")
       link.download = `lineup-${selectedFormation}-${new Date().getTime()}.png`
       link.href = canvas.toDataURL("image/png")
+      document.body.appendChild(link)
       link.click()
+      document.body.removeChild(link)
     } catch (error) {
       console.error("[v0] Download failed:", error)
       alert(isBn ? "ডাউনলোড ব্যর্থ হয়েছে" : "Download failed")
