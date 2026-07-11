@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react"
 import { Users, RotateCcw, Save, Trash2, Download } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import html2canvas from "html2canvas"
 
 interface Player {
   id: number
@@ -131,47 +132,55 @@ export function LineupBuilder() {
     }
   }
 
-  const handleDownloadLineup = () => {
+  const fieldRef = useRef<HTMLDivElement>(null)
+
+  const handleDownloadLineup = async () => {
     try {
-      const lineupData = {
-        formation: selectedFormation,
-        players: fieldPositions
-          .filter(p => p.player)
-          .map(p => ({
-            position: { x: p.x, y: p.y },
-            player: {
-              id: p.player!.id,
-              name: p.player!.name,
-              number: p.player!.number,
-              position: p.player!.position,
-            },
-          })),
-        timestamp: new Date().toISOString(),
+      const fieldElement = fieldRef.current
+      if (!fieldElement) {
+        alert(isBn ? "ফিল্ড খুঁজে পাওয়া যায়নি" : "Field element not found")
+        return
       }
 
-      const jsonString = JSON.stringify(lineupData, null, 2)
-      const blob = new Blob([jsonString], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `lineup-${selectedFormation}-${new Date().getTime()}.json`
-      
-      // Use a more reliable method that works in all contexts
-      if (typeof window !== 'undefined' && document.body) {
+      // Capture the field as image using html2canvas
+      const canvas = await html2canvas(fieldElement, {
+        backgroundColor: "#1a472a",
+        scale: 2,
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        removeContainer: false,
+        imageTimeout: 0,
+        ignoreElements: (element) => {
+          const classList = element.className
+          return typeof classList === "string" && classList.includes("hidden")
+        },
+      })
+
+      // Convert canvas to PNG blob
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          alert(isBn ? "ইমেজ তৈরি ব্যর্থ" : "Image creation failed")
+          return
+        }
+
+        // Create blob URL for PNG download
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `lineup-${selectedFormation}-${Date.now()}.png`
+        
+        // Trigger download
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-      } else {
-        // Fallback for edge cases
-        link.click()
-      }
-      
-      // Cleanup - use setTimeout to ensure click completes first
-      setTimeout(() => {
+        
+        // Cleanup blob URL
         URL.revokeObjectURL(url)
-      }, 100)
+      }, "image/png", 1.0)
+
     } catch (error) {
-      console.error("[v0] Download failed:", error)
+      console.error("[v0] Lineup download error:", error)
       alert(isBn ? "ডাউনলোড ব্যর্থ হয়েছে" : "Download failed")
     }
   }
@@ -266,6 +275,7 @@ export function LineupBuilder() {
                 {isBn ? "সংরক্ষণ" : "Save"}
               </button>
               <button
+                type="button"
                 onClick={handleDownloadLineup}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded bg-accent text-accent-foreground hover:opacity-90 transition text-sm font-semibold"
               >
@@ -278,6 +288,7 @@ export function LineupBuilder() {
           {/* Football Field */}
           <div className="lg:col-span-2">
             <div
+              ref={fieldRef}
               className="relative w-full aspect-[3/4] rounded-xl overflow-hidden"
               style={{
                 background: "linear-gradient(to bottom, #1a472a 0%, #2d5a3d 50%, #1a472a 100%)",

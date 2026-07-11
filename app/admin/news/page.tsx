@@ -73,40 +73,54 @@ export default function AdminNewsPage() {
 
   const handleAddArticle = async (article: NewsArticle) => {
     try {
-      await service.createNewsItem({
+      const newsData: any = {
         title: article.title,
         content: article.content,
-        author: article.author,
-        category: article.category.toLowerCase() as any,
-        status: article.status.toLowerCase() as any,
-        image: article.image || null,
-      })
+        excerpt: article.summary,
+        category: article.category.toLowerCase(),
+        status: article.status.toLowerCase(),
+        featured: false,
+        views: 0,
+      }
+      
+      // Only include image if provided
+      if (article.image) {
+        newsData.image = article.image
+      }
+      
+      await service.createNewsItem(newsData)
       
       await loadNews()
+      setError(null)
     } catch (err) {
       console.error('[v0] Error adding news:', err)
-      setError('Failed to add news article')
+      setError(`Failed to add news article: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
 
   const handleUpdateArticle = async (article: NewsArticle) => {
     try {
-      await service.updateNewsItem(article.id, {
+      const updates: any = {
         title: article.title,
         excerpt: article.summary,
         content: article.content,
-        author: article.author,
-        category: article.category.toLowerCase() as any,
-        status: article.status.toLowerCase() as any,
-        image: article.image || null,
+        category: article.category.toLowerCase(),
+        status: article.status.toLowerCase(),
         views: article.views,
-        clicks: article.clicks,
-      })
+      }
+      
+      // Only include image if provided
+      if (article.image) {
+        updates.image = article.image
+      }
+      
+      await service.updateNewsItem(article.id, updates)
       
       await loadNews()
+      setError(null)
     } catch (err) {
       console.error('[v0] Error updating news:', err)
-      setError('Failed to update news article')
+      setError(`Failed to update news article: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
 

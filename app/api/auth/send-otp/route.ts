@@ -167,11 +167,21 @@ export async function POST(request: NextRequest) {
       console.error('[v0] - Full error:', dbError)
       
       // Check if it's a table not found error
-      if (dbError.code === 'PGRST116' || dbError.message?.includes('relation') || dbError.message?.includes('does not exist')) {
-        console.error('[v0] OTP table does not exist. Please run migrations: npx supabase db push')
+      if (dbError.code === 'PGRST116' || 
+          dbError.message?.includes('relation') || 
+          dbError.message?.includes('does not exist') ||
+          dbError.message?.includes('otp_codes')) {
+        console.error('[v0] OTP table does not exist. Please run migrations.')
+        
+        // Provide helpful setup instructions
         return NextResponse.json(
-          { error: 'Database not configured. Please run migrations.' },
-          { status: 500 }
+          { 
+            error: 'OTP system not yet configured',
+            setupRequired: true,
+            message: 'The database table for OTP codes has not been created yet. Please follow the setup instructions.',
+            setupUrl: '/setup/migrations'
+          },
+          { status: 503 }
         )
       }
       

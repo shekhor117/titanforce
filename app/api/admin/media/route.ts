@@ -51,13 +51,15 @@ export async function GET(request: NextRequest) {
 // POST - Create a new media item
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const supabase = createAdminClient()
 
     const body = await request.json()
 
@@ -91,10 +93,10 @@ export async function POST(request: NextRequest) {
 // PUT - Update a media item
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -111,6 +113,8 @@ export async function PUT(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('media')
@@ -138,10 +142,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a media item
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -152,6 +156,8 @@ export async function DELETE(request: NextRequest) {
     if (!mediaId) {
       return NextResponse.json({ error: 'Missing media ID' }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('media')

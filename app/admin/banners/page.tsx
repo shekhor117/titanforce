@@ -21,7 +21,7 @@ export default function AdminBannersPage() {
     image: '',
     link: '',
     buttonText: '',
-    page: 'home' as const,
+    page: 'home' as 'home' | 'shop' | 'team' | 'news' | 'gallery',
     order: 1,
     isActive: true
   })
@@ -41,7 +41,8 @@ export default function AdminBannersPage() {
   }
 
   const handleEdit = (item: Banner) => {
-    setFormData({ ...item })
+    const { id, createdAt, updatedAt, ...formFields } = item
+    setFormData(formFields)
     setEditingId(item.id)
     setShowForm(true)
   }

@@ -176,6 +176,8 @@ export interface NewsItem {
   status: 'draft' | 'published' | 'archived'
   featured: boolean
   views?: number
+  author_id?: string
+  author?: string
   created_at: string
   updated_at: string
 }

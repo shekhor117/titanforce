@@ -55,10 +55,10 @@ export async function GET(request: NextRequest) {
 // POST - Create a new product
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -70,6 +70,8 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('products')
@@ -92,10 +94,10 @@ export async function POST(request: NextRequest) {
 // PUT - Update a product
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -112,6 +114,8 @@ export async function PUT(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('products')
@@ -136,10 +140,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete a product
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -150,6 +154,8 @@ export async function DELETE(request: NextRequest) {
     if (!productId) {
       return NextResponse.json({ error: 'Missing product ID' }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('products')

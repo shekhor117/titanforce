@@ -5,7 +5,15 @@ import { validateInjury } from '@/lib/validation'
 // GET - Fetch all injuries or by ID
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = await createClient()
+    
+    // Check admin authentication
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const supabase = createAdminClient()
     const { searchParams } = new URL(request.url)
     const injuryId = searchParams.get('id')
 
@@ -45,9 +53,9 @@ export async function GET(request: NextRequest) {
 // POST - Create new injury
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -58,6 +66,8 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('injuries')
@@ -80,9 +90,9 @@ export async function POST(request: NextRequest) {
 // PUT - Update injury
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -98,6 +108,8 @@ export async function PUT(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('injuries')
@@ -121,9 +133,9 @@ export async function PUT(request: NextRequest) {
 // DELETE - Remove injury
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -134,6 +146,8 @@ export async function DELETE(request: NextRequest) {
     if (!injuryId) {
       return NextResponse.json({ error: 'Missing injury ID' }, { status: 400 })
     }
+
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from('injuries')

@@ -2,19 +2,59 @@
 
 import { useState } from 'react'
 import { AlertCircle, CheckCircle, Loader, Copy } from 'lucide-react'
-import { PageEntrance } from '@/components/page-entrance'
 
 export default function MigrationsSetupPage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'setup_required'>('idle')
   const [copied, setCopied] = useState(false)
+  const [tableStatus, setTableStatus] = useState<any>(null)
+
+  const checkTables = async () => {
+    setLoading(true)
+    setError('')
+    setMessage('')
+    setTableStatus(null)
+    setStatus('loading')
+
+    try {
+      console.log('[v0] Checking database tables...')
+      const response = await fetch('/api/admin/setup-all-tables', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+      console.log('[v0] Table check response:', data)
+
+      setTableStatus(data.tables)
+
+      if (response.status === 200) {
+        setMessage('✓ All required tables exist and are configured!')
+        setStatus('success')
+      } else if (response.status === 202) {
+        setMessage(data.message)
+        setStatus('setup_required')
+        setError('')
+      } else {
+        setError(data.error || 'Failed to check tables')
+        setStatus('error')
+      }
+    } catch (err) {
+      console.error('[v0] Table check error:', err)
+      setError(err instanceof Error ? err.message : 'Failed to check tables')
+      setStatus('error')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const applyMigrations = async () => {
     setLoading(true)
     setError('')
-    setMessage('')
     setStatus('loading')
 
     try {
@@ -30,12 +70,12 @@ export default function MigrationsSetupPage() {
       console.log('[v0] Migration response:', data)
 
       if (response.ok) {
-        setMessage(data.message || 'Database migrations applied successfully! The OTP table is now ready.')
+        setMessage(data.message || 'Database migrations applied successfully!')
         setStatus('success')
         
-        // Wait a moment, then suggest testing the login
+        // Check tables again after migration
         setTimeout(() => {
-          setMessage(data.message + ' You can now test the OTP login at /login')
+          checkTables()
         }, 2000)
       } else {
         setError(data.error || data.message || 'Failed to apply migrations')
@@ -61,17 +101,57 @@ export default function MigrationsSetupPage() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-3">OTP Setup Required</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-3">Database Setup</h1>
           <p className="text-lg text-muted-foreground">
-            Your database needs to be configured to enable OTP email authentication
+            Check and configure all required database tables
           </p>
         </div>
 
         {/* Main Content */}
         <div className="space-y-6">
+          {/* Table Status Check */}
+          <div className="bg-surface rounded-lg neo-input border p-8 shadow-lg">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Database Status</h2>
+            <button
+              onClick={checkTables}
+              disabled={loading}
+              className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted text-primary-foreground font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+            >
+              {loading ? (
+                <>
+                  <Loader className="w-5 h-5 animate-spin" />
+                  Checking Tables...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5" />
+                  Check Database Tables
+                </>
+              )}
+            </button>
+
+            {tableStatus && (
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Total: {tableStatus.total} | Existing: {tableStatus.existing} | Missing: {tableStatus.missing}
+                </p>
+                {tableStatus.missing > 0 && tableStatus.missingList && (
+                  <div className="text-sm">
+                    <p className="font-semibold text-red-600 mb-2">Missing tables:</p>
+                    <ul className="list-disc list-inside text-red-500 space-y-1">
+                      {tableStatus.missingList.map((table: string) => (
+                        <li key={table}>{table}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Quick Setup Card */}
           <div className="bg-surface rounded-lg neo-input border p-8 shadow-lg">
-            <h2 className="text-2xl font-bold text-foreground mb-6">Quick Setup</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Setup Methods</h2>
             
             {/* Method 1: CLI Command */}
             <div className="mb-8">
@@ -168,21 +248,21 @@ export default function MigrationsSetupPage() {
           {/* Info Cards */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-2">What gets created:</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">Database Tables:</h4>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>✓ otp_codes table</li>
-                <li>✓ Email lookup indexes</li>
-                <li>✓ RLS security policies</li>
-                <li>✓ Auto-cleanup function</li>
+                <li>✓ players, matches, news_items</li>
+                <li>✓ media_items, honours, injuries</li>
+                <li>✓ otp_codes, site_settings</li>
+                <li>✓ partnerships & contact messages</li>
               </ul>
             </div>
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <h4 className="font-semibold text-purple-900 mb-2">After setup:</h4>
               <ul className="text-sm text-purple-800 space-y-1">
-                <li>✓ OTP emails work via Brevo</li>
-                <li>✓ User authentication enabled</li>
-                <li>✓ Email verification ready</li>
-                <li>✓ Auto-expiring codes</li>
+                <li>✓ All admin features enabled</li>
+                <li>✓ User authentication ready</li>
+                <li>✓ OTP email system active</li>
+                <li>✓ Complete database schema</li>
               </ul>
             </div>
           </div>

@@ -38,7 +38,14 @@ class PlayerHonoursService {
         .order('honours(year)', { ascending: false })
 
       if (error) {
-        console.error('[v0] Error fetching player honours:', error)
+        // Check if it's a missing column error during migration
+        if (error.message?.includes('column') && error.code === '42703') {
+          console.debug('[v0] Honours table exists but schema not fully migrated - image_url column missing')
+        } else if (error.code === '42P01') {
+          console.debug('[v0] Honours table not created yet - migrations may not have been applied')
+        } else {
+          console.error('[v0] Error fetching player honours:', error)
+        }
         return []
       }
 
