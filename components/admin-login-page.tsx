@@ -50,7 +50,12 @@ export function AdminLoginPage() {
     setIsSubmitting(true)
     try {
       await login(email, password)
-      // Immediately redirect after successful login - auth state updates in background
+      
+      // Wait a bit for auth state to update, then redirect
+      // This ensures smooth animation while auth updates
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Redirect with smooth transition
       router.push("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
@@ -63,10 +68,38 @@ export function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      {/* Loading Overlay */}
+      {isSubmitting && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 pointer-events-none"
+        >
+          <motion.div
+            animate={{ scale: [0.95, 1, 0.95] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-center"
+          >
+            <div className="bg-card border border-border rounded-2xl p-8 shadow-2xl">
+              <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
+              <p className="text-foreground font-semibold">
+                {isBn ? "লগইন করছে..." : "Logging in..."}
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {isBn ? "অনুগ্রহ করে অপেক্ষা করুন" : "Please wait"}
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        disabled={isSubmitting}
+        className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="text-sm font-medium">{isBn ? "পিছনে" : "Back"}</span>

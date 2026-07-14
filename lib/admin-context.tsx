@@ -67,12 +67,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                   emailVerified: session.user.email_confirmed_at ? true : false,
                 }
                 setAdmin(user)
+                // Clear any errors when session becomes valid
+                setError(null)
               } else {
                 setAdmin(null)
               }
             } else {
               setAdmin(null)
             }
+            // Reset loading state when auth state changes
+            setIsLoading(false)
           }
         )
 
@@ -83,7 +87,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           const { data, error } = await Promise.race([
             supabase.auth.getSession(),
             new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Session check timeout')), 3000)
+              setTimeout(() => reject(new Error('Session check timeout')), 5000)
             )
           ]) as any
           
@@ -100,14 +104,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 role: userRole,
                 emailVerified: data.session.user.email_confirmed_at ? true : false,
               }
-              setAdmin(user)
+              if (isMounted) setAdmin(user)
             } else {
-              setAdmin(null)
+              if (isMounted) setAdmin(null)
             }
           }
         } catch (sessionError) {
           // Session check failed or timed out, continue anyway
-          console.debug('[v0] Session check error (non-fatal):', sessionError)
+          // The auth state change listener will catch real sessions
+          if (isMounted) {
+            console.debug('[v0] Session check error (non-fatal):', sessionError)
+          }
         }
         
         // Mark as initialized after session check completes or times out
@@ -139,13 +146,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       
       // Check if user has admin role
       if (user.role !== "admin" && user.role !== "moderator") {
+        setIsLoading(false)
         await signOut()
         throw new Error("Your account does not have admin access. Contact the administrator to grant access.")
       }
 
-      // Immediately set admin state
+      // Immediately set admin state and keep loading true for smooth redirect
       setAdmin(user)
-      setIsLoading(false)
+      // Keep loading true so UI shows consistent loading state during redirect
+      // It will be reset when context subscription updates
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)
