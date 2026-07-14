@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('matches')
       .select('*')
-      .order('match_date', { ascending: false })
+      .order('date', { ascending: false })
       .limit(limit)
 
     if (status) {

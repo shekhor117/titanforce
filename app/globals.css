@@ -1436,3 +1436,667 @@ canvas {
     inset -1px -1px 0 rgba(255, 255, 255, 0.5),
     inset 1px 1px 0 rgba(0, 0, 0, 0.03);
 }
+
+/* ============================================================================
+   ENHANCED SMOOTH TRANSITIONS & ANIMATIONS (Phase 1+)
+   ============================================================================ */
+
+/* Smooth all interactive elements by default */
+@supports (transition-duration: 1ms) {
+  * {
+    --tw-transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    --tw-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --tw-transition-duration: 200ms;
+  }
+}
+
+/* Smooth color and background transitions */
+.smooth-colors {
+  transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transform and scale transitions */
+.smooth-transform {
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              scale 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, scale;
+}
+
+/* Smooth opacity transitions */
+.smooth-opacity {
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+/* Smooth shadow transitions */
+.smooth-shadow {
+  transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: box-shadow;
+}
+
+/* Ultra-smooth for buttons */
+.smooth-button {
+  transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, background-color, box-shadow;
+}
+
+.smooth-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.smooth-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth link transitions */
+.smooth-link {
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              text-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.smooth-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: width;
+}
+
+.smooth-link:hover::after {
+  width: 100%;
+}
+
+/* Smooth card hover state */
+.smooth-card {
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+.smooth-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Backdrop blur animations */
+.smooth-backdrop {
+  transition: backdrop-filter 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              -webkit-backdrop-filter 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: backdrop-filter;
+}
+
+/* Smooth height transitions for accordions/dropdowns */
+.smooth-height {
+  transition: max-height 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              margin 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: max-height, opacity, margin;
+  overflow: hidden;
+}
+
+/* Smooth focus states */
+.smooth-focus:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  transition: outline 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              outline-offset 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth input focus */
+input.smooth-focus:focus,
+textarea.smooth-focus:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(167, 25, 48, 0.1);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ripple effect for buttons (base, animation in component) */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ripple-effect:active::before {
+  animation: ripple 600ms ease-out forwards;
+}
+
+@keyframes ripple {
+  to {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shimmer-infinite {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-shimmer-pulse {
+  animation: shimmer-infinite 2s ease-in-out infinite;
+}
+
+/* Scroll entrance animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Stagger animations for list items */
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 100ms; }
+.stagger-item:nth-child(3) { animation-delay: 200ms; }
+.stagger-item:nth-child(4) { animation-delay: 300ms; }
+.stagger-item:nth-child(5) { animation-delay: 400ms; }
+.stagger-item:nth-child(6) { animation-delay: 500ms; }
+.stagger-item:nth-child(n+7) { animation-delay: 600ms; }
+
+/* ============================================================================
+   FORM & INTERACTION POLISH
+   ============================================================================ */
+
+/* Smooth input transitions */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  border-color: var(--border);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(167, 25, 48, 0.1);
+  background-color: var(--input);
+}
+
+/* Smooth checkbox transitions */
+input[type="checkbox"],
+input[type="radio"] {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  box-shadow: inset 0 0 0 2px var(--primary-foreground);
+}
+
+/* Smooth select dropdown */
+select {
+  cursor: pointer;
+}
+
+select:hover {
+  border-color: var(--primary);
+}
+
+/* Range input slider */
+input[type="range"] {
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="range"]:hover {
+  filter: brightness(1.1);
+}
+
+/* Toggle switch polish */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--primary);
+}
+
+.toggle-slider {
+  position: relative;
+  display: inline-block;
+  height: 24px;
+  width: 48px;
+  background-color: var(--muted);
+  border-radius: 24px;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+/* Checkbox custom styling */
+.checkbox-custom {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.checkbox-custom:hover {
+  border-color: var(--primary);
+}
+
+.checkbox-custom:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkbox-custom:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--primary-foreground);
+  font-weight: bold;
+}
+
+/* Radio button custom styling */
+.radio-custom {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.radio-custom:hover {
+  border-color: var(--primary);
+}
+
+.radio-custom:checked {
+  border-color: var(--primary);
+  background: radial-gradient(circle, var(--primary) 40%, transparent 40%);
+}
+
+/* ============================================================================
+   GLOBAL ANIMATION REFINEMENTS & PERFORMANCE
+   ============================================================================ */
+
+/* Modal & overlay backdrop with smooth blur */
+.modal-backdrop,
+.dialog-overlay,
+.sheet-overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: backdrop-filter;
+}
+
+.modal-backdrop.opening,
+.dialog-overlay.opening,
+.sheet-overlay.opening {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Smooth border transitions */
+.smooth-border {
+  transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-width 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth text color transitions */
+.smooth-text {
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              text-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth background transitions with minimal repaints */
+.smooth-bg {
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-image 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: background-color;
+}
+
+/* Smooth section transitions */
+section {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Optimize menu/dropdown animations */
+.menu-enter {
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: fadeInDown 200ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.menu-exit {
+  animation: fadeOutUp 150ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeOutUp {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* Tooltip animations */
+.tooltip-enter {
+  opacity: 0;
+  transform: scale(0.9) translateY(-4px);
+  animation: scaleIn 200ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Popover smooth entry */
+.popover {
+  animation: scaleIn 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Smooth tab switching */
+.tab-panel-enter {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeInRight 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.tab-panel-exit {
+  animation: fadeOutLeft 150ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeOutLeft {
+  to {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+/* Accordion item animations */
+.accordion-item {
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-item.active {
+  background-color: var(--muted);
+  border-color: var(--primary);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  animation: slideDown 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+/* Smooth badge transitions */
+.badge {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Smooth progress bar */
+progress {
+  transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth loader animations */
+@keyframes spin-smooth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce-smooth {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-smooth {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-spin-smooth {
+  animation: spin-smooth 1s linear infinite;
+}
+
+.animate-bounce-smooth {
+  animation: bounce-smooth 600ms cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.animate-pulse-smooth {
+  animation: pulse-smooth 2s ease-in-out infinite;
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================ */
+
+/* GPU acceleration for animated elements */
+.will-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* High-performance list animations */
+.list-item {
+  will-change: transform, opacity;
+}
+
+.list-item.animating {
+  will-change: auto;
+}
+
+/* Optimize large animations */
+@media (prefers-reduced-motion: no-preference) {
+  .smooth-transform,
+  .smooth-card,
+  .smooth-button {
+    will-change: transform, box-shadow;
+  }
+}
+
+/* Reduce animations on lower-end devices */
+@media (max-width: 640px) {
+  * {
+    --tw-transition-duration: 150ms;
+  }
+}
+
+/* Print media - disable animations */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
