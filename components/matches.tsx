@@ -7,6 +7,7 @@ import { MatchPrediction } from "@/components/match-prediction"
 import { MatchDetails } from "@/components/match-details"
 import { EnhancedMatchCard } from "@/components/match/enhanced-match-card"
 import { ScrollAnimatedElement } from "@/components/scroll-animated-element"
+import { MatchCardSkeletonGrid } from "@/components/skeletons/match-card-skeleton"
 import { useMatches } from "@/lib/use-data-store"
 import type { Match } from "@/lib/data-service"
 
@@ -85,11 +86,7 @@ export function Matches({ heroTitle, heroDescription }: MatchesProps) {
 
         <div className="space-y-4">
           {isLoading ? (
-            <div className="text-center py-12 text-foreground/60">
-              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-                {isBn ? "ম্যাচ লোড হচ্ছে..." : "Loading matches..."}
-              </p>
-            </div>
+            <MatchCardSkeletonGrid count={3} />
           ) : matches.length > 0 ? (
             matches.map((match, index) => (
               <ScrollAnimatedElement

@@ -5,9 +5,19 @@ import { Calendar, Clock, MapPin, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ScrollAnimatedElement } from './scroll-animated-element'
+import { MatchCardSkeleton } from './skeletons/match-card-skeleton'
 
 export function HomeNextFixture() {
-  const { matches } = useMatches()
+  const { matches, loading } = useMatches()
+
+  // Show skeleton while loading
+  if (loading) {
+    return (
+      <ScrollAnimatedElement variant="fadeInLeft">
+        <MatchCardSkeleton />
+      </ScrollAnimatedElement>
+    )
+  }
 
   // Get the next upcoming match
   const nextMatch = matches.find(m => m.status === 'upcoming') || matches[0]
