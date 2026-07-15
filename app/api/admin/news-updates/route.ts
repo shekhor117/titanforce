@@ -4,13 +4,14 @@ import { validateNewsUpdate } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    // Use admin client to bypass RLS for listing all news items
+    const supabase = createAdminClient()
     const { searchParams } = new URL(request.url)
     const updateId = searchParams.get('id')
 
     if (updateId) {
       const { data, error } = await supabase
-        .from('news_updates')
+        .from('news_items')
         .select('*')
         .eq('id', updateId)
         .single()
@@ -25,12 +26,12 @@ export async function GET(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .select('*')
-      .order('createdAt', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('[v0] Error fetching news updates:', error)
+      console.error('[v0] Error fetching news items:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
@@ -43,9 +44,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -57,14 +58,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
+    // Use admin client for insert
+    const supabase = createAdminClient()
     const { data, error } = await supabase
-      .from('news_updates')
-      .insert([body])
+      .from('news_items')
+      .insert([{ ...body, author_id: user.id }])
       .select()
       .single()
 
     if (error) {
-      console.error('[v0] Error creating news update:', error)
+      console.error('[v0] Error creating news item:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
@@ -77,9 +80,9 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -88,7 +91,7 @@ export async function PUT(request: NextRequest) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing news update ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Missing news item ID' }, { status: 400 })
     }
 
     const validation = validateNewsUpdate(updates)
@@ -96,15 +99,17 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
 
+    // Use admin client for update
+    const supabase = createAdminClient()
     const { data, error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .update(updates)
       .eq('id', id)
       .select()
       .single()
 
     if (error) {
-      console.error('[v0] Error updating news update:', error)
+      console.error('[v0] Error updating news item:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
@@ -117,9 +122,9 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -128,11 +133,13 @@ export async function DELETE(request: NextRequest) {
     const updateId = searchParams.get('id')
 
     if (!updateId) {
-      return NextResponse.json({ error: 'Missing news update ID' }, { status: 400 })
+      return NextResponse.json({ error: 'Missing news item ID' }, { status: 400 })
     }
 
+    // Use admin client for delete
+    const supabase = createAdminClient()
     const { error } = await supabase
-      .from('news_updates')
+      .from('news_items')
       .delete()
       .eq('id', updateId)
 

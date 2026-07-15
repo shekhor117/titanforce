@@ -7,12 +7,38 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ScrollStaggerContainer } from './scroll-stagger-container'
 import { ScrollProgressAnimation } from './scroll-progress-animation'
+import { NewsGridSkeleton } from './skeletons/news-article-skeleton'
 
 export function HomeLatestNews() {
-  const { newsItems } = useNewsItems()
+  const { newsItems, loading } = useNewsItems()
 
   // Get top 4 news items for grid layout
   const topNews = newsItems.slice(0, 4)
+
+  // Show skeleton while loading
+  if (loading) {
+    return (
+      <section className="py-12 md:py-16 px-4 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            className="flex items-center justify-between mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-accent rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
+                Latest News
+              </h2>
+            </div>
+          </motion.div>
+          <NewsGridSkeleton count={4} />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-12 md:py-16 px-4 bg-background">

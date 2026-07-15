@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     if (matchId) {
       const { data, error } = await supabase
         .from('matches')
-        .select('*')
+        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
         .eq('id', matchId)
         .single()
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     } else {
       const { data, error } = await supabase
         .from('matches')
-        .select('*')
+        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
         .order('date', { ascending: false })
 
       if (error) {
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('matches')
       .insert([matchData])
-      .select()
+      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
       .single()
 
     if (error) {
@@ -269,7 +269,7 @@ export async function PUT(request: NextRequest) {
       .from('matches')
       .update(matchData)
       .eq('id', id)
-      .select()
+      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
       .single()
 
     if (error) {

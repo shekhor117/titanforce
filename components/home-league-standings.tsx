@@ -3,6 +3,7 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { StandingsSkeleton } from '@/components/skeletons/standings-skeleton'
 
 interface Standing {
   id: string
@@ -43,11 +44,7 @@ export function HomeLeagueStandings() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="neo-card overflow-hidden h-full flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-      </div>
-    )
+    return <StandingsSkeleton />
   }
 
   return (

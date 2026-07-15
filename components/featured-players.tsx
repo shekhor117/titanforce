@@ -8,6 +8,7 @@ import { usePlayers } from "@/lib/use-data-store"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
+import { PlayerGridSkeleton } from "@/components/skeletons/player-card-skeleton"
 
 export function FeaturedPlayers() {
   const [isVisible, setIsVisible] = useState(false)
@@ -18,7 +19,7 @@ export function FeaturedPlayers() {
   const isBn = language === "bn"
 
   // Get top players by rating using the realtime hook
-  const { players } = usePlayers()
+  const { players, loading } = usePlayers()
   const topPlayers = (players ?? [])
     .filter((p) => p?.status?.toLowerCase() === "active")
     .slice(0, 6)
@@ -53,6 +54,22 @@ export function FeaturedPlayers() {
       })
       setScrollPosition(newPosition)
     }
+  }
+
+  // Show skeleton while loading
+  if (loading && topPlayers.length === 0) {
+    return (
+      <EntranceReveal delay={0.2} duration={0.6} variant="fadeInUp">
+        <section className="py-12 md:py-16 px-3 md:px-4 bg-gradient-to-br from-card/50 to-background">
+          <div className="text-center mb-8 md:mb-12">
+            <p className={`text-xs md:text-sm uppercase tracking-[0.2em] font-semibold mb-2 text-primary`}>
+              {isBn ? "শীর্ষ খেলোয়াড়" : "Featured Players"}
+            </p>
+          </div>
+          <PlayerGridSkeleton count={6} />
+        </section>
+      </EntranceReveal>
+    )
   }
 
   if (topPlayers.length === 0) {

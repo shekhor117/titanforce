@@ -15,15 +15,41 @@ import {
 } from "@/components/ui/carousel"
 import { ScrollAnimatedElement } from "./scroll-animated-element"
 import { ScrollProgressAnimation } from "./scroll-progress-animation"
+import { PlayerGridSkeleton } from "./skeletons/player-card-skeleton"
 
 export function PlayersGrid() {
-  const { players } = usePlayers()
+  const { players, loading } = usePlayers()
   const [api, setApi] = useState<any>(null)
 
   // Get all active players for carousel
   const activePlayers = Array.isArray(players) 
     ? players.filter(p => p.status?.toLowerCase() === "active")
     : []
+
+  // Show skeleton while loading
+  if (loading && activePlayers.length === 0) {
+    return (
+      <section className="py-12 md:py-16 px-4 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            className="flex items-center justify-between mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-accent rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wider">
+                Players
+              </h2>
+            </div>
+          </motion.div>
+          <PlayerGridSkeleton count={6} />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
