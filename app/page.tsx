@@ -9,7 +9,6 @@ import { HomeNextFixture } from "@/components/home-next-fixture"
 import { HomeLatestNews } from "@/components/home-latest-news"
 import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
-import { HomeStatsShowcase } from "@/components/home-stats-showcase"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 
@@ -102,8 +101,6 @@ export default function Home() {
         </Suspense>
         
         <HomeAboutGallery />
-        
-        <HomeStatsShowcase />
         
         <Suspense fallback={<div className="py-12 bg-background" />}>
           <HomeShopLatest />

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Users, MapPin, Award, Heart, Users2 } from 'lucide-react'
+import { Users, MapPin } from 'lucide-react'
 import { dataStore } from '@/lib/data-store'
 
 const defaultClubInfoData = [
@@ -15,16 +15,6 @@ const defaultClubInfoData = [
     label: 'HOME GROUND',
     value: 'MULIKANDI',
   },
-  {
-    icon: Heart,
-    label: 'MOTTO',
-    value: 'ONE TEAM, ONE DREAM',
-  },
-  {
-    icon: Users2,
-    label: 'COMMUNITY',
-    value: 'STRONGER TOGETHER',
-  },
 ]
 
 export function ClubInfoSection() {
@@ -37,8 +27,6 @@ export function ClubInfoSection() {
         setClubInfoData([
           { icon: Users, label: 'FOUNDED', value: clubInfo.founded },
           { icon: MapPin, label: 'HOME GROUND', value: clubInfo.homeGround },
-          { icon: Heart, label: 'MOTTO', value: clubInfo.motto },
-          { icon: Users2, label: 'COMMUNITY', value: clubInfo.community },
         ])
       }
     } catch (err) {
