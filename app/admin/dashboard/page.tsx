@@ -20,11 +20,13 @@ import { useState, useEffect, Suspense } from "react"
 import { useDataStore } from "@/lib/use-data-store"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
+import { AdminLoadingSkeleton } from "@/components/admin-loading-skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 // Dynamic imports for heavy components - loaded only when needed
 const PlayerStatsDashboard = dynamic(
   () => import("@/components/player-stats-dashboard").then(mod => ({ default: mod.PlayerStatsDashboard })),
-  { loading: () => <div className="h-64 bg-secondary/50 rounded-lg animate-pulse" /> }
+  { loading: () => <Skeleton className="h-64 rounded-lg" /> }
 )
 
 export default function AdminDashboard() {
@@ -660,6 +662,10 @@ export default function AdminDashboard() {
       import: "bg-purple-500/30 text-purple-300",
     }
     return colors[action] || "bg-secondary text-foreground/60"
+  }
+
+  if (loading) {
+    return <AdminLoadingSkeleton />
   }
 
   return (
