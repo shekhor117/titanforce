@@ -108,7 +108,7 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-colors ${
                 isBn ? "font-[var(--font-bengali)]" : ""
               }`}
             >

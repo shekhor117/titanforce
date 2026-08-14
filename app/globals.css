@@ -126,6 +126,39 @@ html {
   }
 }
 
+/* Keep admin content readable in both theme modes, including native controls. */
+.admin-shell {
+  color: var(--foreground);
+}
+
+.admin-shell input,
+.admin-shell textarea,
+.admin-shell select,
+.admin-shell option {
+  color: var(--foreground);
+  background-color: var(--input);
+}
+
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
+.light .admin-shell input,
+.light .admin-shell textarea,
+.light .admin-shell select,
+.light .admin-shell option {
+  color-scheme: light;
+}
+
+.dark .admin-shell input,
+.dark .admin-shell textarea,
+.dark .admin-shell select,
+.dark .admin-shell option {
+  color-scheme: dark;
+}
+
 /* Custom Animations */
 @keyframes fadeUp {
   from {
