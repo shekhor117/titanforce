@@ -11,23 +11,24 @@ import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { PublicSectionSkeleton } from "@/components/main-site-loading-skeleton"
 
 // Lazy load heavy animation components with loading delay
 const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { 
   ssr: false,
-  loading: () => <div className="h-64 bg-card animate-pulse rounded-lg" />
+  loading: () => <PublicSectionSkeleton variant="wide" />
 })
 const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { 
   ssr: false,
-  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+  loading: () => <PublicSectionSkeleton variant="players" />
 })
 const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { 
   ssr: false,
-  loading: () => <div className="h-80 bg-card animate-pulse rounded-lg" />
+  loading: () => <PublicSectionSkeleton variant="shop" />
 })
 const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { 
   ssr: false,
-  loading: () => <div className="h-96 bg-card animate-pulse rounded-lg" />
+  loading: () => <PublicSectionSkeleton variant="gallery" />
 })
 
 export default function Home() {
@@ -92,21 +93,21 @@ export default function Home() {
 
         <HomeLatestNews />
         
-        <Suspense fallback={<div className="py-12 bg-background" />}>
+        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
           <PremiumMatchStats />
         </Suspense>
         
-        <Suspense fallback={<div className="py-12 bg-background" />}>
+        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
           <PlayersGrid />
         </Suspense>
         
         <HomeAboutGallery />
         
-        <Suspense fallback={<div className="py-12 bg-background" />}>
+        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
           <HomeShopLatest />
         </Suspense>
         
-        <Suspense fallback={<div className="py-12 bg-background" />}>
+        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
           <GalleryShowcase />
         </Suspense>
         
