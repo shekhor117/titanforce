@@ -46,22 +46,28 @@ export function useDataStore() {
       try {
         setLoading(true)
         setService(dataService)
-        const [playersData, matchesData, partnersData, newsData, mediaData, trophiesData] = await Promise.all([
+
+        const requests = [
           dataService.getPlayers(),
           dataService.getMatches(),
           dataService.getPartners(),
           dataService.getNewsItems(),
           dataService.getMediaItems(),
           dataService.getTrophies(),
-        ])
+        ]
+        const results = await Promise.allSettled(requests)
+        const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results
+        const firstError = results.find((result) => result.status === "rejected")
 
         if (isMounted) {
-          setPlayers(playersData)
-          setMatches(matchesData)
-          setPartners(partnersData)
-          setNewsItems(newsData)
-          setMediaItems(mediaData)
-          setError(null)
+          if (playersResult.status === "fulfilled") setPlayers(Array.isArray(playersResult.value) ? playersResult.value : [])
+          if (matchesResult.status === "fulfilled") setMatches(Array.isArray(matchesResult.value) ? matchesResult.value : [])
+          if (partnersResult.status === "fulfilled") setPartners(Array.isArray(partnersResult.value) ? partnersResult.value : [])
+          if (newsResult.status === "fulfilled") setNewsItems(Array.isArray(newsResult.value) ? newsResult.value : [])
+          if (mediaResult.status === "fulfilled") setMediaItems(Array.isArray(mediaResult.value) ? mediaResult.value : [])
+          setError(firstError?.status === "rejected"
+            ? (firstError.reason instanceof Error ? firstError.reason : new Error(String(firstError.reason)))
+            : null)
         }
       } catch (err) {
         if (isMounted) {
