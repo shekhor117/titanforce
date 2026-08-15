@@ -27,7 +27,7 @@ export default function SquadManagerAdminPage() {
     if (authLoading) return
 
     if (!user) {
-      router.push('/login')
+      router.replace('/admin/login?next=%2Fadmin%2Fsquad-manager')
       return
     }
 
