@@ -112,7 +112,7 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
         supabase.removeChannel(channel)
       }
     }
-  }, [options.tableName, options.filter, options])
+  }, [options.tableName, options.filter])
 
   return { data, loading, error }
 }

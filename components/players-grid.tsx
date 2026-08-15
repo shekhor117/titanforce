@@ -32,7 +32,7 @@ export function PlayersGrid() {
       <section className="py-12 md:py-16 px-4 bg-background">
         <div className="max-w-7xl mx-auto">
           <motion.div 
-            className="flex items-center justify-between mb-12"
+            className="flex items-center justify-between mb-6 sm:mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -52,11 +52,11 @@ export function PlayersGrid() {
   }
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-background">
+    <section className="py-8 sm:py-10 md:py-16 px-3 sm:px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div 
-          className="flex items-center justify-between mb-12"
+          className="flex items-center justify-between mb-6 sm:mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -80,7 +80,7 @@ export function PlayersGrid() {
         {/* Players Carousel */}
         <ScrollAnimatedElement variant="fadeInUp">
           {activePlayers.length > 0 ? (
-            <div className="relative px-12">
+            <div className="relative px-8 sm:px-10 md:px-12">
             <Carousel
               opts={{
                 align: "start",
@@ -91,7 +91,7 @@ export function PlayersGrid() {
             >
               <CarouselContent className="-ml-4">
                 {activePlayers.map((player, idx) => (
-                  <CarouselItem key={player.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
+                  <CarouselItem key={player.id} className="pl-3 sm:pl-4 basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
                     <ScrollProgressAnimation delay={idx * 0.05} animationType="scale">
                     <Link
                       href={`/player/${player.num}`}
@@ -163,7 +163,7 @@ export function PlayersGrid() {
         </ScrollAnimatedElement>
 
         {/* View All Button */}
-        <div className="mt-12 text-center">
+        <div className="mt-7 sm:mt-9 md:mt-12 text-center">
           <Link
             href="/team-squad"
             className="neo-btn neo-btn-primary inline-flex items-center gap-2"
