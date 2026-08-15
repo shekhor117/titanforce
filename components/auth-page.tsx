@@ -20,7 +20,7 @@ interface AuthPageProps {
   enableOTP?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false, enableOTP = true }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false, enableOTP = false }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
