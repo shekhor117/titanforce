@@ -61,8 +61,8 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
         {isBn ? 'অবস্থান' : 'Position'}
       </h3>
 
-      {/* Main layout: Left sidebar + Right field */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Main layout: Vertical stack */}
+      <div className="grid grid-cols-1 gap-6">
         {/* Left sidebar - Position info */}
         <div className="space-y-4">
           {/* Primary Position */}
