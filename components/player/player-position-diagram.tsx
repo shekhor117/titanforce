@@ -13,31 +13,32 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
 
   const getPositionCoordinates = (position: string) => {
     const positionMap: Record<string, { x: number; y: number }> = {
-      'GK': { x: 50, y: 10 },
-      'CB': { x: 50, y: 30 },
-      'LB': { x: 20, y: 40 },
-      'RB': { x: 80, y: 40 },
-      'LWB': { x: 10, y: 50 },
-      'RWB': { x: 90, y: 50 },
-      'CM': { x: 50, y: 55 },
-      'LM': { x: 20, y: 55 },
-      'RM': { x: 80, y: 55 },
-      'CAM': { x: 50, y: 65 },
-      'CF': { x: 50, y: 85 },
-      'ST': { x: 50, y: 90 },
-      'LW': { x: 20, y: 75 },
-      'RW': { x: 80, y: 75 },
-      'LF': { x: 30, y: 85 },
-      'RF': { x: 70, y: 85 },
-      'FWD': { x: 50, y: 85 },
-      'MID': { x: 50, y: 55 },
-      'DEF': { x: 50, y: 30 },
-      'AM': { x: 50, y: 65 },
+      'GK': { x: 50, y: 90 },
+      'CB': { x: 50, y: 75 },
+      'LB': { x: 28, y: 78 },
+      'RB': { x: 72, y: 82 },
+      'LWB': { x: 20, y: 66 },
+      'RWB': { x: 80, y: 66 },
+      'CM': { x: 42, y: 45 },
+      'LM': { x: 24, y: 45 },
+      'RM': { x: 72, y: 45 },
+      'CAM': { x: 50, y: 28 },
+      'CF': { x: 50, y: 18 },
+      'ST': { x: 50, y: 10 },
+      'LW': { x: 28, y: 25 },
+      'RW': { x: 72, y: 25 },
+      'LF': { x: 35, y: 16 },
+      'RF': { x: 65, y: 16 },
+      'FWD': { x: 50, y: 15 },
+      'MID': { x: 50, y: 45 },
+      'DEF': { x: 50, y: 68 },
+      'AM': { x: 42, y: 25 },
     }
     return positionMap[position] || { x: 50, y: 50 }
   }
 
-  // Use stored positions if available, otherwise create default from primary position
+  // Scan positions directly from Supabase player table
+  // Use stored positions if available, otherwise create default from player's primary position
   const positionsToDisplay: Array<PlayerPosition & { position_name?: string }> = player.positions && player.positions.length > 0
     ? player.positions
     : [{
@@ -51,7 +52,7 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
         updated_at: player.updated_at,
       }]
 
-  // Get primary position for display
+  // Get primary position for display (from Supabase player table data)
   const primaryPosition = positionsToDisplay.find(p => p.is_primary) || positionsToDisplay[0]
   const secondaryPositions = positionsToDisplay.filter(p => !p.is_primary)
 
@@ -61,8 +62,8 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
         {isBn ? 'অবস্থান' : 'Position'}
       </h3>
 
-      {/* Main layout: Left sidebar + Right field */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Main layout: Vertical stack */}
+      <div className="grid grid-cols-1 gap-6">
         {/* Left sidebar - Position info */}
         <div className="space-y-4">
           {/* Primary Position */}
@@ -93,7 +94,7 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
             <rect x="0" y="0" width="100" height="100" fill="none" stroke="rgba(100, 100, 100, 0.6)" strokeWidth="2" />
             
             {/* Center line */}
-            <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1.2" />
+            <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1.2" />
             
             {/* Center circle */}
             <circle cx="50" cy="50" r="10" fill="none" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1" />
@@ -102,12 +103,12 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
             <circle cx="50" cy="50" r="1.2" fill="rgba(120, 120, 120, 0.7)" />
             
             {/* Penalty boxes */}
-            <rect x="0" y="35" width="16" height="30" fill="none" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1" />
-            <rect x="84" y="35" width="16" height="30" fill="none" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1" />
+            <rect x="25" y="0" width="50" height="16" fill="none" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1" />
+            <rect x="25" y="84" width="50" height="16" fill="none" stroke="rgba(100, 100, 100, 0.5)" strokeWidth="1" />
             
             {/* Goal areas */}
-            <rect x="0" y="42" width="6" height="16" fill="none" stroke="rgba(100, 100, 100, 0.4)" strokeWidth="0.8" />
-            <rect x="94" y="42" width="6" height="16" fill="none" stroke="rgba(100, 100, 100, 0.4)" strokeWidth="0.8" />
+            <rect x="38" y="0" width="24" height="6" fill="none" stroke="rgba(100, 100, 100, 0.4)" strokeWidth="0.8" />
+            <rect x="38" y="94" width="24" height="6" fill="none" stroke="rgba(100, 100, 100, 0.4)" strokeWidth="0.8" />
             
             {/* Corner arcs */}
             <circle cx="0" cy="0" r="1" fill="none" stroke="rgba(100, 100, 100, 0.3)" strokeWidth="0.8" />

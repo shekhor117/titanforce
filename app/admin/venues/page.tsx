@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useLanguage } from '@/lib/language-context'
 import { dataStore, Venue } from '@/lib/data-store'
 import { Plus, Trash2 } from 'lucide-react'
+import { AdminLoadingSkeleton } from '@/components/admin-loading-skeleton'
 
 export default function VenuesPage() {
   const { language } = useLanguage()
@@ -39,7 +40,7 @@ export default function VenuesPage() {
     setVenues(venues.filter(v => v.id !== id))
   }
 
-  if (!isClient) return null
+  if (!isClient) return <AdminLoadingSkeleton />
 
   return (
     <div className='space-y-6 p-6'>
