@@ -37,7 +37,8 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
     return positionMap[position] || { x: 50, y: 50 }
   }
 
-  // Use stored positions if available, otherwise create default from primary position
+  // Scan positions directly from Supabase player table
+  // Use stored positions if available, otherwise create default from player's primary position
   const positionsToDisplay: Array<PlayerPosition & { position_name?: string }> = player.positions && player.positions.length > 0
     ? player.positions
     : [{
@@ -51,7 +52,7 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
         updated_at: player.updated_at,
       }]
 
-  // Get primary position for display
+  // Get primary position for display (from Supabase player table data)
   const primaryPosition = positionsToDisplay.find(p => p.is_primary) || positionsToDisplay[0]
   const secondaryPositions = positionsToDisplay.filter(p => !p.is_primary)
 
