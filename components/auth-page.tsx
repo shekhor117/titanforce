@@ -394,6 +394,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             alt="Titan Force Logo"
             width={80}
             height={80}
+            priority
             className="w-20 h-20 object-contain"
           />
         </div>
