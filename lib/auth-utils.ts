@@ -52,6 +52,9 @@ export async function signInWithEmail(
   password: string
 ): Promise<AuthUser> {
   const supabase = createClient()
+  if (!supabase) {
+    throw new Error("Authentication is not configured")
+  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
