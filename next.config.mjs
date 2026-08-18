@@ -11,6 +11,7 @@ const nextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    qualities: [75, 90],
   },
   compress: true,
   productionBrowserSourceMaps: false,

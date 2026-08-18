@@ -7,9 +7,15 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(supabaseUrl && supabaseAnonKey)
 }
 
+let browserClient: ReturnType<typeof createBrowserClient> | null = null
+
 export function createClient() {
   if (!supabaseUrl || !supabaseAnonKey) {
     return null
   }
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
+
+  // Keep one browser client so auth listeners and the session cookie store
+  // are shared across the app instead of being recreated during renders.
+  browserClient ??= createBrowserClient(supabaseUrl, supabaseAnonKey)
+  return browserClient
 }

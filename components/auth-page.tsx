@@ -141,18 +141,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
       if (view === 'login') {
         // Check credentials first
         if (authStep === 'credentials') {
-          // Validate credentials with Supabase
-          try {
-            const { data } = await supabase.auth.signInWithPassword({
-              email,
-              password,
-            })
-            if (!data.user) {
-              throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
-            }
-          } catch (err) {
-            throw new Error(isBn ? 'অবৈধ শংসাপত্র' : 'Invalid credentials')
-          }
+          // Use the shared auth context for one password-auth request.
+          // A second signInWithPassword call here caused inconsistent sessions and auth errors.
 
           // If OTP is enabled, proceed to OTP verification
           if (enableOTP) {
@@ -404,6 +394,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             alt="Titan Force Logo"
             width={80}
             height={80}
+            priority
             className="w-20 h-20 object-contain"
           />
         </div>

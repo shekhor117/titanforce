@@ -30,7 +30,6 @@ export function PlayerProfileHero({ player }: PlayerProfileHeroProps) {
                   className="object-cover object-center"
                   sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 288px"
                   priority
-                  quality={90}
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">

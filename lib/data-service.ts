@@ -308,20 +308,11 @@ export class DataService {
         return []
       }
 
-      // Fetch positions for all players
-      const playersWithPositions = await Promise.all(
-        (data || []).map(async (player) => {
-          try {
-            const positions = await this.getPlayerPositions(player.id)
-            return { ...player, positions }
-          } catch (err) {
-            console.warn("[v0] Failed to fetch positions for player", player.id)
-            return { ...player, positions: [] }
-          }
-        })
-      )
-
-      return playersWithPositions
+      // Player profile data, including `position`, is stored on the players
+      // table. Return it directly instead of issuing one player_positions query
+      // per row, which caused database scans to fail when that optional table
+      // was unavailable or restricted by RLS.
+      return data || []
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
       return []
