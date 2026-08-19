@@ -11,6 +11,8 @@ interface Match {
   id?: string
   home_team: string
   away_team: string
+  home_logo_url?: string | null
+  away_logo_url?: string | null
   home_score?: number
   away_score?: number
   match_date: string
@@ -273,6 +275,25 @@ export function MatchAdminManager({ matches, onSave, onDelete }: MatchAdminManag
 }
 
 function BasicMatchForm({ match, onChange, isBn }: { match: Match; onChange: (field: string, value: any) => void; isBn: boolean }) {
+  const [uploading, setUploading] = useState<'home' | 'away' | null>(null)
+
+  const uploadLogo = async (side: 'home' | 'away', file: File) => {
+    setUploading(side)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      body.append('side', side)
+      const response = await fetch('/api/admin/match-logo', { method: 'POST', body })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || 'Logo upload failed')
+      onChange(`${side}_logo_url`, result.url)
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Logo upload failed')
+    } finally {
+      setUploading(null)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -298,6 +319,29 @@ function BasicMatchForm({ match, onChange, isBn }: { match: Match; onChange: (fi
             className="w-full px-3 py-2 rounded border border-foreground/10 bg-secondary"
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {(['home', 'away'] as const).map((side) => {
+          const logo = side === 'home' ? match.home_logo_url : match.away_logo_url
+          return (
+            <div key={side} className="space-y-2">
+              <label className={`text-sm text-foreground/60 block ${isBn ? 'font-bengali' : ''}`}>
+                {side === 'home' ? (isBn ? 'হোম লোগো' : 'Home logo') : (isBn ? 'অ্যাওয়ে লোগো' : 'Away logo')}
+              </label>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-lg bg-secondary border border-foreground/10 flex items-center justify-center overflow-hidden">
+                  {logo ? <img src={logo} alt={`${side} team logo`} className="w-full h-full object-contain" /> : <span className="text-xs font-bold">{side === 'home' ? match.home_team.slice(0, 2) : match.away_team.slice(0, 2)}</span>}
+                </div>
+                <label className="cursor-pointer rounded-lg border border-foreground/15 px-3 py-2 text-xs hover:bg-foreground/5">
+                  {uploading === side ? 'Uploading...' : 'Upload logo'}
+                  <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="sr-only" disabled={uploading !== null} onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadLogo(side, file); event.currentTarget.value = '' }} />
+                </label>
+                {logo && <button type="button" onClick={() => onChange(`${side}_logo_url`, null)} className="text-xs text-destructive hover:underline">Remove</button>}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       <div className="grid grid-cols-2 gap-4">

@@ -6,6 +6,8 @@ export interface Match {
   id: string
   home: string
   away: string
+  home_logo_url?: string | null
+  away_logo_url?: string | null
   date: string
   time: string
   venue: string
@@ -41,6 +43,8 @@ class MatchDataService {
         id: m.id,
         home: m.home,
         away: m.away,
+        home_logo_url: m.home_logo_url,
+        away_logo_url: m.away_logo_url,
         date: m.date,
         time: m.time,
         venue: m.venue,
@@ -123,6 +127,8 @@ class MatchDataService {
         id: m.id,
         home: m.home,
         away: m.away,
+        home_logo_url: m.home_logo_url,
+        away_logo_url: m.away_logo_url,
         date: m.date,
         time: m.time,
         venue: m.venue,
@@ -164,6 +170,8 @@ class MatchDataService {
         id: m.id,
         home: m.home,
         away: m.away,
+        home_logo_url: m.home_logo_url,
+        away_logo_url: m.away_logo_url,
         date: m.date,
         time: m.time,
         venue: m.venue,

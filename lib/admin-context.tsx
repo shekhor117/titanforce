@@ -26,6 +26,27 @@ function getSupabaseClient() {
   return supabaseClient
 }
 
+async function hasDualAdminAccess(supabase: any, user: { id: string; user_metadata?: Record<string, unknown> }) {
+  const metadataRole = user.user_metadata?.role
+  if (metadataRole !== "admin" && metadataRole !== "moderator") return false
+
+  const { data, error } = await supabase
+    .from("app_users")
+    .select("role, is_active")
+    .eq("id", user.id)
+    .maybeSingle()
+
+  if (error) {
+    console.warn("[v0] Admin role lookup failed:", error.message)
+    return false
+  }
+
+  return Boolean(
+    data?.is_active !== false &&
+    (data?.role === "admin" || data?.role === "moderator")
+  )
+}
+
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<AuthUser | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -58,7 +79,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             if (session?.user) {
               const userRole = (session.user.user_metadata?.role as "admin" | "moderator") || "user"
               
-              if (userRole === "admin" || userRole === "moderator") {
+              if (await hasDualAdminAccess(supabase, session.user)) {
                 const user: AuthUser = {
                   id: session.user.id,
                   email: session.user.email || "",
@@ -96,7 +117,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           if (data?.session?.user) {
             const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
             
-            if (userRole === "admin" || userRole === "moderator") {
+            if (await hasDualAdminAccess(supabase, data.session.user)) {
               const user: AuthUser = {
                 id: data.session.user.id,
                 email: data.session.user.email || "",
@@ -144,8 +165,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       const user = await signInWithEmail(email, password)
       
-      // Check if user has admin role
-      if (user.role !== "admin" && user.role !== "moderator") {
+      // Require both Supabase app metadata and app_users authorization.
+      const supabase = getSupabaseClient()
+      const hasAccess = supabase ? await hasDualAdminAccess(supabase, { id: user.id, user_metadata: { role: user.role } }) : false
+      if (!hasAccess) {
         setIsLoading(false)
         await signOut()
         throw new Error("Your account does not have admin access. Contact the administrator to grant access.")

@@ -17,6 +17,8 @@ function mapMatchData(dbMatch: any) {
     result: dbMatch.result,
     season_year: dbMatch.season_year,
     notes: dbMatch.notes,
+    home_logo_url: dbMatch.home_logo_url,
+    away_logo_url: dbMatch.away_logo_url,
     lineup_data: dbMatch.lineup_data,
     statistics_data: dbMatch.statistics_data,
     goals: dbMatch.goals,
@@ -44,7 +46,7 @@ export async function GET(request: NextRequest) {
     if (matchId) {
       const { data, error } = await supabase
         .from('matches')
-        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
+        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, home_logo_url, away_logo_url, created_at, updated_at')
         .eq('id', matchId)
         .single()
 
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
     } else {
       const { data, error } = await supabase
         .from('matches')
-        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
+        .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, home_logo_url, away_logo_url, created_at, updated_at')
         .order('date', { ascending: false })
 
       if (error) {
@@ -106,7 +108,9 @@ export async function POST(request: NextRequest) {
       status: body.status || 'upcoming',
       lineup_data: body.lineup_data || {},
       statistics_data: body.statistics_data || {},
-      goals: body.goals || []
+      goals: body.goals || [],
+      home_logo_url: body.home_logo_url || null,
+      away_logo_url: body.away_logo_url || null
     }
     
     // Handle optional numeric fields
@@ -155,7 +159,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('matches')
       .insert([matchData])
-      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
+      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, home_logo_url, away_logo_url, created_at, updated_at')
       .single()
 
     if (error) {
@@ -204,6 +208,8 @@ export async function PUT(request: NextRequest) {
     if (updates.match_time || updates.time) matchData.time = updates.match_time || updates.time
     if (updates.venue !== undefined && updates.venue !== null && updates.venue !== '') matchData.venue = updates.venue
     if (updates.status !== undefined && updates.status !== null) matchData.status = updates.status
+    if (updates.home_logo_url !== undefined) matchData.home_logo_url = updates.home_logo_url || null
+    if (updates.away_logo_url !== undefined) matchData.away_logo_url = updates.away_logo_url || null
     
     // Handle numeric fields - skip NaN values
     if (updates.home_score !== undefined && updates.home_score !== null && !isNaN(Number(updates.home_score))) {
@@ -269,7 +275,7 @@ export async function PUT(request: NextRequest) {
       .from('matches')
       .update(matchData)
       .eq('id', id)
-      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, created_at, updated_at')
+      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, lineup_data, statistics_data, goals, home_logo_url, away_logo_url, created_at, updated_at')
       .single()
 
     if (error) {
