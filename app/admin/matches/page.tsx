@@ -8,6 +8,8 @@ interface MatchData {
   id?: string
   home_team: string
   away_team: string
+  home_logo_url?: string | null
+  away_logo_url?: string | null
   home_score?: number
   away_score?: number
   match_date: string

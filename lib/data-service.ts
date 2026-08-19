@@ -125,6 +125,8 @@ export interface Match {
   id: string
   home: string
   away: string
+  home_logo_url?: string | null
+  away_logo_url?: string | null
   date: string
   time: string
   venue: string
