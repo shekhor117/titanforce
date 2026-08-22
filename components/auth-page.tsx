@@ -8,7 +8,7 @@ import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Ph
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
-import { mockSignUp } from '@/lib/auth-utils'
+import { signUpWithRole } from '@/lib/auth-utils'
 
 type Role = 'player' | 'fan' | 'partner'
 type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
@@ -883,7 +883,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isAppleLoading ? (isBn ? '��পেক্ষা করুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
+              {isAppleLoading ? (isBn ? '��পেক্ষা ক��ুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
             </span>
           </button>
 

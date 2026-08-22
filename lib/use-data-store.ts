@@ -60,11 +60,36 @@ export function useDataStore() {
         const firstError = results.find((result) => result.status === "rejected")
 
         if (isMounted) {
-          if (playersResult.status === "fulfilled") setPlayers(Array.isArray(playersResult.value) ? playersResult.value : [])
-          if (matchesResult.status === "fulfilled") setMatches(Array.isArray(matchesResult.value) ? matchesResult.value : [])
-          if (partnersResult.status === "fulfilled") setPartners(Array.isArray(partnersResult.value) ? partnersResult.value : [])
-          if (newsResult.status === "fulfilled") setNewsItems(Array.isArray(newsResult.value) ? newsResult.value : [])
-          if (mediaResult.status === "fulfilled") setMediaItems(Array.isArray(mediaResult.value) ? mediaResult.value : [])
+          const nextPlayers = playersResult.status === "fulfilled" && Array.isArray(playersResult.value) ? playersResult.value : []
+          const nextMatches = matchesResult.status === "fulfilled" && Array.isArray(matchesResult.value) ? matchesResult.value : []
+          const nextPartners = partnersResult.status === "fulfilled" && Array.isArray(partnersResult.value) ? partnersResult.value : []
+          const nextNewsItems = newsResult.status === "fulfilled" && Array.isArray(newsResult.value) ? newsResult.value : []
+          const nextMediaItems = mediaResult.status === "fulfilled" && Array.isArray(mediaResult.value) ? mediaResult.value : []
+
+          if (playersResult.status === "fulfilled") {
+            dataCache.players = nextPlayers
+            setPlayers(nextPlayers)
+          }
+          if (matchesResult.status === "fulfilled") {
+            dataCache.matches = nextMatches
+            setMatches(nextMatches)
+          }
+          if (partnersResult.status === "fulfilled") {
+            dataCache.partners = nextPartners
+            setPartners(nextPartners)
+          }
+          if (newsResult.status === "fulfilled") {
+            dataCache.newsItems = nextNewsItems
+            setNewsItems(nextNewsItems)
+          }
+          if (mediaResult.status === "fulfilled") {
+            dataCache.mediaItems = nextMediaItems
+            setMediaItems(nextMediaItems)
+          }
+          if (results[5].status === "fulfilled") {
+            dataCache.trophies = Array.isArray(results[5].value) ? results[5].value : []
+          }
+          dataCache.lastFetch = Date.now()
           setError(firstError?.status === "rejected"
             ? (firstError.reason instanceof Error ? firstError.reason : new Error(String(firstError.reason)))
             : null)

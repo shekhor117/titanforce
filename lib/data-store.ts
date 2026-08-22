@@ -144,8 +144,10 @@ export interface SiteSettings {
   aboutDescription: string
 }
 
-// Default data
-const defaultPlayers: Player[] = [
+// Supabase is the single source of truth. Local mock records are intentionally not used.
+const defaultPlayers: Player[] = []
+/*
+const legacyDefaultPlayers: Player[] = [
   {
     id: "1",
     num: 1,
@@ -299,7 +301,11 @@ const defaultPlayers: Player[] = [
   },
 ]
 
-const defaultMatches: Match[] = [
+*/
+
+const defaultMatches: Match[] = []
+/*
+const legacyDefaultMatches: Match[] = [
   {
     id: "1",
     home: "Titan Force",
@@ -312,6 +318,7 @@ const defaultMatches: Match[] = [
     status: "upcoming"
   }
 ]
+*/
 
 const defaultSettings: SiteSettings = {
   siteName: "Titan Force FC",
