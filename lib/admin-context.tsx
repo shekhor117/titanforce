@@ -26,14 +26,22 @@ function getSupabaseClient() {
   return supabaseClient
 }
 
-async function hasDualAdminAccess(supabase: any, user: { id: string; user_metadata?: Record<string, unknown> }) {
-  const metadataRole = user.user_metadata?.role
+async function hasDualAdminAccess(
+  supabase: any,
+  user: {
+    id: string
+    app_metadata?: Record<string, unknown>
+    user_metadata?: Record<string, unknown>
+  },
+) {
+  // Authorization must come from app_metadata, never user-editable user_metadata.
+  const metadataRole = user.app_metadata?.role
   if (metadataRole !== "admin" && metadataRole !== "moderator") return false
 
   const { data, error } = await supabase
     .from("app_users")
     .select("role, is_active")
-    .eq("id", user.id)
+    .eq("auth_id", user.id)
     .maybeSingle()
 
   if (error) {
@@ -167,7 +175,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       
       // Require both Supabase app metadata and app_users authorization.
       const supabase = getSupabaseClient()
-      const hasAccess = supabase ? await hasDualAdminAccess(supabase, { id: user.id, user_metadata: { role: user.role } }) : false
+      const { data: userData } = supabase ? await supabase.auth.getUser() : { data: { user: null } }
+      const hasAccess = supabase && userData.user
+        ? await hasDualAdminAccess(supabase, userData.user)
+        : false
       if (!hasAccess) {
         setIsLoading(false)
         await signOut()
