@@ -113,19 +113,17 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
-export async function mockSignUp(
+export async function signUpWithRole(
   email: string,
   password: string,
   name: string,
   role: "player" | "fan" | "partner"
 ): Promise<void> {
-  // Sign up with real Supabase
-  const { user } = await signUpWithEmail(email, password, name)
-  
-  // Store role in user metadata
+  await signUpWithEmail(email, password, name)
+
   const supabase = createClient()
   const { error } = await supabase.auth.updateUser({
-    data: { signupRole: role }
+    data: { signupRole: role },
   })
 
   if (error) {

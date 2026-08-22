@@ -409,28 +409,22 @@ export default function SquadManager({
   const normalizedProfile = activeProfilePlayer ? normalizePlayerData(activeProfilePlayer) : null;
 
   if (selectedPlayerId && normalizedProfile) {
-    const mockWeeklyTrainingData = normalizedProfile.training || [
-      { day: 'Mon', Fitness: 75, Intensity: 81, Speed: 70, Strength: 85 },
-      { day: 'Tue', Fitness: 78, Intensity: 84, Speed: 72, Strength: 86 },
-      { day: 'Wed', Fitness: 80, Intensity: 68, Speed: 75, Strength: 83 },
-      { day: 'Thu', Fitness: 83, Intensity: 80, Speed: 78, Strength: 87 },
-      { day: 'Fri', Fitness: 85, Intensity: 82, Speed: 80, Strength: 89 },
-      { day: 'Sat', Fitness: 84, Intensity: 65, Speed: 78, Strength: 84 },
-      { day: 'Sun', Fitness: 82, Intensity: 50, Speed: 76, Strength: 80 },
-    ];
+    const weeklyTrainingData = Array.isArray(normalizedProfile.training)
+      ? normalizedProfile.training
+      : [];
 
-    const avgFitness = mockWeeklyTrainingData.length ? Math.round(mockWeeklyTrainingData.reduce((acc: number, curr: any) => acc + curr.Fitness, 0) / mockWeeklyTrainingData.length) : 0;
-    const avgIntensity = mockWeeklyTrainingData.length ? Math.round(mockWeeklyTrainingData.reduce((acc: number, curr: any) => acc + curr.Intensity, 0) / mockWeeklyTrainingData.length) : 0;
-    const peakPerformance = mockWeeklyTrainingData.length ? Math.max(...mockWeeklyTrainingData.flatMap((t: any) => [t.Fitness, t.Intensity, t.Speed, t.Strength])) : 0;
-    const activeSessions = mockWeeklyTrainingData.filter((t: any) => t.Intensity > 35).length;
+    const avgFitness = weeklyTrainingData.length ? Math.round(weeklyTrainingData.reduce((acc: number, curr: any) => acc + curr.Fitness, 0) / weeklyTrainingData.length) : 0;
+    const avgIntensity = weeklyTrainingData.length ? Math.round(weeklyTrainingData.reduce((acc: number, curr: any) => acc + curr.Intensity, 0) / weeklyTrainingData.length) : 0;
+    const peakPerformance = weeklyTrainingData.length ? Math.max(...weeklyTrainingData.flatMap((t: any) => [t.Fitness, t.Intensity, t.Speed, t.Strength])) : 0;
+    const activeSessions = weeklyTrainingData.filter((t: any) => t.Intensity > 35).length;
 
-    const mockRadarData = [
-      { subject: 'Pace', A: normalizedProfile.attributes?.pace || 80, fullMark: 100 },
-      { subject: 'Shooting', A: normalizedProfile.attributes?.shooting || 75, fullMark: 100 },
-      { subject: 'Passing', A: normalizedProfile.attributes?.passing || 80, fullMark: 100 },
-      { subject: 'Dribbling', A: normalizedProfile.attributes?.dribbling || 78, fullMark: 100 },
-      { subject: 'Defending', A: normalizedProfile.attributes?.defending || 70, fullMark: 100 },
-      { subject: 'Physical', A: normalizedProfile.attributes?.physical || 75, fullMark: 100 },
+    const radarData = [
+      { subject: 'Pace', A: normalizedProfile.attributes?.pace ?? 0, fullMark: 100 },
+      { subject: 'Shooting', A: normalizedProfile.attributes?.shooting ?? 0, fullMark: 100 },
+      { subject: 'Passing', A: normalizedProfile.attributes?.passing ?? 0, fullMark: 100 },
+      { subject: 'Dribbling', A: normalizedProfile.attributes?.dribbling ?? 0, fullMark: 100 },
+      { subject: 'Defending', A: normalizedProfile.attributes?.defending ?? 0, fullMark: 100 },
+      { subject: 'Physical', A: normalizedProfile.attributes?.physical ?? 0, fullMark: 100 },
     ];
 
     const detailsList = [
@@ -766,7 +760,7 @@ export default function SquadManager({
                   </div>
                   <div className="h-44 bg-slate-950/50 rounded-xl border border-slate-850 p-2">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={mockWeeklyTrainingData}>
+                      <LineChart data={weeklyTrainingData}>
                         <XAxis dataKey="day" stroke="#64748b" fontSize={9} tickLine={false} />
                         <YAxis stroke="#64748b" fontSize={9} width={18} tickLine={false} domain={[20, 100]} />
                         <Tooltip contentStyle={{ background: '#0f172a', borderColor: '#1e293b', borderRadius: '8px', fontSize: 10 }} />
