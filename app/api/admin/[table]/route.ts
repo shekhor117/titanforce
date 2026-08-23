@@ -24,10 +24,10 @@ async function getAdminClient() {
   if (role !== "admin" && role !== "manager") {
     const { data: appUser } = await supabase
       .from("app_users")
-      .select("role, status")
-      .eq("auth_id", user.id)
+      .select("role, is_active")
+      .eq("email", user.email ?? "")
       .maybeSingle()
-    if (appUser?.status === "active") role = appUser.role
+    if (appUser?.is_active !== false) role = appUser?.role
   }
 
   if (role !== "admin" && role !== "manager") {
