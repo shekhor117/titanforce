@@ -81,31 +81,35 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         
         // Set up auth state change listener first (non-blocking)
         const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
-          async (_event, session) => {
+          (_event, session) => {
             if (!isMounted) return
-            
-            if (session?.user) {
-              const userRole = (session.user.user_metadata?.role as "admin" | "moderator") || "user"
-              
-              if (await hasDualAdminAccess(supabase, session.user)) {
-                const user: AuthUser = {
-                  id: session.user.id,
-                  email: session.user.email || "",
-                  name: session.user.user_metadata?.full_name || "User",
-                  role: userRole,
-                  emailVerified: session.user.email_confirmed_at ? true : false,
+
+            // Do not await Supabase calls inside this callback; Supabase may
+            // hold an auth lock while notifying listeners, causing a login
+            // request to hang indefinitely.
+            void (async () => {
+              if (session?.user) {
+                const userRole = (session.user.app_metadata?.role as "admin" | "moderator") || "user"
+                const hasAccess = await hasDualAdminAccess(supabase, session.user)
+                if (!isMounted) return
+
+                if (hasAccess) {
+                  setAdmin({
+                    id: session.user.id,
+                    email: session.user.email || "",
+                    name: session.user.user_metadata?.full_name || "User",
+                    role: userRole,
+                    emailVerified: Boolean(session.user.email_confirmed_at),
+                  })
+                  setError(null)
+                } else {
+                  setAdmin(null)
                 }
-                setAdmin(user)
-                // Clear any errors when session becomes valid
-                setError(null)
               } else {
                 setAdmin(null)
               }
-            } else {
-              setAdmin(null)
-            }
-            // Reset loading state when auth state changes
-            setIsLoading(false)
+              setIsLoading(false)
+            })()
           }
         )
 
@@ -185,10 +189,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         throw new Error("Your account does not have admin access. Contact the administrator to grant access.")
       }
 
-      // Immediately set admin state and keep loading true for smooth redirect
+      // Resolve the login promise before navigation so the form cannot remain
+      // blocked if the auth event callback is delayed by the network.
       setAdmin(user)
-      // Keep loading true so UI shows consistent loading state during redirect
-      // It will be reset when context subscription updates
+      setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
       setError(message)
