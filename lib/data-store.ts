@@ -328,8 +328,8 @@ const defaultSettings: SiteSettings = {
   contactPhone: "+880 1234 567890",
   address: "Mulikandi, Sylhet, Bangladesh",
   socialLinks: {
-    facebook: "https://facebook.com/titanforcefc",
-    instagram: "https://instagram.com/titanforcefc"
+    facebook: "https://facebook.com/TitanForceMulikandi",
+    instagram: "https://instagram.com/"
   },
   heroTitle: "TITAN FORCE",
   heroSubtitle: "MULIKANDI FC",

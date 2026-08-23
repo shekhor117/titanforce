@@ -34,14 +34,12 @@ async function hasDualAdminAccess(
     user_metadata?: Record<string, unknown>
   },
 ) {
-  // Authorization must come from app_metadata, never user-editable user_metadata.
-  const metadataRole = user.app_metadata?.role
-  if (metadataRole !== "admin" && metadataRole !== "moderator") return false
-
+  // app_users is the existing authorization source for this project.
+  // It has no auth_id column, so match the authenticated account by email.
   const { data, error } = await supabase
     .from("app_users")
     .select("role, is_active")
-    .eq("auth_id", user.id)
+    .eq("email", user.email)
     .maybeSingle()
 
   if (error) {
