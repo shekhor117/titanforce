@@ -1,8 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { useSupabaseInsert, useSupabaseUpdate, useSupabaseDelete } from '@/lib/use-realtime-data'
-
 /**
  * Comprehensive admin hook for managing all data types with real-time sync
  * Handles CRUD operations via API routes with automatic real-time updates

@@ -53,7 +53,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
   const { supabase, response } = await getAdminClient()
   if (response) return response
 
-  const { data, error } = await supabase.from(table).select("*").order("created_at", { ascending: false })
+  const { data, error } = await supabase.from(table).select("*")
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data ?? [])
 }
