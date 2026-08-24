@@ -39,7 +39,7 @@ async function hasDualAdminAccess(
   const { data, error } = await supabase
     .from("app_users")
     .select("role, is_active")
-    .eq("email", user.email)
+    .ilike("email", user.email.trim())
     .maybeSingle()
 
   if (error) {
@@ -47,9 +47,19 @@ async function hasDualAdminAccess(
     return false
   }
 
+  const appRole = typeof user.app_metadata?.role === "string"
+    ? user.app_metadata.role.trim().toLowerCase()
+    : ""
+  const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
+
+  const appUserRole = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
+  const hasAppUserRole = ["admin", "super_admin", "moderator"].includes(appUserRole)
+
+  // app_metadata is the authoritative secure claim. The app_users record is
+  // retained as an additional active-account check when it is available, but
+  // RLS must not make a correctly provisioned admin unable to sign in.
   return Boolean(
-    data?.is_active !== false &&
-    (data?.role === "admin" || data?.role === "moderator")
+    hasSecureRole || (data?.is_active !== false && hasAppUserRole)
   )
 }
 
@@ -87,7 +97,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             // request to hang indefinitely.
             void (async () => {
               if (session?.user) {
-                const userRole = (session.user.app_metadata?.role as "admin" | "moderator") || "user"
+                const userRole = (session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "user"
                 const hasAccess = await hasDualAdminAccess(supabase, session.user)
                 if (!isMounted) return
 

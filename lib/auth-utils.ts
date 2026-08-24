@@ -69,8 +69,8 @@ export async function signInWithEmail(
     throw new Error("Failed to sign in")
   }
 
-  // Get admin role from user metadata
-  const role = (data.user.user_metadata?.role as "admin" | "moderator") || "user"
+  // Authorization roles must come from secure app_metadata, never editable user_metadata.
+  const role = (data.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "user"
 
   return {
     id: data.user.id,

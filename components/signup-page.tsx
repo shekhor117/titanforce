@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
+import { validatePassword } from "@/lib/auth-utils"
 
 export function SignupPage() {
   const router = useRouter()
@@ -31,17 +33,38 @@ export function SignupPage() {
       return
     }
 
-    if (password.length < 6) {
-      setError(isBn ? "পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে" : "Password must be at least 6 characters")
+    const passwordValidation = validatePassword(password)
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.errors[0])
       return
     }
 
     setIsLoading(true)
     try {
-      // Placeholder - would create admin account
-      setTimeout(() => router.push("/admin/login"), 1000)
+      const supabase = createClient()
+      const { data, error: signupError } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: { full_name: email.trim().split("@")[0] },
+          emailRedirectTo:
+            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+            `${window.location.origin}/auth/callback`,
+        },
+      })
+
+      if (signupError) throw signupError
+
+      if (!data.user) {
+        throw new Error("Unable to create account")
+      }
+
+      // Admin privileges are never self-assigned. An administrator must add
+      // the new account to app_users and grant its role after verification.
+      router.push("/admin/login?signup=success")
     } catch (err) {
-      setError(isBn ? "সাইন আপ ব্যর্থ হয়েছে" : "Sign up failed")
+      const message = err instanceof Error ? err.message : "Sign up failed"
+      setError(message)
     } finally {
       setIsLoading(false)
     }
