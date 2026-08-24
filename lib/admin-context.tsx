@@ -47,11 +47,19 @@ async function hasDualAdminAccess(
     return false
   }
 
-  const role = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
+  const appRole = typeof user.app_metadata?.role === "string"
+    ? user.app_metadata.role.trim().toLowerCase()
+    : ""
+  const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
 
+  const appUserRole = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
+  const hasAppUserRole = ["admin", "super_admin", "moderator"].includes(appUserRole)
+
+  // app_metadata is the authoritative secure claim. The app_users record is
+  // retained as an additional active-account check when it is available, but
+  // RLS must not make a correctly provisioned admin unable to sign in.
   return Boolean(
-    data?.is_active !== false &&
-    (role === "admin" || role === "super_admin" || role === "moderator")
+    hasSecureRole || (data?.is_active !== false && hasAppUserRole)
   )
 }
 
