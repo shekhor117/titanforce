@@ -176,7 +176,7 @@ export default function AdminDashboard() {
       subtext: `${galleryStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
     {
-      label: isBn ? "সম্মাননা" : "Honours",
+      label: isBn ? "সম্মান���া" : "Honours",
       value: honourStats.total.toString(),
       icon: <Trophy className="w-6 h-6" />,
       href: "/admin/honours",
@@ -332,7 +332,7 @@ export default function AdminDashboard() {
     },
     { 
       label: isBn ? "বিশ্লেষণ ড্যাশবোর্ড" : "Analytics Dashboard", 
-      description: isBn ? "বিস্তারিত পারফরম্যান্স মেট্রিক্স দেখুন" : "View detailed performance metrics",
+      description: isBn ? "বিস্তারিত পার��রম্যান্স মেট্রিক্স দেখুন" : "View detailed performance metrics",
       href: "/admin/analytics", 
       icon: <BarChart3 className="w-5 h-5" />,
       color: "text-purple-400",
@@ -669,8 +669,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <EntranceReveal delay={0.1} duration={0.6} variant="fadeInUp">
-      <div className="space-y-8">
+    <div className="space-y-8">
         {/* Error State */}
         {error && (
           <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
@@ -1117,6 +1116,5 @@ export default function AdminDashboard() {
         </div>
       </div>
       </div>
-    </EntranceReveal>
   )
 }
