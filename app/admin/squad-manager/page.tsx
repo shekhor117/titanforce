@@ -162,6 +162,21 @@ export default function SquadManagerAdminPage() {
     }
   }
 
+  const normalizeCategory = (position: unknown): Player['category'] => {
+    const value = String(position ?? '').trim().toUpperCase()
+    if (value.includes('KEEP') || value === 'GK') return 'GK'
+    if (value.includes('DEF') || value === 'CB' || value === 'LB' || value === 'RB') return 'DEF'
+    if (value.includes('MID') || value === 'CM' || value === 'AM' || value === 'DM') return 'MID'
+    return 'FWD'
+  }
+
+  const normalizeStatus = (status: unknown): Player['status'] => {
+    const value = String(status ?? 'active').trim().toLowerCase()
+    if (value === 'injured') return 'injured'
+    if (value === 'suspended') return 'suspended'
+    return 'active'
+  }
+
   const handleUpdatePlayer = async (updatedPlayer: any) => {
     try {
       setIsSaving(true)
@@ -185,14 +200,14 @@ export default function SquadManagerAdminPage() {
         name: updatedPlayer.name,
         full_name: updatedPlayer.fullName || updatedPlayer.name,
         num: updatedPlayer.number,
-        position: updatedPlayer.position,
-        category: updatedPlayer.position as any,
-        age: updatedPlayer.age,
+        position: String(updatedPlayer.position ?? '').trim(),
+        category: normalizeCategory(updatedPlayer.position),
+        age: Number(updatedPlayer.age) || 0,
         nationality: updatedPlayer.nationality,
         goals: updatedPlayer.goals,
         assists: updatedPlayer.assists,
         image_url: photoUrl,
-        status: updatedPlayer.status || 'active',
+        status: normalizeStatus(updatedPlayer.status),
         bio: updatedPlayer.biography,
         clean_sheets: updatedPlayer.cleanSheets,
         appearances: updatedPlayer.matches,
