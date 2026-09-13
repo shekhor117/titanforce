@@ -81,7 +81,7 @@ export interface Player {
   name: string
   full_name: string
   position: string
-  category: 'GK' | 'DEF' | 'MID' | 'FWD'
+  category: 'GK' | 'DEF' | 'MID' | 'FWD' | string
   age?: number
   hometown?: string
   foot?: 'Left' | 'Right' | 'Both'

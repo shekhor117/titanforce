@@ -43,6 +43,8 @@ export function Footer() {
     { id: "tickets", label: "Tickets", href: "/about" },
     { id: "shop", label: "Shop", href: "/shop" },
     { id: "newsletter", label: "Newsletter", href: "/news" },
+    { id: "privacy", label: "Privacy Policy", href: "/privacy-policy" },
+    { id: "cookies", label: "Cookie Policy", href: "/cookie-policy" },
   ]
 
   return (
