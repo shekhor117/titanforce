@@ -99,6 +99,29 @@ export function About() {
             <div><h3 className="font-bold text-foreground">Progress</h3><p className="mt-2 text-sm leading-6 text-foreground/70">We learn from every match and keep raising our standards.</p></div>
           </div>
         </div>
+
+        <div className="mt-6 grid gap-6 text-left md:grid-cols-3">
+          <article className="rounded-2xl border border-border bg-card p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Our roots</p>
+            <h3 className="mt-3 text-xl font-bold text-foreground">Mulikandi is our home.</h3>
+            <p className="mt-3 text-sm leading-7 text-foreground/70">Our identity comes from the people, streets, families, and football culture of Mulikandi. Every time we step onto the pitch, we carry that community with us.</p>
+          </article>
+          <article className="rounded-2xl border border-border bg-card p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Our future</p>
+            <h3 className="mt-3 text-xl font-bold text-foreground">Growing one season at a time.</h3>
+            <p className="mt-3 text-sm leading-7 text-foreground/70">We are building a lasting club through player development, stronger competition, and a culture that gives young talent the confidence to dream bigger.</p>
+          </article>
+          <article className="rounded-2xl border border-border bg-card p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Our people</p>
+            <h3 className="mt-3 text-xl font-bold text-foreground">Everyone has a role.</h3>
+            <p className="mt-3 text-sm leading-7 text-foreground/70">Players, coaches, volunteers, families, and supporters all make Titan Force stronger. Our success is shared, and our standards belong to everyone.</p>
+          </article>
+        </div>
+
+        <div className="mt-6 rounded-2xl bg-foreground px-6 py-8 text-left text-background md:px-10">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">The Titan Force promise</p>
+          <p className="mt-4 max-w-3xl text-xl font-semibold leading-9 md:text-2xl">We will keep showing up, keep improving, and keep representing Mulikandi with courage, humility, and pride.</p>
+        </div>
       </div>
     </section>
   )
