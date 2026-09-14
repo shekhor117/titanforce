@@ -196,42 +196,53 @@ export default function SquadManagerAdminPage() {
       }
 
       // Update in Supabase
-      const updates: Partial<Player> = {
-        name: updatedPlayer.name,
-        full_name: updatedPlayer.fullName || updatedPlayer.name,
-        num: updatedPlayer.number,
-        position: String(updatedPlayer.position ?? '').trim(),
-        category: normalizeCategory(updatedPlayer.position),
-        age: Number(updatedPlayer.age) || 0,
-        nationality: updatedPlayer.nationality,
-        goals: updatedPlayer.goals,
-        assists: updatedPlayer.assists,
-        image_url: photoUrl,
-        status: normalizeStatus(updatedPlayer.status),
-        bio: updatedPlayer.biography,
-        clean_sheets: updatedPlayer.cleanSheets,
-        appearances: updatedPlayer.matches,
-        minutes_played: updatedPlayer.minutesPlayed,
-        pass_accuracy: updatedPlayer.passAccuracy,
-        chances_created: updatedPlayer.chancesCreated,
-        yellow_cards: updatedPlayer.yellowCards,
-        red_cards: updatedPlayer.redCards,
-        average_rating: updatedPlayer.rating,
-        pace: updatedPlayer.attributes?.pace,
-        shooting: updatedPlayer.attributes?.shooting,
-        passing: updatedPlayer.attributes?.passing,
-        dribbling: updatedPlayer.attributes?.dribbling,
-        defending: updatedPlayer.attributes?.defending,
-        physical: updatedPlayer.attributes?.physical,
-        date_of_birth: updatedPlayer.dob,
-        join_date: updatedPlayer.joinDate,
-        season_year: updatedPlayer.season,
-        club: updatedPlayer.club,
-        foot: updatedPlayer.preferredFoot,
-        hometown: updatedPlayer.hometown,
+      const numberOrNull = (value: unknown) => {
+        const number = Number(value)
+        return Number.isFinite(number) ? number : null
+      }
+      const textOrNull = (value: unknown) => {
+        const text = String(value ?? '').trim()
+        return text || null
       }
 
-      const updated = await dataService.updatePlayer(updatedPlayer.id, updates)
+      // Keep UI-only fields out of the database payload and normalize empty
+      // values so updates match the players table regardless of edit source.
+      const updates = {
+        name: textOrNull(updatedPlayer.name) ?? 'Unnamed Player',
+        full_name: textOrNull(updatedPlayer.fullName || updatedPlayer.name) ?? 'Unnamed Player',
+        num: numberOrNull(updatedPlayer.number) ?? 0,
+        position: textOrNull(updatedPlayer.position) ?? 'Forward',
+        category: normalizeCategory(updatedPlayer.position),
+        age: numberOrNull(updatedPlayer.age),
+        nationality: textOrNull(updatedPlayer.nationality),
+        goals: numberOrNull(updatedPlayer.goals) ?? 0,
+        assists: numberOrNull(updatedPlayer.assists) ?? 0,
+        image_url: textOrNull(photoUrl),
+        status: normalizeStatus(updatedPlayer.status),
+        bio: textOrNull(updatedPlayer.biography),
+        clean_sheets: numberOrNull(updatedPlayer.cleanSheets),
+        appearances: numberOrNull(updatedPlayer.matches),
+        minutes_played: numberOrNull(updatedPlayer.minutesPlayed),
+        pass_accuracy: numberOrNull(updatedPlayer.passAccuracy),
+        chances_created: numberOrNull(updatedPlayer.chancesCreated),
+        yellow_cards: numberOrNull(updatedPlayer.yellowCards),
+        red_cards: numberOrNull(updatedPlayer.redCards),
+        average_rating: numberOrNull(updatedPlayer.rating),
+        pace: numberOrNull(updatedPlayer.attributes?.pace),
+        shooting: numberOrNull(updatedPlayer.attributes?.shooting),
+        passing: numberOrNull(updatedPlayer.attributes?.passing),
+        dribbling: numberOrNull(updatedPlayer.attributes?.dribbling),
+        defending: numberOrNull(updatedPlayer.attributes?.defending),
+        physical: numberOrNull(updatedPlayer.attributes?.physical),
+        date_of_birth: textOrNull(updatedPlayer.dob),
+        join_date: textOrNull(updatedPlayer.joinDate),
+        season_year: textOrNull(updatedPlayer.season),
+        club: textOrNull(updatedPlayer.club),
+        foot: textOrNull(updatedPlayer.preferredFoot) as Player['foot'],
+        hometown: textOrNull(updatedPlayer.hometown),
+      } as Partial<Player>
+
+      const updated = await dataService.updatePlayer(String(updatedPlayer.id), updates)
 
       // Update in local state
       setPlayers(prev =>
