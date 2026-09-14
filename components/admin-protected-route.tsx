@@ -47,11 +47,9 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     }
   }, [isClient, admin, isInitialized, router, pathname])
 
-  // If we have admin data, render immediately
-  if (admin) {
-    return <>{children}</>
+  if (!isClient || !isInitialized || !admin) {
+    return <AdminRouteLoading />
   }
 
-  // Keep the admin shell visible while auth initializes or redirects instead of rendering a blank page.
-  return <AdminRouteLoading />
+  return <>{children}</>
 }

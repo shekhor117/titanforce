@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { AboutPageContent } from "@/components/about-page-content"
-import { EntranceReveal } from "@/components/entrance-reveal"
+import { About } from "@/components/about"
 
 export default function AboutPage() {
   const router = useRouter()
@@ -35,9 +34,7 @@ export default function AboutPage() {
         </section>
 
         {/* Content Section */}
-        <EntranceReveal delay={0.3} duration={0.6} variant="fadeInUp">
-          <AboutPageContent />
-        </EntranceReveal>
+        <About />
       </main>
       <Footer />
     </div>
