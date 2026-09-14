@@ -49,7 +49,9 @@ async function hasDualAdminAccess(
 
   const appRole = typeof user.app_metadata?.role === "string"
     ? user.app_metadata.role.trim().toLowerCase()
-    : ""
+    : typeof user.user_metadata?.role === "string"
+      ? user.user_metadata.role.trim().toLowerCase()
+      : ""
   const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
 
   const appUserRole = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
@@ -97,7 +99,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             // request to hang indefinitely.
             void (async () => {
               if (session?.user) {
-                const userRole = (session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "user"
+                const userRole = ((session.user.app_metadata?.role || session.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
                 const hasAccess = await hasDualAdminAccess(supabase, session.user)
                 if (!isMounted) return
 
