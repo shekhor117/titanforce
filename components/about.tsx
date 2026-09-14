@@ -122,6 +122,29 @@ export function About() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">The Titan Force promise</p>
           <p className="mt-4 max-w-3xl text-xl font-semibold leading-9 md:text-2xl">We will keep showing up, keep improving, and keep representing Mulikandi with courage, humility, and pride.</p>
         </div>
+
+        <div className="mt-10 text-left">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Life at Titan Force</p>
+          <h2 className="mt-3 max-w-3xl text-3xl font-bold leading-tight text-foreground md:text-4xl">A club built around people, purpose, and the next generation.</h2>
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <article className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="text-xl font-bold text-foreground">Developing local talent</h3>
+              <p className="mt-3 leading-7 text-foreground/70">We believe talent is everywhere. Our club gives local players the structure, encouragement, and competitive experience they need to turn potential into performance.</p>
+            </article>
+            <article className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="text-xl font-bold text-foreground">Respect for the game</h3>
+              <p className="mt-3 leading-7 text-foreground/70">Football teaches responsibility, teamwork, and resilience. We compete seriously while respecting opponents, officials, teammates, and the community.</p>
+            </article>
+            <article className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="text-xl font-bold text-foreground">Support beyond match day</h3>
+              <p className="mt-3 leading-7 text-foreground/70">A strong club is present on and off the pitch. We celebrate our people, welcome new supporters, and create lasting connections through football.</p>
+            </article>
+            <article className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="text-xl font-bold text-foreground">A standard worth keeping</h3>
+              <p className="mt-3 leading-7 text-foreground/70">Every training session and every fixture is an opportunity to improve. We stay consistent, stay humble, and hold each other to a higher standard.</p>
+            </article>
+          </div>
+        </div>
       </div>
     </section>
   )
