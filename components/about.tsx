@@ -73,6 +73,32 @@ export function About() {
             </div>
           ))}
         </div>
+
+        <div className="mt-16 grid gap-6 text-left md:grid-cols-2">
+          <article className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Our story</p>
+            <h3 className="mt-3 text-2xl font-bold text-foreground">Built in Mulikandi, driven by belief.</h3>
+            <p className="mt-4 leading-7 text-foreground/70">
+              Titan Force Mulikandi FC was created to give local footballers a platform to grow, compete, and represent their community with pride. We are building more than a match-day squad: we are building a culture where discipline, respect, and ambition belong to everyone.
+            </p>
+          </article>
+          <article className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Our mission</p>
+            <h3 className="mt-3 text-2xl font-bold text-foreground">Make every player better.</h3>
+            <p className="mt-4 leading-7 text-foreground/70">
+              From grassroots development to competitive football, we create an environment where players can improve their game and character. Every training session, fixture, and supporter helps move the club forward.
+            </p>
+          </article>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-left md:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">What we stand for</p>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
+            <div><h3 className="font-bold text-foreground">Passion</h3><p className="mt-2 text-sm leading-6 text-foreground/70">We play with energy and purpose, no matter the opponent.</p></div>
+            <div><h3 className="font-bold text-foreground">Unity</h3><p className="mt-2 text-sm leading-6 text-foreground/70">Players, coaches, families, and supporters move as one.</p></div>
+            <div><h3 className="font-bold text-foreground">Progress</h3><p className="mt-2 text-sm leading-6 text-foreground/70">We learn from every match and keep raising our standards.</p></div>
+          </div>
+        </div>
       </div>
     </section>
   )
