@@ -110,11 +110,15 @@ export function useDataStore() {
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {
+          dataCache.players = data
+          dataCache.lastFetch = Date.now()
           setPlayers(data)
         }
       },
       (data) => {
         if (isMounted) {
+          dataCache.matches = data
+          dataCache.lastFetch = Date.now()
           setMatches(data)
         }
       },
@@ -125,6 +129,8 @@ export function useDataStore() {
       },
       (data) => {
         if (isMounted) {
+          dataCache.newsItems = data
+          dataCache.lastFetch = Date.now()
           setNewsItems(data)
         }
       },
