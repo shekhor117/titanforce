@@ -16,16 +16,28 @@ export function PlayerNewsSection({ playerName, limit = 3 }: PlayerNewsSectionPr
   const isBn = language === 'bn'
   const { newsItems } = useNewsItems()
 
-  // Filter news related to the player
+  const searchTerms = playerName
+    .split(/\s+/)
+    .map((term) => term.trim().toLowerCase())
+    .filter((term) => term.length > 2)
   const playerNews = newsItems
-    .filter(item => 
-      item.title.toLowerCase().includes(playerName.toLowerCase()) ||
-      item.description?.toLowerCase().includes(playerName.toLowerCase())
-    )
+    .filter((item) => {
+      const content = `${item.title} ${item.description || ''}`.toLowerCase()
+      return searchTerms.length > 0 && searchTerms.some((term) => content.includes(term))
+    })
     .slice(0, limit)
 
   if (playerNews.length === 0) {
-    return null
+    return (
+      <div className="neo-card rounded-2xl border border-secondary/40 p-6 md:p-8">
+        <h3 className={`text-xl font-bold uppercase tracking-wider text-foreground ${isBn ? 'font-[var(--font-bengali)]' : ''}`}>
+          {isBn ? 'সর্বশেষ সংবাদ' : 'Latest News'}
+        </h3>
+        <p className="mt-3 text-sm text-foreground/60">
+          {isBn ? 'এই খেলোয়াড়ের জন্য এখনো কোনো সংবাদ নেই।' : 'No news is available for this player yet.'}
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -68,7 +80,7 @@ export function PlayerNewsSection({ playerName, limit = 3 }: PlayerNewsSectionPr
                 {item.title}
               </h4>
               <p className="text-xs text-foreground/60 mt-2">
-                {new Date(item.date).toLocaleDateString(language === 'bn' ? 'bn-BD' : 'en-US')}
+                {item.date ? new Date(item.date).toLocaleDateString(language === 'bn' ? 'bn-BD' : 'en-US') : (isBn ? 'তারিখ নেই' : 'Date unavailable')}
               </p>
             </div>
           </Link>

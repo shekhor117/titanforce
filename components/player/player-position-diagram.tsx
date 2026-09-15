@@ -11,46 +11,59 @@ export function PlayerPositionDiagram({ player }: PlayerPositionDiagramProps) {
   const { language } = useLanguage()
   const isBn = language === 'bn'
 
-  const getPositionCoordinates = (position: string) => {
-    const positionMap: Record<string, { x: number; y: number }> = {
-      'GK': { x: 50, y: 90 },
-      'CB': { x: 50, y: 75 },
-      'LB': { x: 28, y: 78 },
-      'RB': { x: 72, y: 82 },
-      'LWB': { x: 20, y: 66 },
-      'RWB': { x: 80, y: 66 },
-      'CM': { x: 42, y: 45 },
-      'LM': { x: 24, y: 45 },
-      'RM': { x: 72, y: 45 },
-      'CAM': { x: 50, y: 28 },
-      'CF': { x: 50, y: 18 },
-      'ST': { x: 50, y: 10 },
-      'LW': { x: 28, y: 25 },
-      'RW': { x: 72, y: 25 },
-      'LF': { x: 35, y: 16 },
-      'RF': { x: 65, y: 16 },
-      'FWD': { x: 50, y: 15 },
-      'MID': { x: 50, y: 45 },
-      'DEF': { x: 50, y: 68 },
-      'AM': { x: 42, y: 25 },
-    }
-    return positionMap[position] || { x: 50, y: 50 }
+  const positionMap: Record<string, { x: number; y: number }> = {
+    GK: { x: 50, y: 91 },
+    CB: { x: 50, y: 74 },
+    LB: { x: 24, y: 76 },
+    RB: { x: 76, y: 76 },
+    LWB: { x: 18, y: 61 },
+    RWB: { x: 82, y: 61 },
+    DM: { x: 50, y: 57 },
+    CM: { x: 50, y: 45 },
+    LM: { x: 22, y: 45 },
+    RM: { x: 78, y: 45 },
+    AM: { x: 50, y: 32 },
+    CAM: { x: 50, y: 30 },
+    LW: { x: 22, y: 24 },
+    RW: { x: 78, y: 24 },
+    CF: { x: 50, y: 18 },
+    LF: { x: 34, y: 17 },
+    RF: { x: 66, y: 17 },
+    ST: { x: 50, y: 10 },
+    FWD: { x: 50, y: 15 },
+    MID: { x: 50, y: 45 },
+    DEF: { x: 50, y: 72 },
   }
 
-  // Scan positions directly from Supabase player table
-  // Use stored positions if available, otherwise create default from player's primary position
+  const normalizePositions = (value: string | undefined) =>
+    (value || 'MID')
+      .toUpperCase()
+      .split(/[\/,|+&]|\s+OR\s+|\s+AND\s+/)
+      .map((position) => position.trim().replace(/\s+/g, ''))
+      .map((position) => position === 'GOALKEEPER' ? 'GK' : position === 'DEFENDER' ? 'DEF' : position === 'MIDFIELDER' ? 'MID' : position === 'FORWARD' || position === 'STRIKER' ? 'FWD' : position)
+      .filter((position, index, positions) => positionMap[position] && positions.indexOf(position) === index)
+
+  const getPositionCoordinates = (position: string) => positionMap[position] || positionMap.MID
+  const positionCodes = normalizePositions(player.position)
+
+  // Prefer explicitly stored positions, while using normalized football roles for legacy composite values.
   const positionsToDisplay: Array<PlayerPosition & { position_name?: string }> = player.positions && player.positions.length > 0
-    ? player.positions
-    : [{
-        id: 'default',
+    ? player.positions.map((position) => ({
+        ...position,
+        position_name: normalizePositions(position.position_name)[0] || 'MID',
+        x_coordinate: position.x_coordinate ?? getPositionCoordinates(position.position_name).x,
+        y_coordinate: position.y_coordinate ?? getPositionCoordinates(position.position_name).y,
+      }))
+    : positionCodes.map((position, index) => ({
+        id: `default-${position}`,
         player_id: player.id,
-        position_name: player.position,
-        x_coordinate: getPositionCoordinates(player.position).x,
-        y_coordinate: getPositionCoordinates(player.position).y,
-        is_primary: true,
+        position_name: position,
+        x_coordinate: getPositionCoordinates(position).x,
+        y_coordinate: getPositionCoordinates(position).y,
+        is_primary: index === 0,
         created_at: player.created_at,
         updated_at: player.updated_at,
-      }]
+      }))
 
   // Get primary position for display (from Supabase player table data)
   const primaryPosition = positionsToDisplay.find(p => p.is_primary) || positionsToDisplay[0]

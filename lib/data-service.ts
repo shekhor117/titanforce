@@ -311,10 +311,18 @@ export class DataService {
       }
 
       // Player profile data, including `position`, is stored on the players
-      // table. Return it directly instead of issuing one player_positions query
-      // per row, which caused database scans to fail when that optional table
-      // was unavailable or restricted by RLS.
-      return data || []
+      // table. Return one normalized shape to both admin and public consumers.
+      return (data || []).map((player) => ({
+        ...player,
+        id: String(player.id),
+        name: player.name || player.full_name || '',
+        full_name: player.full_name || player.name || '',
+        position: player.position || '',
+        category: player.category || 'MID',
+        status: player.status || 'active',
+        goals: player.goals ?? 0,
+        assists: player.assists ?? 0,
+      }))
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
       return []
@@ -344,9 +352,11 @@ export class DataService {
   async updatePlayer(id: string, updates: Partial<Player>): Promise<Player> {
     if (!this.supabase) throw new Error('Supabase not configured')
     try {
+      const updateData = { ...updates }
+      delete (updateData as Partial<Player>).positions
       const { data, error } = await this.supabase
         .from('players')
-        .update(updates)
+        .update(updateData)
         .eq('id', id)
         .select()
         .single()
@@ -560,7 +570,11 @@ export class DataService {
         console.error("[v0] DataService getHonours error:", error)
         return []
       }
-      return data || []
+      return (data || []).map((honour) => ({
+        ...honour,
+        id: String(honour.id),
+        featured: honour.featured ?? false,
+      }))
     } catch (err) {
       console.error("[v0] DataService getHonours caught error:", err)
       return []
@@ -609,7 +623,11 @@ export class DataService {
         console.error("[v0] DataService getTrophies error:", error)
         return []
       }
-      return data || []
+      return (data || []).map((trophy) => ({
+        ...trophy,
+        id: String(trophy.id),
+        featured: trophy.featured ?? false,
+      }))
     } catch (err) {
       console.error("[v0] DataService getTrophies caught error:", err)
       return []

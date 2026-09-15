@@ -52,7 +52,7 @@ class PlayerDataService {
       const { data, error } = await supabase
         .from('players')
         .select('*')
-        .eq('status', 'Active')
+        .in('status', ['Active', 'active'])
         .order('num', { ascending: true })
 
       if (error) throw error
@@ -65,6 +65,9 @@ class PlayerDataService {
         position: p.position || '',
         category: p.category || 'MID',
         age: p.age,
+        dob: p.dob || p.date_of_birth,
+        height: p.height,
+        weight: p.weight,
         hometown: p.hometown,
         foot: p.foot,
         goals: p.goals || 0,
@@ -109,7 +112,7 @@ class PlayerDataService {
       if (!supabase) return undefined
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .select('*')
         .eq('id', id)
         .single()
@@ -120,16 +123,16 @@ class PlayerDataService {
       return {
         id: data.id,
         num: data.num || 0,
-        name: data.display_name || data.full_name || '',
-        full_name: data.full_name || '',
-        position: data.position_name || data.position || '',
+        name: data.name || data.full_name || '',
+        full_name: data.full_name || data.name || '',
+        position: data.position || '',
         category: data.category || 'MID',
         age: data.age,
         hometown: data.hometown,
         foot: data.foot,
         goals: data.goals || 0,
         assists: data.assists || 0,
-        image_url: data.avatar_url,
+        image_url: data.image_url,
         status: data.status || 'active',
         bio: data.bio,
         clean_sheets: data.clean_sheets,
@@ -169,9 +172,8 @@ class PlayerDataService {
       if (!supabase) return []
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .select('*')
-        .eq('position', 'player')
         .eq('status', status)
         .order('num', { ascending: true })
 
@@ -180,16 +182,19 @@ class PlayerDataService {
       return (data || []).map(p => ({
         id: p.id,
         num: p.num || 0,
-        name: p.display_name || p.full_name || '',
-        full_name: p.full_name || '',
-        position: p.position_name || p.position || '',
+        name: p.name || p.full_name || '',
+        full_name: p.full_name || p.name || '',
+        position: p.position || '',
         category: p.category || 'MID',
         age: p.age,
+        dob: p.dob || p.date_of_birth,
+        height: p.height,
+        weight: p.weight,
         hometown: p.hometown,
         foot: p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
-        image_url: p.avatar_url,
+        image_url: p.image_url,
         status: p.status || 'active',
         bio: p.bio,
         clean_sheets: p.clean_sheets,
@@ -229,9 +234,8 @@ class PlayerDataService {
       if (!supabase) return []
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .select('*')
-        .eq('position', 'player')
         .eq('category', category)
         .order('num', { ascending: true })
 
@@ -240,16 +244,19 @@ class PlayerDataService {
       return (data || []).map(p => ({
         id: p.id,
         num: p.num || 0,
-        name: p.display_name || p.full_name || '',
-        full_name: p.full_name || '',
-        position: p.position_name || p.position || '',
+        name: p.name || p.full_name || '',
+        full_name: p.full_name || p.name || '',
+        position: p.position || '',
         category: p.category || 'MID',
         age: p.age,
+        dob: p.dob || p.date_of_birth,
+        height: p.height,
+        weight: p.weight,
         hometown: p.hometown,
         foot: p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
-        image_url: p.avatar_url,
+        image_url: p.image_url,
         status: p.status || 'active',
         bio: p.bio,
         clean_sheets: p.clean_sheets,
@@ -319,9 +326,8 @@ class PlayerDataService {
       if (!supabase) return []
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .select('*')
-        .eq('position', 'player')
         .order('goals', { ascending: false })
         .limit(limit)
 
@@ -330,16 +336,19 @@ class PlayerDataService {
       return (data || []).map(p => ({
         id: p.id,
         num: p.num || 0,
-        name: p.display_name || p.full_name || '',
-        full_name: p.full_name || '',
-        position: p.position_name || p.position || '',
+        name: p.name || p.full_name || '',
+        full_name: p.full_name || p.name || '',
+        position: p.position || '',
         category: p.category || 'MID',
         age: p.age,
+        dob: p.dob || p.date_of_birth,
+        height: p.height,
+        weight: p.weight,
         hometown: p.hometown,
         foot: p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
-        image_url: p.avatar_url,
+        image_url: p.image_url,
         status: p.status || 'active',
         bio: p.bio,
         clean_sheets: p.clean_sheets,
@@ -379,20 +388,20 @@ class PlayerDataService {
       if (!supabase) return null
 
       const updateData: Record<string, unknown> = {}
-      if (updates.name) updateData.display_name = updates.name
+      if (updates.name) updateData.name = updates.name
       if (updates.full_name) updateData.full_name = updates.full_name
-      if (updates.num) updateData.num = updates.num
-      if (updates.position) updateData.position_name = updates.position
+      if (updates.num !== undefined) updateData.num = updates.num
+      if (updates.position) updateData.position = updates.position
       if (updates.category) updateData.category = updates.category
-      if (updates.age) updateData.age = updates.age
+      if (updates.age !== undefined) updateData.age = updates.age
       if (updates.goals !== undefined) updateData.goals = updates.goals
       if (updates.assists !== undefined) updateData.assists = updates.assists
-      if (updates.image_url) updateData.avatar_url = updates.image_url
+      if (updates.image_url !== undefined) updateData.image_url = updates.image_url
       if (updates.status) updateData.status = updates.status
-      if (updates.bio) updateData.bio = updates.bio
+      if (updates.bio !== undefined) updateData.bio = updates.bio
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('players')
         .update(updateData)
         .eq('id', id)
         .select()

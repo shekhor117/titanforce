@@ -173,7 +173,7 @@ export default function PlayerProfile() {
             <div className="lg:col-span-2">
               <PlayerCareerStats player={player} />
             </div>
-            <PlayerHonoursSection />
+            <PlayerHonoursSection playerId={player.id} />
           </div>
         )}
 

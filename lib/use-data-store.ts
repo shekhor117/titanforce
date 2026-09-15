@@ -110,11 +110,15 @@ export function useDataStore() {
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {
+          dataCache.players = data
+          dataCache.lastFetch = Date.now()
           setPlayers(data)
         }
       },
       (data) => {
         if (isMounted) {
+          dataCache.matches = data
+          dataCache.lastFetch = Date.now()
           setMatches(data)
         }
       },
@@ -125,6 +129,8 @@ export function useDataStore() {
       },
       (data) => {
         if (isMounted) {
+          dataCache.newsItems = data
+          dataCache.lastFetch = Date.now()
           setNewsItems(data)
         }
       },
@@ -208,6 +214,7 @@ export function usePlayers() {
     const unsubscribe = service.subscribeToPlayers((data) => {
       if (isMounted) {
         dataCache.players = data
+        dataCache.lastFetch = Date.now()
         setPlayers(data)
       }
     }, (err) => {
@@ -288,19 +295,27 @@ export function useMatches() {
 }
 
 export function usePartners() {
-  const service = getDataService()
-  const [partners, setPartners] = useState<Partner[]>([])
-  const [loading, setLoading] = useState(true)
+  const service = useRef(getDataService()).current
+  const [partners, setPartners] = useState<Partner[]>(dataCache.partners || [])
+  const [loading, setLoading] = useState(!dataCache.partners)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     let isMounted = true
 
     const loadPartners = async () => {
+      if (dataCache.partners && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+        setPartners(dataCache.partners)
+        setLoading(false)
+        return
+      }
+
       try {
         setLoading(true)
         const data = await service.getPartners()
         if (isMounted) {
+          dataCache.partners = data
+          dataCache.lastFetch = Date.now()
           setPartners(data)
           setError(null)
         }
@@ -318,6 +333,8 @@ export function usePartners() {
 
     const unsubscribe = service.subscribeToPartners((data) => {
       if (isMounted) {
+        dataCache.partners = data
+        dataCache.lastFetch = Date.now()
         setPartners(data)
       }
     }, (err) => {
@@ -398,19 +415,27 @@ export function useNewsItems() {
 }
 
 export function useMediaItems() {
-  const service = getDataService()
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const service = useRef(getDataService()).current
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(dataCache.mediaItems || [])
+  const [loading, setLoading] = useState(!dataCache.mediaItems)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     let isMounted = true
 
     const loadMediaItems = async () => {
+      if (dataCache.mediaItems && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+        setMediaItems(dataCache.mediaItems)
+        setLoading(false)
+        return
+      }
+
       try {
         setLoading(true)
         const data = await service.getMediaItems()
         if (isMounted) {
+          dataCache.mediaItems = data
+          dataCache.lastFetch = Date.now()
           setMediaItems(data)
           setError(null)
         }
@@ -428,6 +453,8 @@ export function useMediaItems() {
 
     const unsubscribe = service.subscribeToMediaItems((data) => {
       if (isMounted) {
+        dataCache.mediaItems = data
+        dataCache.lastFetch = Date.now()
         setMediaItems(data)
       }
     }, (err) => {
@@ -446,19 +473,27 @@ export function useMediaItems() {
 }
 
 export function useTrophies() {
-  const service = getDataService()
-  const [trophies, setTrophies] = useState<Trophy[]>([])
-  const [loading, setLoading] = useState(true)
+  const service = useRef(getDataService()).current
+  const [trophies, setTrophies] = useState<Trophy[]>(dataCache.trophies || [])
+  const [loading, setLoading] = useState(!dataCache.trophies)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     let isMounted = true
 
     const loadTrophies = async () => {
+      if (dataCache.trophies && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+        setTrophies(dataCache.trophies)
+        setLoading(false)
+        return
+      }
+
       try {
         setLoading(true)
         const data = await service.getTrophies()
         if (isMounted) {
+          dataCache.trophies = data
+          dataCache.lastFetch = Date.now()
           setTrophies(data)
           setError(null)
         }

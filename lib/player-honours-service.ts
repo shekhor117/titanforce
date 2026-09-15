@@ -30,7 +30,6 @@ class PlayerHonoursService {
             description,
             icon,
             runners_up,
-            image_url,
             featured
           )
         `)
@@ -54,15 +53,14 @@ class PlayerHonoursService {
       return data
         .filter(item => item.honours)
         .map(item => ({
-          id: item.honours.id,
+          id: String(item.honours.id),
           name: item.honours.name,
           year: item.honours.year,
           category: item.honours.category,
           description: item.honours.description,
           icon: item.honours.icon || '🏆',
           runners_up: item.honours.runners_up,
-          image_url: item.honours.image_url,
-          featured: item.honours.featured,
+          featured: item.honours.featured ?? false,
         }))
     } catch (error) {
       console.error('[v0] Error in getPlayerHonours:', error)
@@ -71,7 +69,7 @@ class PlayerHonoursService {
   }
 
   // Add honour to a player
-  async addHonourToPlayer(playerId: string, honourId: string, awardedYear?: number): Promise<boolean> {
+  async addHonourToPlayer(playerId: string, honourId: string): Promise<boolean> {
     try {
       const supabase = createClient()
       if (!supabase) return false
@@ -81,7 +79,6 @@ class PlayerHonoursService {
         .insert({
           player_id: playerId,
           honour_id: honourId,
-          awarded_year: awardedYear,
         })
 
       if (error) {
@@ -168,7 +165,7 @@ class PlayerHonoursService {
       return data
         .filter(item => item.players)
         .map(item => ({
-          id: item.players.id,
+          id: String(item.players.id),
           name: item.players.full_name || item.players.name,
           num: item.players.num,
         }))
