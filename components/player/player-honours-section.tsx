@@ -41,8 +41,18 @@ export function PlayerHonoursSection({ playerId }: PlayerHonoursSectionProps) {
     loadHonours()
   }, [effPlayerId])
 
-  if (loading || stats.total === 0) {
-    return null
+  if (loading) {
+    return <div className="neo-card rounded-2xl border border-secondary/40 p-6 text-sm text-foreground/60">{isBn ? 'সম্মাননা লোড হচ্ছে...' : 'Loading honours...'}</div>
+  }
+
+  if (stats.total === 0) {
+    return (
+      <div className="neo-card rounded-2xl border border-secondary/40 p-6">
+        <div className="flex items-center gap-3"><Trophy className="h-6 w-6 text-yellow-400" /><h3 className="text-xl font-bold text-foreground">{isBn ? 'সম্মাননা' : 'Honours'}</h3></div>
+        <p className="mt-3 text-sm text-foreground/60">{isBn ? 'এই খেলোয়াড়ের কোনো সম্মাননা এখনো যোগ করা হয়নি।' : 'No honours have been added for this player yet.'}</p>
+        <Link href={`/player/${playerNum}/honours`} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">{isBn ? 'সম্মাননা দেখুন' : 'View honours'} <ArrowRight className="h-4 w-4" /></Link>
+      </div>
+    )
   }
 
   const categoryLabels = {
