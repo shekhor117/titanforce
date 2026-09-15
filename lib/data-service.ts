@@ -560,7 +560,11 @@ export class DataService {
         console.error("[v0] DataService getHonours error:", error)
         return []
       }
-      return data || []
+      return (data || []).map((honour) => ({
+        ...honour,
+        id: String(honour.id),
+        featured: honour.featured ?? false,
+      }))
     } catch (err) {
       console.error("[v0] DataService getHonours caught error:", err)
       return []
@@ -609,7 +613,11 @@ export class DataService {
         console.error("[v0] DataService getTrophies error:", error)
         return []
       }
-      return data || []
+      return (data || []).map((trophy) => ({
+        ...trophy,
+        id: String(trophy.id),
+        featured: trophy.featured ?? false,
+      }))
     } catch (err) {
       console.error("[v0] DataService getTrophies caught error:", err)
       return []
