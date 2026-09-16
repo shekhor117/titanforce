@@ -178,10 +178,16 @@ class AdminSyncManager {
     try {
       this.updateStatus(tableName, 'syncing')
 
-      const { data, error } = await this.supabase
-        .from(tableName)
-        .select('*')
-        .order('updated_at', { ascending: false })
+      let query = this.supabase.from(tableName).select('*')
+      let { data, error } = await query.order('updated_at', { ascending: false })
+
+      // Some shared tables do not have updated_at. The rows are still valid;
+      // fall back to the table's natural order instead of showing an empty admin panel.
+      if (error?.code === '42703' || error?.message?.includes('updated_at')) {
+        const fallback = await this.supabase.from(tableName).select('*')
+        data = fallback.data
+        error = fallback.error
+      }
 
       if (error) throw error
 

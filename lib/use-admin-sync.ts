@@ -99,8 +99,14 @@ export function useAdminSync<T extends { id: string }>(
     window.addEventListener('admin-sync-refresh', handleSyncRefresh)
     window.addEventListener('admin-sync-push', handleSyncPush)
 
-    // Initial refresh
-    updateLocalState()
+    // Load the current Supabase rows immediately so admin and public views start from the same data.
+    void manager.refreshTable(tableName).then((newData) => {
+      if (newData && mounted.current) {
+        setData(newData as T[])
+        setLastSyncTime(new Date(manager.getLastSyncTime(tableName) || Date.now()))
+      }
+      updateLocalState()
+    })
 
     return () => {
       window.removeEventListener('admin-sync-change', handleSyncChange)
