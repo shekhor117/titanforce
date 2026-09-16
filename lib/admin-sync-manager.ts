@@ -178,27 +178,37 @@ class AdminSyncManager {
     try {
       this.updateStatus(tableName, 'syncing')
 
-      const { data, error } = await this.supabase
-        .from(tableName)
-        .select('*')
-        .order('updated_at', { ascending: false })
+      let query = this.supabase.from(tableName).select('*')
+      let { data, error } = await query.order('updated_at', { ascending: false })
+
+      // Some shared tables do not have updated_at. The rows are still valid;
+      // fall back to the table's natural order instead of showing an empty admin panel.
+      if (error?.code === '42703' || error?.message?.includes('updated_at')) {
+        const fallback = await this.supabase.from(tableName).select('*')
+        data = fallback.data
+        error = fallback.error
+      }
 
       if (error) throw error
 
-      // Emit refresh event
+      const normalizedData = (data || []).map((row: any) => ({ ...row, id: String(row.id) }))
+
+      // Emit refresh events to admin consumers and the public data store.
       if (typeof window !== 'undefined') {
-        const event = new CustomEvent('admin-sync-refresh', {
-          detail: { tableName, data },
-        })
-        window.dispatchEvent(event)
+        window.dispatchEvent(new CustomEvent('admin-sync-refresh', {
+          detail: { tableName, data: normalizedData },
+        }))
+        window.dispatchEvent(new CustomEvent('shared-data-change', {
+          detail: { tableName, data: normalizedData },
+        }))
       }
 
       const state = this.states.get(tableName)!
       state.lastSyncTime = Date.now()
       this.updateStatus(tableName, 'synced')
 
-      console.log(`[v0] Refreshed ${tableName}: ${data?.length || 0} records`)
-      return data
+      console.log(`[v0] Refreshed ${tableName}: ${normalizedData.length} records`)
+      return normalizedData
     } catch (error) {
       console.error(`[v0] Error refreshing ${tableName}:`, error)
       this.updateStatus(tableName, 'error')
@@ -237,12 +247,16 @@ class AdminSyncManager {
 
       this.updateStatus(tableName, 'synced')
 
-      // Emit push event
+      const normalizedData = data ? { ...data, id: String(data.id) } : data
+
+      // Notify admin and public consumers immediately after a successful CRUD write.
       if (typeof window !== 'undefined') {
-        const event = new CustomEvent('admin-sync-push', {
-          detail: { tableName, id, data },
-        })
-        window.dispatchEvent(event)
+        window.dispatchEvent(new CustomEvent('admin-sync-push', {
+          detail: { tableName, id: String(id), data: normalizedData },
+        }))
+        window.dispatchEvent(new CustomEvent('shared-data-change', {
+          detail: { tableName, id: String(id), data: normalizedData },
+        }))
       }
 
       console.log(`[v0] Pushed changes to ${tableName}:${id}`)

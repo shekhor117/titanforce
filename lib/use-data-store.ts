@@ -106,6 +106,42 @@ export function useDataStore() {
 
     loadData()
 
+    const handleSharedDataChange = (event: Event) => {
+      const detail = (event as CustomEvent).detail || {}
+      if (!isMounted || !Array.isArray(detail.data)) return
+
+      const rows = detail.data
+      switch (detail.tableName) {
+        case 'players':
+          dataCache.players = rows as Player[]
+          setPlayers(dataCache.players)
+          break
+        case 'matches':
+          dataCache.matches = rows as Match[]
+          setMatches(dataCache.matches)
+          break
+        case 'news':
+        case 'news_items':
+          dataCache.newsItems = rows as NewsItem[]
+          setNewsItems(dataCache.newsItems)
+          break
+        case 'partners':
+          dataCache.partners = rows as Partner[]
+          setPartners(dataCache.partners)
+          break
+        case 'media_items':
+        case 'media':
+          dataCache.mediaItems = rows as MediaItem[]
+          setMediaItems(dataCache.mediaItems)
+          break
+        case 'trophies':
+          dataCache.trophies = rows as Trophy[]
+          break
+      }
+      dataCache.lastFetch = Date.now()
+    }
+    window.addEventListener('shared-data-change', handleSharedDataChange)
+
     // Use unified channel for all realtime updates - more efficient than separate channels
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
@@ -152,6 +188,7 @@ export function useDataStore() {
 
     return () => {
       isMounted = false
+      window.removeEventListener('shared-data-change', handleSharedDataChange)
       unsubscribeAll()
     }
   }, [])

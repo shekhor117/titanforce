@@ -74,8 +74,11 @@ export function useAdminSync<T extends { id: string }>(
     const handleSyncChange = (event: Event) => {
       const customEvent = event as CustomEvent
       if (customEvent.detail.tableName === tableName && mounted.current) {
-        // Data changed, refresh
-        updateLocalState()
+        // Pull the changed row from the same Supabase table used by public pages.
+        void manager.refreshTable(tableName).then((newData) => {
+          if (newData && mounted.current) setData(newData as T[])
+          updateLocalState()
+        })
       }
     }
 
@@ -83,8 +86,8 @@ export function useAdminSync<T extends { id: string }>(
       const customEvent = event as CustomEvent
       if (customEvent.detail.tableName === tableName && mounted.current) {
         const newData = customEvent.detail.data || []
-        setData(newData as T[])
-        setLastSyncTime(new Date(manager.getLastSyncTime(tableName) || Date.now()))
+          setData((newData as T[]).map((row) => ({ ...row, id: String(row.id) })))
+          setLastSyncTime(new Date(manager.getLastSyncTime(tableName) || Date.now()))
       }
     }
 
@@ -99,8 +102,14 @@ export function useAdminSync<T extends { id: string }>(
     window.addEventListener('admin-sync-refresh', handleSyncRefresh)
     window.addEventListener('admin-sync-push', handleSyncPush)
 
-    // Initial refresh
-    updateLocalState()
+    // Load the current Supabase rows immediately so admin and public views start from the same data.
+    void manager.refreshTable(tableName).then((newData) => {
+      if (newData && mounted.current) {
+          setData((newData as T[]).map((row) => ({ ...row, id: String(row.id) })))
+          setLastSyncTime(new Date(manager.getLastSyncTime(tableName) || Date.now()))
+      }
+      updateLocalState()
+    })
 
     return () => {
       window.removeEventListener('admin-sync-change', handleSyncChange)
@@ -137,7 +146,7 @@ export function useAdminSync<T extends { id: string }>(
     try {
       const result = await syncManager.current.refreshTable(tableName)
       if (result && mounted.current) {
-        setData(result as T[])
+        setData((result as T[]).map((row) => ({ ...row, id: String(row.id) })))
         setLastSyncTime(new Date())
       }
     } catch (error) {
@@ -153,7 +162,7 @@ export function useAdminSync<T extends { id: string }>(
         const result = await syncManager.current.pushChanges(tableName, id, updates)
         if (result && mounted.current) {
           setData((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, ...result } : item))
+            prev.map((item) => (String(item.id) === String(id) ? { ...item, ...result, id: String(id) } : item))
           )
           updateLocalState()
         }
