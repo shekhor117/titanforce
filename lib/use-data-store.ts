@@ -106,6 +106,17 @@ export function useDataStore() {
 
     loadData()
 
+    const handleSharedDataChange = (event: Event) => {
+      const detail = (event as CustomEvent).detail || {}
+      if (detail.tableName === 'players' && Array.isArray(detail.data) && isMounted) {
+        const nextPlayers = detail.data as Player[]
+        dataCache.players = nextPlayers
+        dataCache.lastFetch = Date.now()
+        setPlayers(nextPlayers)
+      }
+    }
+    window.addEventListener('shared-data-change', handleSharedDataChange)
+
     // Use unified channel for all realtime updates - more efficient than separate channels
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
@@ -152,6 +163,7 @@ export function useDataStore() {
 
     return () => {
       isMounted = false
+      window.removeEventListener('shared-data-change', handleSharedDataChange)
       unsubscribeAll()
     }
   }, [])

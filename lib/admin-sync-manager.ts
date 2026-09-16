@@ -191,12 +191,16 @@ class AdminSyncManager {
 
       if (error) throw error
 
-      // Emit refresh event
+      const normalizedData = (data || []).map((row: any) => ({ ...row, id: String(row.id) }))
+
+      // Emit refresh events to admin consumers and the public data store.
       if (typeof window !== 'undefined') {
-        const event = new CustomEvent('admin-sync-refresh', {
-          detail: { tableName, data },
-        })
-        window.dispatchEvent(event)
+        window.dispatchEvent(new CustomEvent('admin-sync-refresh', {
+          detail: { tableName, data: normalizedData },
+        }))
+        window.dispatchEvent(new CustomEvent('shared-data-change', {
+          detail: { tableName, data: normalizedData },
+        }))
       }
 
       const state = this.states.get(tableName)!
@@ -243,12 +247,16 @@ class AdminSyncManager {
 
       this.updateStatus(tableName, 'synced')
 
-      // Emit push event
+      const normalizedData = data ? { ...data, id: String(data.id) } : data
+
+      // Notify admin and public consumers immediately after a successful CRUD write.
       if (typeof window !== 'undefined') {
-        const event = new CustomEvent('admin-sync-push', {
-          detail: { tableName, id, data },
-        })
-        window.dispatchEvent(event)
+        window.dispatchEvent(new CustomEvent('admin-sync-push', {
+          detail: { tableName, id: String(id), data: normalizedData },
+        }))
+        window.dispatchEvent(new CustomEvent('shared-data-change', {
+          detail: { tableName, id: String(id), data: normalizedData },
+        }))
       }
 
       console.log(`[v0] Pushed changes to ${tableName}:${id}`)
