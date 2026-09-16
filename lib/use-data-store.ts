@@ -108,12 +108,37 @@ export function useDataStore() {
 
     const handleSharedDataChange = (event: Event) => {
       const detail = (event as CustomEvent).detail || {}
-      if (detail.tableName === 'players' && Array.isArray(detail.data) && isMounted) {
-        const nextPlayers = detail.data as Player[]
-        dataCache.players = nextPlayers
-        dataCache.lastFetch = Date.now()
-        setPlayers(nextPlayers)
+      if (!isMounted || !Array.isArray(detail.data)) return
+
+      const rows = detail.data
+      switch (detail.tableName) {
+        case 'players':
+          dataCache.players = rows as Player[]
+          setPlayers(dataCache.players)
+          break
+        case 'matches':
+          dataCache.matches = rows as Match[]
+          setMatches(dataCache.matches)
+          break
+        case 'news':
+        case 'news_items':
+          dataCache.newsItems = rows as NewsItem[]
+          setNewsItems(dataCache.newsItems)
+          break
+        case 'partners':
+          dataCache.partners = rows as Partner[]
+          setPartners(dataCache.partners)
+          break
+        case 'media_items':
+        case 'media':
+          dataCache.mediaItems = rows as MediaItem[]
+          setMediaItems(dataCache.mediaItems)
+          break
+        case 'trophies':
+          dataCache.trophies = rows as Trophy[]
+          break
       }
+      dataCache.lastFetch = Date.now()
     }
     window.addEventListener('shared-data-change', handleSharedDataChange)
 

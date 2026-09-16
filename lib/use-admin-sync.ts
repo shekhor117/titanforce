@@ -146,7 +146,7 @@ export function useAdminSync<T extends { id: string }>(
     try {
       const result = await syncManager.current.refreshTable(tableName)
       if (result && mounted.current) {
-        setData(result as T[])
+        setData((result as T[]).map((row) => ({ ...row, id: String(row.id) })))
         setLastSyncTime(new Date())
       }
     } catch (error) {
@@ -162,7 +162,7 @@ export function useAdminSync<T extends { id: string }>(
         const result = await syncManager.current.pushChanges(tableName, id, updates)
         if (result && mounted.current) {
           setData((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, ...result } : item))
+            prev.map((item) => (String(item.id) === String(id) ? { ...item, ...result, id: String(id) } : item))
           )
           updateLocalState()
         }

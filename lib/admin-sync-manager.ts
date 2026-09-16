@@ -207,8 +207,8 @@ class AdminSyncManager {
       state.lastSyncTime = Date.now()
       this.updateStatus(tableName, 'synced')
 
-      console.log(`[v0] Refreshed ${tableName}: ${data?.length || 0} records`)
-      return data
+      console.log(`[v0] Refreshed ${tableName}: ${normalizedData.length} records`)
+      return normalizedData
     } catch (error) {
       console.error(`[v0] Error refreshing ${tableName}:`, error)
       this.updateStatus(tableName, 'error')
