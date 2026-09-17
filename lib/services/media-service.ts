@@ -1,4 +1,20 @@
-import { put, del } from '@vercel/blob'
+import { uploadFileToSupabase, deleteFileFromSupabase } from '@/lib/supabase-storage'
+const BUCKET_NAME = 'app-files'
+
+function toFile(file: File, folder: string) {
+  const safeName = file.name.replace(/[^a-z0-9.]/gi, '')
+  return new File([file], `${folder}/${safeName}`, { type: file.type })
+}
+
+function extractStoragePath(url: string) {
+  const marker = `/object/sign/${BUCKET_NAME}/`
+  const publicMarker = `/object/public/${BUCKET_NAME}/`
+  const index = url.indexOf(marker)
+  const publicIndex = url.indexOf(publicMarker)
+  if (index >= 0) return decodeURIComponent(url.slice(index + marker.length).split('?')[0])
+  if (publicIndex >= 0) return decodeURIComponent(url.slice(publicIndex + publicMarker.length).split('?')[0])
+  return url
+}
 
 export interface MediaUploadResponse {
   url: string
@@ -26,16 +42,14 @@ export async function uploadMedia(file: File, folder: string = 'cms-media'): Pro
   }
 
   try {
-    const filename = `${folder}/${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, '')}`
-    
-    const blob = await put(filename, file, {
-      access: 'public',
-      addRandomSuffix: true,
+    const result = await uploadFileToSupabase(toFile(file, folder), {
+      featureName: folder,
     })
+    if (!result.success || !result.signedUrl) throw new Error(result.error || 'Upload failed')
 
     return {
-      url: blob.url,
-      filename: blob.filename,
+      url: result.signedUrl,
+      filename: result.fileName || file.name,
       size: file.size,
       uploadedAt: new Date().toISOString(),
     }
@@ -47,7 +61,8 @@ export async function uploadMedia(file: File, folder: string = 'cms-media'): Pro
 // Delete media from Vercel Blob
 export async function deleteMedia(url: string): Promise<void> {
   try {
-    await del(url)
+    const result = await deleteFileFromSupabase(extractStoragePath(url))
+    if (!result.success) throw new Error(result.error || 'Delete failed')
   } catch (error) {
     throw new Error(`Failed to delete image: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
