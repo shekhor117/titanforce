@@ -51,12 +51,9 @@ export function AdminLoginPage() {
     try {
       await login(email, password)
       
-      // Wait a bit for auth state to update, then redirect
-      // This ensures smooth animation while auth updates
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Redirect with smooth transition
-      router.push("/admin/dashboard")
+      // The context sets the session and admin state before resolving.
+      // Replace prevents the login page from remaining in browser history.
+      router.replace("/admin/dashboard")
     } catch (err) {
       const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
       setLocalError(message)

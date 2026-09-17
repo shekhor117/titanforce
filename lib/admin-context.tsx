@@ -95,21 +95,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             // request to hang indefinitely.
             void (async () => {
               if (session?.user) {
-                const userRole = ((session.user.app_metadata?.role || session.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
                 const hasAccess = await hasDualAdminAccess(supabase, session.user)
                 if (!isMounted) return
 
                 if (hasAccess) {
+                  const role = (session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin"
                   setAdmin({
                     id: session.user.id,
                     email: session.user.email || "",
-                    name: session.user.user_metadata?.full_name || "User",
-                    role: userRole,
+                    name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User",
+                    role,
                     emailVerified: Boolean(session.user.email_confirmed_at),
                   })
                   setError(null)
                 } else {
                   setAdmin(null)
+                  setError("Your account does not have admin access.")
                 }
               } else {
                 setAdmin(null)
@@ -133,14 +134,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           if (error) throw error
           
           if (data?.session?.user) {
-            const userRole = ((data.session.user.app_metadata?.role || data.session.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
-            
             if (await hasDualAdminAccess(supabase, data.session.user)) {
               const user: AuthUser = {
                 id: data.session.user.id,
                 email: data.session.user.email || "",
-                name: data.session.user.user_metadata?.full_name || "User",
-                role: userRole,
+                name: data.session.user.user_metadata?.full_name || data.session.user.email?.split("@")[0] || "User",
+                role: (data.session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
                 emailVerified: data.session.user.email_confirmed_at ? true : false,
               }
               if (isMounted) setAdmin(user)
@@ -197,7 +196,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin(user)
+      setAdmin({
+        ...user,
+        role: (userData.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
+      })
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
