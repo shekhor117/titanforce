@@ -34,8 +34,18 @@ async function hasDualAdminAccess(
     user_metadata?: Record<string, unknown>
   },
 ) {
-  // app_users is the existing authorization source for this project.
-  // It has no auth_id column, so match the authenticated account by email.
+  // Secure Supabase app_metadata is checked first. This keeps admin login
+  // working even when the optional legacy app_users table is absent or blocked.
+  const appRole = typeof user.app_metadata?.role === "string"
+    ? user.app_metadata.role.trim().toLowerCase()
+    : typeof user.user_metadata?.role === "string"
+      ? user.user_metadata.role.trim().toLowerCase()
+      : ""
+  const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
+  if (hasSecureRole) return true
+
+  // Legacy app_users support is best-effort. A missing table must not turn a
+  // valid Supabase admin session into a false authentication failure.
   const { data, error } = await supabase
     .from("app_users")
     .select("role, is_active")
@@ -43,26 +53,12 @@ async function hasDualAdminAccess(
     .maybeSingle()
 
   if (error) {
-    console.warn("[v0] Admin role lookup failed:", error.message)
+    console.warn("[v0] Optional app_users lookup unavailable:", error.message)
     return false
   }
 
-  const appRole = typeof user.app_metadata?.role === "string"
-    ? user.app_metadata.role.trim().toLowerCase()
-    : typeof user.user_metadata?.role === "string"
-      ? user.user_metadata.role.trim().toLowerCase()
-      : ""
-  const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
-
   const appUserRole = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
-  const hasAppUserRole = ["admin", "super_admin", "moderator"].includes(appUserRole)
-
-  // app_metadata is the authoritative secure claim. The app_users record is
-  // retained as an additional active-account check when it is available, but
-  // RLS must not make a correctly provisioned admin unable to sign in.
-  return Boolean(
-    hasSecureRole || (data?.is_active !== false && hasAppUserRole)
-  )
+  return data?.is_active !== false && ["admin", "super_admin", "moderator"].includes(appUserRole)
 }
 
 export function AdminProvider({ children }: { children: ReactNode }) {
@@ -99,21 +95,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             // request to hang indefinitely.
             void (async () => {
               if (session?.user) {
-                const userRole = ((session.user.app_metadata?.role || session.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
                 const hasAccess = await hasDualAdminAccess(supabase, session.user)
                 if (!isMounted) return
 
                 if (hasAccess) {
+                  const role = (session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin"
                   setAdmin({
                     id: session.user.id,
                     email: session.user.email || "",
-                    name: session.user.user_metadata?.full_name || "User",
-                    role: userRole,
+                    name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User",
+                    role,
                     emailVerified: Boolean(session.user.email_confirmed_at),
                   })
                   setError(null)
                 } else {
                   setAdmin(null)
+                  setError("Your account does not have admin access.")
                 }
               } else {
                 setAdmin(null)
@@ -137,14 +134,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           if (error) throw error
           
           if (data?.session?.user) {
-            const userRole = (data.session.user.user_metadata?.role as "admin" | "moderator") || "user"
-            
             if (await hasDualAdminAccess(supabase, data.session.user)) {
               const user: AuthUser = {
                 id: data.session.user.id,
                 email: data.session.user.email || "",
-                name: data.session.user.user_metadata?.full_name || "User",
-                role: userRole,
+                name: data.session.user.user_metadata?.full_name || data.session.user.email?.split("@")[0] || "User",
+                role: (data.session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
                 emailVerified: data.session.user.email_confirmed_at ? true : false,
               }
               if (isMounted) setAdmin(user)
@@ -201,7 +196,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin(user)
+      setAdmin({
+        ...user,
+        role: (userData.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
+      })
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { DataService, Player } from '@/lib/data-service'
 import SquadManager from '@/components/SquadManager'
 import { AlertCircle, Loader2 } from 'lucide-react'
-import { put } from '@vercel/blob'
+import { uploadFileToSupabase } from '@/lib/supabase-storage'
 import { PageEntrance } from '@/components/page-entrance'
 
 export default function SquadManagerAdminPage() {
@@ -102,9 +102,10 @@ export default function SquadManagerAdminPage() {
       if (newPlayer.photo?.startsWith('data:image')) {
         try {
           const blob = await fetch(newPlayer.photo).then(res => res.blob())
-          const fileName = `player_${Date.now()}.${blob.type.split('/')[1]}`
-          const result = await put(`squad/${fileName}`, blob, { access: 'public' })
-          photoUrl = result.url
+          const file = new File([blob], `player-${Date.now()}.${blob.type.split('/')[1] || 'jpg'}`, { type: blob.type })
+          const result = await uploadFileToSupabase(file, { featureName: 'squad' })
+          if (!result.success) throw new Error(result.error || 'Photo upload failed')
+          photoUrl = result.signedUrl
         } catch (uploadErr) {
           console.error('[v0] Photo upload failed:', uploadErr)
         }
@@ -187,9 +188,10 @@ export default function SquadManagerAdminPage() {
       if (updatedPlayer.photo?.startsWith('data:image')) {
         try {
           const blob = await fetch(updatedPlayer.photo).then(res => res.blob())
-          const fileName = `player_${Date.now()}.${blob.type.split('/')[1]}`
-          const result = await put(`squad/${fileName}`, blob, { access: 'public' })
-          photoUrl = result.url
+          const file = new File([blob], `player-${Date.now()}.${blob.type.split('/')[1] || 'jpg'}`, { type: blob.type })
+          const result = await uploadFileToSupabase(file, { featureName: 'squad' })
+          if (!result.success) throw new Error(result.error || 'Photo upload failed')
+          photoUrl = result.signedUrl
         } catch (uploadErr) {
           console.error('[v0] Photo upload failed:', uploadErr)
         }
