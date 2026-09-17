@@ -4,7 +4,7 @@ export interface AuthUser {
   id: string
   email: string
   name: string
-  role: "admin" | "moderator" | "user"
+  role: "admin" | "moderator" | "super_admin" | "user"
   emailVerified: boolean
 }
 
