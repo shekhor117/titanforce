@@ -23,7 +23,7 @@ export interface MediaUploadResponse {
   uploadedAt: string
 }
 
-// Upload image to Vercel Blob
+// Upload image to Supabase Storage
 export async function uploadMedia(file: File, folder: string = 'cms-media'): Promise<MediaUploadResponse> {
   if (!file) {
     throw new Error('No file provided')
@@ -58,7 +58,7 @@ export async function uploadMedia(file: File, folder: string = 'cms-media'): Pro
   }
 }
 
-// Delete media from Vercel Blob
+// Delete media from Supabase Storage
 export async function deleteMedia(url: string): Promise<void> {
   try {
     const result = await deleteFileFromSupabase(extractStoragePath(url))
