@@ -95,11 +95,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     const ratingObj = payload.find((p: any) => p.dataKey === 'rating');
 
     return (
-      <div className="bg-slate-950/95 border border-slate-800 p-3.5 rounded-xl shadow-xl space-y-2 font-sans backdrop-blur-md">
-        <p className="text-xs font-bold text-white border-b border-slate-800 pb-1.5">{label}</p>
+      <div className="bg-zinc-950/95 border border-zinc-800 p-3.5 rounded-xl shadow-xl space-y-2 font-sans backdrop-blur-md">
+        <p className="text-xs font-bold text-white border-b border-zinc-800 pb-1.5">{label}</p>
         <div className="space-y-1 font-mono text-[11px]">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-slate-400">Rating:</span>
+            <span className="text-zinc-400">Rating:</span>
             <span className="font-bold text-amber-400">★ {ratingObj ? ratingObj.value : 0}</span>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -399,7 +399,7 @@ export default function SquadManager({
       case 'Active':
         return 'bg-emerald-950 text-emerald-400 border border-emerald-800/50';
       case 'Injured':
-        return 'bg-rose-950 text-rose-400 border border-rose-800/50';
+        return 'bg-cyan-950 text-cyan-300 border border-rose-800/50';
       case 'Suspended':
         return 'bg-amber-950 text-amber-500 border border-amber-800/50';
     }
@@ -491,10 +491,10 @@ export default function SquadManager({
         className="space-y-6 pb-12"
       >
         {/* Navigation Action Strip */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
           <button
             onClick={() => setSelectedPlayerId(null)}
-            className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all cursor-pointer"
+            className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Squad List
           </button>
@@ -502,7 +502,7 @@ export default function SquadManager({
           <div className="flex gap-2.5">
             <button
               onClick={() => handleOpenEditForm(normalizedProfile)}
-              className="flex items-center gap-1.5 text-xs font-bold text-white bg-rose-700 hover:bg-rose-600 border border-rose-850 hover:border-rose-700 px-4 py-2 rounded-xl shadow-md cursor-pointer transition-all active:scale-[98%]"
+              className="flex items-center gap-1.5 text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-500 border border-rose-850 hover:border-cyan-600 px-4 py-2 rounded-xl shadow-md cursor-pointer transition-all active:scale-[98%]"
             >
               <Edit2 className="w-3.5 h-3.5" /> Edit Player Profile
             </button>
@@ -510,10 +510,10 @@ export default function SquadManager({
         </div>
 
         {/* Hero Header Card */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-r from-rose-950/20 via-slate-900 to-slate-950 p-6 md:p-8">
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-r from-cyan-950/20 via-zinc-900 to-zinc-950 p-6 md:p-8">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start text-center md:text-left">
             {/* Outline Photo Container */}
-            <div className="relative w-36 h-36 rounded-2xl bg-slate-950 p-1 border-2 border-rose-500/80 shadow-2xl flex items-center justify-center overflow-hidden shrink-0">
+            <div className="relative w-36 h-36 rounded-2xl bg-zinc-950 p-1 border-2 border-cyan-400/80 shadow-2xl flex items-center justify-center overflow-hidden shrink-0">
               {normalizedProfile.photo ? (
                 <img 
                   src={normalizedProfile.photo} 
@@ -522,7 +522,7 @@ export default function SquadManager({
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="text-3xl font-black text-slate-500 select-none font-mono flex items-center justify-center bg-slate-900 w-full h-full rounded-xl">
+                <div className="text-3xl font-black text-zinc-500 select-none font-mono flex items-center justify-center bg-zinc-900 w-full h-full rounded-xl">
                   {normalizedProfile.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
               )}
@@ -531,28 +531,28 @@ export default function SquadManager({
             {/* Info and Ratings */}
             <div className="flex-1 space-y-4">
               <div>
-                <span className="text-[10px] font-mono tracking-widest font-black text-rose-500 uppercase">
+                <span className="text-[10px] font-mono tracking-widest font-black text-cyan-400 uppercase">
                   {normalizedProfile.club || 'TITAN FORCE FC'}
                 </span>
                 <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mt-1 uppercase">
                   {normalizedProfile.name}
                 </h1>
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-3 text-xs text-slate-400 font-mono">
-                  <span className="text-rose-500 font-black">#{normalizedProfile.number}</span>
-                  <span className="text-slate-600">•</span>
-                  <span className="bg-rose-950/40 text-rose-400 border border-rose-900/40 px-2 py-0.5 rounded font-bold uppercase text-[9px]">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-3 text-xs text-zinc-400 font-mono">
+                  <span className="text-cyan-400 font-black">#{normalizedProfile.number}</span>
+                  <span className="text-zinc-600">•</span>
+                  <span className="bg-cyan-950/40 text-cyan-300 border border-cyan-900/40 px-2 py-0.5 rounded font-bold uppercase text-[9px]">
                     {normalizedProfile.position}
                   </span>
-                  <span className="text-slate-600">•</span>
+                  <span className="text-zinc-600">•</span>
                   <span>{normalizedProfile.nationality}</span>
-                  <span className="text-slate-600">•</span>
+                  <span className="text-zinc-600">•</span>
                   <span>{normalizedProfile.preferredFoot} Footed</span>
                 </div>
               </div>
 
               {/* Voting Stars & Favorites Interactive Container */}
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3.5 pt-1">
-                <div className="flex items-center gap-1.5 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-slate-800">
+                <div className="flex items-center gap-1.5 bg-zinc-900/80 px-3.5 py-1.5 rounded-xl border border-zinc-800">
                   <div className="flex gap-0.5" title="Click a star to submit your rating vote!">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -560,14 +560,14 @@ export default function SquadManager({
                         onClick={() => handleAddRatingVote(star)}
                         className="p-0.5 text-amber-400 hover:scale-120 transition-transform cursor-pointer"
                       >
-                        <Star className={`w-3.5 h-3.5 ${star <= Math.round(normalizedProfile.ratingValue || 5.0) ? 'fill-amber-400 text-amber-400' : 'text-slate-700'}`} />
+                        <Star className={`w-3.5 h-3.5 ${star <= Math.round(normalizedProfile.ratingValue || 5.0) ? 'fill-amber-400 text-amber-400' : 'text-zinc-700'}`} />
                       </button>
                     ))}
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-200">
+                  <span className="text-xs font-mono font-bold text-zinc-200">
                     {(normalizedProfile.ratingValue || 5.0).toFixed(1)}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500">
+                  <span className="text-[10px] font-mono text-zinc-500">
                     ({normalizedProfile.ratingVotes || 1} votes)
                   </span>
                 </div>
@@ -576,11 +576,11 @@ export default function SquadManager({
                   onClick={handleToggleFavorite}
                   className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                     normalizedProfile.isFavorite 
-                      ? 'bg-rose-500/10 border-rose-500/40 text-rose-400' 
-                      : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-300'
+                      ? 'bg-cyan-400/10 border-cyan-400/40 text-cyan-300' 
+                      : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-300'
                   }`}
                 >
-                  <Heart className={`w-4 h-4 ${normalizedProfile.isFavorite ? 'fill-rose-500 text-rose-400' : ''}`} />
+                  <Heart className={`w-4 h-4 ${normalizedProfile.isFavorite ? 'fill-cyan-400 text-cyan-300' : ''}`} />
                   <span>Favorite {normalizedProfile.isFavorite ? '1' : '0'}</span>
                 </button>
               </div>
@@ -598,8 +598,8 @@ export default function SquadManager({
             { label: 'PASS ACCURACY', val: `${normalizedProfile.passAccuracy || 85}%` },
             { label: 'CHANCES CREATED', val: normalizedProfile.chancesCreated || 0 }
           ].map((item, idx) => (
-            <div key={idx} className="bg-slate-900 border border-slate-800/80 rounded-xl p-4 text-center shadow-md space-y-1">
-              <span className="text-[9px] font-mono font-bold text-slate-500 tracking-wider block">{item.label}</span>
+            <div key={idx} className="bg-zinc-900 border border-zinc-800/80 rounded-xl p-4 text-center shadow-md space-y-1">
+              <span className="text-[9px] font-mono font-bold text-zinc-500 tracking-wider block">{item.label}</span>
               <h3 className={`text-2xl font-black ${item.valColor || 'text-white'} leading-tight font-mono`}>{item.val}</h3>
             </div>
           ))}
@@ -611,16 +611,16 @@ export default function SquadManager({
           <div className="lg:col-span-5 space-y-6">
             
             {/* Player Details Card */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-4">
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Shield className="w-4 h-4 text-rose-500" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-4">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Shield className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-xs font-mono font-bold text-white tracking-widest uppercase">Player Details</h3>
               </div>
               <div className="space-y-2.5">
                 {detailsList.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs py-1 border-b border-slate-850/40 last:border-0">
-                    <span className="text-slate-400 font-medium font-sans">{item.label}</span>
-                    <span className={`font-semibold font-sans text-right ${item.label === 'Status' ? 'text-emerald-400' : 'text-slate-200'}`}>
+                    <span className="text-zinc-400 font-medium font-sans">{item.label}</span>
+                    <span className={`font-semibold font-sans text-right ${item.label === 'Status' ? 'text-emerald-400' : 'text-zinc-200'}`}>
                       {item.value}
                     </span>
                   </div>
@@ -629,9 +629,9 @@ export default function SquadManager({
             </div>
 
             {/* Season Stats Progress Meters */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-4">
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Activity className="w-4 h-4 text-rose-500" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-4">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Activity className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-xs font-mono font-bold text-white tracking-widest uppercase">Season Stats Performance</h3>
               </div>
               <div className="space-y-3.5">
@@ -640,14 +640,14 @@ export default function SquadManager({
                   return (
                     <div key={idx} className="space-y-1.5">
                       <div className="flex justify-between text-xs font-mono">
-                        <span className="text-slate-400 font-semibold">{met.label}</span>
-                        <span className="text-rose-400 font-bold">
+                        <span className="text-zinc-400 font-semibold">{met.label}</span>
+                        <span className="text-cyan-300 font-bold">
                           {met.isPercentage ? `${met.value}%` : met.value.toLocaleString()}
                         </span>
                       </div>
-                      <div className="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-850">
+                      <div className="h-2 bg-zinc-950 rounded-full overflow-hidden border border-slate-850">
                         <div 
-                          className="h-full bg-gradient-to-r from-rose-700 to-rose-500 rounded-full transition-all duration-500" 
+                          className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full transition-all duration-500" 
                           style={{ width: `${percentage}%` }}
                         ></div>
                       </div>
@@ -663,30 +663,30 @@ export default function SquadManager({
           <div className="lg:col-span-7 space-y-6">
 
             {/* Biography */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-3">
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-                <User className="w-4 h-4 text-rose-500" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-3">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <User className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-xs font-mono font-bold text-white tracking-widest uppercase">Biography</h3>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed font-sans">{normalizedProfile.biography}</p>
+              <p className="text-xs text-zinc-300 leading-relaxed font-sans">{normalizedProfile.biography}</p>
             </div>
 
             {/* Player Attributes Slider Grid */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-4">
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Sparkles className="w-4 h-4 text-rose-500" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-4">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-xs font-mono font-bold text-white tracking-widest uppercase">Player Attributes</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {attrList.map((attr, idx) => (
                   <div key={idx} className="space-y-1.5">
                     <div className="flex justify-between text-xs">
-                      <span className="text-slate-400 font-medium font-sans">{attr.label}</span>
-                      <span className="text-rose-400 font-mono font-bold">{attr.value}%</span>
+                      <span className="text-zinc-400 font-medium font-sans">{attr.label}</span>
+                      <span className="text-cyan-300 font-mono font-bold">{attr.value}%</span>
                     </div>
-                    <div className="h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-850">
+                    <div className="h-2.5 bg-zinc-950 rounded-full overflow-hidden border border-slate-850">
                       <div 
-                        className="h-full bg-gradient-to-r from-red-600 to-rose-500 rounded-full transition-all duration-500" 
+                        className="h-full bg-gradient-to-r from-red-600 to-cyan-400 rounded-full transition-all duration-500" 
                         style={{ width: `${attr.value}%` }}
                       ></div>
                     </div>
@@ -696,50 +696,50 @@ export default function SquadManager({
             </div>
 
             {/* Trophies Cabinet */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-3">
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Crown className="w-4 h-4 text-rose-500" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-3">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Crown className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-xs font-mono font-bold text-white tracking-widest uppercase">Trophies Cabinet</h3>
               </div>
               {normalizedProfile.trophies && normalizedProfile.trophies.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {normalizedProfile.trophies.map((trophy: any, idx: number) => (
-                    <div key={trophy.id || idx} className="bg-slate-950/40 border border-slate-850 rounded-xl p-3 flex items-center gap-3">
+                    <div key={trophy.id || idx} className="bg-zinc-950/40 border border-slate-850 rounded-xl p-3 flex items-center gap-3">
                       <div className="p-2 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-900/20 shrink-0">
                         <Award className="w-4 h-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-xs font-bold text-slate-200 truncate font-sans">{trophy.name}</h4>
-                        <p className="text-[10px] text-slate-500 font-mono font-medium mt-0.5">{trophy.year}</p>
+                        <h4 className="text-xs font-bold text-zinc-200 truncate font-sans">{trophy.name}</h4>
+                        <p className="text-[10px] text-zinc-500 font-mono font-medium mt-0.5">{trophy.year}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-6 text-center bg-slate-950/20 border border-slate-850 rounded-xl">
-                  <p className="text-xs text-slate-500 italic">No historical club trophies registered for this player yet.</p>
+                <div className="py-6 text-center bg-zinc-950/20 border border-slate-850 rounded-xl">
+                  <p className="text-xs text-zinc-500 italic">No historical club trophies registered for this player yet.</p>
                 </div>
               )}
             </div>
 
             {/* Training Performance Dashboard */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-md space-y-5">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-md space-y-5">
               <div>
-                <span className="text-[9px] font-mono font-bold text-rose-500 tracking-wider uppercase">ANALYTICS</span>
+                <span className="text-[9px] font-mono font-bold text-cyan-400 tracking-wider uppercase">ANALYTICS</span>
                 <h3 className="text-sm font-bold text-white tracking-tight uppercase leading-snug mt-0.5">TRAINING PERFORMANCE</h3>
               </div>
               
               {/* Training KPIs Strip */}
-              <div className="grid grid-cols-4 gap-3 border-b border-slate-800 pb-4">
+              <div className="grid grid-cols-4 gap-3 border-b border-zinc-800 pb-4">
                 {[
                   { label: 'Avg Fitness', val: `${avgFitness}%` },
                   { label: 'Avg Intensity', val: `${avgIntensity}%` },
                   { label: 'Peak Performance', val: `${peakPerformance}%` },
                   { label: 'Sessions', val: `${activeSessions}` }
                 ].map((item, idx) => (
-                  <div key={idx} className="bg-slate-950/50 p-2 rounded-lg border border-slate-850 text-center">
-                    <span className="text-[9px] font-mono text-slate-500 font-semibold block">{item.label}</span>
-                    <span className="text-xs font-bold text-slate-200 font-mono block mt-1">{item.val}</span>
+                  <div key={idx} className="bg-zinc-950/50 p-2 rounded-lg border border-slate-850 text-center">
+                    <span className="text-[9px] font-mono text-zinc-500 font-semibold block">{item.label}</span>
+                    <span className="text-xs font-bold text-zinc-200 font-mono block mt-1">{item.val}</span>
                   </div>
                 ))}
               </div>
@@ -750,15 +750,15 @@ export default function SquadManager({
                 {/* Chart 1: Fitness / Speed Progression Line */}
                 <div className="space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <span className="text-[9px] font-mono font-bold text-slate-400 block tracking-wide uppercase">WEEKLY TRAINING INTENSITY</span>
+                    <span className="text-[9px] font-mono font-bold text-zinc-400 block tracking-wide uppercase">WEEKLY TRAINING INTENSITY</span>
                     <div className="flex flex-wrap gap-2 text-[8px] font-mono tracking-wider font-bold">
-                      <span className="flex items-center gap-1 text-rose-500"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>INT</span>
+                      <span className="flex items-center gap-1 text-cyan-400"><span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>INT</span>
                       <span className="flex items-center gap-1 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>FIT</span>
                       <span className="flex items-center gap-1 text-sky-400"><span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>SPD</span>
                       <span className="flex items-center gap-1 text-purple-400"><span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>STR</span>
                     </div>
                   </div>
-                  <div className="h-44 bg-slate-950/50 rounded-xl border border-slate-850 p-2">
+                  <div className="h-44 bg-zinc-950/50 rounded-xl border border-slate-850 p-2">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={weeklyTrainingData}>
                         <XAxis dataKey="day" stroke="#64748b" fontSize={9} tickLine={false} />
@@ -775,8 +775,8 @@ export default function SquadManager({
 
                 {/* Chart 2: Skill Radar Chart */}
                 <div className="space-y-2">
-                  <span className="text-[9px] font-mono font-bold text-slate-400 block tracking-wide uppercase">SKILL PROFILE INTEGRATION</span>
-                  <div className="h-44 bg-slate-950/50 rounded-xl border border-slate-850 p-1 flex items-center justify-center">
+                  <span className="text-[9px] font-mono font-bold text-zinc-400 block tracking-wide uppercase">SKILL PROFILE INTEGRATION</span>
+                  <div className="h-44 bg-zinc-950/50 rounded-xl border border-slate-850 p-1 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={mockRadarData}>
                         <PolarGrid stroke="#334155" />
@@ -807,33 +807,33 @@ export default function SquadManager({
     >
       {/* KPI Highlight Header Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-mono text-slate-400 font-semibold uppercase tracking-wider">Average Roster Quality</p>
+            <p className="text-[10px] font-mono text-zinc-400 font-semibold uppercase tracking-wider">Average Roster Quality</p>
             <h3 className="text-3xl font-extrabold text-white mt-1 leading-none">{squadAverageRating}</h3>
-            <span className="text-[11px] text-slate-500 mt-1.5 block">Overall team performance index</span>
+            <span className="text-[11px] text-zinc-500 mt-1.5 block">Overall team performance index</span>
           </div>
           <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
             <Award className="w-6 h-6 stroke-1.5" />
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-mono text-slate-400 font-semibold uppercase tracking-wider">Total Season Goals</p>
+            <p className="text-[10px] font-mono text-zinc-400 font-semibold uppercase tracking-wider">Total Season Goals</p>
             <h3 className="text-3xl font-extrabold text-white mt-1 leading-none">{totalSquadGoals} G</h3>
-            <span className="text-[11px] text-slate-500 mt-1.5 block">Scored by current squad members</span>
+            <span className="text-[11px] text-zinc-500 mt-1.5 block">Scored by current squad members</span>
           </div>
           <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
             <TrendingUp className="w-6 h-6 stroke-1.5" />
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-mono text-slate-400 font-semibold uppercase tracking-wider">Average Age Metric</p>
+            <p className="text-[10px] font-mono text-zinc-400 font-semibold uppercase tracking-wider">Average Age Metric</p>
             <h3 className="text-3xl font-extrabold text-white mt-1 leading-none">{averageAge} yrs</h3>
-            <span className="text-[11px] text-slate-500 mt-1.5 block">Balanced youth and experience ratio</span>
+            <span className="text-[11px] text-zinc-500 mt-1.5 block">Balanced youth and experience ratio</span>
           </div>
           <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
             <Users className="w-6 h-6 stroke-1.5" />
@@ -842,8 +842,8 @@ export default function SquadManager({
       </div>
 
       {/* Visual Analytics Section */}
-      <div id="squad_analytics_section" className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+      <div id="squad_analytics_section" className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-md space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/60 pb-4">
           <div>
             <h4 className="text-sm font-bold text-white uppercase tracking-tight font-sans flex items-center gap-2">
               <span className="p-1 px-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-800/30 rounded text-xs select-none font-mono">
@@ -851,11 +851,11 @@ export default function SquadManager({
               </span>
               Squad Metrics Overview
             </h4>
-            <p className="text-[11px] text-slate-400 mt-1 font-mono">
+            <p className="text-[11px] text-zinc-400 mt-1 font-mono">
               Comparing Goals, Assists, and Rating for the {filteredPlayers.length} filtered candidate(s)
             </p>
           </div>
-          <div className="flex items-center gap-4 text-[10px] font-mono text-slate-400 bg-slate-950/40 px-3 py-1.5 rounded-xl border border-slate-850/60 w-fit select-none">
+          <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-400 bg-zinc-950/40 px-3 py-1.5 rounded-xl border border-slate-850/60 w-fit select-none">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
               <span>Goals</span>
@@ -872,13 +872,13 @@ export default function SquadManager({
         </div>
 
         {filteredPlayers.length === 0 ? (
-          <div className="h-[280px] bg-slate-950/30 border border-slate-800/50 rounded-xl flex flex-col items-center justify-center text-center p-6 space-y-2">
-            <Users className="w-8 h-8 text-slate-600 stroke-1 animate-pulse" />
-            <p className="text-xs font-semibold text-slate-400">No active metrics to compile</p>
-            <p className="text-[10px] text-slate-500 max-w-xs">Adjust search keys or filter selections down below to populate analytic charts.</p>
+          <div className="h-[280px] bg-zinc-950/30 border border-zinc-800/50 rounded-xl flex flex-col items-center justify-center text-center p-6 space-y-2">
+            <Users className="w-8 h-8 text-zinc-600 stroke-1 animate-pulse" />
+            <p className="text-xs font-semibold text-zinc-400">No active metrics to compile</p>
+            <p className="text-[10px] text-zinc-500 max-w-xs">Adjust search keys or filter selections down below to populate analytic charts.</p>
           </div>
         ) : (
-          <div className="bg-slate-950/20 rounded-xl p-4 overflow-x-auto custom-scrollbar border border-slate-950">
+          <div className="bg-zinc-950/20 rounded-xl p-4 overflow-x-auto custom-scrollbar border border-zinc-950">
             <div 
               className="h-[280px]" 
               style={{ width: filteredPlayers.length > 8 ? `${filteredPlayers.length * 70}px` : '100%' }}
@@ -919,25 +919,25 @@ export default function SquadManager({
       </div>
 
       {/* Main control and list block */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-md">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-md">
         
         {/* Filtration & Search bar */}
-        <div className="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-950/30">
+        <div className="p-5 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-950/30">
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 flex-1">
             {/* Search label */}
             <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder="Search by name, number, country..."
-                className="pl-9 pr-4 py-2 bg-slate-900 hover:bg-slate-850 focus:bg-slate-850 w-full md:w-80 rounded-xl border border-slate-800 outline-none focus:border-slate-700 text-slate-300 text-xs transition-all placeholder:text-slate-500 font-sans"
+                className="pl-9 pr-4 py-2 bg-zinc-900 hover:bg-slate-850 focus:bg-slate-850 w-full md:w-80 rounded-xl border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-300 text-xs transition-all placeholder:text-zinc-500 font-sans"
               />
             </div>
 
             {/* Position filter pillbox */}
-            <div className="flex bg-slate-950/80 p-1.5 rounded-xl border border-slate-850 overflow-x-auto gap-1">
+            <div className="flex bg-zinc-950/80 p-1.5 rounded-xl border border-slate-850 overflow-x-auto gap-1">
               {['ALL', 'GK', 'DEF', 'MID', 'FWD'].map((pos) => (
                 <button
                   key={pos}
@@ -945,7 +945,7 @@ export default function SquadManager({
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-mono font-bold tracking-wider cursor-pointer transition-all ${
                     selectedPosition === pos
                       ? 'bg-emerald-600 text-white'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
                   }`}
                 >
                   {pos}
@@ -966,12 +966,12 @@ export default function SquadManager({
         <div className="p-6">
           {filteredPlayers.length === 0 ? (
             <div className="py-16 text-center space-y-3">
-              <span className="w-12 h-12 rounded-full border border-slate-800 bg-slate-950/40 text-slate-600 flex items-center justify-center mx-auto text-xl">
+              <span className="w-12 h-12 rounded-full border border-zinc-800 bg-zinc-950/40 text-zinc-600 flex items-center justify-center mx-auto text-xl">
                 👤
               </span>
               <div>
-                <p className="text-sm font-semibold text-slate-300">No players found</p>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                <p className="text-sm font-semibold text-zinc-300">No players found</p>
+                <p className="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">
                   Try adjusting your search criteria, selecting another position, or register a new team member.
                 </p>
               </div>
@@ -987,12 +987,12 @@ export default function SquadManager({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-                    className="bg-slate-950/40 border border-slate-800/80 rounded-xl overflow-hidden hover:border-slate-700 transition-all flex flex-col justify-between"
+                    className="bg-zinc-950/40 border border-zinc-800/80 rounded-xl overflow-hidden hover:border-zinc-700 transition-all flex flex-col justify-between"
                   >
                     {/* Card Top: Number, Position, Photo, Name details */}
                     <div 
                       onClick={() => setSelectedPlayerId(player.id)}
-                      className="p-5 space-y-4 cursor-pointer hover:bg-slate-900/20 transition-all flex-1"
+                      className="p-5 space-y-4 cursor-pointer hover:bg-zinc-900/20 transition-all flex-1"
                       title="Click to view detailed player profile dashboard"
                     >
                       <div className="flex justify-between items-center">
@@ -1004,7 +1004,7 @@ export default function SquadManager({
                             player.position === 'GK' ? 'bg-sky-950 text-sky-400 border border-sky-900/30' :
                             player.position === 'DEF' ? 'bg-indigo-950 text-indigo-400 border border-indigo-900/30' :
                             player.position === 'MID' ? 'bg-amber-950 text-amber-400 border border-amber-900/30' :
-                            'bg-rose-950 text-rose-400 border border-rose-900/30'
+                            'bg-cyan-950 text-cyan-300 border border-cyan-900/30'
                           }`}>
                             {player.position}
                           </span>
@@ -1016,7 +1016,7 @@ export default function SquadManager({
 
                       <div className="flex gap-4 items-center pt-1">
                         {/* Player Photo */}
-                        <div className="relative w-16 h-16 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+                        <div className="relative w-16 h-16 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
                           {player.photo ? (
                             <img 
                               src={player.photo} 
@@ -1025,48 +1025,48 @@ export default function SquadManager({
                               referrerPolicy="no-referrer"
                             />
                           ) : (
-                            <div className="text-base font-extrabold select-none text-slate-500 font-mono tracking-tighter flex items-center justify-center bg-slate-900 w-full h-full">
+                            <div className="text-base font-extrabold select-none text-zinc-500 font-mono tracking-tighter flex items-center justify-center bg-zinc-900 w-full h-full">
                               {player.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                             </div>
                           )}
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-bold text-slate-100 truncate font-sans leading-snug">
+                          <h3 className="text-sm font-bold text-zinc-100 truncate font-sans leading-snug">
                             {player.name}
                           </h3>
-                          <p className="text-[11px] text-slate-400 mt-1 font-mono">
+                          <p className="text-[11px] text-zinc-400 mt-1 font-mono">
                             {player.nationality}
                           </p>
-                          <p className="text-[10px] text-slate-500 mt-0.5 font-sans">
+                          <p className="text-[10px] text-zinc-500 mt-0.5 font-sans">
                             {player.age} yrs old
                           </p>
                         </div>
                       </div>
 
                       {/* Stat Metrics Grid */}
-                      <div className="grid grid-cols-4 gap-2 text-center pt-1 border-t border-slate-900">
-                        <div className="bg-slate-900/40 p-2 rounded-lg border border-slate-900/50">
-                          <span className="text-[9px] font-semibold text-slate-500 uppercase block font-mono">Matches</span>
-                          <span className="text-xs font-bold text-slate-200 mt-1 block font-mono">{player.matches}</span>
+                      <div className="grid grid-cols-4 gap-2 text-center pt-1 border-t border-zinc-900">
+                        <div className="bg-zinc-900/40 p-2 rounded-lg border border-zinc-900/50">
+                          <span className="text-[9px] font-semibold text-zinc-500 uppercase block font-mono">Matches</span>
+                          <span className="text-xs font-bold text-zinc-200 mt-1 block font-mono">{player.matches}</span>
                         </div>
-                        <div className="bg-slate-900/40 p-2 rounded-lg border border-slate-900/50">
-                          <span className="text-[9px] font-semibold text-slate-500 uppercase block font-mono">Goals</span>
-                          <span className="text-xs font-bold text-slate-200 mt-1 block font-mono text-emerald-400">{player.goals}</span>
+                        <div className="bg-zinc-900/40 p-2 rounded-lg border border-zinc-900/50">
+                          <span className="text-[9px] font-semibold text-zinc-500 uppercase block font-mono">Goals</span>
+                          <span className="text-xs font-bold text-zinc-200 mt-1 block font-mono text-emerald-400">{player.goals}</span>
                         </div>
-                        <div className="bg-slate-900/40 p-2 rounded-lg border border-slate-900/50">
-                          <span className="text-[9px] font-semibold text-slate-500 uppercase block font-mono">Assists</span>
-                          <span className="text-xs font-bold text-slate-200 mt-1 block font-mono text-sky-400">{player.assists}</span>
+                        <div className="bg-zinc-900/40 p-2 rounded-lg border border-zinc-900/50">
+                          <span className="text-[9px] font-semibold text-zinc-500 uppercase block font-mono">Assists</span>
+                          <span className="text-xs font-bold text-zinc-200 mt-1 block font-mono text-sky-400">{player.assists}</span>
                         </div>
-                        <div className="bg-slate-900/40 p-2 rounded-lg border border-slate-900/50">
-                          <span className="text-[9px] font-semibold text-slate-500 uppercase block font-mono">Rating</span>
+                        <div className="bg-zinc-900/40 p-2 rounded-lg border border-zinc-900/50">
+                          <span className="text-[9px] font-semibold text-zinc-500 uppercase block font-mono">Rating</span>
                           <span className="text-xs font-mono font-bold text-amber-400 mt-1 block">★ {player.rating}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Card Actions Footer */}
-                    <div className="p-3 bg-slate-900/30 border-t border-slate-850 flex gap-2">
+                    <div className="p-3 bg-zinc-900/30 border-t border-slate-850 flex gap-2">
                       <button
                         onClick={() => setSelectedPlayerId(player.id)}
                         className="flex-1 bg-emerald-950/40 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-900/30 text-[11px] font-bold py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
@@ -1075,7 +1075,7 @@ export default function SquadManager({
                       </button>
                       <button
                         onClick={() => handleOpenEditForm(player)}
-                        className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg border border-slate-800 flex items-center justify-center transition-all cursor-pointer"
+                        className="p-1.5 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded-lg border border-zinc-800 flex items-center justify-center transition-all cursor-pointer"
                         title="Edit Profile"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -1086,7 +1086,7 @@ export default function SquadManager({
                             onDeletePlayer(player.id);
                           }
                         }}
-                        className="p-1.5 hover:bg-rose-950/40 text-slate-500 hover:text-rose-400 rounded-lg border border-slate-800 hover:border-rose-900/25 flex items-center justify-center transition-all cursor-pointer"
+                        className="p-1.5 hover:bg-cyan-950/40 text-zinc-500 hover:text-cyan-300 rounded-lg border border-zinc-800 hover:border-cyan-900/25 flex items-center justify-center transition-all cursor-pointer"
                         title="Deregister Player"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -1103,14 +1103,14 @@ export default function SquadManager({
       {/* Roster Add / Edit Modal Drawer */}
       <AnimatePresence>
         {isFormOpen && (
-          <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-zinc-950/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
+              className="bg-zinc-900 border border-zinc-800 w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
             >
-              <div className="p-5 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
+              <div className="p-5 border-b border-zinc-800 bg-zinc-950/40 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
                     <User className="w-5 h-5" />
@@ -1121,13 +1121,13 @@ export default function SquadManager({
                 </div>
                 <button
                   onClick={() => setIsFormOpen(false)}
-                  className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
                      {/* Form Tab Controllers */}
-              <div className="flex bg-slate-950/80 p-1 border-b border-slate-800 shrink-0">
+              <div className="flex bg-zinc-950/80 p-1 border-b border-zinc-800 shrink-0">
                 {(['general', 'stats', 'attributes', 'trophies', 'training'] as const).map((tab) => (
                   <button
                     key={tab}
@@ -1135,8 +1135,8 @@ export default function SquadManager({
                     onClick={() => setFormTab(tab)}
                     className={`flex-1 py-3 text-xs font-mono font-bold tracking-wider uppercase transition-all border-b-2 cursor-pointer ${
                       formTab === tab
-                        ? 'border-rose-500 text-rose-400 bg-slate-900/40'
-                        : 'border-transparent text-slate-500 hover:text-slate-300'
+                        ? 'border-cyan-400 text-cyan-300 bg-zinc-900/40'
+                        : 'border-transparent text-zinc-500 hover:text-zinc-300'
                     }`}
                   >
                     {tab}
@@ -1148,7 +1148,7 @@ export default function SquadManager({
               <form onSubmit={handleSavePlayer} className="p-6 overflow-y-auto space-y-6 flex-1 custom-scrollbar">
                 
                 {formError && (
-                  <div className="p-3.5 bg-rose-950/60 text-xs text-rose-400 font-medium rounded-xl border border-rose-900/50 flex items-center gap-2 flex-shrink-0 animate-shake">
+                  <div className="p-3.5 bg-cyan-950/60 text-xs text-cyan-300 font-medium rounded-xl border border-cyan-900/50 flex items-center gap-2 flex-shrink-0 animate-shake">
                     <AlertTriangle className="w-4.5 h-4.5" />
                     <span>{formError}</span>
                   </div>
@@ -1159,11 +1159,11 @@ export default function SquadManager({
                   <div className="space-y-6">
                     {/* Photo Upload Section */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono font-bold text-slate-400 uppercase block">Player Profile Photo</label>
+                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Player Profile Photo</label>
                       
                       <div className="flex flex-col sm:flex-row gap-4 items-center">
                         {/* Thumbnail Preview Area */}
-                        <div className="w-24 h-24 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                        <div className="w-24 h-24 rounded-2xl bg-zinc-950/80 border border-zinc-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
                           {formData.photo ? (
                             <>
                               <img 
@@ -1175,14 +1175,14 @@ export default function SquadManager({
                               <button
                                 type="button"
                                 onClick={() => setFormData(prev => ({ ...prev, photo: '' }))}
-                                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-rose-400 font-mono text-xs font-bold gap-1 cursor-pointer"
+                                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-cyan-300 font-mono text-xs font-bold gap-1 cursor-pointer"
                               >
                                 <Trash2 className="w-4 h-4" /> Remove
                               </button>
                             </>
                           ) : (
-                            <div className="text-slate-600 flex flex-col items-center justify-center text-[10px] font-mono gap-1">
-                              <User className="w-8 h-8 text-slate-700" />
+                            <div className="text-zinc-600 flex flex-col items-center justify-center text-[10px] font-mono gap-1">
+                              <User className="w-8 h-8 text-zinc-700" />
                               <span>No Photo</span>
                             </div>
                           )}
@@ -1196,7 +1196,7 @@ export default function SquadManager({
                           className={`flex-1 w-full h-24 rounded-2xl border border-dashed transition-all flex flex-col items-center justify-center p-4 text-center cursor-pointer ${
                             isDragging 
                               ? 'border-emerald-500 bg-emerald-500/5 text-emerald-400' 
-                              : 'border-slate-800 bg-slate-950/30 hover:bg-slate-950/50 text-slate-400 hover:border-slate-700'
+                              : 'border-zinc-800 bg-zinc-950/30 hover:bg-zinc-950/50 text-zinc-400 hover:border-zinc-700'
                           }`}
                           onClick={() => document.getElementById('player-photo-input')?.click()}
                         >
@@ -1212,11 +1212,11 @@ export default function SquadManager({
                               }
                             }}
                           />
-                          <Sparkles className={`w-5 h-5 mb-1.5 transition-colors ${isDragging ? 'text-emerald-400' : 'text-slate-500'}`} />
-                          <p className="text-xs font-semibold text-slate-300">
+                          <Sparkles className={`w-5 h-5 mb-1.5 transition-colors ${isDragging ? 'text-emerald-400' : 'text-zinc-500'}`} />
+                          <p className="text-xs font-semibold text-zinc-300">
                             {isDragging ? 'Drop Image Here' : 'Drag & drop player photo, or click to browse'}
                           </p>
-                          <p className="text-[10px] text-slate-500 mt-1 font-mono">
+                          <p className="text-[10px] text-zinc-500 mt-1 font-mono">
                             Supports PNG, JPG, WEBP (Max 2MB)
                           </p>
                         </div>
@@ -1226,25 +1226,25 @@ export default function SquadManager({
                     {/* Basic Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Player Name (Short)</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Player Name (Short)</label>
                         <input
                           type="text"
                           required
                           value={formData.name || ''}
                           onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                           placeholder="e.g. Marcus Sterling"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Full Legal Name</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Full Legal Name</label>
                         <input
                           type="text"
                           value={formData.fullName || ''}
                           onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                           placeholder="e.g. Marcus David Sterling"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
                         />
                       </div>
                     </div>
@@ -1252,36 +1252,36 @@ export default function SquadManager({
                     {/* Geography / Club */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Nationality</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Nationality</label>
                         <input
                           type="text"
                           required
                           value={formData.nationality || ''}
                           onChange={e => setFormData(prev => ({ ...prev, nationality: e.target.value }))}
                           placeholder="e.g. England"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Hometown</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Hometown</label>
                         <input
                           type="text"
                           value={formData.hometown || ''}
                           onChange={e => setFormData(prev => ({ ...prev, hometown: e.target.value }))}
                           placeholder="e.g. Manchester, UK"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Club Name</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Club Name</label>
                         <input
                           type="text"
                           value={formData.club || ''}
                           onChange={e => setFormData(prev => ({ ...prev, club: e.target.value }))}
                           placeholder="e.g. Apex United FC"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all"
                         />
                       </div>
                     </div>
@@ -1289,11 +1289,11 @@ export default function SquadManager({
                     {/* Timeline & Foot */}
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
                       <div className="space-y-1.5 col-span-2 md:col-span-1">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Preferred Foot</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Preferred Foot</label>
                         <select
                           value={formData.preferredFoot || 'Right'}
                           onChange={e => setFormData(prev => ({ ...prev, preferredFoot: e.target.value as 'Right' | 'Left' | 'Both' }))}
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
                         >
                           <option value="Right">Right</option>
                           <option value="Left">Left</option>
@@ -1302,44 +1302,44 @@ export default function SquadManager({
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Date of Birth</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Date of Birth</label>
                         <input
                           type="text"
                           value={formData.dob || ''}
                           onChange={e => setFormData(prev => ({ ...prev, dob: e.target.value }))}
                           placeholder="e.g. 10/12/2005"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Join Date</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Join Date</label>
                         <input
                           type="text"
                           value={formData.joinDate || ''}
                           onChange={e => setFormData(prev => ({ ...prev, joinDate: e.target.value }))}
                           placeholder="e.g. 04/20/2022"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Active Season</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Active Season</label>
                         <input
                           type="text"
                           value={formData.season || ''}
                           onChange={e => setFormData(prev => ({ ...prev, season: e.target.value }))}
                           placeholder="e.g. 2024-2025"
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all text-center"
                         />
                       </div>
 
                       <div className="space-y-1.5 col-span-2 md:col-span-1">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Health Status</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Health Status</label>
                         <select
                           value={formData.status || 'Active'}
                           onChange={e => setFormData(prev => ({ ...prev, status: e.target.value as PlayerStatus }))}
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
                         >
                           <option value="Active">🟢 Active</option>
                           <option value="Injured">🔴 Injured</option>
@@ -1350,13 +1350,13 @@ export default function SquadManager({
 
                     {/* Biography */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Biography & Profile Summary</label>
+                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Biography & Profile Summary</label>
                       <textarea
                         rows={3}
                         value={formData.biography || ''}
                         onChange={e => setFormData(prev => ({ ...prev, biography: e.target.value }))}
                         placeholder="Provide details about the player's history, traits, leadership capability, versatility..."
-                        className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all resize-none"
+                        className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl font-sans transition-all resize-none"
                       />
                     </div>
                   </div>
@@ -1368,39 +1368,39 @@ export default function SquadManager({
                     {/* Basic squad registrations */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-4 border-b border-slate-820">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Jersey Number</label>
-                        <div className="flex bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
-                          <button type="button" onClick={() => changeNumField('number', -1)} className="px-2.5 hover:bg-slate-900 border-r border-slate-800 text-slate-400">-</button>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Jersey Number</label>
+                        <div className="flex bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
+                          <button type="button" onClick={() => changeNumField('number', -1)} className="px-2.5 hover:bg-zinc-900 border-r border-zinc-800 text-zinc-400">-</button>
                           <input
                             type="number"
                             min="1"
                             max="99"
                             value={formData.number}
                             onChange={e => setFormData(prev => ({ ...prev, number: parseInt(e.target.value) || 1 }))}
-                            className="w-full text-center bg-transparent outline-none text-slate-200 font-mono text-xs"
+                            className="w-full text-center bg-transparent outline-none text-zinc-200 font-mono text-xs"
                           />
-                          <button type="button" onClick={() => changeNumField('number', 1)} className="px-2.5 hover:bg-slate-900 border-l border-slate-800 text-slate-400">+</button>
+                          <button type="button" onClick={() => changeNumField('number', 1)} className="px-2.5 hover:bg-zinc-900 border-l border-zinc-800 text-zinc-400">+</button>
                         </div>
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Age</label>
-                        <div className="flex bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
-                          <button type="button" onClick={() => changeNumField('age', -1)} className="px-2.5 hover:bg-slate-900 border-r border-slate-800 text-slate-400">-</button>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Age</label>
+                        <div className="flex bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
+                          <button type="button" onClick={() => changeNumField('age', -1)} className="px-2.5 hover:bg-zinc-900 border-r border-zinc-800 text-zinc-400">-</button>
                           <input
                             type="number"
                             min="15"
                             max="45"
                             value={formData.age}
                             onChange={e => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) || 24 }))}
-                            className="w-full text-center bg-transparent outline-none text-slate-200 font-mono text-xs"
+                            className="w-full text-center bg-transparent outline-none text-zinc-200 font-mono text-xs"
                           />
-                          <button type="button" onClick={() => changeNumField('age', 1)} className="px-2.5 hover:bg-slate-900 border-l border-slate-800 text-slate-400">+</button>
+                          <button type="button" onClick={() => changeNumField('age', 1)} className="px-2.5 hover:bg-zinc-900 border-l border-zinc-800 text-zinc-400">+</button>
                         </div>
                       </div>
 
                       <div className="space-y-1.5 text-center">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase block">Tactical Rating</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Tactical Rating</label>
                         <input
                           type="number"
                           step="0.1"
@@ -1408,16 +1408,16 @@ export default function SquadManager({
                           max="10.0"
                           value={formData.rating || 7.2}
                           onChange={e => setFormData(prev => ({ ...prev, rating: parseFloat(e.target.value) || 7.0 }))}
-                          className="w-full text-center bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 font-mono text-xs py-2.5 rounded-xl mt-0.5"
+                          className="w-full text-center bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 font-mono text-xs py-2.5 rounded-xl mt-0.5"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Position Group</label>
+                        <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Position Group</label>
                         <select
                           value={formData.position || 'MID'}
                           onChange={e => setFormData(prev => ({ ...prev, position: e.target.value as PlayerPosition }))}
-                          className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
+                          className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-2 py-2.5 rounded-xl font-mono tracking-wide"
                         >
                           <option value="GK">GK - Goalkeeper</option>
                           <option value="DEF">DEF - Defender</option>
@@ -1429,101 +1429,101 @@ export default function SquadManager({
 
                     {/* Core Counters */}
                     <div className="space-y-3">
-                      <h4 className="text-[10px] font-mono font-bold text-slate-400 tracking-wider uppercase">Matches & Cards metrics</h4>
+                      <h4 className="text-[10px] font-mono font-bold text-zinc-400 tracking-wider uppercase">Matches & Cards metrics</h4>
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex flex-col items-center">
-                          <span className="text-[9px] font-mono text-slate-500 font-semibold uppercase">Appearances</span>
+                        <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 flex flex-col items-center">
+                          <span className="text-[9px] font-mono text-zinc-500 font-semibold uppercase">Appearances</span>
                           <div className="flex items-center gap-1.5 mt-2">
-                            <button type="button" onClick={() => changeNumField('matches', -1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">-</button>
-                            <span className="text-sm font-bold text-slate-100 font-mono w-6 text-center">{formData.matches}</span>
-                            <button type="button" onClick={() => changeNumField('matches', 1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">+</button>
+                            <button type="button" onClick={() => changeNumField('matches', -1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">-</button>
+                            <span className="text-sm font-bold text-zinc-100 font-mono w-6 text-center">{formData.matches}</span>
+                            <button type="button" onClick={() => changeNumField('matches', 1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">+</button>
                           </div>
                         </div>
 
-                        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex flex-col items-center">
-                          <span className="text-[9px] font-mono text-slate-500 font-semibold uppercase text-emerald-400">Goals</span>
+                        <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 flex flex-col items-center">
+                          <span className="text-[9px] font-mono text-zinc-500 font-semibold uppercase text-emerald-400">Goals</span>
                           <div className="flex items-center gap-1.5 mt-2">
-                            <button type="button" onClick={() => changeNumField('goals', -1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">-</button>
-                            <span className="text-sm font-bold text-slate-100 font-mono w-6 text-center text-emerald-400">{formData.goals}</span>
-                            <button type="button" onClick={() => changeNumField('goals', 1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">+</button>
+                            <button type="button" onClick={() => changeNumField('goals', -1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">-</button>
+                            <span className="text-sm font-bold text-zinc-100 font-mono w-6 text-center text-emerald-400">{formData.goals}</span>
+                            <button type="button" onClick={() => changeNumField('goals', 1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">+</button>
                           </div>
                         </div>
 
-                        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex flex-col items-center">
-                          <span className="text-[9px] font-mono text-slate-500 font-semibold uppercase text-sky-400">Assists</span>
+                        <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 flex flex-col items-center">
+                          <span className="text-[9px] font-mono text-zinc-500 font-semibold uppercase text-sky-400">Assists</span>
                           <div className="flex items-center gap-1.5 mt-2">
-                            <button type="button" onClick={() => changeNumField('assists', -1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">-</button>
-                            <span className="text-sm font-bold text-slate-100 font-mono w-6 text-center text-sky-400">{formData.assists}</span>
-                            <button type="button" onClick={() => changeNumField('assists', 1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">+</button>
+                            <button type="button" onClick={() => changeNumField('assists', -1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">-</button>
+                            <span className="text-sm font-bold text-zinc-100 font-mono w-6 text-center text-sky-400">{formData.assists}</span>
+                            <button type="button" onClick={() => changeNumField('assists', 1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">+</button>
                           </div>
                         </div>
 
-                        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex flex-col items-center">
-                          <span className="text-[9px] font-mono text-slate-500 font-semibold uppercase text-yellow-400">Yellows</span>
+                        <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 flex flex-col items-center">
+                          <span className="text-[9px] font-mono text-zinc-500 font-semibold uppercase text-yellow-400">Yellows</span>
                           <div className="flex items-center gap-1.5 mt-2">
-                            <button type="button" onClick={() => changeNumField('yellowCards', -1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">-</button>
-                            <span className="text-sm font-bold text-slate-100 font-mono w-6 text-center text-yellow-400">{formData.yellowCards}</span>
-                            <button type="button" onClick={() => changeNumField('yellowCards', 1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">+</button>
+                            <button type="button" onClick={() => changeNumField('yellowCards', -1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">-</button>
+                            <span className="text-sm font-bold text-zinc-100 font-mono w-6 text-center text-yellow-400">{formData.yellowCards}</span>
+                            <button type="button" onClick={() => changeNumField('yellowCards', 1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">+</button>
                           </div>
                         </div>
 
-                        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex flex-col items-center">
-                          <span className="text-[9px] font-mono text-slate-500 font-semibold uppercase text-rose-500">Reds</span>
+                        <div className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 flex flex-col items-center">
+                          <span className="text-[9px] font-mono text-zinc-500 font-semibold uppercase text-cyan-400">Reds</span>
                           <div className="flex items-center gap-1.5 mt-2">
-                            <button type="button" onClick={() => changeNumField('redCards', -1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">-</button>
-                            <span className="text-sm font-bold text-slate-100 font-mono w-6 text-center text-rose-500">{formData.redCards}</span>
-                            <button type="button" onClick={() => changeNumField('redCards', 1)} className="w-6 h-6 hover:bg-slate-900 border border-slate-800 rounded flex items-center justify-center text-slate-400">+</button>
+                            <button type="button" onClick={() => changeNumField('redCards', -1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">-</button>
+                            <span className="text-sm font-bold text-zinc-100 font-mono w-6 text-center text-cyan-400">{formData.redCards}</span>
+                            <button type="button" onClick={() => changeNumField('redCards', 1)} className="w-6 h-6 hover:bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-zinc-400">+</button>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Advanced Metrics with inline state changes */}
-                    <div className="space-y-3 pt-3 border-t border-slate-800">
-                      <h4 className="text-[10px] font-mono font-bold text-slate-400 tracking-wider uppercase">Advanced Season Statistics</h4>
+                    <div className="space-y-3 pt-3 border-t border-zinc-800">
+                      <h4 className="text-[10px] font-mono font-bold text-zinc-400 tracking-wider uppercase">Advanced Season Statistics</h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Minutes Played</label>
+                          <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Minutes Played</label>
                           <input
                             type="number"
                             min="0"
                             value={formData.minutesPlayed || 0}
                             onChange={e => setFormData(prev => ({ ...prev, minutesPlayed: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
+                            className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Pass Accuracy (%)</label>
+                          <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Pass Accuracy (%)</label>
                           <input
                             type="number"
                             min="0"
                             max="100"
                             value={formData.passAccuracy || 85}
                             onChange={e => setFormData(prev => ({ ...prev, passAccuracy: Math.min(100, parseInt(e.target.value) || 0) }))}
-                            className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
+                            className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Chances Created</label>
+                          <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Chances Created</label>
                           <input
                             type="number"
                             min="0"
                             value={formData.chancesCreated || 0}
                             onChange={e => setFormData(prev => ({ ...prev, chancesCreated: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
+                            className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-400 uppercase">Clean Sheets</label>
+                          <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Clean Sheets</label>
                           <input
                             type="number"
                             min="0"
                             value={formData.cleanSheets || 0}
                             onChange={e => setFormData(prev => ({ ...prev, cleanSheets: parseInt(e.target.value) || 0 }))}
-                            className="w-full bg-slate-950 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
+                            className="w-full bg-zinc-950 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3 py-2.5 rounded-xl font-mono text-center"
                           />
                         </div>
                       </div>
@@ -1534,8 +1534,8 @@ export default function SquadManager({
                 {/* TAB 3: ATTRIBUTES PERCENTAGES (0-100) */}
                 {formTab === 'attributes' && (
                   <div className="space-y-5">
-                    <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-850">
-                      <p className="text-[11px] text-slate-400 leading-normal">
+                    <div className="p-3 bg-zinc-950/40 rounded-xl border border-slate-850">
+                      <p className="text-[11px] text-zinc-400 leading-normal">
                         Configure the player's attributes percentages used to evaluate core positions and display radar/distribution metrics.
                       </p>
                     </div>
@@ -1553,10 +1553,10 @@ export default function SquadManager({
                         const currentValue = (attrsValue as any)[item.key] || 75;
 
                         return (
-                          <div key={item.key} className="space-y-1.5 p-3.5 bg-slate-950/40 border border-slate-850 rounded-xl">
+                          <div key={item.key} className="space-y-1.5 p-3.5 bg-zinc-950/40 border border-slate-850 rounded-xl">
                             <div className="flex justify-between items-center text-xs">
-                              <span className="font-mono text-[10px] font-bold text-slate-300 uppercase tracking-wide">{item.label}</span>
-                              <span className="text-rose-400 font-bold font-mono text-sm">{currentValue}%</span>
+                              <span className="font-mono text-[10px] font-bold text-zinc-300 uppercase tracking-wide">{item.label}</span>
+                              <span className="text-cyan-300 font-bold font-mono text-sm">{currentValue}%</span>
                             </div>
                             <div className="flex items-center gap-4">
                               <input
@@ -1574,7 +1574,7 @@ export default function SquadManager({
                                     }
                                   }));
                                 }}
-                                className="flex-1 accent-rose-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                                className="flex-1 accent-cyan-400 h-1.5 bg-zinc-800 rounded-lg cursor-pointer"
                               />
                             </div>
                           </div>
@@ -1588,28 +1588,28 @@ export default function SquadManager({
                 {formTab === 'trophies' && (
                   <div className="space-y-5">
                     {/* Add Award Interface */}
-                    <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-850 space-y-3">
-                      <span className="text-[10px] font-mono font-bold text-rose-500 uppercase tracking-widest block">Add New Trophy / Achievement</span>
+                    <div className="p-4 bg-zinc-950/50 rounded-2xl border border-slate-850 space-y-3">
+                      <span className="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest block">Add New Trophy / Achievement</span>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                         <div className="sm:col-span-8 space-y-1">
-                          <label className="text-[9px] font-mono font-bold text-slate-500 uppercase">Trophy Title</label>
+                          <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Trophy Title</label>
                           <input
                             type="text"
                             value={trophyNameInput}
                             onChange={e => setTrophyNameInput(e.target.value)}
                             placeholder="e.g. Daudpur Tournament Champion"
-                            className="w-full bg-slate-900 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl"
+                            className="w-full bg-zinc-900 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl"
                           />
                         </div>
                         <div className="sm:col-span-3 space-y-1">
-                          <label className="text-[9px] font-mono font-bold text-slate-500 uppercase">Season / Year</label>
+                          <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Season / Year</label>
                           <input
                             type="text"
                             value={trophyYearInput}
                             onChange={e => setTrophyYearInput(e.target.value)}
                             placeholder="e.g. 2026"
-                            className="w-full bg-slate-900 border border-slate-800 outline-none focus:border-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-xl text-center"
+                            className="w-full bg-zinc-900 border border-zinc-800 outline-none focus:border-zinc-700 text-zinc-200 text-xs px-3.5 py-2.5 rounded-xl text-center"
                           />
                         </div>
                         <div className="sm:col-span-1 flex items-end justify-center pb-0.5">
@@ -1617,7 +1617,7 @@ export default function SquadManager({
                             type="button"
                             onClick={handleAddTrophy}
                             disabled={!trophyNameInput.trim() || !trophyYearInput.trim()}
-                            className="p-2.5 bg-rose-600 hover:bg-rose-500 disabled:bg-slate-800 disabled:text-slate-600 text-white rounded-xl transition-all cursor-pointer shadow"
+                            className="p-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-zinc-800 disabled:text-zinc-600 text-white rounded-xl transition-all cursor-pointer shadow"
                             title="Add Award"
                           >
                             <Plus className="w-5 h-5" />
@@ -1628,30 +1628,30 @@ export default function SquadManager({
 
                     {/* Historical Trophy list inside form */}
                     <div className="space-y-2.5">
-                      <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Cabinet Records ({(formData.trophies || []).length})</span>
+                      <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider block">Cabinet Records ({(formData.trophies || []).length})</span>
                       
                       {(formData.trophies || []).length === 0 ? (
-                        <div className="py-8 text-center bg-slate-950/20 border border-slate-850 border-dashed rounded-2xl">
-                          <p className="text-xs text-slate-500 italic">No award records found on this player profile yet. Add one above.</p>
+                        <div className="py-8 text-center bg-zinc-950/20 border border-slate-850 border-dashed rounded-2xl">
+                          <p className="text-xs text-zinc-500 italic">No award records found on this player profile yet. Add one above.</p>
                         </div>
                       ) : (
                         <div className="space-y-2 max-h-[30vh] overflow-y-auto custom-scrollbar pr-1">
                           {(formData.trophies || []).map((trophy: any) => (
-                            <div key={trophy.id} className="bg-slate-950/40 p-3.5 border border-slate-850 rounded-xl flex items-center justify-between gap-4">
+                            <div key={trophy.id} className="bg-zinc-950/40 p-3.5 border border-slate-850 rounded-xl flex items-center justify-between gap-4">
                               <div className="flex items-center gap-3">
                                 <div className="p-1.5 bg-amber-500/10 text-amber-500 rounded-lg">
                                   <Award className="w-4 h-4" />
                                 </div>
                                 <div>
-                                  <h4 className="text-xs font-bold text-slate-200">{trophy.name}</h4>
-                                  <p className="text-[10px] text-slate-500 font-mono font-medium mt-0.5">{trophy.year}</p>
+                                  <h4 className="text-xs font-bold text-zinc-200">{trophy.name}</h4>
+                                  <p className="text-[10px] text-zinc-500 font-mono font-medium mt-0.5">{trophy.year}</p>
                                 </div>
                               </div>
                               
                               <button
                                 type="button"
                                 onClick={() => handleRemoveTrophy(trophy.id)}
-                                className="p-1.5 hover:bg-rose-950/40 text-slate-500 hover:text-rose-400 rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 hover:bg-cyan-950/40 text-zinc-500 hover:text-cyan-300 rounded-lg transition-colors cursor-pointer"
                                 title="Delete Trophy"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -1667,14 +1667,14 @@ export default function SquadManager({
                 {/* TAB 5: TRAINING PERFORMANCE EDIT SYSTEM */}
                 {formTab === 'training' && (
                   <div className="space-y-5">
-                    <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-850">
-                      <p className="text-[11px] text-slate-400 leading-normal">
+                    <div className="p-3 bg-zinc-950/40 rounded-xl border border-slate-850">
+                      <p className="text-[11px] text-zinc-400 leading-normal">
                         Edit this player's performance attributes for each day of the training week. This directly shapes the dynamic training metrics and chart visualizations in real-time.
                       </p>
                     </div>
 
                     {/* Day sub-tabs */}
-                    <div className="flex bg-slate-950/80 p-0.5 rounded-xl border border-slate-800 overflow-x-auto shrink-0 scrollbar-none gap-1">
+                    <div className="flex bg-zinc-950/80 p-0.5 rounded-xl border border-zinc-800 overflow-x-auto shrink-0 scrollbar-none gap-1">
                       {(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const).map((day) => (
                         <button
                           key={day}
@@ -1682,8 +1682,8 @@ export default function SquadManager({
                           onClick={() => setSelectedTrainingDay(day)}
                           className={`flex-1 min-w-[48px] py-2 text-xs font-mono font-bold transition-all rounded-lg cursor-pointer ${
                             selectedTrainingDay === day
-                              ? 'bg-rose-500 text-white shadow-lg shadow-rose-950/30'
-                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                              ? 'bg-cyan-400 text-white shadow-lg shadow-cyan-950/30'
+                              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40'
                           }`}
                         >
                           {day}
@@ -1692,17 +1692,17 @@ export default function SquadManager({
                     </div>
 
                     {/* Editor Sliders for Selected Day */}
-                    <div className="space-y-4 p-4 bg-slate-950/30 rounded-2xl border border-slate-850">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span className="text-[11px] font-mono font-black text-rose-500 uppercase tracking-widest">
+                    <div className="space-y-4 p-4 bg-zinc-950/30 rounded-2xl border border-slate-850">
+                      <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <span className="text-[11px] font-mono font-black text-cyan-400 uppercase tracking-widest">
                           {selectedTrainingDay}day Drill Metrics
                         </span>
-                        <span className="text-[10px] font-mono text-slate-500">Scale: 0 - 100%</span>
+                        <span className="text-[10px] font-mono text-zinc-500">Scale: 0 - 100%</span>
                       </div>
 
                       {[
                         { key: 'Fitness', label: 'Fitness & Conditioning', color: 'accent-emerald-500', colorText: 'text-emerald-400' },
-                        { key: 'Intensity', label: 'Drill Intensity & Workrate', color: 'accent-rose-500', colorText: 'text-rose-400' },
+                        { key: 'Intensity', label: 'Drill Intensity & Workrate', color: 'accent-cyan-400', colorText: 'text-cyan-300' },
                         { key: 'Speed', label: 'Sprint & Foot Speed (Speed)', color: 'accent-sky-500', colorText: 'text-sky-400' },
                         { key: 'Strength', label: 'Physique & Muscle Load (Strength)', color: 'accent-purple-500', colorText: 'text-purple-400' }
                       ].map((metric) => {
@@ -1726,9 +1726,9 @@ export default function SquadManager({
                         const val = (dayObj as any)[metric.key] !== undefined ? (dayObj as any)[metric.key] : 80;
 
                         return (
-                          <div key={metric.key} className="space-y-1.5 p-3 bg-slate-950/60 border border-slate-850 rounded-xl">
+                          <div key={metric.key} className="space-y-1.5 p-3 bg-zinc-950/60 border border-slate-850 rounded-xl">
                             <div className="flex justify-between items-center text-xs">
-                              <span className="font-mono text-[10px] font-bold text-slate-300 uppercase tracking-wide">{metric.label}</span>
+                              <span className="font-mono text-[10px] font-bold text-zinc-300 uppercase tracking-wide">{metric.label}</span>
                               <span className={`font-bold font-mono text-sm ${metric.colorText}`}>{val}%</span>
                             </div>
                             <div className="flex items-center gap-4">
@@ -1751,7 +1751,7 @@ export default function SquadManager({
                                     training: updatedTraining
                                   }));
                                 }}
-                                className={`flex-1 ${metric.color} h-1.5 bg-slate-800 rounded-lg cursor-pointer`}
+                                className={`flex-1 ${metric.color} h-1.5 bg-zinc-800 rounded-lg cursor-pointer`}
                               />
                             </div>
                           </div>
@@ -1762,11 +1762,11 @@ export default function SquadManager({
                 )}
 
                 {/* Global Bottom Actions Panel */}
-                <div className="pt-5 border-t border-slate-800 flex justify-end gap-3 flex-shrink-0">
+                <div className="pt-5 border-t border-zinc-800 flex justify-end gap-3 flex-shrink-0">
                   <button
                     type="button"
                     onClick={() => setIsFormOpen(false)}
-                    className="px-4 py-2 bg-slate-950/40 border border-slate-800 hover:bg-slate-800 hover:text-white rounded-xl text-xs font-semibold text-slate-300 transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-zinc-950/40 border border-zinc-800 hover:bg-zinc-800 hover:text-white rounded-xl text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
