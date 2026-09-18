@@ -4,13 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, User, Heart, Handshake, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
+import { Eye, EyeOff, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, Instagram, Twitter, Facebook } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
-import { signUpWithRole } from '@/lib/auth-utils'
 
-type Role = 'player' | 'fan' | 'partner'
+type Role = 'user'
 type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
 
 interface AuthPageProps {
@@ -20,7 +19,7 @@ interface AuthPageProps {
   enableOTP?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', showAllRoles = false, enableOTP = false }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'user', showAllRoles: _showAllRoles = false, enableOTP = false }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -35,7 +34,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [selectedRole, setSelectedRole] = useState<Role>(defaultRole)
+  const selectedRole: Role = 'user'
   const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -65,12 +64,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false)
   const [shareData, setShareData] = useState(false)
-
-  const roles: { id: Role; label: string; labelBn: string; icon: React.ReactNode }[] = [
-    { id: 'player', label: 'Player', labelBn: 'খেলোয়াড়', icon: <User className="w-4 h-4" /> },
-    { id: 'fan', label: 'Fan', labelBn: 'অনুরাগী', icon: <Heart className="w-4 h-4" /> },
-    { id: 'partner', label: 'Partner', labelBn: 'অংশীদার', icon: <Handshake className="w-4 h-4" /> },
-  ]
 
   // Generate a 6-digit mock OTP (in production, this would be sent to email)
   const generateMockOTP = (): string => {
@@ -176,10 +169,9 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
             options: {
               data: {
                 full_name: fullName,
-                role: selectedRole,
               },
               emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-                `${window.location.origin}/auth/callback?role=${selectedRole}`,
+                `${window.location.origin}/auth/callback`,
             },
           })
           if (error) {
@@ -223,7 +215,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         provider,
         options: {
           redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-            `${window.location.origin}/auth/callback${view === 'signup' ? `?role=${selectedRole}` : ''}`,
+            `${window.location.origin}/auth/callback`,
         },
       })
 
@@ -286,16 +278,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         return
       }
       
-      // Role-specific validation
-      if (selectedRole === 'fan' && !favoriteTeam) {
-        setError(isBn ? 'প্রিয় দল নির্বাচন করুন' : 'Please select your favorite team')
-        return
-      }
-      if (selectedRole === 'partner' && (!organizationName || !organizationType)) {
-        setError(isBn ? 'সংস্থার তথ্য পূরণ করুন' : 'Please fill organization details')
-        return
-      }
-      
       setAuthStep('preferences')
     }
   }
@@ -333,14 +315,10 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         instagram,
         twitter,
         facebook,
-        favoriteTeam: selectedRole === 'fan' ? favoriteTeam : undefined,
-        organizationName: selectedRole === 'partner' ? organizationName : undefined,
-        organizationType: selectedRole === 'partner' ? organizationType : undefined,
-        partnshipType: selectedRole === 'partner' ? partnshipType : undefined,
+
         subscribeNewsletter,
         shareData,
-        role: selectedRole,
-      }
+          }
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -348,7 +326,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         options: {
           data: signupData,
           emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-            `${window.location.origin}/auth/callback?role=${selectedRole}`,
+            `${window.location.origin}/auth/callback`,
         },
       })
       if (error) throw error
@@ -437,32 +415,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
         {error && (
           <div className="w-full bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20">
             {error}
-          </div>
-        )}
-
-        {/* Role Selection (Sign Up only) */}
-        {view === 'signup' && (
-          <div className="w-full">
-            <p className="text-sm text-muted-foreground mb-3 text-center">
-              {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select your role'}
-            </p>
-            <div className={`grid ${showAllRoles ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
-              {roles.filter((role) => showAllRoles || role.id !== 'player').map((role) => (
-                <button
-                  key={role.id}
-                  type="button"
-                  onClick={() => setSelectedRole(role.id)}
-                  className={`flex flex-col items-center gap-2 py-3 px-2 rounded-xl transition-colors ${
-                    selectedRole === role.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {role.icon}
-                  <span className="font-semibold text-sm">{isBn ? role.labelBn : role.label}</span>
-                </button>
-              ))}
-            </div>
           </div>
         )}
 
@@ -883,7 +835,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'fan', s
               </svg>
             )}
             <span className="text-base font-bold text-foreground">
-              {isAppleLoading ? (isBn ? '��পেক্ষা ক��ুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
+              {isAppleLoading ? (isBn ? '��পে��্ষা ক��ুন...' : 'Loading...') : (isBn ? `Apple দিয়ে ${view === 'login' ? 'সাইন ইন' : 'সাইন আপ'}` : `Sign ${view === 'login' ? 'in' : 'up'} with Apple`)}
             </span>
           </button>
 

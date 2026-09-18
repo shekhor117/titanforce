@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { X, User, Users, Handshake } from "lucide-react"
+import { X, User } from "lucide-react"
 import { useAuth, type UserRole } from "@/lib/auth-context"
 import { useLanguage } from "@/lib/language-context"
 
@@ -13,8 +13,8 @@ interface LoginModalProps {
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const router = useRouter()
-  const [step, setStep] = useState<"role-select" | "login" | "signup">("role-select")
-  const [selectedRole, setSelectedRole] = useState<UserRole>(null)
+  const [step, setStep] = useState<"role-select" | "login" | "signup">("login")
+  const [selectedRole, setSelectedRole] = useState<UserRole>("user")
   const [isLoginMode, setIsLoginMode] = useState(true)
   const [formData, setFormData] = useState({ name: "", email: "", password: "" })
   const [isLoading, setIsLoading] = useState(false)
@@ -24,23 +24,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const isBn = language === "bn"
 
   const roles = [
-    { 
-      id: "player" as UserRole, 
-      icon: User, 
-      label: isBn ? "খেলোয়াড়" : "Player",
-      description: isBn ? "আপনার পরিসংখ্যান এবং প্রোফাইল পরিচালনা করুন" : "Manage your stats and profile"
-    },
-    { 
-      id: "fan" as UserRole, 
-      icon: Users, 
-      label: isBn ? "সমর্থক" : "Fan/Supporter",
-      description: isBn ? "আমাদের সম্প্রদায়ে যোগ দিন এবং খেলা সমর্থন করুন" : "Join the community and support matches"
-    },
-    { 
-      id: "partner" as UserRole, 
-      icon: Handshake, 
-      label: isBn ? "অংশীদার" : "Partner",
-      description: isBn ? "স্পন্সরশিপ এবং বিপণন সুযোগ" : "Sponsorship & marketing opportunities"
+    {
+      id: "user" as UserRole,
+      icon: User,
+      label: isBn ? "ব্যবহারকারী" : "User",
+      description: isBn ? "আপনার অ্যাকাউন্টে প্রবেশ করুন" : "Access your account"
     }
   ]
 

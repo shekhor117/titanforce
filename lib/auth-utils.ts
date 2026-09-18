@@ -117,7 +117,7 @@ export async function signUpWithRole(
   email: string,
   password: string,
   name: string,
-  role: "player" | "fan" | "partner"
+  role: "user"
 ): Promise<void> {
   await signUpWithEmail(email, password, name)
 
