@@ -27,38 +27,19 @@ function getSupabaseClient() {
 }
 
 async function hasDualAdminAccess(
-  supabase: any,
   user: {
     id: string
     app_metadata?: Record<string, unknown>
     user_metadata?: Record<string, unknown>
   },
 ) {
-  // Secure Supabase app_metadata is checked first. This keeps admin login
-  // working even when the optional legacy app_users table is absent or blocked.
+  // Supabase Auth app_metadata is the single source of truth for admin access.
+  // It is server-controlled and cannot be edited by the user from the client.
   const appRole = typeof user.app_metadata?.role === "string"
     ? user.app_metadata.role.trim().toLowerCase()
-    : typeof user.user_metadata?.role === "string"
-      ? user.user_metadata.role.trim().toLowerCase()
-      : ""
-  const hasSecureRole = ["admin", "super_admin", "moderator"].includes(appRole)
-  if (hasSecureRole) return true
+    : ""
 
-  // Legacy app_users support is best-effort. A missing table must not turn a
-  // valid Supabase admin session into a false authentication failure.
-  const { data, error } = await supabase
-    .from("app_users")
-    .select("role, is_active")
-    .ilike("email", user.email.trim())
-    .maybeSingle()
-
-  if (error) {
-    console.warn("[v0] Optional app_users lookup unavailable:", error.message)
-    return false
-  }
-
-  const appUserRole = typeof data?.role === "string" ? data.role.trim().toLowerCase() : ""
-  return data?.is_active !== false && ["admin", "super_admin", "moderator"].includes(appUserRole)
+  return ["admin", "super_admin", "moderator"].includes(appRole)
 }
 
 export function AdminProvider({ children }: { children: ReactNode }) {
@@ -95,7 +76,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             // request to hang indefinitely.
             void (async () => {
               if (session?.user) {
-                const hasAccess = await hasDualAdminAccess(supabase, session.user)
+                const hasAccess = await hasDualAdminAccess(session.user)
                 if (!isMounted) return
 
                 if (hasAccess) {
@@ -186,7 +167,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const supabase = getSupabaseClient()
       const { data: userData } = supabase ? await supabase.auth.getUser() : { data: { user: null } }
       const hasAccess = supabase && userData.user
-        ? await hasDualAdminAccess(supabase, userData.user)
+        ? await hasDualAdminAccess(userData.user)
         : false
       if (!hasAccess) {
         setIsLoading(false)

@@ -102,7 +102,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     return null
   }
 
-  const role = ((data.user.app_metadata?.role || data.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
+  const role = (data.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "user"
 
   return {
     id: data.user.id,
