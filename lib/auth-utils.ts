@@ -113,24 +113,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
-export async function signUpWithRole(
-  email: string,
-  password: string,
-  name: string,
-  role: "user"
-): Promise<void> {
-  await signUpWithEmail(email, password, name)
-
-  const supabase = createClient()
-  const { error } = await supabase.auth.updateUser({
-    data: { signupRole: role },
-  })
-
-  if (error) {
-    throw new Error(error.message)
-  }
-}
-
 export async function sendPasswordReset(email: string): Promise<void> {
   const supabase = createClient()
   
