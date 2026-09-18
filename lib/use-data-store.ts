@@ -27,6 +27,16 @@ const dataCache = {
 
 // Cache duration: 30 seconds
 const CACHE_DURATION = 30000
+const PUBLIC_DATA_TIMEOUT = 8000
+
+function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      window.setTimeout(() => reject(new Error('Public data request timed out')), timeout)
+    }),
+  ])
+}
 
 export function useDataStore() {
   const [service, setService] = useState<any>(null)
@@ -48,12 +58,12 @@ export function useDataStore() {
         setService(dataService)
 
         const requests = [
-          dataService.getPlayers(),
-          dataService.getMatches(),
-          dataService.getPartners(),
-          dataService.getNewsItems(),
-          dataService.getMediaItems(),
-          dataService.getTrophies(),
+          withTimeout(dataService.getPlayers()),
+          withTimeout(dataService.getMatches()),
+          withTimeout(dataService.getPartners()),
+          withTimeout(dataService.getNewsItems()),
+          withTimeout(dataService.getMediaItems()),
+          withTimeout(dataService.getTrophies()),
         ]
         const results = await Promise.allSettled(requests)
         const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results
@@ -225,7 +235,7 @@ export function usePlayers() {
 
       try {
         setLoading(true)
-        const data = await service.getPlayers()
+        const data = await withTimeout(service.getPlayers())
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -288,7 +298,7 @@ export function useMatches() {
 
       try {
         setLoading(true)
-        const data = await service.getMatches()
+        const data = await withTimeout(service.getMatches())
         if (isMounted) {
           dataCache.matches = data
           dataCache.lastFetch = Date.now()
@@ -349,7 +359,7 @@ export function usePartners() {
 
       try {
         setLoading(true)
-        const data = await service.getPartners()
+        const data = await withTimeout(service.getPartners())
         if (isMounted) {
           dataCache.partners = data
           dataCache.lastFetch = Date.now()
@@ -408,7 +418,7 @@ export function useNewsItems() {
 
       try {
         setLoading(true)
-        const data = await service.getNewsItems()
+        const data = await withTimeout(service.getNewsItems())
         if (isMounted) {
           dataCache.newsItems = data
           dataCache.lastFetch = Date.now()
@@ -469,7 +479,7 @@ export function useMediaItems() {
 
       try {
         setLoading(true)
-        const data = await service.getMediaItems()
+        const data = await withTimeout(service.getMediaItems())
         if (isMounted) {
           dataCache.mediaItems = data
           dataCache.lastFetch = Date.now()

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, memo, useCallback, useMemo } from "react"
-import { Menu, X, Globe, ShoppingBag } from "lucide-react"
+import { Menu, X, Globe, ShoppingBag, ArrowUpRight, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
@@ -18,12 +18,12 @@ function NavbarComponent() {
   const { items } = useCart()
 
   const navLinks = [
-    { href: "/", label: t.nav.home },
-    { href: "/about", label: t.nav.about },
-    { href: "/team-squad", label: t.nav.squad },
-    { href: "/fixtures-results", label: t.nav.matches },
-    { href: "/features", label: language === "bn" ? "ফিচার" : "Features" },
-    { href: "/contact", label: t.nav.contact },
+    { href: "/", label: t.nav.home, icon: Home },
+    { href: "/about", label: t.nav.about, icon: Users },
+    { href: "/team-squad", label: t.nav.squad, icon: Users },
+    { href: "/fixtures-results", label: t.nav.matches, icon: CalendarDays },
+    { href: "/features", label: language === "bn" ? "ফিচার" : "Features", icon: Sparkles },
+    { href: "/contact", label: t.nav.contact, icon: Mail },
   ]
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -105,56 +105,52 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-3 sm:px-4 pb-4 flex flex-col gap-3 text-sm font-semibold uppercase tracking-wide border-t border-secondary animate-in slide-in-from-top-2 duration-300">
-          {navLinks.map((link, index) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-foreground/60 hover:text-primary hover-underline transition-colors py-3 px-3 rounded min-h-[44px] flex items-center duration-300 animate-in fade-in slide-in-from-left-4 ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
-              style={{ animationDelay: `${index * 50}ms` }}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          
-          <Link
-            href="/shop"
-            className="neo-btn flex items-center gap-2 px-4 py-3 relative min-h-[44px] animate-in fade-in slide-in-from-left-4"
-            style={{ animationDelay: '300ms' }}
-            onClick={() => setMobileMenuOpen(false)}
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+          <div
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            onClick={(event) => event.stopPropagation()}
           >
-            <div className="relative">
-              <ShoppingBag className="w-4 h-4" />
-              {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-3 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
-                  {cartItemCount > 9 ? "9+" : cartItemCount}
-                </span>
-              )}
-            </div>
-            <span className="text-xs font-bold">{language === "bn" ? "স্টোর" : "STORE"}</span>
-          </Link>
-          
-          <div className="border-t border-secondary pt-4 mt-2 flex flex-col gap-3">
-            <div className="w-full flex items-center gap-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setLanguage(language === "en" ? "bn" : "en")}
-                className="neo-btn flex items-center justify-center gap-1.5 px-3 py-2 rounded-full flex-1 text-xs min-h-[44px]"
-                aria-label="Toggle language"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="font-bold">{language === "en" ? "বাংলা" : "EN"}</span>
+            <div className="mb-6 flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
+                <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+              </div>
+              <button className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+                <X className="size-5" />
               </button>
             </div>
 
-            {user ? (
-              <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} />
-            ) : (
-              <Link href="/login" className="neo-btn flex items-center justify-center gap-1.5 px-4 py-3 rounded-full w-full text-xs min-h-[44px] no-underline font-bold" onClick={() => setMobileMenuOpen(false)}>
-                {language === "bn" ? "লগইন" : "LOGIN"}
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
+              {navLinks.map((link, index) => {
+                const Icon = link.icon
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    style={{ animationDelay: `${index * 40}ms` }}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
+                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                  </Link>
+                )
+              })}
+              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+                <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
+                {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
-            )}
+            </nav>
+
+            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
+                  <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
+                </button>
+              </div>
+              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-lg border border-primary/30 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+            </div>
           </div>
         </div>
       )}

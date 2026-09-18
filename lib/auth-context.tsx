@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
 
-export type UserRole = "player" | "fan" | "partner" | null
+export type UserRole = "user" | null
 export type UserStatus = "pending" | "approved" | "rejected"
 
 interface PlayerProfile {

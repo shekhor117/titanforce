@@ -102,7 +102,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     return null
   }
 
-  const role = ((data.user.app_metadata?.role || data.user.user_metadata?.role) as "admin" | "moderator" | "super_admin") || "user"
+  const role = (data.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "user"
 
   return {
     id: data.user.id,
@@ -110,24 +110,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     name: data.user.user_metadata?.full_name || "User",
     role,
     emailVerified: data.user.email_confirmed_at ? true : false,
-  }
-}
-
-export async function signUpWithRole(
-  email: string,
-  password: string,
-  name: string,
-  role: "player" | "fan" | "partner"
-): Promise<void> {
-  await signUpWithEmail(email, password, name)
-
-  const supabase = createClient()
-  const { error } = await supabase.auth.updateUser({
-    data: { signupRole: role },
-  })
-
-  if (error) {
-    throw new Error(error.message)
   }
 }
 

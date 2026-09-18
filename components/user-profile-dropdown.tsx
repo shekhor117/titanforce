@@ -40,16 +40,7 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
       .slice(0, 2)
   }
 
-  const getRoleLabel = (role: string | null) => {
-    if (!role) return isBn ? "ব্যবহারকারী" : "User"
-    const labels: Record<string, { en: string; bn: string }> = {
-      player: { en: "Player", bn: "খেলোয়াড়" },
-      fan: { en: "Fan", bn: "ফ্যান" },
-      partner: { en: "Partner", bn: "পার্টনার" },
-      user: { en: "User", bn: "ব্যবহারকারী" },
-    }
-    return labels[role]?.[language] || role
-  }
+  const getRoleLabel = () => isBn ? "ব্যবহারকারী" : "User"
 
   const handleLogout = () => {
     logout()
@@ -62,32 +53,11 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
     onClose?.()
   }
 
-  const menuItems = user.role
-    ? [
-        {
-          href: `/dashboard/${user.role}`,
-          icon: LayoutDashboard,
-          label: isBn ? "ড্যাশবোর্ড" : "Dashboard",
-        },
-        {
-          href: `/dashboard/${user.role}/profile`,
-          icon: UserCircle,
-          label: isBn ? "প্রোফাইল" : "My Profile",
-        },
-        {
-          href: `/dashboard/${user.role}/settings`,
-          icon: Settings,
-          label: isBn ? "সেটিংস" : "Settings",
-        },
-      ]
-    : [
-        {
-          href: "#",
-          icon: LayoutDashboard,
-          label: isBn ? "ড্যাশবোর্ড (সেটআপ প্রয়োজন)" : "Dashboard (Setup Required)",
-          disabled: true,
-        },
-      ]
+  const menuItems = [
+    { href: "/dashboard/user", icon: LayoutDashboard, label: isBn ? "ড্যাশবোর্ড" : "Dashboard" },
+    { href: "/dashboard/user/profile", icon: UserCircle, label: isBn ? "প্রোফাইল" : "My Profile" },
+    { href: "/dashboard/user/settings", icon: Settings, label: isBn ? "সেটিংস" : "Settings" },
+  ]
 
   return (
     <div ref={dropdownRef} className="relative">
@@ -140,7 +110,7 @@ export function UserProfileDropdown({ onClose }: UserProfileDropdownProps) {
                 </p>
                 <p className="text-xs text-foreground/60 truncate">{user.email}</p>
                 <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary ${isBn ? "font-[var(--font-bengali)]" : ""}`}>
-                  {getRoleLabel(user.role)}
+                  {getRoleLabel()}
                 </span>
               </div>
             </div>

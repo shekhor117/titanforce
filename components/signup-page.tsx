@@ -59,9 +59,7 @@ export function SignupPage() {
         throw new Error("Unable to create account")
       }
 
-      // Admin privileges are never self-assigned. An administrator must add
-      // the new account to app_users and grant its role after verification.
-      router.push("/admin/login?signup=success")
+      router.push("/login?signup=success")
     } catch (err) {
       const message = err instanceof Error ? err.message : "Sign up failed"
       setError(message)
@@ -86,7 +84,7 @@ export function SignupPage() {
             {isBn ? "সাইন আপ" : "SIGN UP"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {isBn ? "নতুন অ্যাডমিন অ্যাকাউন্ট তৈরি করুন" : "Create a new admin account"}
+            {isBn ? "নতুন ব্যবহারকারী অ্যাকাউন্ট তৈরি করুন" : "Create your user account"}
           </p>
         </div>
 
@@ -173,7 +171,7 @@ export function SignupPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             {isBn ? "ইতিমধ্যে অ্যাকাউন্ট আছে?" : "Already have an account?"}{" "}
-            <Link href="/admin/login" className="text-primary hover:underline">
+            <Link href="/login" className="text-primary hover:underline">
               {isBn ? "লগইন করুন" : "Login"}
             </Link>
           </p>
