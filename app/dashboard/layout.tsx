@@ -48,8 +48,8 @@ function DashboardContent({
 
   if (!user) return null
 
-  // Show pending approval message for players/partners
-  if (isPending || (profile?.status === "pending" && profile?.role !== "fan")) {
+  // User accounts no longer require role-specific approval.
+  if (isPending) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="max-w-md w-full">
