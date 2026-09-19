@@ -163,7 +163,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       const user = await signInWithEmail(email, password)
       
-      // Require both Supabase app metadata and app_users authorization.
+      // Supabase Auth app_metadata is the only admin authorization source.
       const supabase = getSupabaseClient()
       const { data: userData } = supabase ? await supabase.auth.getUser() : { data: { user: null } }
       const hasAccess = supabase && userData.user

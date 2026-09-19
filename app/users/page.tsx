@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Search, Users, Shield, Users2 } from 'lucide-react'
-import { getDataService, type AppUser } from '@/lib/data-service'
+import type { AppUser } from '@/lib/data-service'
 import { PageEntrance } from '@/components/page-entrance'
 
 function UserCard({ user }: { user: AppUser }) {
@@ -99,9 +99,10 @@ function UsersContent() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const dataService = getDataService()
-        const fetchedUsers = await dataService.getAppUsers({ status: 'active' })
-        setUsers(fetchedUsers)
+        const response = await fetch('/api/admin/users', { cache: 'no-store' })
+        if (!response.ok) throw new Error('Unable to load Supabase Auth users')
+        const fetchedUsers = await response.json()
+        setUsers(Array.isArray(fetchedUsers) ? fetchedUsers.filter((user: AppUser) => user.status === 'active') : [])
       } catch (error) {
         console.error('[v0] Error fetching users:', error)
         setUsers([])

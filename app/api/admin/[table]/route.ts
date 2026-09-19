@@ -5,7 +5,7 @@ const ALLOWED_TABLES = new Set([
   "players", "matches", "partners", "fans", "news", "media", "contacts",
   "trophies", "standings", "injuries", "player_profiles", "player_positions",
   "match_events", "match_votes", "player_votes", "motm", "rankings", "lineup",
-  "features", "settings", "site_settings", "users", "app_users", "venues",
+  "features", "settings", "site_settings", "venues",
   "seasons", "training_programs", "polls", "tickets", "testimonials",
   "subscriptions", "gallery", "news_updates", "store_products", "store_inventory",
   "store_orders",
@@ -17,18 +17,7 @@ async function getAdminClient() {
 
   if (error || !user) return { supabase, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) }
 
-  let role = user.app_metadata?.role as string | undefined
-
-  // Keep authorization server-side and support existing app_users records while
-  // still refusing editable user_metadata as an authorization source.
-  if (role !== "admin" && role !== "manager") {
-    const { data: appUser } = await supabase
-      .from("app_users")
-      .select("role, is_active")
-      .eq("email", user.email ?? "")
-      .maybeSingle()
-    if (appUser?.is_active !== false) role = appUser?.role
-  }
+  const role = user.app_metadata?.role as string | undefined
 
   if (role !== "admin" && role !== "manager") {
     return { supabase, response: NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
