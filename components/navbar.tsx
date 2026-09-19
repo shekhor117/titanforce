@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, memo, useCallback, useMemo } from "react"
+import { useState, memo, useCallback, useMemo, useEffect } from "react"
 import { Menu, X, Globe, ShoppingBag, ArrowUpRight, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -13,7 +14,17 @@ import { ButtonModern } from "@/components/button-modern"
 
 function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
   const { language, setLanguage, t } = useLanguage()
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false)
+    }
+    document.addEventListener("keydown", closeOnEscape)
+    return () => document.removeEventListener("keydown", closeOnEscape)
+  }, [mobileMenuOpen])
   const { user } = useAuth()
   const { items } = useCart()
 
@@ -29,7 +40,7 @@ function NavbarComponent() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
+    <nav className="sticky top-0 z-50 relative border-b border-border/50 backdrop-blur-xl bg-background/70">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
@@ -105,9 +116,12 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden absolute inset-x-0 top-full z-[60] h-[calc(100dvh-73px)] bg-foreground/30 backdrop-blur-[2px]" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            role="dialog"
+            aria-modal="true"
+            aria-label={language === "bn" ? "মোবাইল মেনু" : "Mobile menu"}
+            className="ml-auto flex h-full w-[min(88vw,360px)] min-w-[280px] flex-col overscroll-contain overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-6 flex items-start justify-between">
@@ -115,7 +129,7 @@ function NavbarComponent() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
                 <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
               </div>
-              <button className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+              <button className="flex size-11 items-center justify-center rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
                 <X className="size-5" />
               </button>
             </div>
@@ -123,11 +137,13 @@ function NavbarComponent() {
             <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
+                const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`group flex min-h-12 items-center justify-between rounded-xl border px-3.5 py-3 text-sm font-bold uppercase tracking-wide transition-all ${isActive ? "border-primary/20 bg-primary/10 text-primary" : "border-transparent text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
