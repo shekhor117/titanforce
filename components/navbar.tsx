@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, memo, useCallback, useMemo } from "react"
+import { usePathname } from "next/navigation"
 import { Menu, X, Globe, ShoppingBag, ArrowUpRight, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -13,6 +14,7 @@ import { ButtonModern } from "@/components/button-modern"
 
 function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
@@ -105,47 +107,54 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/55 backdrop-blur-[3px] animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(90vw,380px)] flex-col overflow-y-auto border-l border-white/10 bg-[#101820] px-4 pb-5 pt-4 text-white shadow-2xl shadow-black/40 animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6 flex items-start justify-between">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
-                <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+            <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <Image src="/logos/titanforce-logo.svg" alt="Titan Force FC" width={42} height={42} className="size-10 object-contain" />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300">Titan Force FC</p>
+                  <h2 className="mt-0.5 font-[var(--font-display)] text-2xl tracking-wide text-white">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                </div>
               </div>
-              <button className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+              <button className="flex size-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:bg-white/10 hover:text-white" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
                 <X className="size-5" />
               </button>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
+            <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">{language === "bn" ? "নেভিগেশন" : "Navigation"}</p>
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
+                const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`group flex min-h-12 items-center justify-between rounded-xl border px-3.5 py-3 text-sm font-bold uppercase tracking-wide transition-all ${isActive ? "border-cyan-300/20 bg-cyan-300/10 text-cyan-200" : "border-transparent text-white/65 hover:border-white/10 hover:bg-white/5 hover:text-white"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
-                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <span className="flex items-center gap-3"><span className={`flex size-8 items-center justify-center rounded-lg ${isActive ? "bg-cyan-300/15" : "bg-white/5"}`}><Icon className={`size-4 ${isActive ? "text-cyan-200" : "text-white/50 group-hover:text-cyan-200"}`} /></span>{link.label}</span>
+                    <ArrowUpRight className={`size-4 transition-opacity ${isActive ? "text-cyan-200 opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+              <p className="mb-2 mt-5 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">{language === "bn" ? "ক্লাব" : "Club"}</p>
+              <Link href="/shop" className="mt-0 flex min-h-12 items-center justify-between rounded-xl bg-cyan-300 px-4 py-3 text-sm font-bold uppercase tracking-wide text-slate-950 shadow-lg shadow-cyan-300/10 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
             </nav>
 
-            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
+            <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-5">
               <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-white/15 text-xs font-bold text-white/80 transition-colors hover:bg-white/10" aria-label="Toggle language">
                   <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
               </div>
