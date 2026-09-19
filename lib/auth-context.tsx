@@ -42,9 +42,9 @@ interface AuthContextType {
   user: User | null
   profile: Profile | null
   isLoading: boolean
-  login: (email: string, password: string, role: UserRole) => Promise<void>
+  login: (email: string, password: string, role?: UserRole) => Promise<void>
   logout: () => void
-  signup: (name: string, email: string, password: string, role: UserRole) => Promise<void>
+  signup: (name: string, email: string, password: string, role?: UserRole) => Promise<void>
   updatePlayerProfile: (profile: PlayerProfile) => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -108,13 +108,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (event === "SIGNED_IN" && session?.user) {
           const supabaseUser = session.user
           // Fetch profile first to get role
-          const profileData = await fetchProfile(supabaseUser.id)
           if (isMounted) {
             const newUser: User = {
               id: supabaseUser.id,
               name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
               email: supabaseUser.email || "",
-              role: profileData?.role || null,
+              role: "user",
               avatar: supabaseUser.user_metadata?.avatar_url,
             }
             setUser(newUser)
@@ -137,14 +136,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (session?.user) {
         const supabaseUser = session.user
-        // Fetch profile first to get role
-        const profileData = await fetchProfile(supabaseUser.id)
         if (isMounted) {
           const newUser: User = {
             id: supabaseUser.id,
             name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
             email: supabaseUser.email || "",
-            role: profileData?.role || null,
+            role: "user",
             avatar: supabaseUser.user_metadata?.avatar_url,
           }
           setUser(newUser)
@@ -171,20 +168,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { signInWithEmail } = await import("@/lib/auth-utils")
       const authUser = await signInWithEmail(email, password)
       
-      // Fetch profile to get actual role (may not exist yet, that's OK)
-      let profileData = null
-      try {
-        profileData = await fetchProfile(authUser.id)
-      } catch (profileErr) {
-        console.debug('[v0] Profile fetch failed (will retry on next load):', profileErr)
-        // Profile might not exist yet - this is fine
-      }
-      
       const newUser: User = {
         id: authUser.id,
         name: authUser.name,
         email: authUser.email,
-        role: profileData?.role || role,
+        role: "user",
       }
       setUser(newUser)
     } catch (error) {
@@ -204,9 +192,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
         options: {
-          data: { full_name: name, role },
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-            `${window.location.origin}/auth/callback?role=${role}`,
+          data: { full_name: name },
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+            `${window.location.origin}/auth/callback`,
         },
       })
 
