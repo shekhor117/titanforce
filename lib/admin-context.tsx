@@ -115,7 +115,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           if (error) throw error
           
           if (data?.session?.user) {
-            if (await hasDualAdminAccess(supabase, data.session.user)) {
+            if (await hasDualAdminAccess(data.session.user)) {
               const user: AuthUser = {
                 id: data.session.user.id,
                 email: data.session.user.email || "",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { getDataService, AppUser } from "@/lib/data-service"
+import { AppUser } from "@/lib/data-service"
 import { FeatureProtectedRoute } from "@/components/feature-protected-route"
 import { Search, UserPlus, Edit, Trash2, Shield, User, Users, X, Save, Mail, Calendar, Clock, Loader2, AlertCircle } from "lucide-react"
 import { PageEntrance } from '@/components/page-entrance'
@@ -44,13 +44,14 @@ export default function AdminUsersPage() {
     setIsLoading(true)
     setError(null)
     try {
-      const dataService = getDataService()
-      const filters: any = {}
-      if (filterRole !== "all") filters.role = filterRole
-      if (filterStatus !== "all") filters.status = filterStatus
-      
-      const usersData = await retryOperation(() => dataService.getAppUsers(filters))
-      setUsers(usersData || [])
+      const response = await retryOperation(() => fetch("/api/admin/users", { cache: "no-store" }))
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload.error || "Failed to load Supabase Auth users")
+      const usersData = (Array.isArray(payload) ? payload : []).filter((user: AppUser) =>
+        (filterRole === "all" || user.role === filterRole) &&
+        (filterStatus === "all" || user.status === filterStatus)
+      )
+      setUsers(usersData)
     } catch (err) {
       console.error("[v0] Error loading users:", err)
       setError(isBn ? "ব্যবহারকারী লোড করতে ব্যর্থ" : "Failed to load users")
@@ -74,8 +75,8 @@ export default function AdminUsersPage() {
     if (!confirm(isBn ? "আপনি কি নিশ্চিত?" : "Are you sure?")) return
 
     try {
-      const dataService = getDataService()
-      await dataService.deleteAppUser(id)
+      const response = await fetch(`/api/admin/users?id=${encodeURIComponent(id)}`, { method: "DELETE" })
+      if (!response.ok) throw new Error("Failed to delete Supabase Auth user")
       setUsers(users.filter(u => u.id !== id))
     } catch (err) {
       console.error("[v0] Error deleting user:", err)
@@ -105,22 +106,17 @@ export default function AdminUsersPage() {
 
     setIsSaving(true)
     try {
-      const dataService = getDataService()
-
       if (editingUser) {
-        const updated = await dataService.updateAppUser(editingUser.id, formData)
+        const response = await fetch("/api/admin/users", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingUser.id, name: formData.name, email: formData.email, status: formData.status }),
+        })
+        const updated = await response.json()
+        if (!response.ok) throw new Error(updated.error || "Failed to update user")
         setUsers(users.map(u => u.id === editingUser.id ? updated : u))
       } else {
-        const newUser = await dataService.createAppUser({
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
-          status: formData.status,
-          phone: formData.phone || undefined,
-          location: formData.location || undefined,
-          bio: formData.bio || undefined,
-        })
-        setUsers([newUser, ...users])
+        throw new Error(isBn ? "নতুন Supabase ব্যবহারকারী তৈরি করতে অ্যাডমিন API ব্যবহার করুন" : "Create new Supabase Auth users from the admin user API with a password")
       }
 
       resetForm()

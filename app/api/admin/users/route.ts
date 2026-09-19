@@ -1,149 +1,112 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateUser } from '@/lib/validation'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 
-export async function GET(request: NextRequest) {
+const ADMIN_ROLES = ['admin', 'super_admin', 'moderator']
+
+type AuthUser = {
+  id: string
+  email?: string
+  user_metadata?: Record<string, unknown>
+  app_metadata?: Record<string, unknown>
+  created_at?: string
+  last_sign_in_at?: string | null
+  email_confirmed_at?: string | null
+  banned_until?: string | null
+}
+
+function toAppUser(user: AuthUser) {
+  const role = typeof user.app_metadata?.role === 'string' && ADMIN_ROLES.includes(user.app_metadata.role)
+    ? user.app_metadata.role
+    : 'user'
+  const name = typeof user.user_metadata?.full_name === 'string'
+    ? user.user_metadata.full_name
+    : user.email?.split('@')[0] || 'User'
+
+  return {
+    id: user.id,
+    name,
+    email: user.email || '',
+    role,
+    status: user.banned_until ? 'banned' : 'active',
+    emailVerified: Boolean(user.email_confirmed_at),
+    createdAt: user.created_at || null,
+    lastSignInAt: user.last_sign_in_at || null,
+  }
+}
+
+async function requireAdmin() {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  const role = typeof user?.app_metadata?.role === 'string' ? user.app_metadata.role : ''
+  if (error || !user || !ADMIN_ROLES.includes(role)) return null
+  return user
+}
+
+export async function GET() {
   try {
-    const supabase = await createClient()
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('id')
-
-    if (userId) {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error) {
-        console.error('[v0] Error fetching user:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
-      }
-
-      return NextResponse.json(data)
-    }
-
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .order('createdAt', { ascending: false })
-
-    if (error) {
-      console.error('[v0] Error fetching users:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json(data)
+    if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const admin = createAdminClient()
+    const { data, error } = await admin.auth.admin.listUsers({ perPage: 1000 })
+    if (error) return NextResponse.json({ error: 'Unable to load Supabase Auth users' }, { status: 502 })
+    return NextResponse.json(data.users.map(toAppUser))
   } catch (error) {
-    console.error('[v0] Unexpected error in GET /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    console.error('[v0] Admin Auth users GET failed:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const body = await request.json()
-
-    const validation = validateUser(body)
-    if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+    if (typeof body.email !== 'string' || typeof body.password !== 'string' || body.password.length < 6) {
+      return NextResponse.json({ error: 'Email and a password of at least 6 characters are required' }, { status: 400 })
     }
-
-    const { data, error } = await supabase
-      .from('users')
-      .insert([body])
-      .select()
-      .single()
-
-    if (error) {
-      console.error('[v0] Error creating user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json(data, { status: 201 })
+    const admin = createAdminClient()
+    const { data, error } = await admin.auth.admin.createUser({
+      email: body.email.trim(),
+      password: body.password,
+      email_confirm: body.email_confirmed !== false,
+      user_metadata: { full_name: typeof body.name === 'string' ? body.name.trim() : undefined },
+    })
+    if (error || !data.user) return NextResponse.json({ error: error?.message || 'Unable to create user' }, { status: 400 })
+    return NextResponse.json(toAppUser(data.user as AuthUser), { status: 201 })
   } catch (error) {
-    console.error('[v0] Unexpected error in POST /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    console.error('[v0] Admin Auth users POST failed:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const body = await request.json()
-    const { id, ...updates } = body
-
-    if (!id) {
-      return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
-    }
-
-    const validation = validateUser(updates)
-    if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
-    }
-
-    const { data, error } = await supabase
-      .from('users')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('[v0] Error updating user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json(data)
+    if (typeof body.id !== 'string') return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
+    const admin = createAdminClient()
+    const { data, error } = await admin.auth.admin.updateUserById(body.id, {
+      email: typeof body.email === 'string' ? body.email.trim() : undefined,
+      user_metadata: typeof body.name === 'string' ? { full_name: body.name.trim() } : undefined,
+      ban_duration: body.status === 'banned' ? '876000h' : 'none',
+    })
+    if (error || !data.user) return NextResponse.json({ error: error?.message || 'Unable to update user' }, { status: 400 })
+    return NextResponse.json(toAppUser(data.user as AuthUser))
   } catch (error) {
-    console.error('[v0] Unexpected error in PUT /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    console.error('[v0] Admin Auth users PUT failed:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('id')
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
-    }
-
-    const { error } = await supabase
-      .from('users')
-      .delete()
-      .eq('id', userId)
-
-    if (error) {
-      console.error('[v0] Error deleting user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json({ success: true }, { status: 200 })
+    const adminUser = await requireAdmin()
+    if (!adminUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const userId = new URL(request.url).searchParams.get('id')
+    if (!userId || userId === adminUser.id) return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
+    const { error } = await createAdminClient().auth.admin.deleteUser(userId)
+    if (error) return NextResponse.json({ error: 'Unable to delete user' }, { status: 400 })
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[v0] Unexpected error in DELETE /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    console.error('[v0] Admin Auth users DELETE failed:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
