@@ -107,14 +107,19 @@ class SupabaseQueryOptimizer {
 
       if (error) {
         console.error(`[v0] Supabase query error for ${table}:`, error)
-        return []
+        return this.getStaleData<T>(table, options?.filter)
       }
 
       return (data as T[]) || []
     } catch (err) {
       console.error(`[v0] Supabase query exception for ${table}:`, err)
-      return []
+      return this.getStaleData<T>(table, options?.filter)
     }
+  }
+
+  private getStaleData<T>(table: string, filter?: Record<string, any>): T[] {
+    const stale = this.cache.get(this.getCacheKey(table, filter))
+    return stale?.data ?? []
   }
 
   /**
