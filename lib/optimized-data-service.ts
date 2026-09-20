@@ -130,9 +130,16 @@ class OptimizedDataService {
         async (payload: any) => {
           console.log(`[v0] Real-time change for ${table}:`, payload.eventType)
 
-          // Smart invalidation: only invalidate affected cache
+          // Keep the visible list current even after a mutation invalidates its cache.
           const cached = this.cache.get(cacheKey)
-          if (!cached) return
+          if (!cached) {
+            const refreshed = await this.fetchData<T>(table, {
+              select: options?.select,
+              filter: options?.filter,
+            })
+            onUpdate(refreshed)
+            return
+          }
 
           const data = cached.data as T[]
 
