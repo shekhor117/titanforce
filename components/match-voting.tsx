@@ -18,7 +18,7 @@ interface Player {
 export function MatchVoting() {
   const { language } = useLanguage()
   const isBn = language === "bn"
-  const sectionRef = useRef<HTMLSection>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null)
   const [hasVoted, setHasVoted] = useState(false)

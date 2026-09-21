@@ -778,7 +778,7 @@ export default function SquadManager({
                   <span className="text-[9px] font-mono font-bold text-zinc-400 block tracking-wide uppercase">SKILL PROFILE INTEGRATION</span>
                   <div className="h-44 bg-zinc-950/50 rounded-xl border border-slate-850 p-1 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={mockRadarData}>
+                      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                         <PolarGrid stroke="#334155" />
                         <PolarAngleAxis dataKey="subject" stroke="#94a3b8" fontSize={9} />
                         <Radar name={normalizedProfile.name} dataKey="A" stroke="#f43f5e" fill="#f43f5e" fillOpacity={0.35} />

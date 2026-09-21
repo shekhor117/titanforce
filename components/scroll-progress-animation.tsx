@@ -6,6 +6,8 @@ import { motion, useMotionValue, useTransform, useMotionTemplate } from 'framer-
 interface ScrollProgressAnimationProps {
   children: React.ReactNode
   className?: string
+  delay?: number
+  animationType?: string
 }
 
 /**

@@ -43,7 +43,7 @@ export function PlayerAttributesRadar({ players, limit = 4 }: PlayerAttributesRa
 
             <div className="space-y-3">
               {attributes.map((attr) => {
-                const value = (player as Record<string, number>)[attr.key] || 0
+                const value = (player as unknown as Record<string, number>)[attr.key] || 0
                 const percentage = Math.min((value / 100) * 100, 100)
 
                 return (
@@ -75,7 +75,7 @@ export function PlayerAttributesRadar({ players, limit = 4 }: PlayerAttributesRa
                   {(
                     attributes.reduce(
                       (sum, attr) =>
-                        sum + ((player as Record<string, number>)[attr.key] || 0),
+                        sum + ((player as unknown as Record<string, number>)[attr.key] || 0),
                       0
                     ) / attributes.length
                   ).toFixed(1)}

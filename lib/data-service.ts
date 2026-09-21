@@ -67,7 +67,7 @@ export interface AppUser {
   email: string
   username: string
   password_hash: string
-  role: 'admin' | 'manager' | 'viewer'
+  role: 'admin' | 'manager' | 'viewer' | 'player' | 'fan' | 'partner' | 'user'
   full_name?: string
   is_active: boolean
   last_login?: string
@@ -168,6 +168,23 @@ export interface Partner {
   link?: string
   created_at: string
   updated_at: string
+}
+
+export interface NewsUpdate {
+  id?: string
+  title?: string
+  description?: string
+  content?: string
+  image_url?: string
+  category?: string
+  published_at?: string
+  summary?: string
+  author?: string
+  date?: string
+  status?: string
+  views?: number
+  clicks?: number
+  [key: string]: any
 }
 
 export interface NewsItem {
@@ -1219,6 +1236,10 @@ export class DataService {
   }
 
   // Site Settings
+  async getSettings(): Promise<Record<string, any>> {
+    return this.getSiteSettings()
+  }
+
   async getSiteSettings(): Promise<Record<string, any>> {
     if (!this.supabase) return {}
     const { data, error } = await this.supabase
