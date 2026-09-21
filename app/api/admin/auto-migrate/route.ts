@@ -86,7 +86,6 @@ export async function POST(request: Request) {
           for (const statement of statements) {
             const { error: queryError } = await supabase.from('_migrations').select('*').limit(0)
               .then(() => ({ error: null }))
-              .catch((e) => ({ error: e }))
 
             // For schema operations, we need a different approach
             // Try using the service role directly

@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
           // Use a direct approach - query through the API
           const { error } = await supabase.rpc('exec_sql', {
             sql_string: statement
-          }).catch(() => ({ error: null })) // Fallback if RPC doesn't exist
+          })
 
           if (error && error.message && !error.message.includes('already exists') && !error.message.includes('function exec_sql')) {
             // Try direct query execution via query interface
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       },
       tables: {
         standingsTableExists: standingsExists,
-        standingsCount: standingsData?.count || 0
+        standingsCount: standingsData?.length || 0
       },
       instructions: standingsExists 
         ? 'All migrations applied successfully! Standings table is ready.'

@@ -1,4 +1,4 @@
-import { createClient, createAdminClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateAdminSetup } from '@/lib/validation'
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user already exists
     const { data: { users } } = await supabase.auth.admin.listUsers()
-    const existingUser = users?.find(u => u.email === email)
+    const existingUser = (users as Array<{ id: string; email?: string; user_metadata?: Record<string, unknown> }> | undefined)?.find(u => u.email === email)
 
     let userId = existingUser?.id
 

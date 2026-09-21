@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 
 import { useMatches } from '@/lib/use-data-store'

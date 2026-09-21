@@ -16,7 +16,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GalleryItem } from '../types';
+import { GalleryItem, GalleryCategory } from '../types';
 
 interface GalleryManagerProps {
   items: GalleryItem[];

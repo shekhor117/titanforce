@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0
 
     const { data, error, count } = await query
-      .select('*', { count: 'exact' })
+      .select('*')
       .range(offset, offset + limit - 1)
 
     if (error) {

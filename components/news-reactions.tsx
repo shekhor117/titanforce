@@ -90,7 +90,7 @@ export function NewsReactionsCompact({ newsId }: { newsId: string }) {
     <div className="flex items-center gap-2 text-xs text-foreground/60">
       {counts.like > 0 && (
         <span className="flex items-center gap-1">
-            <Icon className={`w-4 h-4 ${userReaction === type ? color : ""}`} /> {counts.like}
+            <ThumbsUp className="w-4 h-4" /> {counts.like}
         </span>
       )}
       {counts.love > 0 && (
