@@ -155,6 +155,8 @@ export interface Match {
   }>
   created_at: string
   updated_at: string
+  season_year?: string
+  goals?: Array<{ player: string; minute: number; assist?: string }>
 }
 
 export interface Partner {

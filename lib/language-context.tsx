@@ -243,6 +243,7 @@ interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
   t: Translations
+  isBn: boolean
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null)
@@ -256,6 +257,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         language,
         setLanguage,
         t: translations[language],
+        isBn: language === "bn",
       }}
     >
       {children}

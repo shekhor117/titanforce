@@ -102,10 +102,7 @@ export async function GET(request: NextRequest) {
     // Fallback: Try using supabase.rpc if available
     const { error: execError, data } = await supabase.rpc('exec_sql' as any, {
       sql: sqlStatements
-    }).catch((err: any) => ({
-      error: { message: 'RPC not available, attempting alternative method' },
-      data: null
-    }))
+    })
 
     // Verify table was created
     console.log('[v0] Verifying OTP table creation...')

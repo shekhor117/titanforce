@@ -14,7 +14,7 @@ export default function PlayerHonoursPage({ params }: { params: { number: string
   const isBn = language === 'bn'
   const [player, setPlayer] = useState<Player | null>(null)
   const [honours, setHonours] = useState<Honour[]>([])
-  const [stats, setStats] = useState({ total: 0, byCategory: { league: 0, cup: 0, championship: 0, tournament: 0 } })
+  const [stats, setStats] = useState({ total: 0, byCategory: {} as Record<string, number> })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
