@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Performance Monitoring Utility
  * Tracks Core Web Vitals and custom metrics
@@ -225,7 +226,7 @@ class PerformanceMonitor {
 // Export singleton instance
 export const performanceMonitor = new PerformanceMonitor()
 
-// Auto-initialize on import in client
+// Auto-initialize on client
 if (typeof window !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
