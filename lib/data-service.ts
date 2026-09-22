@@ -1152,13 +1152,27 @@ export class DataService {
   // Media Items
   async getMediaItems(): Promise<MediaItem[]> {
     if (!this.supabase) return []
-    const { data, error } = await this.supabase
-      .from('media_items')
-      .select('*')
-      .order('created_at', { ascending: false })
 
-    if (error) throw error
-    return data || []
+    try {
+      const { data, error } = await this.supabase
+        .from('media_items')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        if (error.code === 'PGRST205' || error.code === '42501' || error.message?.includes('Could not find the table') || error.message?.includes('permission denied')) {
+          console.debug('[v0] Media items unavailable; continuing without media data')
+          return []
+        }
+        console.error('[v0] DataService getMediaItems error:', error)
+        return []
+      }
+
+      return data || []
+    } catch (error) {
+      console.error('[v0] DataService getMediaItems caught error:', error)
+      return []
+    }
   }
 
   async createMediaItem(item: Omit<MediaItem, 'id' | 'created_at' | 'updated_at'>): Promise<MediaItem> {
@@ -1243,17 +1257,30 @@ export class DataService {
 
   async getSiteSettings(): Promise<Record<string, any>> {
     if (!this.supabase) return {}
-    const { data, error } = await this.supabase
-      .from('site_settings')
-      .select('*')
 
-    if (error) throw error
+    try {
+      const { data, error } = await this.supabase
+        .from('site_settings')
+        .select('*')
 
-    const settings: Record<string, any> = {}
-    data?.forEach((item: SiteSettings) => {
-      settings[item.key] = item.value
-    })
-    return settings
+      if (error) {
+        if (error.code === 'PGRST205' || error.code === '42501' || error.message?.includes('Could not find the table') || error.message?.includes('permission denied')) {
+          console.debug('[v0] Site settings unavailable; continuing with defaults')
+          return {}
+        }
+        console.error('[v0] DataService getSiteSettings error:', error)
+        return {}
+      }
+
+      const settings: Record<string, any> = {}
+      data?.forEach((item: SiteSettings) => {
+        settings[item.key] = item.value
+      })
+      return settings
+    } catch (error) {
+      console.error('[v0] DataService getSiteSettings caught error:', error)
+      return {}
+    }
   }
 
   async updateSiteSetting(key: string, value: Record<string, any>): Promise<void> {
