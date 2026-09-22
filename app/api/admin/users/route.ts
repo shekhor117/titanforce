@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validateUser } from '@/lib/validation'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 export async function GET(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
@@ -42,6 +46,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const supabase = await createClient()
 
@@ -76,6 +83,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const supabase = await createClient()
 
@@ -116,6 +126,9 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const supabase = await createClient()
 
