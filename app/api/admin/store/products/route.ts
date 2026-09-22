@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validateProduct } from '@/lib/validation'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 // GET - Fetch all products or specific product by ID
 export async function GET(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
@@ -54,6 +58,9 @@ export async function GET(request: NextRequest) {
 
 // POST - Create a new product
 export async function POST(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const userClient = await createClient()
 
@@ -93,6 +100,9 @@ export async function POST(request: NextRequest) {
 
 // PUT - Update a product
 export async function PUT(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const userClient = await createClient()
 
@@ -139,6 +149,9 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - Delete a product
 export async function DELETE(request: NextRequest) {
+  const adminAuth = await checkAdminAuth(request)
+  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
+
   try {
     const userClient = await createClient()
 
