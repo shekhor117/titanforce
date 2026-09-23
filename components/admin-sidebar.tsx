@@ -39,6 +39,7 @@ export function AdminSidebar() {
     
     // CMS Management
     { href: "/admin/cms", label: isBn ? "সিএমএস" : "CMS", icon: "📝", restricted: true, category: "tools" },
+    { href: "/admin/data", label: isBn ? "সুপাবেস ডেটা" : "Supabase Data", icon: "🗄️", restricted: true, category: "tools" },
     
     { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤", restricted: true, category: "tools" },
     { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈", restricted: true, category: "tools" },

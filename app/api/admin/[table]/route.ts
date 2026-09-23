@@ -10,6 +10,9 @@ const ALLOWED_TABLES = new Set([
   "subscriptions", "gallery", "news_updates", "store_products", "store_inventory",
   "store_orders", "banners", "social_links", "club_info", "footer_content",
   "shop_categories", "features_content", "testimonials", "venues", "seasons",
+  "pages", "events", "articles", "player_honours", "honours", "news_items", "media_items",
+  "cms_pages", "cms_content_blocks", "cms_menus", "cms_seo", "cms_settings", "cms_media_library",
+  "gallery_categories", "sponsors", "achievements", "fan_clubs", "fundraisers", "performance_metrics",
 ])
 
 async function getAdminClient() {
