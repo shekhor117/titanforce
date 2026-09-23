@@ -18,6 +18,9 @@ export default function StoreInventoryPage() {
   const [lowStockProducts, setLowStockProducts] = useState<AdminProduct[]>([])
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingVariants, setEditingVariants] = useState<Record<string, number>>({})
+  const [newVariantSize, setNewVariantSize] = useState("")
+  const [newVariantColor, setNewVariantColor] = useState("")
+  const [newVariantStock, setNewVariantStock] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -66,18 +69,36 @@ export default function StoreInventoryPage() {
   }
 
   const handleVariantChange = (key: string, value: number) => {
-    setEditingVariants((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
+    setEditingVariants((prev) => ({ ...prev, [key]: Math.max(0, value) }))
+  }
+
+  const addVariant = () => {
+    const size = newVariantSize.trim()
+    const color = newVariantColor.trim()
+    if (!size || !color) return
+    setEditingVariants((prev) => ({ ...prev, [`${size}-${color}`]: Math.max(0, newVariantStock) }))
+    setNewVariantSize("")
+    setNewVariantColor("")
+    setNewVariantStock(0)
+  }
+
+  const removeVariant = (key: string) => {
+    setEditingVariants((prev) => {
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
   }
 
   const handleSaveVariants = async (product: AdminProduct) => {
     try {
-      for (const [key, stock] of Object.entries(editingVariants)) {
-        const [size, color] = key.split("-")
-        await StoreDataService.updateInventory(product.id, size, color, stock)
-      }
+      const variants = Object.entries(editingVariants).map(([key, stock]) => {
+        const separator = key.indexOf("-")
+        return { size: separator >= 0 ? key.slice(0, separator) : key, color: separator >= 0 ? key.slice(separator + 1) : "", stock: Math.max(0, stock) }
+      })
+      const totalStock = variants.reduce((sum, variant) => sum + variant.stock, 0)
+      const updated = await StoreDataService.updateProduct(product.id, { variants, stock: totalStock })
+      if (!updated) throw new Error("Inventory update failed")
       await loadInventory()
       setEditingProduct(null)
     } catch (error) {
@@ -237,6 +258,13 @@ export default function StoreInventoryPage() {
               </button>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+              <input value={newVariantSize} onChange={(e) => setNewVariantSize(e.target.value)} placeholder={isBn ? "সাইজ" : "Size"} className="px-3 py-2 bg-background border rounded text-foreground" />
+              <input value={newVariantColor} onChange={(e) => setNewVariantColor(e.target.value)} placeholder={isBn ? "রং" : "Color"} className="px-3 py-2 bg-background border rounded text-foreground" />
+              <input type="number" min="0" value={newVariantStock} onChange={(e) => setNewVariantStock(Number(e.target.value))} placeholder={isBn ? "স্টক" : "Stock"} className="px-3 py-2 bg-background border rounded text-foreground" />
+              <button type="button" onClick={addVariant} className="px-3 py-2 bg-primary text-primary-foreground rounded font-semibold">{isBn ? "ভেরিয়েন্ট যোগ" : "Add Variant"}</button>
+            </div>
+
             <div className="space-y-4 mb-6">
               {editingVariants &&
                 Object.entries(editingVariants).map(([key, value]) => {
@@ -254,9 +282,10 @@ export default function StoreInventoryPage() {
                         type="number"
                         min="0"
                         value={value || 0}
-                        onChange={(e) => handleVariantChange(key, parseInt(e.target.value))}
+                        onChange={(e) => handleVariantChange(key, parseInt(e.target.value) || 0)}
                         className="w-20 px-3 py-2 bg-background neo-input border rounded text-foreground text-right font-semibold focus:outline-none"
                       />
+                      <button type="button" onClick={() => removeVariant(key)} className="p-2 text-red-400 hover:bg-red-500/10 rounded" aria-label={isBn ? "ভেরিয়েন্ট মুছুন" : "Delete variant"}><X className="w-4 h-4" /></button>
                     </div>
                   )
                 })}

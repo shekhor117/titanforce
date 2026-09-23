@@ -745,14 +745,14 @@ class StoreDataService {
       if (!product) return false
 
       // Update the variant stock
-      const updatedVariants = (product.variants || []).map(v => {
-        if (v.size === size && v.color === color) {
-          return { ...v, stock }
-        }
-        return v
-      })
+      const variants = Array.isArray(product.variants) ? product.variants : []
+      const existing = variants.find(v => v.size === size && v.color === color)
+      const updatedVariants = existing
+        ? variants.map(v => v.size === size && v.color === color ? { ...v, stock: Math.max(0, stock) } : v)
+        : [...variants, { size, color, stock: Math.max(0, stock) }]
+      const totalStock = updatedVariants.reduce((sum, variant) => sum + Math.max(0, Number(variant.stock) || 0), 0)
 
-      return (await this.updateProduct(productId, { variants: updatedVariants })) !== null
+      return (await this.updateProduct(productId, { variants: updatedVariants, stock: totalStock })) !== null
     } catch (error) {
       if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error updating inventory:', error) }
       return false
