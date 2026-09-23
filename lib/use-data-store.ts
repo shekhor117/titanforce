@@ -28,7 +28,8 @@ const dataCache = {
 
 // Cache duration: 30 seconds
 const CACHE_DURATION = 30000
-const PUBLIC_DATA_TIMEOUT = 8000
+const PUBLIC_DATA_TIMEOUT = 12000
+const PUBLIC_DATA_RETRIES = 2
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
@@ -39,14 +40,31 @@ function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Pro
   ])
 }
 
+async function fetchWithRetry<T>(request: () => Promise<T>): Promise<T> {
+  let lastError: unknown
+
+  for (let attempt = 0; attempt <= PUBLIC_DATA_RETRIES; attempt += 1) {
+    try {
+      return await withTimeout(request())
+    } catch (error) {
+      lastError = error
+      if (attempt < PUBLIC_DATA_RETRIES) {
+        await new Promise((resolve) => window.setTimeout(resolve, 250 * (attempt + 1)))
+      }
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(String(lastError))
+}
+
 export function useDataStore() {
   const [service, setService] = useState<any>(null)
-  const [players, setPlayers] = useState<Player[]>([])
-  const [matches, setMatches] = useState<Match[]>([])
-  const [partners, setPartners] = useState<Partner[]>([])
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([])
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [players, setPlayers] = useState<Player[]>(dataCache.players || [])
+  const [matches, setMatches] = useState<Match[]>(dataCache.matches || [])
+  const [partners, setPartners] = useState<Partner[]>(dataCache.partners || [])
+  const [newsItems, setNewsItems] = useState<NewsItem[]>(dataCache.newsItems || [])
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(dataCache.mediaItems || [])
+  const [loading, setLoading] = useState(!dataCache.players && !dataCache.matches && !dataCache.newsItems)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
@@ -59,12 +77,12 @@ export function useDataStore() {
         setService(dataService)
 
         const requests = [
-          withTimeout(dataService.getPlayers()),
-          withTimeout(dataService.getMatches()),
-          withTimeout(dataService.getPartners()),
-          withTimeout(dataService.getNewsItems()),
-          withTimeout(dataService.getMediaItems()),
-          withTimeout(dataService.getTrophies()),
+          fetchWithRetry(() => dataService.getPlayers()),
+          fetchWithRetry(() => dataService.getMatches()),
+          fetchWithRetry(() => dataService.getPartners()),
+          fetchWithRetry(() => dataService.getNewsItems()),
+          fetchWithRetry(() => dataService.getMediaItems()),
+          fetchWithRetry(() => dataService.getTrophies()),
         ]
         const results = await Promise.allSettled(requests)
         const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results

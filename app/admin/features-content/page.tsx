@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useLanguage } from '@/lib/language-context'
-import { dataStore } from '@/lib/data-store'
 import { Save, AlertCircle } from 'lucide-react'
 
 export default function AdminFeaturesContentPage() {
@@ -18,21 +17,33 @@ export default function AdminFeaturesContentPage() {
     loadContent()
   }, [])
 
-  const loadContent = () => {
+  const loadContent = async () => {
     try {
-      const content = dataStore.getFeaturePageContent()
-      if (content) {
-        setHeroTitle(content.heroTitle)
-        setHeroDescription(content.heroDescription)
-      }
+      const response = await fetch('/api/admin/features_content', { credentials: 'include' })
+      if (!response.ok) throw new Error('Failed to load features content')
+      const rows = await response.json() as Array<{ title?: string; description?: string }>
+      const content = rows[0]
+      setHeroTitle(content?.title ?? '')
+      setHeroDescription(content?.description ?? '')
     } catch (err) {
       setError('Failed to load features content')
     }
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
-      dataStore.updateFeaturePageContent({ heroTitle, heroDescription, sections: [] })
+      const response = await fetch('/api/admin/features_content', { credentials: 'include' })
+      if (!response.ok) throw new Error('Failed to load existing content')
+      const rows = await response.json() as Array<{ id: string }>
+      const result = await fetch('/api/admin/features_content', {
+        method: rows[0] ? 'PUT' : 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rows[0]
+          ? { id: rows[0].id, title: heroTitle, description: heroDescription }
+          : { title: heroTitle, description: heroDescription }),
+      })
+      if (!result.ok) throw new Error('Failed to save')
       setError(null)
     } catch (err) {
       setError('Failed to save')
