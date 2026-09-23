@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient, createClient } from "@/lib/supabase/server"
 
 const ALLOWED_TABLES = new Set([
   "players", "matches", "partners", "fans", "news", "media", "contacts",
@@ -8,7 +8,8 @@ const ALLOWED_TABLES = new Set([
   "features", "settings", "site_settings", "users", "app_users", "venues",
   "seasons", "training_programs", "polls", "tickets", "testimonials",
   "subscriptions", "gallery", "news_updates", "store_products", "store_inventory",
-  "store_orders",
+  "store_orders", "banners", "social_links", "club_info", "footer_content",
+  "shop_categories", "features_content", "testimonials", "venues", "seasons",
 ])
 
 async function getAdminClient() {
@@ -34,7 +35,9 @@ async function getAdminClient() {
     return { supabase, response: NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
   }
 
-  return { supabase, response: null }
+  // Use the service-role client only after the user has been authenticated and
+  // authorized above, so admin CRUD is not blocked by public-table RLS policies.
+  return { supabase: createAdminClient(), response: null }
 }
 
 async function tableFromParams(params: Promise<{ table: string }>) {
