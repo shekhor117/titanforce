@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
 import { useAdmin } from "@/lib/admin-context"
 import { Save, RefreshCw, AlertCircle, MapPin, Heart, Trophy, Users } from "lucide-react"
-import { dataStore, ClubInfo } from "@/lib/data-store"
+import type { ClubInfo } from "@/lib/data-store"
 import { PageEntrance } from '@/components/page-entrance'
 
 export default function AdminClubInfoPage() {
@@ -23,18 +23,20 @@ export default function AdminClubInfoPage() {
     loadClubInfo()
   }, [])
 
-  const loadClubInfo = () => {
+  const loadClubInfo = async () => {
     try {
-      const info = dataStore.getClubInfo()
-      if (info) {
-        setClubInfo(info)
-        setFormData({
-          founded: info.founded,
-          homeGround: info.homeGround,
-          motto: info.motto,
-          community: info.community
-        })
+      const response = await fetch("/api/admin/club_info", { credentials: "include" })
+      if (!response.ok) throw new Error("Failed to load club info")
+      const rows = await response.json() as Array<{ id: string; key: string; value: string | null }>
+      const values = Object.fromEntries(rows.map((row) => [row.key, row.value ?? ""]))
+      const info = {
+        founded: values.founded ?? "",
+        homeGround: values.homeGround ?? "",
+        motto: values.motto ?? "",
+        community: values.community ?? "",
       }
+      setClubInfo(info as ClubInfo)
+      setFormData(info)
     } catch (err) {
       setError("Failed to load club info")
     }
@@ -46,8 +48,8 @@ export default function AdminClubInfoPage() {
     setError(null)
   }
 
-  const handleSave = () => {
-    if (!admin || admin.role !== "admin") {
+  const handleSave = async () => {
+    if (!admin || !["admin", "super_admin"].includes(admin.role)) {
       setError(isBn ? "শুধুমাত্র অ্যাডমিন সংরক্ষণ করতে পারে" : "Only admins can save")
       return
     }
@@ -58,17 +60,30 @@ export default function AdminClubInfoPage() {
         return
       }
 
-      dataStore.updateClubInfo({
+      const response = await fetch("/api/admin/club_info", { credentials: "include" })
+      if (!response.ok) throw new Error("Failed to load existing rows")
+      const existing = await response.json() as Array<{ id: string; key: string }>
+      const byKey = new Map(existing.map((row) => [row.key, row.id]))
+      await Promise.all(Object.entries({
         founded: formData.founded,
         homeGround: formData.homeGround,
         motto: formData.motto,
-        community: formData.community
-      })
+        community: formData.community,
+      }).map(async ([key, value]) => {
+        const id = byKey.get(key)
+        const result = await fetch("/api/admin/club_info", {
+          method: id ? "PUT" : "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(id ? { id, value } : { key, value }),
+        })
+        if (!result.ok) throw new Error("Failed to save club info")
+      }))
 
       setHasChanges(false)
       setSuccess(isBn ? "ক্লাব তথ্য সংরক্ষিত হয়েছে!" : "Club info saved successfully!")
       setTimeout(() => setSuccess(null), 3000)
-      loadClubInfo()
+      await loadClubInfo()
     } catch (err) {
       setError("Failed to save club info")
     }
