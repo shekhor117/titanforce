@@ -4,11 +4,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { Pencil, Plus, RefreshCw, Save, Trash2, X } from 'lucide-react'
 
 const MANAGED_TABLES = [
-  'pages', 'events', 'articles', 'player_honours', 'honours', 'news_items', 'media_items',
+  'players', 'player_profiles', 'player_positions', 'player_honours', 'player_votes', 'player_ratings', 'injuries',
+  'matches', 'match_events', 'match_votes', 'lineup', 'standings', 'rankings', 'motm',
+  'honours', 'trophies', 'partners', 'sponsors', 'news_items', 'news_updates', 'media_items', 'media', 'gallery', 'gallery_categories',
+  'products', 'store_products', 'orders', 'store_orders', 'store_inventory', 'subscriptions', 'tickets',
+  'pages', 'events', 'articles', 'contact_messages', 'profiles', 'app_users', 'users', 'site_settings', 'settings',
   'cms_pages', 'cms_content_blocks', 'cms_menus', 'cms_seo', 'cms_settings', 'cms_media_library',
   'banners', 'social_links', 'club_info', 'footer_content', 'shop_categories', 'features_content',
-  'testimonials', 'venues', 'seasons', 'training_programs', 'polls', 'tickets', 'gallery_categories',
-  'partners', 'sponsors', 'achievements', 'fan_clubs', 'fundraisers', 'performance_metrics',
+  'testimonials', 'venues', 'seasons', 'training_programs', 'polls', 'achievements', 'fan_clubs', 'fundraisers', 'performance_metrics',
 ] as const
 
 type Row = Record<string, unknown> & { id?: string }
