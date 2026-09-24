@@ -14,6 +14,9 @@ export async function signUpWithEmail(
   name: string
 ): Promise<{ user: AuthUser; requiresVerification: boolean }> {
   const supabase = createClient()
+  if (!supabase) {
+    throw new Error("Authentication is not configured")
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -22,7 +25,9 @@ export async function signUpWithEmail(
       data: {
         full_name: name,
       },
-      emailRedirectTo: `${window.location.origin}/auth/callback`,
+      emailRedirectTo:
+        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+        `${window.location.origin}/auth/callback`,
     },
   })
 
