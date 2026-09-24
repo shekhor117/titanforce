@@ -5,11 +5,20 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl
   const code = searchParams.get('code')
   const role = searchParams.get('role') || 'fan'
+  const authError = searchParams.get('error_description') || searchParams.get('error')
+
+  if (authError) {
+    return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(authError)}`)
+  }
 
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     
+    if (error) {
+      return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(error.message)}`)
+    }
+
     if (!error) {
       // Get the authenticated user
       const { data: { user } } = await supabase.auth.getUser()
