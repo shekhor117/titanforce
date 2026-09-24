@@ -11,7 +11,10 @@ export interface Player {
   category: 'GK' | 'DEF' | 'MID' | 'FWD'
   age?: number
   hometown?: string
-  foot?: 'Left' | 'Right' | 'Both'
+  height?: number | string
+  weight?: number | string
+  foot?: 'Left' | 'Right' | 'Both' | string
+  strong_foot?: 'Left' | 'Right' | 'Both' | string
   goals: number
   assists: number
   image_url?: string
@@ -69,7 +72,8 @@ class PlayerDataService {
         height: p.height,
         weight: p.weight,
         hometown: p.hometown,
-        foot: p.foot,
+        foot: p.foot || p.preferred_foot || p.strong_foot,
+        strong_foot: p.strong_foot || p.preferred_foot || p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
         image_url: p.image_url,
@@ -129,7 +133,8 @@ class PlayerDataService {
         category: data.category || 'MID',
         age: data.age,
         hometown: data.hometown,
-        foot: data.foot,
+        foot: data.foot || data.preferred_foot || data.strong_foot,
+        strong_foot: data.strong_foot || data.preferred_foot || data.foot,
         goals: data.goals || 0,
         assists: data.assists || 0,
         image_url: data.image_url,
@@ -191,7 +196,8 @@ class PlayerDataService {
         height: p.height,
         weight: p.weight,
         hometown: p.hometown,
-        foot: p.foot,
+        foot: p.foot || p.preferred_foot || p.strong_foot,
+        strong_foot: p.strong_foot || p.preferred_foot || p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
         image_url: p.image_url,
@@ -253,7 +259,8 @@ class PlayerDataService {
         height: p.height,
         weight: p.weight,
         hometown: p.hometown,
-        foot: p.foot,
+        foot: p.foot || p.preferred_foot || p.strong_foot,
+        strong_foot: p.strong_foot || p.preferred_foot || p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
         image_url: p.image_url,
@@ -345,7 +352,8 @@ class PlayerDataService {
         height: p.height,
         weight: p.weight,
         hometown: p.hometown,
-        foot: p.foot,
+        foot: p.foot || p.preferred_foot || p.strong_foot,
+        strong_foot: p.strong_foot || p.preferred_foot || p.foot,
         goals: p.goals || 0,
         assists: p.assists || 0,
         image_url: p.image_url,

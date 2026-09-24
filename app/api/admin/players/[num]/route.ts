@@ -36,7 +36,7 @@ export async function PUT(
       'full_name', 'name', 'position', 'age', 'hometown', 'bio',
       'goals', 'assists', 'appearances', 'minutes_played', 'pass_accuracy',
       'chances_created', 'yellow_cards', 'red_cards', 'pace', 'shooting',
-      'passing', 'dribbling', 'defending', 'physical', 'foot', 'status',
+      'passing', 'dribbling', 'defending', 'physical', 'height', 'weight', 'foot', 'preferred_foot', 'strong_foot', 'status',
       'image_url', 'club', 'nationality', 'date_of_birth', 'join_date'
     ]
 
