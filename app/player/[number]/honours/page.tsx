@@ -21,8 +21,9 @@ export default function PlayerHonoursPage({ params }: { params: { number: string
     const loadData = async () => {
       try {
         setLoading(true)
-        const playerNum = parseInt(params.number)
-        const dataService = getDataService()
+  const requestedPlayerNum = parseInt(params.number, 10)
+  const playerNum = requestedPlayerNum === 0 ? 17 : requestedPlayerNum
+  const dataService = getDataService()
         const playerData = await dataService.getPlayers()
         const foundPlayer = playerData.find(p => p.num === playerNum)
 
