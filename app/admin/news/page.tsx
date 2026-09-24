@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import NewsManager from '@/components/NewsManager'
-import { getDataService } from '@/lib/data-service'
 import type { NewsItem } from '@/lib/data-service'
 import { PageEntrance } from '@/components/page-entrance'
 
@@ -21,7 +20,6 @@ interface NewsArticle {
 }
 
 export default function AdminNewsPage() {
-  const service = getDataService()
   const [articles, setArticles] = useState<NewsArticle[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,7 +42,13 @@ export default function AdminNewsPage() {
 
     try {
       setLoading(true)
-      const newsItems = await retryOperation(() => service.getNewsItems())
+      const newsResponse = await retryOperation(async () => {
+        const response = await fetch('/api/admin/news_items', { credentials: 'include', cache: 'no-store' })
+        const result = await response.json().catch(() => null)
+        if (!response.ok) throw new Error(result?.error || 'Unable to load articles')
+        return result
+      })
+      const newsItems = Array.isArray(newsResponse) ? newsResponse : (newsResponse?.data || [])
       
       // Convert NewsItem to NewsArticle format
       const convertedArticles: NewsArticle[] = (newsItems || []).map((item: any) => ({
@@ -88,8 +92,14 @@ export default function AdminNewsPage() {
         newsData.image = article.image
       }
       
-      await service.createNewsItem(newsData)
-      
+      const response = await fetch('/api/admin/news_items', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newsData),
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(result?.error || 'Unable to create article')
       await loadNews()
       setError(null)
     } catch (err) {
@@ -114,8 +124,14 @@ export default function AdminNewsPage() {
         updates.image = article.image
       }
       
-      await service.updateNewsItem(article.id, updates)
-      
+      const response = await fetch('/api/admin/news_items', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: article.id, ...updates }),
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(result?.error || 'Unable to update article')
       await loadNews()
       setError(null)
     } catch (err) {
@@ -126,7 +142,12 @@ export default function AdminNewsPage() {
 
   const handleDeleteArticle = async (articleId: string) => {
     try {
-      await service.deleteNewsItem(articleId)
+      const response = await fetch(`/api/admin/news_items?id=${encodeURIComponent(articleId)}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(result?.error || 'Unable to delete article')
       await loadNews()
     } catch (err) {
       console.error('[v0] Error deleting news:', err)
