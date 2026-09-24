@@ -171,7 +171,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
               data: {
                 full_name: fullName,
               },
-              emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+              emailRedirectTo:
+                process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
                 `${window.location.origin}/auth/callback`,
             },
           })
@@ -215,7 +216,8 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+          redirectTo:
+            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
             `${window.location.origin}/auth/callback`,
         },
       })
@@ -326,8 +328,9 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
         password,
         options: {
           data: signupData,
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-            `${window.location.origin}/auth/callback`,
+emailRedirectTo:
+                process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
+                `${window.location.origin}/auth/callback`,
         },
       })
       if (error) throw error
@@ -736,7 +739,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাসওয়ার্ড দেখান" : "Show password")}
+                  aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাস��য়ার্ড দেখান" : "Show password")}
                 >
                   {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
                 </button>

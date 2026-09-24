@@ -25,7 +25,14 @@ export default function PlayerProfile() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
 
-  const playerNum = parseInt(params.number as string)
+  const requestedPlayerNum = parseInt(params.number as string, 10)
+  const playerNum = requestedPlayerNum === 0 ? 17 : requestedPlayerNum
+
+  useEffect(() => {
+    if (requestedPlayerNum === 0) {
+      router.replace('/player/17')
+    }
+  }, [requestedPlayerNum, router])
 
   useEffect(() => {
     setMounted(true)
