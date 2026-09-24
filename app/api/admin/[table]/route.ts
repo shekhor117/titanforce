@@ -48,6 +48,17 @@ async function tableFromParams(params: Promise<{ table: string }>) {
   return table
 }
 
+const PUBLIC_TABLE_ALIASES: Record<string, string> = {
+  news: "news_items",
+  media: "media_items",
+  store_products: "products",
+  store_orders: "orders",
+}
+
+function resolveTable(table: string) {
+  return PUBLIC_TABLE_ALIASES[table] ?? table
+}
+
 function validateTable(table: string) {
   return ALLOWED_TABLES.has(table)
 }
@@ -58,8 +69,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
 
   const { supabase, response } = await getAdminClient()
   if (response) return response
+  const resolvedTable = resolveTable(table)
 
-  const { data, error } = await supabase.from(table).select("*")
+  const { data, error } = await supabase.from(resolvedTable).select("*")
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data ?? [])
 }
@@ -71,9 +83,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ tab
   const { supabase, response } = await getAdminClient()
   if (response) return response
 
+  const resolvedTable = resolveTable(table)
   const body = await request.json()
   if (!body || Array.isArray(body)) return NextResponse.json({ error: "A record object is required" }, { status: 400 })
-  const { data, error } = await supabase.from(table).insert(body).select().single()
+  const { data, error } = await supabase.from(resolvedTable).insert(body).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data, { status: 201 })
 }
@@ -85,6 +98,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ tabl
   const { supabase, response } = await getAdminClient()
   if (response) return response
 
+  const resolvedTable = resolveTable(table)
   const body = await request.json()
   const { id, ...updates } = body ?? {}
   if (!id || !updates || Object.keys(updates).length === 0) {
@@ -92,7 +106,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ tabl
   }
   delete updates.created_at
   delete updates.updated_at
-  const { data, error } = await supabase.from(table).update(updates).eq("id", id).select().single()
+  const { data, error } = await supabase.from(resolvedTable).update(updates).eq("id", id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data)
 }
@@ -104,9 +118,10 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ t
   const { supabase, response } = await getAdminClient()
   if (response) return response
 
+  const resolvedTable = resolveTable(table)
   const id = new URL(request.url).searchParams.get("id")
   if (!id) return NextResponse.json({ error: "An id is required" }, { status: 400 })
-  const { error } = await supabase.from(table).delete().eq("id", id)
+  const { error } = await supabase.from(resolvedTable).delete().eq("id", id)
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ success: true })
 }
