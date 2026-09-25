@@ -32,6 +32,7 @@ const PUBLIC_DATA_TIMEOUT = 5000
 const PUBLIC_DATA_RETRIES = 1
 const PUBLIC_DATA_RETRY_DELAY = 250
 const PUBLIC_LOADING_FALLBACK = 6000
+const inFlightRequests = new Map<string, Promise<unknown>>()
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
@@ -59,6 +60,17 @@ async function fetchWithRetry<T>(request: () => Promise<T>): Promise<T> {
   throw lastError instanceof Error ? lastError : new Error(String(lastError))
 }
 
+function fetchShared<T>(key: string, request: () => Promise<T>) {
+  const existing = inFlightRequests.get(key) as Promise<T> | undefined
+  if (existing) return existing
+
+  const promise = fetchWithRetry(request).finally(() => {
+    inFlightRequests.delete(key)
+  })
+  inFlightRequests.set(key, promise)
+  return promise
+}
+
 export function useDataStore() {
   const [service, setService] = useState<any>(null)
   const [players, setPlayers] = useState<Player[]>(dataCache.players || [])
@@ -79,12 +91,12 @@ export function useDataStore() {
         setService(dataService)
 
         const requests = [
-          fetchWithRetry(() => dataService.getPlayers()),
-          fetchWithRetry(() => dataService.getMatches()),
-          fetchWithRetry(() => dataService.getPartners()),
-          fetchWithRetry(() => dataService.getNewsItems()),
-          fetchWithRetry(() => dataService.getMediaItems()),
-          fetchWithRetry(() => dataService.getTrophies()),
+          fetchShared('players', () => dataService.getPlayers()),
+          fetchShared('matches', () => dataService.getMatches()),
+          fetchShared('partners', () => dataService.getPartners()),
+          fetchShared('news-items', () => dataService.getNewsItems()),
+          fetchShared('media-items', () => dataService.getMediaItems()),
+          fetchShared('trophies', () => dataService.getTrophies()),
         ]
         const results = await Promise.allSettled(requests)
         const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results
@@ -270,7 +282,7 @@ export function usePlayers() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getPlayers())
+        const data = await fetchShared('players', () => service.getPlayers())
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -333,7 +345,7 @@ export function useMatches() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getMatches())
+        const data = await fetchShared('matches', () => service.getMatches())
         if (isMounted) {
           dataCache.matches = data
           dataCache.lastFetch = Date.now()
@@ -394,7 +406,7 @@ export function usePartners() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getPartners())
+        const data = await fetchShared('partners', () => service.getPartners())
         if (isMounted) {
           dataCache.partners = data
           dataCache.lastFetch = Date.now()
@@ -453,7 +465,7 @@ export function useNewsItems() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getNewsItems())
+        const data = await fetchShared('news-items', () => service.getNewsItems())
         if (isMounted) {
           dataCache.newsItems = data
           dataCache.lastFetch = Date.now()
@@ -521,7 +533,7 @@ export function useMediaItems() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getMediaItems())
+        const data = await fetchShared('media-items', () => service.getMediaItems())
         if (isMounted) {
           dataCache.mediaItems = data
           dataCache.lastFetch = Date.now()
