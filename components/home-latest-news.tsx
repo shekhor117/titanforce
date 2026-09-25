@@ -10,7 +10,7 @@ import { ScrollProgressAnimation } from './scroll-progress-animation'
 import { NewsGridSkeleton } from './skeletons/news-article-skeleton'
 
 export function HomeLatestNews() {
-  const { newsItems, loading } = useNewsItems()
+  const { newsItems, loading, error } = useNewsItems()
 
   // Get top 4 news items for grid layout
   const topNews = newsItems.slice(0, 4)
@@ -65,6 +65,12 @@ export function HomeLatestNews() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
+
+        {error && topNews.length === 0 && (
+          <p className="mb-4 text-sm text-muted-foreground">
+            News is temporarily unavailable. Please refresh to try again.
+          </p>
+        )}
 
         {/* News Grid */}
         <ScrollStaggerContainer 
