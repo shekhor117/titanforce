@@ -28,9 +28,10 @@ const dataCache = {
 
 // Keep public data fresh while still preventing duplicate requests during navigation.
 const CACHE_DURATION = 5000
-const PUBLIC_DATA_TIMEOUT = 8000
-const PUBLIC_DATA_RETRIES = 2
-const PUBLIC_DATA_RETRY_DELAY = 400
+const PUBLIC_DATA_TIMEOUT = 5000
+const PUBLIC_DATA_RETRIES = 1
+const PUBLIC_DATA_RETRY_DELAY = 250
+const PUBLIC_LOADING_FALLBACK = 6000
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
@@ -475,8 +476,11 @@ export function useNewsItems() {
 
     loadNewsItems()
     const loadingWatchdog = window.setTimeout(() => {
-      if (isMounted) setLoading(false)
-    }, PUBLIC_DATA_TIMEOUT + 1000)
+      if (isMounted) {
+        setLoading(false)
+        setError((current) => current ?? new Error('Public news request took too long'))
+      }
+    }, PUBLIC_LOADING_FALLBACK)
 
     const unsubscribe = service.subscribeToNewsItems((data) => {
       if (isMounted) {

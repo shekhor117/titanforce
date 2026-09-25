@@ -67,9 +67,16 @@ export function HomeLatestNews() {
         </motion.div>
 
         {error && topNews.length === 0 && (
-          <p className="mb-4 text-sm text-muted-foreground">
-            News is temporarily unavailable. Please refresh to try again.
-          </p>
+          <div className="mb-6 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
+            <p>News is temporarily unavailable.</p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-3 rounded-md bg-accent px-4 py-2 font-semibold text-accent-foreground"
+            >
+              Refresh news
+            </button>
+          </div>
         )}
 
         {/* News Grid */}
