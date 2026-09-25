@@ -327,7 +327,7 @@ export class DataService {
           return []
         }
         console.error("[v0] DataService getPlayers error:", error)
-        return []
+        throw error
       }
 
       // Player profile data, including `position`, is stored on the players
@@ -345,7 +345,7 @@ export class DataService {
       }))
     } catch (err) {
       console.error("[v0] DataService getPlayers caught error:", err)
-      return []
+      throw err
     }
   }
 
@@ -649,8 +649,8 @@ export class DataService {
         featured: trophy.featured ?? false,
       }))
     } catch (err) {
-      console.error("[v0] DataService getTrophies caught error:", err)
-      return []
+  console.error("[v0] DataService getTrophies caught error:", err)
+  throw err
     }
   }
 
@@ -779,15 +779,16 @@ export class DataService {
         if (error.code === 'PGRST205' || error.message?.includes('Could not find the table')) {
           return []
         }
-        console.error("[v0] DataService getMatches error:", error)
-        return []
+  console.error("[v0] DataService getMatches error:", error)
+  throw error
       }
       return data || []
     } catch (error) {
       if (!(error?.code === 'PGRST205' || error?.message?.includes('Could not find the table'))) {
-        console.error("[v0] DataService getMatches caught error:", error)
-      }
-      return []
+  console.error("[v0] DataService getMatches caught error:", error)
+  throw error
+  }
+  return []
     }
   }
 
@@ -915,11 +916,13 @@ export class DataService {
         .order('name', { ascending: true })
 
       if (error) {
-        return []
+        console.error("[v0] DataService getPartners error:", error)
+        throw error
       }
       return data || []
     } catch (error) {
-      return []
+      console.error("[v0] DataService getPartners caught error:", error)
+      throw error
     }
   }
 
@@ -1036,8 +1039,8 @@ export class DataService {
           console.debug('[v0] RLS permission issue - this may resolve after migrations are applied')
           return []
         }
-        console.debug('[v0] Error fetching news items:', error.code, error.message)
-        return []
+  console.debug('[v0] Error fetching news items:', error.code, error.message)
+  throw error
       }
       return data || []
     } catch (error) {
@@ -1164,14 +1167,14 @@ export class DataService {
           console.debug('[v0] Media items unavailable; continuing without media data')
           return []
         }
-        console.error('[v0] DataService getMediaItems error:', error)
-        return []
+  console.error('[v0] DataService getMediaItems error:', error)
+  throw error
       }
 
       return data || []
     } catch (error) {
-      console.error('[v0] DataService getMediaItems caught error:', error)
-      return []
+  console.error('[v0] DataService getMediaItems caught error:', error)
+  throw error
     }
   }
 
