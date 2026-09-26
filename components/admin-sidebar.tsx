@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { LogOut, Menu } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 export function AdminSidebar() {
   const { logout, isLoading, admin } = useAdmin()
@@ -15,6 +15,17 @@ export function AdminSidebar() {
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isBn = language === "bn"
   const isAdmin = admin?.role === "admin"
+
+  useEffect(() => {
+    if (!mobileOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false)
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [mobileOpen])
 
   // All menu items
   const allMenuItems = [
@@ -76,19 +87,24 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
+      <div className="fixed top-4 left-4 z-50 md:hidden">
         <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          aria-label="Toggle menu"
+          type="button"
+          onClick={() => setMobileOpen((open) => !open)}
+          className="rounded-lg bg-primary p-2 text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+          aria-controls="admin-sidebar"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="size-5" aria-hidden="true" />
         </button>
       </div>
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-card border-r-2 border-primary p-6 overflow-y-auto transition-transform duration-300 z-40 md:translate-x-0 ${
+        id="admin-sidebar"
+        aria-label={isBn ? "অ্যাডমিন নেভিগেশন" : "Admin navigation"}
+        className={`fixed left-0 top-0 z-40 h-dvh w-[min(18rem,calc(100vw-1.5rem))] overflow-y-auto overscroll-contain border-r-2 border-primary bg-card p-6 pt-20 shadow-xl transition-transform duration-300 md:translate-x-0 md:h-screen md:w-64 md:shadow-none ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
