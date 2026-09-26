@@ -21,6 +21,10 @@ interface Standing {
 }
 
 export function HomeLeagueStandings() {
+  const fallbackStandings: Standing[] = [
+    { id: 'demo-standing-1', position: 1, team_name: 'Titan Force', played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0, goal_difference: 0, points: 0, is_highlighted: true },
+    { id: 'demo-standing-2', position: 2, team_name: 'Local United', played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0, goal_difference: 0, points: 0, is_highlighted: false },
+  ]
   const [standings, setStandings] = useState<Standing[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -30,11 +34,13 @@ export function HomeLeagueStandings() {
         const response = await fetch('/api/standings')
         if (response.ok) {
           const data = await response.json()
-          setStandings(data.sort((a: Standing, b: Standing) => a.position - b.position))
+          setStandings(Array.isArray(data) && data.length > 0 ? data.sort((a: Standing, b: Standing) => a.position - b.position) : fallbackStandings)
+        } else {
+          setStandings(fallbackStandings)
         }
       } catch (error) {
-        // Silently handle errors - standings table may not exist yet
         console.debug('[v0] Error loading standings:', error instanceof Error ? error.message : String(error))
+        setStandings(fallbackStandings)
       } finally {
         setLoading(false)
       }

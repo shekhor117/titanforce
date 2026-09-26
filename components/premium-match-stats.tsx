@@ -19,7 +19,9 @@ export function PremiumMatchStats() {
       try {
         // Get next match (upcoming)
         const next = matches.find(m => m?.status === 'upcoming')
-        setNextMatch(next || null)
+        setNextMatch(next || {
+          id: 'demo-premium-fixture', home: 'Titan Force', away: 'Upcoming Opponent', date: new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 10), time: '18:00', venue: 'Home Ground', home_score: null, away_score: null, status: 'upcoming', tournament: 'Friendly Match', created_at: '', updated_at: ''
+        })
 
         // Get last completed match
         const last = matches.find(m => m?.status === 'completed')

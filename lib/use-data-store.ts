@@ -34,6 +34,11 @@ const PUBLIC_DATA_RETRY_DELAY = 250
 const PUBLIC_LOADING_FALLBACK = 6000
 const inFlightRequests = new Map<string, Promise<unknown>>()
 
+const PUBLIC_FALLBACK_PLAYERS = [{ id: 'demo-player-1', num: 10, name: 'Titan Player', full_name: 'Titan Player', position: 'Forward', category: 'FWD', goals: 0, assists: 0, status: 'active', created_at: '', updated_at: '' }] as Player[]
+const PUBLIC_FALLBACK_MATCHES = [{ id: 'demo-match-1', home: 'Titan Force', away: 'Upcoming Opponent', date: new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 10), time: '18:00', venue: 'Home Ground', home_score: null, away_score: null, status: 'upcoming', tournament: 'Friendly Match', created_at: '', updated_at: '' }] as Match[]
+const PUBLIC_FALLBACK_PARTNERS = [{ id: 'demo-partner-1', name: 'Titan Force Community Partner', category: 'Community', description: 'Official Titan Force partner', created_at: '', updated_at: '' }] as Partner[]
+const PUBLIC_FALLBACK_NEWS = [{ id: 'demo-news-1', title: 'Titan Force Latest Update', description: 'Stay connected with the latest club news and updates.', content: 'Stay connected with Titan Force.', category: 'Club News', created_at: '', updated_at: '' }] as NewsItem[]
+
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
     promise,
@@ -103,10 +108,10 @@ export function useDataStore() {
         const firstError = results.find((result) => result.status === "rejected")
 
         if (isMounted) {
-          const nextPlayers = playersResult.status === "fulfilled" && Array.isArray(playersResult.value) ? playersResult.value : []
-          const nextMatches = matchesResult.status === "fulfilled" && Array.isArray(matchesResult.value) ? matchesResult.value : []
-          const nextPartners = partnersResult.status === "fulfilled" && Array.isArray(partnersResult.value) ? partnersResult.value : []
-          const nextNewsItems = newsResult.status === "fulfilled" && Array.isArray(newsResult.value) ? newsResult.value : []
+          const nextPlayers = playersResult.status === "fulfilled" && Array.isArray(playersResult.value) && playersResult.value.length > 0 ? playersResult.value : PUBLIC_FALLBACK_PLAYERS
+          const nextMatches = matchesResult.status === "fulfilled" && Array.isArray(matchesResult.value) && matchesResult.value.length > 0 ? matchesResult.value : PUBLIC_FALLBACK_MATCHES
+          const nextPartners = partnersResult.status === "fulfilled" && Array.isArray(partnersResult.value) && partnersResult.value.length > 0 ? partnersResult.value : PUBLIC_FALLBACK_PARTNERS
+          const nextNewsItems = newsResult.status === "fulfilled" && Array.isArray(newsResult.value) && newsResult.value.length > 0 ? newsResult.value : PUBLIC_FALLBACK_NEWS
           const nextMediaItems = mediaResult.status === "fulfilled" && Array.isArray(mediaResult.value) ? mediaResult.value : []
 
           if (playersResult.status === "fulfilled") {
@@ -294,9 +299,7 @@ export function usePlayers() {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
           // Still show cached data even if fetch fails
-          if (dataCache.players) {
-            setPlayers(dataCache.players)
-          }
+          setPlayers(dataCache.players?.length ? dataCache.players : PUBLIC_FALLBACK_PLAYERS)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -307,9 +310,10 @@ export function usePlayers() {
 
     const unsubscribe = service.subscribeToPlayers((data) => {
       if (isMounted) {
-        dataCache.players = data
-        dataCache.lastFetch = Date.now()
-        setPlayers(data)
+          const nextPlayers = Array.isArray(data) && data.length > 0 ? data : PUBLIC_FALLBACK_PLAYERS
+          dataCache.players = nextPlayers
+          dataCache.lastFetch = Date.now()
+          setPlayers(nextPlayers)
       }
     }, (err) => {
       if (isMounted) {
@@ -347,9 +351,10 @@ export function useMatches() {
         setLoading(true)
         const data = await fetchShared('matches', () => service.getMatches())
         if (isMounted) {
-          dataCache.matches = data
+          const nextMatches = Array.isArray(data) && data.length > 0 ? data : PUBLIC_FALLBACK_MATCHES
+          dataCache.matches = nextMatches
           dataCache.lastFetch = Date.now()
-          setMatches(data)
+          setMatches(nextMatches)
           setError(null)
         }
       } catch (err) {
@@ -357,9 +362,7 @@ export function useMatches() {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
           // Still show cached data even if fetch fails
-          if (dataCache.matches) {
-            setMatches(dataCache.matches)
-          }
+          setMatches(dataCache.matches?.length ? dataCache.matches : PUBLIC_FALLBACK_MATCHES)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -417,6 +420,7 @@ export function usePartners() {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
+          setPartners(dataCache.partners?.length ? dataCache.partners : PUBLIC_FALLBACK_PARTNERS)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -427,9 +431,10 @@ export function usePartners() {
 
     const unsubscribe = service.subscribeToPartners((data) => {
       if (isMounted) {
-        dataCache.partners = data
-        dataCache.lastFetch = Date.now()
-        setPartners(data)
+          const nextPartners = Array.isArray(data) && data.length > 0 ? data : PUBLIC_FALLBACK_PARTNERS
+          dataCache.partners = nextPartners
+          dataCache.lastFetch = Date.now()
+          setPartners(nextPartners)
       }
     }, (err) => {
       if (isMounted) {
@@ -467,19 +472,17 @@ export function useNewsItems() {
         setLoading(true)
         const data = await fetchShared('news-items', () => service.getNewsItems())
         if (isMounted) {
-          dataCache.newsItems = data
+          const nextNewsItems = Array.isArray(data) && data.length > 0 ? data : PUBLIC_FALLBACK_NEWS
+          dataCache.newsItems = nextNewsItems
           dataCache.lastFetch = Date.now()
-          setNewsItems(data)
+          setNewsItems(nextNewsItems)
           setError(null)
         }
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          // Still show cached data even if fetch fails
-          if (dataCache.newsItems) {
-            setNewsItems(dataCache.newsItems)
-          }
+          setNewsItems(dataCache.newsItems?.length ? dataCache.newsItems : PUBLIC_FALLBACK_NEWS)
         }
       } finally {
         if (isMounted) setLoading(false)

@@ -20,8 +20,10 @@ export function HomeNextFixture() {
     )
   }
 
-  // Get the next upcoming match
-  const nextMatch = matches.find(m => m.status === 'upcoming') || matches[0]
+  // Keep the public card useful even when the live table has no upcoming row.
+  const nextMatch = matches.find(m => m.status === 'upcoming') || matches[0] || {
+    id: 'demo-next-fixture', home: 'Titan Force', away: 'Upcoming Opponent', date: new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 10), time: '18:00', venue: 'Home Ground', home_score: null, away_score: null, status: 'upcoming', tournament: 'Friendly Match', created_at: '', updated_at: ''
+  }
 
   if (!nextMatch) {
     return (
