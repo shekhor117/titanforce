@@ -167,6 +167,7 @@ export function useDataStore() {
       if (!isMounted || !Array.isArray(detail.data)) return
 
       const rows = detail.data
+      if (rows.length === 0) return
       switch (detail.tableName) {
         case 'players':
           dataCache.players = rows as Player[]
@@ -209,9 +210,11 @@ export function useDataStore() {
       },
       (data) => {
         if (isMounted) {
-          dataCache.matches = data
-          dataCache.lastFetch = Date.now()
-          setMatches(data)
+          if (data.length > 0) {
+            dataCache.matches = data
+            dataCache.lastFetch = Date.now()
+            setMatches(data)
+          }
         }
       },
       (data) => {
@@ -223,9 +226,11 @@ export function useDataStore() {
       },
       (data) => {
         if (isMounted) {
-          dataCache.newsItems = data
-          dataCache.lastFetch = Date.now()
-          setNewsItems(data)
+          if (data.length > 0) {
+            dataCache.newsItems = data
+            dataCache.lastFetch = Date.now()
+            setNewsItems(data)
+          }
         }
       },
       (data) => {
@@ -557,9 +562,11 @@ export function useMediaItems() {
 
     const unsubscribe = service.subscribeToMediaItems((data) => {
       if (isMounted) {
-        dataCache.mediaItems = data
-        dataCache.lastFetch = Date.now()
-        setMediaItems(data)
+          if (data.length > 0) {
+            dataCache.mediaItems = data
+            dataCache.lastFetch = Date.now()
+            setMediaItems(data)
+          }
       }
     }, (err) => {
       if (isMounted) {
