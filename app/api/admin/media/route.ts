@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateMedia } from '@/lib/validation'
+import { validatePartial, validateMedia } from '@/lib/validation'
 
 // GET - Fetch all media or by ID
 export async function GET(request: NextRequest) {
@@ -109,7 +109,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Validate media data (partial updates are OK)
-    const validation = validateMedia(updates)
+    const validation = validatePartial(updates, validateMedia)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

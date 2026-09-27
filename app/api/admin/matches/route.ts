@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateMatch } from '@/lib/validation'
+import { validatePartial, validateMatch } from '@/lib/validation'
 
 // Helper to map database fields to admin form fields
 function mapMatchData(dbMatch: any) {
@@ -195,7 +195,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Validate match data (partial updates are OK)
-    const validation = validateMatch(updates)
+    const validation = validatePartial(updates, validateMatch)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

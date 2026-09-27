@@ -5,6 +5,15 @@ export interface ValidationResult {
   errors: Record<string, string>
 }
 
+export function validatePartial<T extends (data: any) => ValidationResult>(data: any, validator: T): ValidationResult {
+  const result = validator(data)
+  const errors = Object.fromEntries(
+    Object.entries(result.errors).filter(([field]) => Object.prototype.hasOwnProperty.call(data, field)),
+  )
+
+  return { isValid: Object.keys(errors).length === 0, errors }
+}
+
 export function validatePlayer(data: any, options: { partial?: boolean } = {}): ValidationResult {
   const errors: Record<string, string> = {}
   const partial = options.partial === true

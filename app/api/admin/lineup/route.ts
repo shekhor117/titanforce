@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateLineup } from '@/lib/validation'
+import { validatePartial, validateLineup } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
@@ -91,7 +91,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing lineup ID' }, { status: 400 })
     }
 
-    const validation = validateLineup(updates)
+    const validation = validatePartial(updates, validateLineup)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

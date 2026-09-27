@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateUser } from '@/lib/validation'
+import { validatePartial, validateUser } from '@/lib/validation'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 export async function GET(request: NextRequest) {
@@ -101,7 +101,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing user ID' }, { status: 400 })
     }
 
-    const validation = validateUser(updates)
+    const validation = validatePartial(updates, validateUser)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
