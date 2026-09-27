@@ -24,7 +24,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <AdminProtectedRoute>
       <div className="admin-shell flex min-h-screen bg-background text-foreground">
         <AdminSidebar />
-        <main className="flex-1 md:ml-64 p-4 pt-16 md:pt-8 md:p-8">
+        <main className="min-w-0 flex-1 overflow-x-hidden p-4 pt-20 md:ml-64 md:overflow-visible md:p-8 md:pt-8">
           {hasError && (
             <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
               <div className="flex justify-between items-start">

@@ -2,29 +2,40 @@
 
 import { useAdmin } from "@/lib/admin-context"
 import { useLanguage } from "@/lib/language-context"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
-import { LogOut, Menu } from "lucide-react"
+import { LogOut, Menu, X } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 
 export function AdminSidebar() {
   const { logout, isLoading, admin } = useAdmin()
   const { language } = useLanguage()
   const router = useRouter()
+  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isBn = language === "bn"
   const isAdmin = admin?.role === "admin"
 
   useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
     if (!mobileOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMobileOpen(false)
     }
 
     window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", handleKeyDown)
+    }
   }, [mobileOpen])
 
   // All menu items
@@ -96,7 +107,7 @@ export function AdminSidebar() {
           aria-expanded={mobileOpen}
           aria-controls="admin-sidebar"
         >
-          <Menu className="size-5" aria-hidden="true" />
+          {mobileOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
         </button>
       </div>
 
