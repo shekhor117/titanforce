@@ -104,25 +104,25 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session with timeout protection
+        // Validate the persisted user directly so a stale auth lock cannot block navigation.
         try {
           const { data, error } = await Promise.race([
-            supabase.auth.getSession(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Session check timeout')), 5000)
-            )
+            supabase.auth.getUser(),
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('User session check timeout')), 15000)
+            ),
           ]) as any
-          
+
           if (error) throw error
-          
-          if (data?.session?.user) {
-            if (await hasDualAdminAccess(supabase, data.session.user)) {
+
+          if (data?.user) {
+            if (await hasDualAdminAccess(data.user)) {
               const user: AuthUser = {
-                id: data.session.user.id,
-                email: data.session.user.email || "",
-                name: data.session.user.user_metadata?.full_name || data.session.user.email?.split("@")[0] || "User",
-                role: (data.session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
-                emailVerified: data.session.user.email_confirmed_at ? true : false,
+                id: data.user.id,
+                email: data.user.email || "",
+                name: data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "User",
+                role: (data.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
+                emailVerified: data.user.email_confirmed_at ? true : false,
               }
               if (isMounted) setAdmin(user)
             } else {
