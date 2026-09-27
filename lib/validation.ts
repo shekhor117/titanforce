@@ -5,10 +5,26 @@ export interface ValidationResult {
   errors: Record<string, string>
 }
 
+const VALIDATION_FIELD_ALIASES: Record<string, string[]> = {
+  home_team: ['home', 'home_team'],
+  away_team: ['away', 'away_team'],
+  match_date: ['date', 'match_date'],
+  match_time: ['time', 'match_time'],
+  image_url: ['imageUrl', 'image_url'],
+  imageUrl: ['imageUrl', 'image_url'],
+  playerId: ['playerId', 'player_id'],
+  player_id: ['playerId', 'player_id'],
+  userId: ['userId', 'user_id'],
+  user_id: ['userId', 'user_id'],
+}
+
 export function validatePartial<T extends (data: any) => ValidationResult>(data: any, validator: T): ValidationResult {
   const result = validator(data)
   const errors = Object.fromEntries(
-    Object.entries(result.errors).filter(([field]) => Object.prototype.hasOwnProperty.call(data, field)),
+    Object.entries(result.errors).filter(([field]) => {
+      const fields = VALIDATION_FIELD_ALIASES[field] ?? [field]
+      return fields.some((candidate) => Object.prototype.hasOwnProperty.call(data, candidate))
+    }),
   )
 
   return { isValid: Object.keys(errors).length === 0, errors }
