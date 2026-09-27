@@ -68,7 +68,12 @@ export function SupabaseDataManager() {
         body: JSON.stringify(payload),
       })
       const result = await response.json()
-      if (!response.ok) throw new Error(result.error || 'Failed to save')
+      if (!response.ok) {
+        const details = result.details && typeof result.details === 'object'
+          ? Object.entries(result.details).map(([field, error]) => `${field}: ${String(error)}`).join('; ')
+          : null
+        throw new Error(details ? `${result.error || 'Failed to save'} — ${details}` : result.error || 'Failed to save')
+      }
       setEditing(null)
       setEditorOpen(false)
       setMessage('Saved successfully')

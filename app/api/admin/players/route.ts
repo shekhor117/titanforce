@@ -120,7 +120,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Validate player data (partial updates are OK)
-    const validation = validatePlayer(updates)
+    const validation = validatePlayer(updates, { partial: true })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }
