@@ -10,15 +10,15 @@
   --card-foreground: #f4fbff;
   --popover: #10243a;
   --popover-foreground: #f4fbff;
-  --primary: #ff4d5a;
+  --primary: #e51f45;
   --primary-foreground: #ffffff;
-  --secondary: #123b59;
-  --secondary-foreground: #d8f8ff;
-  --muted: #17324a;
-  --muted-foreground: #a7c5d5;
-  --accent: #28e0c1;
+  --secondary: #173765;
+  --secondary-foreground: #e6f8ff;
+  --muted: #1d3151;
+  --muted-foreground: #b8cce0;
+  --accent: #25e0c1;
   --accent-foreground: #06201e;
-  --destructive: #ff5570;
+  --destructive: #ff6b35;
   --destructive-foreground: #ffffff;
   --border: #1c4962;
   --input: #10243a;
@@ -36,15 +36,15 @@
   --card-foreground: #f4fbff;
   --popover: #10243a;
   --popover-foreground: #f4fbff;
-  --primary: #ff4d5a;
+  --primary: #e51f45;
   --primary-foreground: #ffffff;
-  --secondary: #123b59;
-  --secondary-foreground: #d8f8ff;
-  --muted: #17324a;
-  --muted-foreground: #a7c5d5;
-  --accent: #28e0c1;
+  --secondary: #173765;
+  --secondary-foreground: #e6f8ff;
+  --muted: #1d3151;
+  --muted-foreground: #b8cce0;
+  --accent: #25e0c1;
   --accent-foreground: #06201e;
-  --destructive: #ff5570;
+  --destructive: #ff6b35;
   --destructive-foreground: #ffffff;
   --border: #1c4962;
   --input: #10243a;
@@ -120,8 +120,9 @@ html {
   body {
     @apply bg-background text-foreground;
     background-image:
-      radial-gradient(circle at 8% 4%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 28rem),
-      radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 26rem);
+      radial-gradient(circle at 8% 4%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 28rem),
+      radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 26rem),
+      linear-gradient(135deg, color-mix(in srgb, var(--background) 96%, var(--primary)), var(--background));
     background-attachment: fixed;
   }
   ::selection {

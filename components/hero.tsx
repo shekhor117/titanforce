@@ -18,7 +18,7 @@ export function Hero() {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/30 sm:to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(40,224,193,0.2),transparent_28%),radial-gradient(circle_at_18%_78%,rgba(255,77,90,0.18),transparent_32%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(37,224,193,0.28),transparent_28%),radial-gradient(circle_at_18%_78%,rgba(229,31,69,0.24),transparent_32%),linear-gradient(115deg,rgba(7,17,31,0.18),transparent_48%,rgba(255,107,53,0.16))]" />
       </div>
 
       <div className="relative container mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-24 grid lg:grid-cols-[1.3fr_0.7fr] gap-8 lg:gap-10 min-h-[560px] sm:min-h-[680px]">
