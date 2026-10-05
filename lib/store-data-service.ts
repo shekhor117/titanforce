@@ -767,7 +767,6 @@ class StoreDataService {
         supabase.removeChannel(channel)
       }
     } catch (error) {
-      console.error('[v0] Store: Error setting up subscription:', error)
       onError?.(error instanceof Error ? error : new Error(String(error)))
       return () => {}
     }
