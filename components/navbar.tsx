@@ -29,8 +29,8 @@ export function Navbar() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 border-b border-accent/20 backdrop-blur-xl bg-background/80 shadow-[0_10px_35px_color-mix(in_srgb,var(--background)_70%,transparent)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Titan%20Force%20Mulikandi%20logo_20260810_003609_0000-KBNZPUh2byWnoIiGzVzIuAPKAbfLp0.png"
@@ -54,7 +54,7 @@ export function Navbar() {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        <div className="hidden md:flex items-center gap-6 text-sm font-semibold uppercase tracking-wide">
+        <div className="hidden md:flex items-center gap-6 text-[11px] font-black uppercase tracking-[0.18em]">
           {navLinks.map((link) => (
             <Link
               key={link.href}

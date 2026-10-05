@@ -119,6 +119,14 @@ html {
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at 8% 4%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 28rem),
+      radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 26rem);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -188,24 +196,44 @@ html {
 }
 
 /* Hero gradient */
-  .hero-gradient {
-    background:
-      radial-gradient(circle at 18% 15%, rgba(255, 77, 90, 0.3), transparent 28%),
-      radial-gradient(circle at 82% 80%, rgba(40, 224, 193, 0.22), transparent 30%),
-      linear-gradient(135deg, #07111f 0%, #10243a 46%, #123b59 100%);
-  }
+.hero-gradient {
+  background:
+    radial-gradient(circle at 14% 18%, color-mix(in srgb, var(--primary) 36%, transparent), transparent 30%),
+    radial-gradient(circle at 86% 72%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 32%),
+    linear-gradient(135deg, var(--background) 0%, var(--card) 48%, var(--secondary) 100%);
+}
 
-  .light .hero-gradient {
-    background:
-      radial-gradient(circle at 18% 15%, rgba(237, 63, 80, 0.16), transparent 28%),
-      radial-gradient(circle at 82% 80%, rgba(0, 169, 143, 0.16), transparent 30%),
-      linear-gradient(135deg, #effcff 0%, #d9f7f5 46%, #ffffff 100%);
-  }
+.light .hero-gradient {
+  background:
+    radial-gradient(circle at 14% 18%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 30%),
+    radial-gradient(circle at 86% 72%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 32%),
+    linear-gradient(135deg, var(--background) 0%, var(--secondary) 48%, var(--card) 100%);
+}
+
+.section-kicker {
+  color: var(--accent);
+  letter-spacing: 0.28em;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  text-wrap: balance;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
 
 /* Card glow effect */
+.card-glow {
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
 .card-glow:hover {
-  box-shadow: 0 0 30px rgba(167, 25, 48, 0.3), 0 0 60px rgba(217, 30, 63, 0.15);
-  transition: box-shadow 0.3s ease;
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--border));
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--primary) 24%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 /* 3D Canvas Support */
