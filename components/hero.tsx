@@ -17,19 +17,20 @@ export function Hero() {
               "url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/77aa6c3ba384cd5f1f85267a1da1dda2-zyqUrxhkM8SwCcHLiL3zyXuOluW3iV.jpg)",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/30 sm:to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(40,224,193,0.2),transparent_28%),radial-gradient(circle_at_18%_78%,rgba(255,77,90,0.18),transparent_32%)]" />
       </div>
 
       <div className="relative container mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-12 sm:pb-24 grid lg:grid-cols-[1.3fr_0.7fr] gap-8 lg:gap-10 min-h-[560px] sm:min-h-[680px]">
         <div className="flex flex-col justify-center">
           <motion.div 
-            className="inline-flex items-center gap-2 text-red-600 text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6 w-fit"
+            className="inline-flex items-center gap-2 text-primary text-[10px] sm:text-xs font-bold tracking-[0.4em] mb-4 sm:mb-6 w-fit"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <span className="h-px w-6 sm:w-8 bg-red-600" /> RISE LIKE TITANS
+            <span className="h-px w-6 sm:w-8 bg-accent" /> RISE LIKE TITANS
           </motion.div>
           
           <h1 className="font-display font-bold leading-[0.85]">
@@ -47,7 +48,7 @@ export function Hero() {
               duration={0.03}
               staggerChildren={0.01}
               delay={0.4}
-              className="block text-red-600 text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]"
+              className="block text-primary text-[clamp(2.75rem,13vw,10rem)] tracking-[0.1em]"
             >
               MULIKANDI
             </TextReveal>

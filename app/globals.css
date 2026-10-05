@@ -4,25 +4,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
-  --card-foreground: #f0f0f0;
-  --popover: #1a1a1a;
-  --popover-foreground: #f0f0f0;
-  --primary: #a71930;
+  --background: #07111f;
+  --foreground: #f4fbff;
+  --card: #10243a;
+  --card-foreground: #f4fbff;
+  --popover: #10243a;
+  --popover-foreground: #f4fbff;
+  --primary: #ff4d5a;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #f5f5f5;
-  --muted: #2a2a2a;
-  --muted-foreground: #999999;
-  --accent: #d91e3f;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --secondary: #123b59;
+  --secondary-foreground: #d8f8ff;
+  --muted: #17324a;
+  --muted-foreground: #a7c5d5;
+  --accent: #28e0c1;
+  --accent-foreground: #06201e;
+  --destructive: #ff5570;
   --destructive-foreground: #ffffff;
-  --border: #2a2a2a;
-  --input: #1a1a1a;
-  --ring: #a71930;
+  --border: #1c4962;
+  --input: #10243a;
+  --ring: #28e0c1;
   --radius: 0.625rem;
   /* Neumorphism shadows - dark theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.05);
@@ -30,47 +30,47 @@
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
-  --card-foreground: #f0f0f0;
-  --popover: #1a1a1a;
-  --popover-foreground: #f0f0f0;
-  --primary: #a71930;
+  --background: #07111f;
+  --foreground: #f4fbff;
+  --card: #10243a;
+  --card-foreground: #f4fbff;
+  --popover: #10243a;
+  --popover-foreground: #f4fbff;
+  --primary: #ff4d5a;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #f5f5f5;
-  --muted: #2a2a2a;
-  --muted-foreground: #999999;
-  --accent: #d91e3f;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --secondary: #123b59;
+  --secondary-foreground: #d8f8ff;
+  --muted: #17324a;
+  --muted-foreground: #a7c5d5;
+  --accent: #28e0c1;
+  --accent-foreground: #06201e;
+  --destructive: #ff5570;
   --destructive-foreground: #ffffff;
-  --border: #2a2a2a;
-  --input: #1a1a1a;
-  --ring: #a71930;
+  --border: #1c4962;
+  --input: #10243a;
+  --ring: #28e0c1;
 }
 
 .light {
-  --background: #f5f5f5;
-  --foreground: #1a1a1a;
+  --background: #effcff;
+  --foreground: #10243a;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #10243a;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #a71930;
+  --popover-foreground: #10243a;
+  --primary: #ed3f50;
   --primary-foreground: #ffffff;
-  --secondary: #f0f0f0;
-  --secondary-foreground: #5a1220;
-  --muted: #e8e8e8;
-  --muted-foreground: #4a4a4a;
-  --accent: #d91e3f;
+  --secondary: #d9f7f5;
+  --secondary-foreground: #123b59;
+  --muted: #dff3f5;
+  --muted-foreground: #476579;
+  --accent: #00a98f;
   --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --destructive: #e33b54;
   --destructive-foreground: #ffffff;
-  --border: #e8e8e8;
-  --input: #f5f5f5;
-  --ring: #a71930;
+  --border: #b8e3e5;
+  --input: #ffffff;
+  --ring: #00a98f;
   /* Neumorphism shadows - light theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.8);
   --neo-shadow-dark: rgba(0, 0, 0, 0.15);
