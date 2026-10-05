@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import StoreDataService, { StoreProduct } from '@/lib/store-data-service'
+import { isSupabaseConfigured } from '@/lib/supabase/client'
 import { ScrollProgressAnimation } from './scroll-progress-animation'
 
 export function HomeShopLatest() {
@@ -21,11 +22,12 @@ export function HomeShopLatest() {
 
     loadProducts()
 
-    // Subscribe to realtime updates
+    if (!isSupabaseConfigured()) {
+      return
+    }
+
     const unsubscribe = StoreDataService.subscribeToProducts((updatedProducts) => {
       setProducts(updatedProducts.slice(0, 6))
-    }, (error) => {
-      console.error('[v0] Error subscribing to products:', error)
     })
 
     return () => unsubscribe()
