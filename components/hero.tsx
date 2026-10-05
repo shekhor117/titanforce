@@ -10,11 +10,11 @@ export function Hero() {
       <div className="absolute inset-0">
         <div
           role="img"
-          aria-label="Illustration of a football player performing a bicycle kick on a soccer field"
-          className="absolute inset-0 bg-cover bg-[center_28%] bg-no-repeat opacity-90 sm:bg-[center_22%]"
+          aria-label="Illustration of a number-seven football player running on a soccer field"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
           style={{
             backgroundImage:
-              "url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/77aa6c3ba384cd5f1f85267a1da1dda2-oe2x6OXZIAbOVhfqcgrMoPsmRWEFL5.jpg)",
+              "url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/original-de43243c96f092ee169c2c277a2fd7ba-MD3SWawQBITBRC5MHeEVqpmBbzUo9y.png)",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
