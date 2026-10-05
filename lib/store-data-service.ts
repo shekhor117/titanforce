@@ -741,6 +741,9 @@ class StoreDataService {
   ): () => void {
     try {
       const supabase = createClient()
+      if (!supabase) {
+        return () => {}
+      }
       
       const channel = supabase
         .channel('products-sync')
