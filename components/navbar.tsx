@@ -33,14 +33,14 @@ export function Navbar() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
-            src="/logos/titanforce-logo.svg"
-            alt="Titan Force FC Logo"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Titan%20Force%20Mulikandi%20logo_20260810_003609_0000-KBNZPUh2byWnoIiGzVzIuAPKAbfLp0.png"
+            alt="Titan Force Mulikandi football club crest"
             width={50}
             height={50}
             className="object-contain w-10 sm:w-[50px] h-10 sm:h-[50px] flex-shrink-0 group-hover:scale-110 transition-transform"
             priority
           />
-          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #a71930 0%, #465fb1 100%)' }}>
+          <h1 className="font-[var(--font-display)] text-lg sm:text-2xl tracking-wider bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(107deg, #ff4d5a 0%, #28e0c1 100%)' }}>
             TITAN FORCE
           </h1>
         </Link>
