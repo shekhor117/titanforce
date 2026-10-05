@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { TransitionLink } from "@/components/transition-link"
 import { TextReveal } from "@/components/text-reveal"
 import { motion } from "framer-motion"
@@ -9,12 +8,14 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0">
-        <Image
-          src="/images/hero-bg-soccer.jpg"
-          alt="Titan Force Mulikandi players celebrating"
-          fill
-          priority
-          className="object-cover object-[70%_top] sm:object-top opacity-80 sm:opacity-90"
+        <div
+          role="img"
+          aria-label="Illustration of a football player performing a bicycle kick on a soccer field"
+          className="absolute inset-0 bg-cover bg-[center_28%] bg-no-repeat opacity-90 sm:bg-[center_22%]"
+          style={{
+            backgroundImage:
+              "url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/77aa6c3ba384cd5f1f85267a1da1dda2-oe2x6OXZIAbOVhfqcgrMoPsmRWEFL5.jpg)",
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-background via-background/70 to-background/40 sm:to-transparent" />
       </div>
