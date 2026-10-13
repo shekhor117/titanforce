@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateRanking } from '@/lib/validation'
+import { validatePartial, validateRanking } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
@@ -91,7 +91,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing ranking ID' }, { status: 400 })
     }
 
-    const validation = validateRanking(updates)
+    const validation = validatePartial(updates, validateRanking)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

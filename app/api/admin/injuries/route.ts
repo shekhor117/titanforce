@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateInjury } from '@/lib/validation'
+import { validatePartial, validateInjury } from '@/lib/validation'
 
 // GET - Fetch all injuries or by ID
 export async function GET(request: NextRequest) {
@@ -104,7 +104,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing injury ID' }, { status: 400 })
     }
 
-    const validation = validateInjury(updates)
+    const validation = validatePartial(updates, validateInjury)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

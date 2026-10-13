@@ -104,25 +104,25 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         subscription = authSubscription
         
-        // Check for existing session with timeout protection
+        // Validate the persisted user directly so a stale auth lock cannot block navigation.
         try {
           const { data, error } = await Promise.race([
-            supabase.auth.getSession(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Session check timeout')), 5000)
-            )
+            supabase.auth.getUser(),
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('User session check timeout')), 15000)
+            ),
           ]) as any
-          
+
           if (error) throw error
-          
-          if (data?.session?.user) {
-            if (await hasDualAdminAccess(supabase, data.session.user)) {
+
+          if (data?.user) {
+            if (await hasDualAdminAccess(data.user)) {
               const user: AuthUser = {
-                id: data.session.user.id,
-                email: data.session.user.email || "",
-                name: data.session.user.user_metadata?.full_name || data.session.user.email?.split("@")[0] || "User",
-                role: (data.session.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
-                emailVerified: data.session.user.email_confirmed_at ? true : false,
+                id: data.user.id,
+                email: data.user.email || "",
+                name: data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "User",
+                role: (data.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
+                emailVerified: data.user.email_confirmed_at ? true : false,
               }
               if (isMounted) setAdmin(user)
             } else {
@@ -137,7 +137,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           }
         }
         
-        // Mark as initialized after session check completes or times out
+        // Give Supabase's auth-state callback a brief chance to hydrate the
+        // admin user before protected routes decide whether to redirect.
+        await new Promise((resolve) => setTimeout(resolve, 750))
         if (isMounted) {
           setIsInitialized(true)
         }
@@ -164,12 +166,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       const user = await signInWithEmail(email, password)
       
-      // Require both Supabase app metadata and app_users authorization.
-      const supabase = getSupabaseClient()
-      const { data: userData } = supabase ? await supabase.auth.getUser() : { data: { user: null } }
-      const hasAccess = supabase && userData.user
-        ? await hasDualAdminAccess(userData.user)
-        : false
+      // Use the user returned by signInWithPassword. Calling getUser immediately
+      // afterwards can contend with Supabase's auth lock and lose the session.
+      const hasAccess = ["admin", "super_admin", "moderator"].includes(user.role)
       if (!hasAccess) {
         setIsLoading(false)
         await signOut()
@@ -178,10 +177,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin({
-        ...user,
-        role: (userData.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
-      })
+      setAdmin(user)
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"

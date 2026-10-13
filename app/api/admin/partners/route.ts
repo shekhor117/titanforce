@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validatePartner } from '@/lib/validation'
+import { validatePartial, validatePartner } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Validate partner data (partial updates are OK)
-    const validation = validatePartner(updates)
+    const validation = validatePartial(updates, validatePartner)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

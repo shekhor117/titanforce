@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { validateTrophy } from '@/lib/validation'
+import { validatePartial, validateTrophy } from '@/lib/validation'
 
 // GET - Fetch all trophies or by ID
 export async function GET(request: NextRequest) {
@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Validate trophy data (partial updates are OK)
-    const validation = validateTrophy(updates)
+    const validation = validatePartial(updates, validateTrophy)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
     }

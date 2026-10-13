@@ -5,17 +5,48 @@ export interface ValidationResult {
   errors: Record<string, string>
 }
 
-export function validatePlayer(data: any): ValidationResult {
-  const errors: Record<string, string> = {}
+const VALIDATION_FIELD_ALIASES: Record<string, string[]> = {
+  home_team: ['home', 'home_team'],
+  away_team: ['away', 'away_team'],
+  match_date: ['date', 'match_date'],
+  match_time: ['time', 'match_time'],
+  image_url: ['imageUrl', 'image_url'],
+  imageUrl: ['imageUrl', 'image_url'],
+  playerId: ['playerId', 'player_id'],
+  player_id: ['playerId', 'player_id'],
+  userId: ['userId', 'user_id'],
+  user_id: ['userId', 'user_id'],
+}
 
-  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
-    errors.name = 'Player name is required and must be a non-empty string'
+export function validatePartial<T extends (data: any) => ValidationResult>(data: any, validator: T): ValidationResult {
+  const result = validator(data)
+  const errors = Object.fromEntries(
+    Object.entries(result.errors).filter(([field]) => {
+      const fields = VALIDATION_FIELD_ALIASES[field] ?? [field]
+      return fields.some((candidate) => Object.prototype.hasOwnProperty.call(data, candidate))
+    }),
+  )
+
+  return { isValid: Object.keys(errors).length === 0, errors }
+}
+
+export function validatePlayer(data: any, options: { partial?: boolean } = {}): ValidationResult {
+  const errors: Record<string, string> = {}
+  const partial = options.partial === true
+
+  if (!partial || data.name !== undefined || data.full_name !== undefined) {
+    if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+      errors.name = 'Player name is required and must be a non-empty string'
+    }
   }
 
-  if (data.number === undefined || data.number === null) {
-    errors.number = 'Player number is required'
-  } else if (!Number.isInteger(Number(data.number)) || Number(data.number) < 0 || Number(data.number) > 99) {
-    errors.number = 'Player number must be an integer between 0 and 99'
+  const playerNumber = data.num ?? data.number
+  if (!partial || playerNumber !== undefined) {
+    if (playerNumber === undefined || playerNumber === null || playerNumber === '') {
+      errors.num = 'Player number is required'
+    } else if (!Number.isInteger(Number(playerNumber)) || Number(playerNumber) < 0 || Number(playerNumber) > 99) {
+      errors.num = 'Player number must be an integer between 0 and 99'
+    }
   }
 
   if (data.position && typeof data.position !== 'string') {
