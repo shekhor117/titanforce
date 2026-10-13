@@ -1,0 +1,15 @@
+{
+  "table": "players",
+  "records": [
+    { "id": 1, "num": 1, "name": "Shuronjit", "full_name": "Shuronjit Biswas", "position": "Gk", "category": "GK" },
+    { "id": 2, "num": 3, "name": "Srijon", "full_name": "Srijon Roy", "position": "CB / RB", "category": "DEF" },
+    { "id": 3, "num": 4, "name": "Akash", "full_name": "Akash Roy", "position": "CB / LB", "category": "DEF" },
+    { "id": 4, "num": 5, "name": "Akash", "full_name": "Akash Roy", "position": "CB / CDM", "category": "DEF" },
+    { "id": 5, "num": 6, "name": "Sujon", "full_name": "Sujon Roy", "position": "CAM / CM", "category": "MID" },
+    { "id": 6, "num": 7, "name": "Shuvo", "full_name": "Shuvo Roy", "position": "LW / RW / CAM", "category": "FWD" },
+    { "id": 7, "num": 8, "name": "Sojib", "full_name": "Sojib Roy", "position": "CM / CAM", "category": "MID" },
+    { "id": 8, "num": 9, "name": "Sajon", "full_name": "Sajon Biswas", "position": "AM / LW / CF", "category": "FWD" },
+    { "id": 9, "num": 11, "name": "Kourov", "full_name": "Kourov Chakroborty", "position": "LW / ST / CAM", "category": "FWD" },
+    { "id": 10, "num": 17, "name": "Shekhor", "full_name": "Shekhor Mohan Roy", "position": "CB / CM", "category": "FWD" }
+  ]
+}
