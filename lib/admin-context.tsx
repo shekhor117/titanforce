@@ -166,12 +166,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       const user = await signInWithEmail(email, password)
       
-      // Require both Supabase app metadata and app_users authorization.
-      const supabase = getSupabaseClient()
-      const { data: userData } = supabase ? await supabase.auth.getUser() : { data: { user: null } }
-      const hasAccess = supabase && userData.user
-        ? await hasDualAdminAccess(userData.user)
-        : false
+      // Use the user returned by signInWithPassword. Calling getUser immediately
+      // afterwards can contend with Supabase's auth lock and lose the session.
+      const hasAccess = ["admin", "super_admin", "moderator"].includes(user.role)
       if (!hasAccess) {
         setIsLoading(false)
         await signOut()
@@ -180,10 +177,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin({
-        ...user,
-        role: (userData.user.app_metadata?.role as "admin" | "moderator" | "super_admin") || "admin",
-      })
+      setAdmin(user)
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
