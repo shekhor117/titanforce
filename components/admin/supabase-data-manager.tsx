@@ -91,6 +91,17 @@ export function SupabaseDataManager() {
     else { setMessage('Deleted successfully'); await load() }
   }
 
+  const exportPlayersJson = () => {
+    const payload = JSON.stringify({ table: 'players', exportedAt: new Date().toISOString(), records: rows }, null, 2)
+    const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `players-${new Date().toISOString().slice(0, 10)}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+    setMessage(`Exported ${rows.length} player records`)
+  }
+
   return (
     <main className="space-y-6 p-6">
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -99,7 +110,7 @@ export function SupabaseDataManager() {
       </header>
       {message && <div className="rounded-md border border-primary/30 bg-primary/10 p-3 text-sm">{message}</div>}
       <section className="rounded-lg border bg-card">
-        <div className="flex items-center justify-between border-b p-4"><div><h2 className="font-semibold">{label(table)}</h2><p className="text-xs text-muted-foreground">{rows.length} records</p></div><button onClick={() => startEdit(null)} className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground"><Plus className="h-4 w-4" /> Add record</button></div>
+        <div className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-semibold">{label(table)}</h2><p className="text-xs text-muted-foreground">{rows.length} records</p></div><div className="flex gap-2"><button onClick={exportPlayersJson} disabled={table !== 'players' || rows.length === 0} className="rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50">Export JSON</button><button onClick={() => startEdit(null)} className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground"><Plus className="h-4 w-4" /> Add record</button></div></div>
         {loading ? <p className="p-6 text-sm text-muted-foreground">Loading...</p> : rows.length === 0 ? <p className="p-6 text-sm text-muted-foreground">No records found.</p> : <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b text-xs text-muted-foreground"><th className="p-3">ID</th>{columns.map((column) => <th key={column} className="p-3">{label(column)}</th>)}<th className="p-3">Actions</th></tr></thead><tbody>{rows.map((row, index) => <tr key={String(row.id ?? index)} className="border-b last:border-0"><td className="max-w-[180px] truncate p-3 font-mono text-xs">{String(row.id ?? '—')}</td>{columns.map((column) => <td key={column} className="max-w-[220px] truncate p-3">{typeof row[column] === 'object' ? JSON.stringify(row[column]) : String(row[column] ?? '—')}</td>)}<td className="p-3"><div className="flex gap-1"><button onClick={() => startEdit(row)} className="rounded p-2 hover:bg-muted" aria-label="Edit"><Pencil className="h-4 w-4" /></button>{row.id && <button onClick={() => void remove(row.id!)} className="rounded p-2 text-destructive hover:bg-destructive/10" aria-label="Delete"><Trash2 className="h-4 w-4" /></button>}</div></td></tr>)}</tbody></table></div>}
       </section>
       {editorOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"><section className="w-full max-w-2xl rounded-lg border bg-card p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="font-semibold">{editing?.id ? 'Edit' : 'Add'} {label(table)}</h2><button onClick={() => { setEditorOpen(false); setEditing(null) }} aria-label="Close"><X className="h-5 w-5" /></button></div><p className="mb-2 text-xs text-muted-foreground">Edit the record as JSON. Do not change the id when updating.</p><textarea value={draft} onChange={(event) => setDraft(event.target.value)} className="min-h-[320px] w-full rounded-md border bg-background p-3 font-mono text-sm" spellCheck={false} /><div className="mt-4 flex justify-end gap-2"><button onClick={() => { setEditorOpen(false); setEditing(null) }} className="rounded-md border px-4 py-2 text-sm">Cancel</button><button onClick={() => void save()} className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"><Save className="h-4 w-4" />Save</button></div></section></div>}
