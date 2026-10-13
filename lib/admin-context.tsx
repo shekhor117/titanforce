@@ -137,7 +137,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           }
         }
         
-        // Mark as initialized after session check completes or times out
+        // Give Supabase's auth-state callback a brief chance to hydrate the
+        // admin user before protected routes decide whether to redirect.
+        await new Promise((resolve) => setTimeout(resolve, 750))
         if (isMounted) {
           setIsInitialized(true)
         }
