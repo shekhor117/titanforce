@@ -138,10 +138,10 @@ html {
 
   .light body {
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in srgb, #ff1744 78%, transparent), transparent 28%),
-      radial-gradient(circle at 100% 8%, color-mix(in srgb, #7c3aed 72%, transparent), transparent 30%),
-      radial-gradient(circle at 82% 92%, color-mix(in srgb, #db2777 64%, transparent), transparent 34%),
-      linear-gradient(135deg, #ffc1d6 0%, #fff0f7 38%, #f5e8ff 68%, #cfc2ff 100%);
+      radial-gradient(circle at 8% 8%, color-mix(in srgb, #ff1744 88%, transparent), transparent 30%),
+      radial-gradient(circle at 94% 12%, color-mix(in srgb, #6d28d9 82%, transparent), transparent 32%),
+      radial-gradient(circle at 78% 92%, color-mix(in srgb, #db2777 78%, transparent), transparent 36%),
+      linear-gradient(135deg, #ff9fbd 0%, #ffd1e1 28%, #f2c7ff 62%, #a78bfa 100%);
     background-attachment: fixed;
     background-size: 140% 140%;
   }
