@@ -111,14 +111,10 @@ function NavbarComponent() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-6 border-b border-border/70 pb-6">
-              <div className="flex items-center gap-3">
-                <div className="flex size-11 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary">
-                  <Menu className="size-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/80">Titan Force FC</p>
-                  <h2 className="mt-1 font-[var(--font-display)] text-3xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
-                </div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Titan Force FC</p>
+              <div className="mt-2 flex items-end justify-between gap-4">
+                <h2 className="font-[var(--font-display)] text-3xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
               </div>
               <p className="mt-4 max-w-[280px] text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
             </div>
