@@ -2,6 +2,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import { optimizedDataService } from '@/lib/optimized-data-service'
 import { getDataService } from '@/lib/data-service'
 import type {
   Player,
@@ -70,20 +71,18 @@ export function useDataStore() {
 
   useEffect(() => {
     let isMounted = true
-    const dataService = getDataService()
-    
     const loadData = async () => {
       try {
         setLoading(true)
-        setService(dataService)
+        setService(optimizedDataService)
 
         const requests = [
-          fetchWithRetry(() => dataService.getPlayers()),
-          fetchWithRetry(() => dataService.getMatches()),
-          fetchWithRetry(() => dataService.getPartners()),
-          fetchWithRetry(() => dataService.getNewsItems()),
-          fetchWithRetry(() => dataService.getMediaItems()),
-          fetchWithRetry(() => dataService.getTrophies()),
+          fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
+          fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
+          fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })),
+          fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
+          fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })),
+          fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })),
         ]
         const results = await Promise.allSettled(requests)
         const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results

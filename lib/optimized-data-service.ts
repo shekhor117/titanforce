@@ -22,6 +22,51 @@ class OptimizedDataService {
   private subscriptions: Map<string, RealtimeChannel> = new Map()
   private supabase = createClient()
   private CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+  private readonly jsonSources: Record<string, string> = {
+    players: '/data/players.json',
+    player_profiles: '/data/players.json',
+    player_positions: '/data/players.json',
+    standings: '/data/players.json',
+    injuries: '/data/players.json',
+    matches: '/data/matches.json',
+    news: '/data/content.json',
+    news_items: '/data/content.json',
+    news_updates: '/data/content.json',
+    features: '/data/content.json',
+    media_items: '/data/content.json',
+    partners: '/data/club.json',
+    fans: '/data/club.json',
+    trophies: '/data/club.json',
+    products: '/data/store.json',
+  }
+
+  private async fetchJsonData<T>(table: string, source: string, options?: { select?: string; filter?: { key: string; value: any }; order?: { key: string; ascending?: boolean }; limit?: number }): Promise<T[]> {
+    const response = await fetch(source, { cache: 'no-store' })
+    if (!response.ok) throw new Error(`Could not load ${source}`)
+    const backup = await response.json()
+    const tableAliases: Record<string, string> = {
+      news_items: 'news_updates',
+      media_items: 'media',
+    }
+    const sourceTable = tableAliases[table] ?? table
+    let rows = [...(backup.tables?.[sourceTable] ?? [])] as T[]
+
+    if (options?.filter) rows = rows.filter((row: any) => row[options.filter!.key] === options.filter!.value)
+    if (options?.order) {
+      const { key, ascending = true } = options.order
+      rows.sort((a: any, b: any) => {
+        const left = a[key] ?? ''
+        const right = b[key] ?? ''
+        return (left < right ? -1 : left > right ? 1 : 0) * (ascending ? 1 : -1)
+      })
+    }
+    if (options?.limit) rows = rows.slice(0, options.limit)
+    if (options?.select && options.select !== '*') {
+      const fields = options.select.split(',').map((field) => field.trim())
+      rows = rows.map((row: any) => Object.fromEntries(fields.map((field) => [field, row[field]]))) as T[]
+    }
+    return rows
+  }
 
   /**
    * Get data with optional column selection and caching
@@ -48,6 +93,13 @@ class OptimizedDataService {
     console.log(`[v0] Fetching fresh data for ${table}`)
 
     try {
+      const jsonSource = this.jsonSources[table]
+      if (jsonSource) {
+        const data = await this.fetchJsonData<T>(table, jsonSource, options)
+        this.cache.set(cacheKey, { data, timestamp: Date.now() })
+        return data
+      }
+
       let query = this.supabase.from(table).select(options?.select || '*')
 
       if (options?.filter) {
@@ -104,6 +156,9 @@ class OptimizedDataService {
     options?: { select?: string; filter?: { key: string; value: any } }
   ): () => void {
     const cacheKey = `${table}:${JSON.stringify(options)}`
+    if (this.jsonSources[table]) {
+      return () => undefined
+    }
     const channelKey = `${table}:channel`
 
     // Clean up existing subscription for this table

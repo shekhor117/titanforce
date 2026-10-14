@@ -1,0 +1,32 @@
+{
+  "source": "supabase",
+  "category": "content",
+  "exportedAt": "2026-10-14T05:34:58.400Z",
+  "tables": {
+    "news": [],
+    "news_updates": [
+      {
+        "id": "f9bae779-9249-4d40-acb1-b9fc39a43cca",
+        "title": "Yest",
+        "content": "DJ just",
+        "summary": "Gh",
+        "category": "general_news",
+        "priority": "medium",
+        "featured": false,
+        "status": "published",
+        "published_by": null,
+        "scheduled_at": null,
+        "published_at": null,
+        "image_url": "",
+        "image_alt": "Tt",
+        "views_count": 0,
+        "created_at": "2026-06-28T00:41:20.672064+00:00",
+        "updated_at": "2026-06-28T00:41:20.672064+00:00"
+      }
+    ],
+    "features": []
+  },
+  "skippedTables": [
+    "media"
+  ]
+}

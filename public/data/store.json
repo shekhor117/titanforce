@@ -1,0 +1,45 @@
+{
+  "source": "supabase",
+  "category": "store",
+  "exportedAt": "2026-10-14T05:34:58.400Z",
+  "tables": {
+    "products": [
+      {
+        "id": "35fc6dc0-6be5-45fa-a371-9828612d1c3a",
+        "name": "Titan Force Kit 17 - Shekhor Jersey",
+        "description": "Professional Titan Force football jersey featuring number 17 with Shekhor name. Premium fabric with striking red and black design. Perfect for team members and fans.",
+        "category": "home",
+        "price": 499,
+        "image_url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/kit%2017-CSObqcuf0rx8U3FO7rhQ5PtxpzelOr.png",
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "XXL"
+        ],
+        "colors": [
+          "Red & Black"
+        ],
+        "total_stock": 3,
+        "rating": 4.8,
+        "reviews": 10,
+        "features": [
+          "Premium Fabric",
+          "Breathable Material",
+          "Professional Design",
+          "Team Logo"
+        ],
+        "sku": "TITAN-KIT-17-SHEKHOR",
+        "variants": [],
+        "created_at": "2026-05-21T20:35:31.045685+00:00",
+        "updated_at": "2026-05-21T20:35:31.045685+00:00"
+      }
+    ],
+    "orders": []
+  },
+  "skippedTables": [
+    "inventory"
+  ]
+}

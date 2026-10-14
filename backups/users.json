@@ -1,0 +1,22 @@
+{
+  "source": "supabase",
+  "category": "users",
+  "exportedAt": "2026-10-14T05:34:58.400Z",
+  "tables": {
+    "app_users": [
+      {
+        "id": 1,
+        "email": "shekhormohanray01@gmail.com",
+        "username": "shekhor117",
+        "password_hash": "S.M.R.2006",
+        "role": "admin",
+        "full_name": "Shekhor Mohan Roy",
+        "is_active": true,
+        "last_login": "2026-08-23T20:10:12+00:00",
+        "created_at": "2026-08-23T20:10:21+00:00",
+        "updated_at": "2026-08-23T20:10:26+00:00"
+      }
+    ]
+  },
+  "skippedTables": []
+}

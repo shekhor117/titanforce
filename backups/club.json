@@ -1,0 +1,28 @@
+{
+  "source": "supabase",
+  "category": "club",
+  "exportedAt": "2026-10-14T05:34:58.400Z",
+  "tables": {
+    "partners": [],
+    "fans": [],
+    "trophies": [
+      {
+        "id": "72305c53-28c2-4aa8-bd8f-69f7fbd5a68a",
+        "name": "Daudpur Tournament",
+        "year": 2026,
+        "category": "tournament",
+        "description": "Triumphant victory at the prestigious Daudpur Tournament 2026. Demonstrated exceptional skill and teamwork throughout the tournament to claim the championship title.",
+        "icon": "🏆",
+        "runners_up": null,
+        "image_url": null,
+        "featured": true,
+        "created_at": "2026-05-21T21:19:25.656075+00:00",
+        "updated_at": "2026-05-21T21:19:25.656075+00:00",
+        "title": null
+      }
+    ]
+  },
+  "skippedTables": [
+    "contacts"
+  ]
+}
