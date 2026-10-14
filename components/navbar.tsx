@@ -105,22 +105,11 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-background animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-dvh w-full max-w-md flex-col overflow-y-auto border-l border-border/60 bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-5 flex items-center justify-end">
-              <button
-                type="button"
-                className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
-                onClick={() => setMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
-
             <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
