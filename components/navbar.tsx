@@ -46,12 +46,12 @@ function NavbarComponent() {
         </Link>
 
         <button
-          className="md:hidden p-2 text-foreground hover:bg-muted rounded transition-colors"
+          className={`md:hidden inline-flex size-10 items-center justify-center rounded-xl border transition-all duration-200 ${mobileMenuOpen ? "border-primary/40 bg-primary/10 text-primary" : "border-border/70 text-foreground hover:border-primary/30 hover:bg-muted"}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
 
         <div className="hidden md:flex items-center gap-6 text-sm font-semibold uppercase tracking-wide">
@@ -105,23 +105,26 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/55 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
             className="ml-auto flex h-[calc(100dvh-73px)] w-[min(91vw,400px)] flex-col overflow-y-auto rounded-l-[2rem] border-l border-white/10 bg-background/98 px-5 pb-6 pt-7 shadow-[-24px_0_70px_rgba(0,0,0,0.35)] animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-7 border-b border-border/70 pb-6">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Titan Force FC</p>
-                  <h2 className="mt-2 font-[var(--font-display)] text-4xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+            <div className="mb-6 border-b border-border/70 pb-6">
+              <div className="flex items-center gap-3">
+                <div className="flex size-11 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary">
+                  <Menu className="size-5" aria-hidden="true" />
                 </div>
-                <div className="mb-0.5 h-1.5 w-12 rounded-full bg-gradient-to-r from-primary to-blue-500" aria-hidden="true" />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary/80">Titan Force FC</p>
+                  <h2 className="mt-1 font-[var(--font-display)] text-3xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                </div>
               </div>
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
+              <p className="mt-4 max-w-[280px] text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
             </div>
 
             <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
+              <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">{language === "bn" ? "নেভিগেশন" : "Navigation"}</p>
               {navLinks.map((link, index) => {
                 const Icon = link.icon
                 return (
