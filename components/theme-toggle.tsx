@@ -23,7 +23,7 @@ export function ThemeToggle() {
     <div className="relative w-full md:w-auto">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="neo-btn w-full md:w-auto p-2 flex items-center justify-center md:justify-start"
+        className="neo-btn w-full md:w-auto p-2 flex items-center justify-center md:justify-start bg-gradient-to-br from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_10px_28px_rgba(194,24,91,0.35)]"
         aria-label="Toggle theme menu"
         title={`Current theme: ${theme}`}
       >
@@ -35,20 +35,20 @@ export function ThemeToggle() {
       </button>
       
       {showMenu && (
-        <div className="neo-panel absolute right-0 mt-2 w-full md:w-40 overflow-hidden z-50">
+        <div className="neo-panel absolute left-0 top-full z-50 mt-2 w-[min(280px,calc(100vw-2rem))] space-y-2 rounded-2xl p-2">
           <button
             onClick={() => {
               setTheme('light')
               setShowMenu(false)
             }}
-            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
+            className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'light'
-                ? 'neo-btn-primary'
-                : 'hover:bg-primary/5 text-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
+                : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
-            <Sun className="w-4 h-4" />
-            <span className="text-sm">Light</span>
+            <Sun className="h-4 w-4 shrink-0" />
+            <span>Light</span>
             {theme === 'light' && <span className="ml-auto text-xs">✓</span>}
           </button>
 
@@ -57,14 +57,14 @@ export function ThemeToggle() {
               setTheme('dark')
               setShowMenu(false)
             }}
-            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
+            className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'dark'
-                ? 'neo-btn-primary'
-                : 'hover:bg-primary/5 text-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
+                : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
-            <Moon className="w-4 h-4" />
-            <span className="text-sm">Dark</span>
+            <Moon className="h-4 w-4 shrink-0" />
+            <span>Dark</span>
             {theme === 'dark' && <span className="ml-auto text-xs">✓</span>}
           </button>
 
@@ -73,14 +73,14 @@ export function ThemeToggle() {
               setTheme('system')
               setShowMenu(false)
             }}
-            className={`neo-soft w-full px-4 py-2 flex items-center gap-2 text-left transition-all ${
+            className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'system'
-                ? 'neo-btn-primary'
-                : 'hover:bg-primary/5 text-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
+                : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
-            <Moon className="w-4 h-4" />
-            <span className="text-sm">System</span>
+            <Moon className="h-4 w-4 shrink-0" />
+            <span>System</span>
             {theme === 'system' && <span className="ml-auto text-xs">✓</span>}
           </button>
         </div>

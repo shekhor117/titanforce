@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, memo, useCallback, useMemo } from "react"
-import { Menu, X, Globe, ShoppingBag, ArrowUpRight, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
+import { Menu, X, Globe, ShoppingBag, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -13,6 +14,7 @@ import { ButtonModern } from "@/components/button-modern"
 
 function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
@@ -107,50 +109,42 @@ function NavbarComponent() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(82vw,320px)] flex-col overflow-y-auto bg-background px-4 pb-4 pt-4 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6 flex items-start justify-between">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
-                <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+            <div className="mb-5 border-b border-border pb-5">
+              <div className="grid grid-cols-[1fr_auto_auto] gap-2">
+                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-xl [&>div>button]:border-0 [&>div>button]:bg-background [&>div>button]:shadow-lg [&>div>button]:hover:bg-background/80">
+                  <ThemeToggle />
+                </div>
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold" aria-label="Toggle language">
+                  <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
+                </button>
+                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center rounded-xl px-3 text-xs font-bold text-primary no-underline" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
               </div>
-              <button className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
-                <X className="size-5" />
-              </button>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-11 items-center rounded-lg border px-3 py-2.5 text-sm font-bold uppercase tracking-wide transition-all ${pathname === link.href ? "border-primary/30 bg-primary/10 text-primary" : "border-transparent text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
-                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className={`mt-2 flex min-h-12 items-center justify-between rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border border-transparent bg-muted/40 text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"}`} onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
             </nav>
 
-            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
-              <div className="flex items-center gap-2">
-                <ThemeToggle />
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
-                  <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
-                </button>
-              </div>
-              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-lg border border-primary/30 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
-            </div>
           </div>
         </div>
       )}
