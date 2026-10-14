@@ -23,7 +23,7 @@ export function ThemeToggle() {
     <div className="relative w-full md:w-auto">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="neo-btn w-full md:w-auto p-2 flex items-center justify-center md:justify-start"
+        className="neo-btn w-full md:w-auto p-2 flex items-center justify-center md:justify-start bg-gradient-to-br from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_10px_28px_rgba(194,24,91,0.35)]"
         aria-label="Toggle theme menu"
         title={`Current theme: ${theme}`}
       >
@@ -43,7 +43,7 @@ export function ThemeToggle() {
             }}
             className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'light'
-                ? 'bg-primary text-primary-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
                 : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
@@ -59,7 +59,7 @@ export function ThemeToggle() {
             }}
             className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'dark'
-                ? 'bg-primary text-primary-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
                 : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
@@ -75,7 +75,7 @@ export function ThemeToggle() {
             }}
             className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
               theme === 'system'
-                ? 'bg-primary text-primary-foreground'
+                ? 'bg-gradient-to-r from-[#ff1744] via-[#c2185b] to-[#673ab7] text-white shadow-[0_8px_22px_rgba(194,24,91,0.3)]'
                 : 'bg-background text-foreground hover:bg-primary/10 hover:text-primary'
             }`}
           >
