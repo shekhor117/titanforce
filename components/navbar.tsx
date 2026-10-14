@@ -139,7 +139,7 @@ function NavbarComponent() {
                   </Link>
                 )
               })}
-              <Link href="/shop" className={`mt-2 flex min-h-12 items-center justify-between rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "border-primary/30 bg-primary/10 text-primary" : "border-transparent bg-muted/40 text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"}`} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className={`mt-2 flex min-h-12 items-center justify-between rounded-xl border px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "border-primary/30 bg-primary text-primary-foreground shadow-[0_0_24px_rgba(198,0,45,0.35)]" : "border-transparent bg-muted/40 text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"}`} onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
