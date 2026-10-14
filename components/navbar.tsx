@@ -105,17 +105,22 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-black/45 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,380px)] flex-col overflow-y-auto rounded-l-3xl border-l border-border/80 bg-background/95 px-5 pb-6 pt-6 shadow-[-18px_0_50px_rgba(0,0,0,0.22)] animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
-              <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+            <div className="mb-6 border-b border-border/70 pb-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary">Titan Force FC</p>
+                  <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                </div>
+                <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
+              </div>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-1.5">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
                 return (
