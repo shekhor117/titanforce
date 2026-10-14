@@ -114,13 +114,13 @@ function NavbarComponent() {
           >
             <div className="mb-5 border-b border-border pb-5">
               <div className="grid grid-cols-[1fr_auto_auto] gap-2">
-                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-xl [&>div>button]:border border-rose-500/20 bg-rose-500/5 shadow-lg shadow-rose-950/10 [&>div>button]:hover:bg-rose-500/10">
+                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-xl [&>div>button]:border-0 [&>div>button]:bg-background [&>div>button]:shadow-lg [&>div>button]:hover:bg-background/80">
                   <ThemeToggle />
                 </div>
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-xl border border-violet-500/25 bg-violet-500/10 px-3 text-xs font-bold text-violet-600 transition-colors hover:bg-violet-500/20 dark:text-violet-300" aria-label="Toggle language">
-                  <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold" aria-label="Toggle language">
+                  <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
-                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-3 text-xs font-bold text-cyan-700 no-underline transition-colors hover:bg-cyan-500/20 dark:text-cyan-300" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center rounded-xl px-3 text-xs font-bold text-primary no-underline" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
               </div>
             </div>
 

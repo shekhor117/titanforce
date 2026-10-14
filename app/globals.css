@@ -5,25 +5,25 @@
 @custom-variant light (&:is(.light *));
 
 :root {
-  --background: #090a12;
-  --foreground: #f8f7fb;
-  --card: #171522;
-  --card-foreground: #f8f7fb;
-  --popover: #171522;
-  --popover-foreground: #f8f7fb;
-  --primary: #d20a3d;
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #1a1a1a;
+  --card-foreground: #f0f0f0;
+  --popover: #1a1a1a;
+  --popover-foreground: #f0f0f0;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #21162d;
-  --secondary-foreground: #f8f7fb;
-  --muted: #292039;
-  --muted-foreground: #b8b3c8;
-  --accent: #465fb1;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #2a2a2a;
+  --muted-foreground: #999999;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #3b294d;
-  --input: #151321;
-  --ring: #e51b53;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
   --radius: 0.625rem;
   /* Neumorphism shadows - dark theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.05);
@@ -31,50 +31,50 @@
 }
 
 .dark {
-  --background: #090a12;
-  --foreground: #f8f7fb;
-  --card: #171522;
-  --card-foreground: #f8f7fb;
-  --popover: #171522;
-  --popover-foreground: #f8f7fb;
-  --primary: #d20a3d;
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #1a1a1a;
+  --card-foreground: #f0f0f0;
+  --popover: #1a1a1a;
+  --popover-foreground: #f0f0f0;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #21162d;
-  --secondary-foreground: #f8f7fb;
-  --muted: #292039;
-  --muted-foreground: #b8b3c8;
-  --accent: #465fb1;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #2a2a2a;
+  --muted-foreground: #999999;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #3b294d;
-  --input: #151321;
-  --ring: #e51b53;
+  --border: #2a2a2a;
+  --input: #1a1a1a;
+  --ring: #a71930;
   /* Neumorphism shadows - dark theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.05);
   --neo-shadow-dark: rgba(0, 0, 0, 0.5);
 }
 
 .light {
-  --background: #fff8fb;
-  --foreground: #211526;
+  --background: #f5f5f5;
+  --foreground: #1a1a1a;
   --card: #ffffff;
-  --card-foreground: #211526;
+  --card-foreground: #1a1a1a;
   --popover: #ffffff;
-  --popover-foreground: #211526;
-  --primary: #c8103d;
+  --popover-foreground: #1a1a1a;
+  --primary: #a71930;
   --primary-foreground: #ffffff;
-  --secondary: #f7eaf2;
-  --secondary-foreground: #4d2149;
-  --muted: #f0e3ef;
-  --muted-foreground: #654e69;
-  --accent: #465fb1;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #5a1220;
+  --muted: #e8e8e8;
+  --muted-foreground: #4a4a4a;
+  --accent: #d91e3f;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #ead2e1;
-  --input: #fffafe;
-  --ring: #d20a3d;
+  --border: #e8e8e8;
+  --input: #f5f5f5;
+  --ring: #a71930;
   /* Neumorphism shadows - light theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.8);
   --neo-shadow-dark: rgba(0, 0, 0, 0.15);
@@ -229,17 +229,11 @@ html {
 
 /* Hero gradient */
 .hero-gradient {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(70, 95, 177, 0.42), transparent 34%),
-    radial-gradient(circle at 82% 72%, rgba(210, 10, 61, 0.52), transparent 38%),
-    linear-gradient(135deg, #090a12 0%, #24142f 42%, #42142c 72%, #090a12 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #2a0f18 30%, #3d1425 60%, #0a0a0a 100%);
 }
 
 .light .hero-gradient {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(70, 95, 177, 0.18), transparent 34%),
-    radial-gradient(circle at 82% 72%, rgba(210, 10, 61, 0.2), transparent 38%),
-    linear-gradient(135deg, #fff8fb 0%, #f8e4f1 42%, #f7d7e3 72%, #fff8fb 100%);
+  background: linear-gradient(135deg, #f5f5f5 0%, #fce8ec 30%, #f3d5dd 60%, #f5f5f5 100%);
 }
 
 /* Card glow effect */
