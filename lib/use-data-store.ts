@@ -42,6 +42,37 @@ function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Pro
   ])
 }
 
+async function fetchJsonTable<T>(fileName: string, tableName: string): Promise<T[]> {
+  const response = await fetch(`/data/${fileName}.json`, { cache: 'no-store' })
+  if (!response.ok) throw new Error(`JSON data request failed: ${response.status}`)
+  const payload = await response.json()
+  const rows = payload?.tables?.[tableName]
+  return Array.isArray(rows) ? rows : []
+}
+
+const loadJsonPlayers = () => fetchJsonTable<Player>('players', 'players')
+const loadJsonMatches = async () => {
+  const matches = await fetchJsonTable<any>('matches', 'matches')
+  return matches.map((match) => ({
+    ...match,
+    homeScore: match.homeScore ?? match.home_score ?? null,
+    awayScore: match.awayScore ?? match.away_score ?? null,
+    competition: match.competition ?? match.League ?? match.league,
+  })) as Match[]
+}
+
+const loadJsonNews = async () => {
+  const news = await fetchJsonTable<any>('content', 'news_updates')
+  return news.map((item) => ({
+    ...item,
+    excerpt: item.excerpt ?? item.summary ?? '',
+    image: item.image ?? item.image_url ?? undefined,
+    author: item.author ?? item.published_by ?? 'Titan Force',
+    publishDate: item.publishDate ?? item.published_at ?? item.created_at,
+    category: item.category === 'general_news' ? 'club' : item.category,
+  })) as NewsItem[]
+}
+
 async function fetchWithRetry<T>(request: () => Promise<T>): Promise<T> {
   let lastError: unknown
 
@@ -77,10 +108,10 @@ export function useDataStore() {
         setService(optimizedDataService)
 
         const requests = [
-          fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
+          fetchWithRetry(loadJsonPlayers),
+          fetchWithRetry(loadJsonMatches),
           fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
+          fetchWithRetry(loadJsonNews),
           fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })),
           fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })),
         ]
@@ -268,7 +299,7 @@ export function usePlayers() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getPlayers())
+        const data = await fetchWithRetry(loadJsonPlayers)
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -331,7 +362,7 @@ export function useMatches() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getMatches())
+        const data = await fetchWithRetry(loadJsonMatches)
         if (isMounted) {
           dataCache.matches = data
           dataCache.lastFetch = Date.now()
