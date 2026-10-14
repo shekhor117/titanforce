@@ -1,0 +1,10 @@
+{
+  "source": "supabase",
+  "category": "settings",
+  "exportedAt": "2026-10-14T05:34:58.400Z",
+  "tables": {},
+  "skippedTables": [
+    "settings",
+    "app_settings"
+  ]
+}
