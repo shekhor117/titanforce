@@ -124,17 +124,20 @@ html {
   body {
     @apply bg-background text-foreground;
     background-image:
-      radial-gradient(circle at 8% 12%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 32%),
-      radial-gradient(circle at 92% 18%, color-mix(in srgb, #673ab7 20%, transparent), transparent 30%),
-      radial-gradient(circle at 50% 100%, color-mix(in srgb, #ff1744 14%, transparent), transparent 42%);
+      radial-gradient(circle at 8% 8%, color-mix(in srgb, #ff1744 38%, transparent), transparent 34%),
+      radial-gradient(circle at 92% 18%, color-mix(in srgb, #7c3aed 34%, transparent), transparent 32%),
+      radial-gradient(circle at 50% 100%, color-mix(in srgb, #e11d48 30%, transparent), transparent 48%),
+      linear-gradient(135deg, color-mix(in srgb, var(--background) 84%, #be123c), var(--background) 52%, color-mix(in srgb, var(--background) 82%, #4c1d95));
     background-attachment: fixed;
+    background-size: 140% 140%;
   }
 
   .light body {
     background-image:
-      radial-gradient(circle at 8% 12%, color-mix(in srgb, #ff1744 14%, transparent), transparent 32%),
-      radial-gradient(circle at 92% 18%, color-mix(in srgb, #673ab7 13%, transparent), transparent 30%),
-      radial-gradient(circle at 50% 100%, color-mix(in srgb, #c2185b 10%, transparent), transparent 42%);
+      radial-gradient(circle at 8% 8%, color-mix(in srgb, #ff1744 28%, transparent), transparent 34%),
+      radial-gradient(circle at 92% 18%, color-mix(in srgb, #7c3aed 24%, transparent), transparent 32%),
+      radial-gradient(circle at 50% 100%, color-mix(in srgb, #e11d48 22%, transparent), transparent 48%),
+      linear-gradient(135deg, #fff1f5 0%, #ffffff 48%, #f1edff 100%);
   }
 }
 
