@@ -110,6 +110,18 @@ function NavbarComponent() {
             className="ml-auto flex h-[calc(100dvh-73px)] w-[min(82vw,320px)] flex-col overflow-y-auto bg-background px-4 pb-4 pt-4 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
+            <div className="mb-5 border-b border-border pb-5">
+              <div className="grid grid-cols-[1fr_auto_auto] gap-2">
+                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-lg [&>div>button]:border [&>div>button]:border-border [&>div>button]:bg-muted/40 [&>div>button]:shadow-none [&>div>button]:hover:bg-muted">
+                  <ThemeToggle />
+                </div>
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 px-3 text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
+                  <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
+                </button>
+                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-lg border border-primary/50 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+              </div>
+            </div>
+
             <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
@@ -131,17 +143,6 @@ function NavbarComponent() {
               </Link>
             </nav>
 
-            <div className="mt-auto border-t border-border pt-5">
-              <div className="grid grid-cols-[1fr_auto_auto] gap-2">
-                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-lg [&>div>button]:border [&>div>button]:border-border [&>div>button]:bg-muted/40 [&>div>button]:shadow-none [&>div>button]:hover:bg-muted">
-                  <ThemeToggle />
-                </div>
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 px-3 text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
-                  <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
-                </button>
-                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-lg border border-primary/50 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
-              </div>
-            </div>
           </div>
         </div>
       )}
