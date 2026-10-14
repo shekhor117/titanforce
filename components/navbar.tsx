@@ -107,49 +107,52 @@ function NavbarComponent() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(91vw,400px)] flex-col overflow-y-auto rounded-l-[2rem] border-l border-white/10 bg-background/98 px-5 pb-6 pt-7 shadow-[-24px_0_70px_rgba(0,0,0,0.35)] animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(92vw,420px)] flex-col overflow-y-auto rounded-l-[1.75rem] border-l border-white/10 bg-background/98 px-5 pb-6 pt-8 shadow-[-24px_0_80px_rgba(0,0,0,0.45)] animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6 border-b border-border/70 pb-6">
-              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">Titan Force FC</p>
-              <div className="mt-2 flex items-end justify-between gap-4">
-                <h2 className="font-[var(--font-display)] text-3xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
-                <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
+            <div className="mb-7 border-b border-border/70 pb-6">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
+                Titan Force FC
+              </div>
+              <div className="mt-3 flex items-end justify-between gap-4">
+                <h2 className="font-[var(--font-display)] text-4xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                <span className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
               </div>
               <p className="mt-4 max-w-[280px] text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
-              <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">{language === "bn" ? "নেভিগেশন" : "Navigation"}</p>
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-1.5">
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">{language === "bn" ? "নেভিগেশন" : "Navigation"}</p>
               {navLinks.map((link, index) => {
                 const Icon = link.icon
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all duration-200 hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
-                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <span className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-lg bg-muted/70"><Icon className="size-4 text-primary/80 transition-colors group-hover:text-primary" /></span>{link.label}</span>
+                    <ArrowUpRight className="size-4 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
-                <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
+              <Link href="/shop" className="mt-3 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+                <span className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/15"><ShoppingBag className="size-4" /></span>{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
             </nav>
 
-            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
+            <div className="mt-auto flex flex-col gap-3 border-t border-border/70 pt-5">
               <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 text-xs font-bold transition-colors hover:border-primary/30 hover:bg-muted" aria-label="Toggle language">
                   <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
               </div>
-              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-lg border border-primary/30 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/5 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
             </div>
           </div>
         </div>
