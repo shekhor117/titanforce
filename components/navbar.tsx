@@ -105,18 +105,18 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-background/90 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[88vw] max-w-[420px] flex-col overflow-y-auto rounded-l-3xl border-l border-primary/20 bg-background px-5 pb-6 pt-6 shadow-[-24px_0_80px_rgba(0,0,0,0.5)] animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-full max-w-[440px] flex-col overflow-y-auto border-l border-border/80 bg-background/95 px-5 pb-6 pt-5 shadow-[-24px_0_80px_rgba(0,0,0,0.45)] animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6 border-b border-border/70 pb-6">
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
+            <div className="mb-5 border-b border-border/70 pb-5">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
                 Titan Force FC
               </div>
               <div className="mt-3 flex items-end justify-between gap-4">
-                <h2 className="font-[var(--font-display)] text-4xl leading-none tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
+                <h2 className="font-[var(--font-display)] text-3xl leading-none tracking-[0.08em] text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
                 <span className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
               </div>
               <p className="mt-4 max-w-[280px] text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
@@ -130,7 +130,7 @@ function NavbarComponent() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all duration-200 hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-12 items-center justify-between rounded-lg border border-transparent px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all duration-200 hover:border-primary/20 hover:bg-muted/70 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
