@@ -35,7 +35,7 @@ export function ThemeToggle() {
       </button>
       
       {showMenu && (
-        <div className="neo-panel absolute right-0 mt-2 w-full min-w-40 space-y-2 rounded-2xl p-2 z-50">
+        <div className="neo-panel absolute left-0 top-full z-50 mt-2 w-[min(280px,calc(100vw-2rem))] space-y-2 rounded-2xl p-2">
           <button
             onClick={() => {
               setTheme('light')
