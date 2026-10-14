@@ -110,14 +110,9 @@ function NavbarComponent() {
             className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-6 flex items-start justify-between">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
-                <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
-              </div>
-              <button className="rounded-full border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
-                <X className="size-5" />
-              </button>
+            <div className="mb-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
+              <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
             </div>
 
             <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
