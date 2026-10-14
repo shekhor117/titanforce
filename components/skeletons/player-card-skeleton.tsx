@@ -2,34 +2,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function PlayerCardSkeleton() {
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden">
-      {/* Image placeholder */}
-      <Skeleton className="w-full h-48" />
-
-      <div className="p-4 space-y-3">
-        {/* Player name */}
-        <Skeleton className="h-6 w-40" />
-
-        {/* Position and number */}
-        <div className="flex gap-2">
-          <Skeleton className="h-5 w-24" />
-          <Skeleton className="h-5 w-16" />
+    <div className="neo-floating overflow-hidden" aria-hidden="true">
+      <Skeleton className="aspect-square w-full rounded-none" />
+      <div className="space-y-3 p-3 sm:p-4">
+        <Skeleton className="h-5 w-3/4" />
+        <Skeleton className="h-3 w-1/2" />
+        <div className="grid grid-cols-3 gap-2 pt-1">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
         </div>
-
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-2 pt-2">
-          <div>
-            <Skeleton className="h-4 w-12 mb-1" />
-            <Skeleton className="h-6 w-16" />
-          </div>
-          <div>
-            <Skeleton className="h-4 w-12 mb-1" />
-            <Skeleton className="h-6 w-16" />
-          </div>
-        </div>
-
-        {/* Action button */}
-        <Skeleton className="h-9 w-full mt-4" />
       </div>
     </div>
   )
@@ -37,7 +19,7 @@ export function PlayerCardSkeleton() {
 
 export function PlayerGridSkeleton({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6" aria-label="Loading players">
       {Array.from({ length: count }).map((_, i) => (
         <PlayerCardSkeleton key={i} />
       ))}
