@@ -44,7 +44,12 @@ for (const [category, categoryTables] of Object.entries(categories)) {
     tables: Object.fromEntries(categoryTables.filter((table) => backup.tables[table]).map((table) => [table, backup.tables[table]])),
     skippedTables: categoryTables.filter((table) => backup.skippedTables.some((entry) => entry.table === table)),
   }
-  await fs.writeFile(`backups/${category}.json`, `${JSON.stringify(categoryBackup, null, 2)}\n`, 'utf8')
+  const serialized = `${JSON.stringify(categoryBackup, null, 2)}\n`
+  await fs.writeFile(`backups/${category}.json`, serialized, 'utf8')
+  if (['players', 'matches', 'content', 'club', 'store'].includes(category)) {
+    await fs.mkdir('public/data', { recursive: true })
+    await fs.writeFile(`public/data/${category}.json`, serialized, 'utf8')
+  }
 }
 
 console.log(`Backed up ${Object.keys(backup.tables).length} tables; skipped ${backup.skippedTables.length}.`)
