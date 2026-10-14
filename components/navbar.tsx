@@ -4,6 +4,7 @@ import { useState, memo, useCallback, useMemo } from "react"
 import { Menu, X, Globe, ShoppingBag, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -13,6 +14,7 @@ import { ButtonModern } from "@/components/button-modern"
 
 function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
@@ -129,7 +131,7 @@ function NavbarComponent() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-11 items-center rounded-lg border border-transparent px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-11 items-center rounded-lg border px-3 py-2.5 text-sm font-bold uppercase tracking-wide transition-all ${pathname === link.href ? "border-primary/30 bg-primary/10 text-primary" : "border-transparent text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -137,7 +139,7 @@ function NavbarComponent() {
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className={`mt-2 flex min-h-12 items-center justify-between rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border border-transparent bg-muted/40 text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"}`} onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
