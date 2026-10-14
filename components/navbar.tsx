@@ -107,10 +107,10 @@ function NavbarComponent() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(92vw,420px)] flex-col overflow-y-auto rounded-l-[1.75rem] border-l border-white/10 bg-background/98 px-5 pb-6 pt-8 shadow-[-24px_0_80px_rgba(0,0,0,0.45)] animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[88vw] max-w-[420px] flex-col overflow-y-auto rounded-l-3xl border-l border-primary/20 bg-background px-5 pb-6 pt-6 shadow-[-24px_0_80px_rgba(0,0,0,0.5)] animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-7 border-b border-border/70 pb-6">
+            <div className="mb-6 border-b border-border/70 pb-6">
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-primary/80">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
                 Titan Force FC
