@@ -46,12 +46,12 @@ function NavbarComponent() {
         </Link>
 
         <button
-          className={`md:hidden inline-flex size-10 items-center justify-center rounded-xl border transition-all duration-200 ${mobileMenuOpen ? "border-primary/40 bg-primary/10 text-primary" : "border-border/70 text-foreground hover:border-primary/30 hover:bg-muted"}`}
+          className="md:hidden p-2 text-foreground hover:bg-muted rounded transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-label="Toggle menu"
           aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
         <div className="hidden md:flex items-center gap-6 text-sm font-semibold uppercase tracking-wide">
@@ -105,54 +105,46 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-slate-950/55 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="ml-auto flex h-[calc(100dvh-73px)] w-full max-w-[400px] flex-col overflow-y-auto border-l border-white/10 bg-background px-5 pb-6 pt-6 shadow-[-28px_0_90px_rgba(0,0,0,0.55)] animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-5 border-b border-border/70 pb-5">
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
-                Titan Force FC
-              </div>
-              <div className="mt-3 flex items-end justify-between gap-4">
-                <h2 className="font-[var(--font-display)] text-3xl leading-none tracking-[0.08em] text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
-                <span className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">{language === "bn" ? "নেভিগেট" : "Navigate"}</span>
-              </div>
-              <p className="mt-4 max-w-[280px] text-xs leading-relaxed text-muted-foreground">{language === "bn" ? "টাইটান ফোর্সের জগতে ঘুরে দেখুন" : "Explore everything happening at Titan Force."}</p>
+            <div className="mb-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p>
+              <h2 className="mt-1 font-[var(--font-display)] text-3xl tracking-wide text-foreground">{language === "bn" ? "মেনু" : "MENU"}</h2>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-1.5">
-              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">{language === "bn" ? "নেভিগেশন" : "Navigation"}</p>
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-2">
               {navLinks.map((link, index) => {
                 const Icon = link.icon
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-lg border border-transparent px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all duration-200 hover:border-primary/20 hover:bg-muted/70 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-12 items-center justify-between rounded-xl border border-transparent px-3.5 py-3 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-lg bg-muted/70"><Icon className="size-4 text-primary/80 transition-colors group-hover:text-primary" /></span>{link.label}</span>
-                    <ArrowUpRight className="size-4 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
+                    <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
+                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-3 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
-                <span className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/15"><ShoppingBag className="size-4" /></span>{language === "bn" ? "স্টোর" : "STORE"}</span>
+              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+                <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
             </nav>
 
-            <div className="mt-auto flex flex-col gap-3 border-t border-border/70 pt-5">
+            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
               <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 text-xs font-bold transition-colors hover:border-primary/30 hover:bg-muted" aria-label="Toggle language">
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
                   <Globe className="size-4" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
               </div>
-              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/5 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+              {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 items-center justify-center rounded-lg border border-primary/30 text-xs font-bold text-primary transition-colors hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
             </div>
           </div>
         </div>
