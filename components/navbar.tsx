@@ -114,13 +114,13 @@ function NavbarComponent() {
           >
             <div className="mb-5 border-b border-border pb-5">
               <div className="grid grid-cols-[1fr_auto_auto] gap-2">
-                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-lg [&>div>button]:border [&>div>button]:border-border [&>div>button]:bg-muted/40 [&>div>button]:shadow-none [&>div>button]:hover:bg-muted">
+                <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-xl [&>div>button]:border-0 [&>div>button]:bg-background [&>div>button]:shadow-lg [&>div>button]:hover:bg-background/80">
                   <ThemeToggle />
                 </div>
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-xl border border-border bg-background px-3 text-xs font-bold shadow-lg transition-colors hover:bg-muted" aria-label="Toggle language">
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold" aria-label="Toggle language">
                   <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
-                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-xl border border-border bg-background px-3 text-xs font-bold text-primary shadow-lg transition-colors hover:bg-muted hover:text-primary" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="neo-btn flex min-h-11 min-w-[76px] items-center justify-center rounded-xl px-3 text-xs font-bold text-primary no-underline" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
               </div>
             </div>
 
