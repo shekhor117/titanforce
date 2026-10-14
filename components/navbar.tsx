@@ -107,7 +107,7 @@ function NavbarComponent() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            className="flex h-[calc(100dvh-73px)] w-full flex-col overflow-y-auto bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-border bg-background px-5 pb-6 pt-5 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-6">
