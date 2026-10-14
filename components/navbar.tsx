@@ -137,7 +137,7 @@ function NavbarComponent() {
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-muted/40 px-4 py-3 text-sm font-bold uppercase tracking-wide text-foreground transition-colors active:bg-primary active:text-primary-foreground active:shadow-lg active:shadow-primary/20" onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
