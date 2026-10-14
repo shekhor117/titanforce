@@ -115,10 +115,10 @@ function NavbarComponent() {
                 <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-lg [&>div>button]:border [&>div>button]:border-border [&>div>button]:bg-muted/40 [&>div>button]:shadow-none [&>div>button]:hover:bg-muted">
                   <ThemeToggle />
                 </div>
-                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 px-3 text-xs font-bold transition-colors hover:bg-muted" aria-label="Toggle language">
+                <button onClick={() => setLanguage(language === "en" ? "bn" : "en")} className="flex min-h-11 min-w-[76px] items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 px-3 text-xs font-bold transition-all hover:bg-muted active:scale-95 active:border-primary active:bg-primary active:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="Toggle language">
                   <Globe className="size-4 text-primary" />{language === "en" ? "বাংলা" : "EN"}
                 </button>
-                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-lg border border-primary/50 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
+                {user ? <UserProfileDropdown onClose={() => setMobileMenuOpen(false)} /> : <Link href="/login" className="flex min-h-11 min-w-[76px] items-center justify-center rounded-lg border border-primary/50 bg-primary/5 px-3 text-xs font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground active:scale-95 active:bg-primary active:text-primary-foreground" onClick={() => setMobileMenuOpen(false)}>{language === "bn" ? "লগইন" : "LOGIN"}</Link>}
               </div>
             </div>
 
@@ -129,7 +129,7 @@ function NavbarComponent() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-11 items-center rounded-lg border border-transparent px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-11 items-center rounded-lg border border-transparent px-3 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground/70 transition-all hover:border-primary/20 hover:bg-primary/10 hover:text-primary active:scale-[0.98] active:border-primary active:bg-primary active:text-primary-foreground ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -137,7 +137,7 @@ function NavbarComponent() {
                   </Link>
                 )
               })}
-              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className="mt-2 flex min-h-12 items-center justify-between rounded-xl bg-primary px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 active:scale-[0.98] active:bg-primary/85" onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
