@@ -139,11 +139,12 @@ html {
 
   .light body {
     background-image:
-      radial-gradient(circle at 5% 4%, color-mix(in srgb, #ff3d71 90%, transparent), transparent 27%),
-      radial-gradient(circle at 95% 10%, color-mix(in srgb, #7c3aed 82%, transparent), transparent 30%),
-      radial-gradient(circle at 76% 94%, color-mix(in srgb, #ec4899 74%, transparent), transparent 34%),
-      radial-gradient(circle at 40% 46%, color-mix(in srgb, #06b6d4 28%, transparent), transparent 36%),
-      linear-gradient(135deg, #ffd0df 0%, #fff7fb 38%, #eadcff 72%, #c4b5fd 100%);
+      radial-gradient(circle at 4% 2%, color-mix(in srgb, #ff1f68 96%, transparent), transparent 25%),
+      radial-gradient(circle at 98% 6%, color-mix(in srgb, #6d28d9 90%, transparent), transparent 28%),
+      radial-gradient(circle at 78% 96%, color-mix(in srgb, #f43f8c 88%, transparent), transparent 32%),
+      radial-gradient(circle at 30% 70%, color-mix(in srgb, #06b6d4 42%, transparent), transparent 30%),
+      radial-gradient(circle at 58% 28%, color-mix(in srgb, #f59e0b 28%, transparent), transparent 24%),
+      linear-gradient(135deg, #ffb3cf 0%, #fff4f8 34%, #e9d5ff 68%, #a78bfa 100%);
     background-attachment: fixed;
     background-size: 140% 140%;
   }
