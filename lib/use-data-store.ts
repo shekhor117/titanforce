@@ -76,52 +76,34 @@ export function useDataStore() {
         setLoading(true)
         setService(optimizedDataService)
 
-        const requests = [
-          fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })),
-        ]
-        const results = await Promise.allSettled(requests)
-        const [playersResult, matchesResult, partnersResult, newsResult, mediaResult] = results
-        const firstError = results.find((result) => result.status === "rejected")
+        const loadAllBackgroundData = async () => {
+          const jobs: Array<() => Promise<void>> = [
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })); dataCache.players = data; setPlayers(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })); dataCache.matches = data; setMatches(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })); dataCache.newsItems = data; setNewsItems(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })); dataCache.partners = data; setPartners(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })); dataCache.mediaItems = data; setMediaItems(data) },
+            async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) },
+          ]
 
-        if (isMounted) {
-          const nextPlayers = playersResult.status === "fulfilled" && Array.isArray(playersResult.value) ? playersResult.value : []
-          const nextMatches = matchesResult.status === "fulfilled" && Array.isArray(matchesResult.value) ? matchesResult.value : []
-          const nextPartners = partnersResult.status === "fulfilled" && Array.isArray(partnersResult.value) ? partnersResult.value : []
-          const nextNewsItems = newsResult.status === "fulfilled" && Array.isArray(newsResult.value) ? newsResult.value : []
-          const nextMediaItems = mediaResult.status === "fulfilled" && Array.isArray(mediaResult.value) ? mediaResult.value : []
-
-          if (playersResult.status === "fulfilled") {
-            dataCache.players = nextPlayers
-            setPlayers(nextPlayers)
-          }
-          if (matchesResult.status === "fulfilled") {
-            dataCache.matches = nextMatches
-            setMatches(nextMatches)
-          }
-          if (partnersResult.status === "fulfilled") {
-            dataCache.partners = nextPartners
-            setPartners(nextPartners)
-          }
-          if (newsResult.status === "fulfilled") {
-            dataCache.newsItems = nextNewsItems
-            setNewsItems(nextNewsItems)
-          }
-          if (mediaResult.status === "fulfilled") {
-            dataCache.mediaItems = nextMediaItems
-            setMediaItems(nextMediaItems)
-          }
-          if (results[5].status === "fulfilled") {
-            dataCache.trophies = Array.isArray(results[5].value) ? results[5].value : []
+          for (const job of jobs) {
+            if (!isMounted) return
+            try {
+              await job()
+            } catch (reason) {
+              if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
+            }
+            await new Promise<void>((resolve) => globalThis.setTimeout(resolve, 50))
           }
           dataCache.lastFetch = Date.now()
-          setError(firstError?.status === "rejected"
-            ? (firstError.reason instanceof Error ? firstError.reason : new Error(String(firstError.reason)))
-            : null)
+        }
+
+        // Do not block the first paint; fetch every public dataset after the page is interactive.
+        setLoading(false)
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadAllBackgroundData, { timeout: 2500 })
+        } else {
+          window.setTimeout(loadAllBackgroundData, 100)
         }
       } catch (err) {
         if (isMounted) {
@@ -179,7 +161,8 @@ export function useDataStore() {
     }
     window.addEventListener('shared-data-change', handleSharedDataChange)
 
-    // Use unified channel for all realtime updates - more efficient than separate channels
+    // Use the existing Supabase service only for user-driven realtime updates.
+    const dataService = getDataService()
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {

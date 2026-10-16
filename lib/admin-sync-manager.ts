@@ -296,10 +296,16 @@ class AdminSyncManager {
    * Sync all tables (for recovery from offline)
    */
   async syncAllTables() {
-    const promises = Array.from(this.configs.keys()).map((tableName) =>
-      this.refreshTable(tableName)
-    )
-    await Promise.all(promises)
+    for (const tableName of this.configs.keys()) {
+      await this.refreshTable(tableName)
+      await new Promise<void>((resolve) => {
+        if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+          window.requestIdleCallback(() => resolve(), { timeout: 1000 })
+        } else {
+          globalThis.setTimeout(resolve, 50)
+        }
+      })
+    }
   }
 
   /**

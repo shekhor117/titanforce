@@ -110,13 +110,21 @@ export function Squad() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4" aria-busy={isLoading}>
           {isLoading ? (
-            <div className="col-span-full text-center py-12 text-foreground/60">
-              <p className={isBn ? "font-[var(--font-bengali)]" : ""}>
-                {isBn ? "খেলোয়াড় লোড হচ্ছে..." : "Loading players..."}
-              </p>
-            </div>
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="neo-soft overflow-hidden p-3 sm:p-4 md:p-5" aria-hidden="true">
+                <div className="aspect-square w-full animate-pulse rounded-lg bg-secondary/60" />
+                <div className="mt-3 space-y-2">
+                  <div className="h-5 w-3/4 animate-pulse rounded bg-secondary/60" />
+                  <div className="h-3 w-1/2 animate-pulse rounded bg-secondary/60" />
+                  <div className="flex gap-2 pt-1">
+                    <div className="h-5 w-14 animate-pulse rounded bg-secondary/60" />
+                    <div className="h-5 w-10 animate-pulse rounded bg-secondary/60" />
+                  </div>
+                </div>
+              </div>
+            ))
           ) : filteredPlayers.length > 0 ? (
             filteredPlayers.map((player, index) => {
               const photo = getPlayerPhoto(player)
