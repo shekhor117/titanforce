@@ -27,7 +27,24 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
   }, [tableName])
 
   useEffect(() => {
-    void refresh()
+    let cancelled = false
+    const loadInBackground = () => {
+      if (!cancelled) void refresh()
+    }
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(loadInBackground, { timeout: 1500 })
+      return () => {
+        cancelled = true
+        window.cancelIdleCallback(idleId)
+      }
+    }
+
+    const timeoutId = globalThis.setTimeout(loadInBackground, 100)
+    return () => {
+      cancelled = true
+      globalThis.clearTimeout(timeoutId)
+    }
   }, [refresh])
 
   // All admin writes go through the protected server API so the browser never
