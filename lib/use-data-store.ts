@@ -77,24 +77,24 @@ export function useDataStore() {
         setService(optimizedDataService)
 
         const loadAllBackgroundData = async () => {
-          const results = await Promise.allSettled([
-            fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
-            fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
-            fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
-            fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })),
-            fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })),
-            fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })),
-          ])
-          if (!isMounted) return
-          const [playersResult, matchesResult, newsResult, partnersResult, mediaResult, trophiesResult] = results
-          if (playersResult.status === 'fulfilled') { dataCache.players = playersResult.value; setPlayers(playersResult.value) }
-          if (matchesResult.status === 'fulfilled') { dataCache.matches = matchesResult.value; setMatches(matchesResult.value) }
-          if (newsResult.status === 'fulfilled') { dataCache.newsItems = newsResult.value; setNewsItems(newsResult.value) }
-          if (partnersResult.status === 'fulfilled') { dataCache.partners = partnersResult.value; setPartners(partnersResult.value) }
-          if (mediaResult.status === 'fulfilled') { dataCache.mediaItems = mediaResult.value; setMediaItems(mediaResult.value) }
-          if (trophiesResult.status === 'fulfilled') dataCache.trophies = trophiesResult.value
-          const failed = results.find((result) => result.status === 'rejected')
-          if (failed) setError(failed.reason instanceof Error ? failed.reason : new Error(String(failed.reason)))
+          const jobs: Array<() => Promise<void>> = [
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })); dataCache.players = data; setPlayers(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })); dataCache.matches = data; setMatches(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })); dataCache.newsItems = data; setNewsItems(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })); dataCache.partners = data; setPartners(data) },
+            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })); dataCache.mediaItems = data; setMediaItems(data) },
+            async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) },
+          ]
+
+          for (const job of jobs) {
+            if (!isMounted) return
+            try {
+              await job()
+            } catch (reason) {
+              if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
+            }
+            await new Promise<void>((resolve) => globalThis.setTimeout(resolve, 50))
+          }
           dataCache.lastFetch = Date.now()
         }
 

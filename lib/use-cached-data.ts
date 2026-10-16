@@ -85,16 +85,16 @@ export function useCachedBatchData<T = any>(
     batchKey,
     async () => {
       try {
-        const results = await Promise.all(
-          fetchers.map(async (fetcher, index) => {
-            try {
-              return await fetcher()
-            } catch (err) {
-              console.warn(`[v0] Batch fetcher ${index} failed:`, err)
-              return null
-            }
-          })
-        )
+    const results: Array<{ index: number; data: T | null; error: Error | null }> = []
+    for (const [index, fetcher] of fetchers.entries()) {
+      try {
+        const data = await fetcher()
+        results.push({ index, data, error: null })
+      } catch (error) {
+        results.push({ index, data: null, error: error instanceof Error ? error : new Error(String(error)) })
+      }
+      await new Promise<void>((resolve) => globalThis.setTimeout(resolve, 50))
+    }
         return results
       } catch (err) {
         throw new Error('Batch fetch failed')
