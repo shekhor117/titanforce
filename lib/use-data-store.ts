@@ -76,55 +76,34 @@ export function useDataStore() {
         setLoading(true)
         setService(optimizedDataService)
 
-        const criticalResults = await Promise.allSettled([
-          fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
-          fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
-        ])
-
-        if (isMounted) {
-          const [playersResult, matchesResult, newsResult] = criticalResults
-          if (playersResult.status === 'fulfilled') {
-            dataCache.players = playersResult.value
-            setPlayers(playersResult.value)
-          }
-          if (matchesResult.status === 'fulfilled') {
-            dataCache.matches = matchesResult.value
-            setMatches(matchesResult.value)
-          }
-          if (newsResult.status === 'fulfilled') {
-            dataCache.newsItems = newsResult.value
-            setNewsItems(newsResult.value)
-          }
-          setError(criticalResults.find((result) => result.status === 'rejected')?.reason ?? null)
-          setLoading(false)
-          dataCache.lastFetch = Date.now()
-        }
-
-        const loadBackgroundData = async () => {
-          const backgroundResults = await Promise.allSettled([
+        const loadAllBackgroundData = async () => {
+          const results = await Promise.allSettled([
+            fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })),
+            fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })),
+            fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })),
             fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })),
             fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })),
             fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })),
           ])
           if (!isMounted) return
-          const [partnersResult, mediaResult, trophiesResult] = backgroundResults
-          if (partnersResult.status === 'fulfilled') {
-            dataCache.partners = partnersResult.value
-            setPartners(partnersResult.value)
-          }
-          if (mediaResult.status === 'fulfilled') {
-            dataCache.mediaItems = mediaResult.value
-            setMediaItems(mediaResult.value)
-          }
+          const [playersResult, matchesResult, newsResult, partnersResult, mediaResult, trophiesResult] = results
+          if (playersResult.status === 'fulfilled') { dataCache.players = playersResult.value; setPlayers(playersResult.value) }
+          if (matchesResult.status === 'fulfilled') { dataCache.matches = matchesResult.value; setMatches(matchesResult.value) }
+          if (newsResult.status === 'fulfilled') { dataCache.newsItems = newsResult.value; setNewsItems(newsResult.value) }
+          if (partnersResult.status === 'fulfilled') { dataCache.partners = partnersResult.value; setPartners(partnersResult.value) }
+          if (mediaResult.status === 'fulfilled') { dataCache.mediaItems = mediaResult.value; setMediaItems(mediaResult.value) }
           if (trophiesResult.status === 'fulfilled') dataCache.trophies = trophiesResult.value
+          const failed = results.find((result) => result.status === 'rejected')
+          if (failed) setError(failed.reason instanceof Error ? failed.reason : new Error(String(failed.reason)))
           dataCache.lastFetch = Date.now()
         }
 
+        // Do not block the first paint; fetch every public dataset after the page is interactive.
+        setLoading(false)
         if ('requestIdleCallback' in window) {
-          window.requestIdleCallback(loadBackgroundData, { timeout: 2500 })
+          window.requestIdleCallback(loadAllBackgroundData, { timeout: 2500 })
         } else {
-          window.setTimeout(loadBackgroundData, 100)
+          window.setTimeout(loadAllBackgroundData, 100)
         }
       } catch (err) {
         if (isMounted) {
