@@ -16,36 +16,47 @@ export function AdminSidebar() {
   const isBn = language === "bn"
   const isAdmin = admin?.role === "admin"
 
-  // All menu items
+  // Every public website content area has a matching editable admin route.
   const allMenuItems = [
     { href: "/admin/dashboard", label: isBn ? "ড্যাশবোর্ড" : "Dashboard", icon: "📊", restricted: false },
-    { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽", restricted: false },
-    { href: "/admin/squad-manager", label: isBn ? "স্কোয়াড ম্যানেজার" : "Squad Manager", icon: "🎯", restricted: false },
-    { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆", restricted: true, category: "team" },
-    { href: "/admin/standings", label: isBn ? "স্ট্যান্ডিংস" : "Standings", icon: "📊", restricted: true, category: "team" },
-    { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥", restricted: false },
-    { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝", restricted: true, category: "team" },
-    { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢", restricted: true, category: "team" },
-    { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸", restricted: true, category: "tools" },
-    { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️", restricted: true, category: "team" },
+    { href: "/admin/site-settings", label: isBn ? "সাইট সেটিংস" : "Site Settings", icon: "🌐", restricted: true, category: "site" },
+    { href: "/admin/club-info", label: isBn ? "ক্লাব তথ্য" : "Club Info", icon: "🏟️", restricted: true, category: "site" },
+    { href: "/admin/about", label: isBn ? "আমাদের সম্পর্কে" : "About Page", icon: "ℹ️", restricted: true, category: "site" },
+    { href: "/admin/banners", label: isBn ? "ব্যানার" : "Banners", icon: "🖼️", restricted: true, category: "site" },
+    { href: "/admin/footer", label: isBn ? "ফুটার" : "Footer", icon: "📌", restricted: true, category: "site" },
+    { href: "/admin/social-links", label: isBn ? "সোশ্যাল লিংক" : "Social Links", icon: "🔗", restricted: true, category: "site" },
+    { href: "/admin/features-content", label: isBn ? "ফিচার কনটেন্ট" : "Feature Content", icon: "✨", restricted: true, category: "site" },
+    { href: "/admin/players", label: isBn ? "স্কোয়াড" : "Squad", icon: "⚽", restricted: false, category: "team" },
     { href: "/admin/player-profiles", label: isBn ? "খেলোয়াড় প্রোফাইল" : "Player Profiles", icon: "🎽", restricted: true, category: "team" },
-    { href: "/admin/news-updates", label: isBn ? "সংবাদ আপডেট" : "News Updates", icon: "📰", restricted: true, category: "team" },
-    
-    // Store management
+    { href: "/admin/player-ratings", label: isBn ? "খেলোয়াড় রেটিং" : "Player Ratings", icon: "⭐", restricted: true, category: "team" },
+    { href: "/admin/squad-manager", label: isBn ? "স্কোয়াড ম্যানেজার" : "Squad Manager", icon: "🎯", restricted: false, category: "team" },
+    { href: "/admin/matches", label: isBn ? "ম্যাচ" : "Matches", icon: "🏆", restricted: true, category: "team" },
+    { href: "/admin/match-events", label: isBn ? "ম্যাচ ইভেন্ট" : "Match Events", icon: "⏱️", restricted: true, category: "team" },
+    { href: "/admin/standings", label: isBn ? "স্ট্যান্ডিংস" : "Standings", icon: "📋", restricted: true, category: "team" },
+    { href: "/admin/rankings", label: isBn ? "র‍্যাঙ্কিং" : "Rankings", icon: "📈", restricted: true, category: "team" },
+    { href: "/admin/lineup", label: isBn ? "লাইনআপ" : "Lineup", icon: "🧩", restricted: true, category: "team" },
+    { href: "/admin/injuries", label: isBn ? "ইনজুরি" : "Injuries", icon: "🩹", restricted: true, category: "team" },
+    { href: "/admin/news", label: isBn ? "সংবাদ" : "News", icon: "📢", restricted: true, category: "content" },
+    { href: "/admin/news-updates", label: isBn ? "সংবাদ আপডেট" : "News Updates", icon: "📰", restricted: true, category: "content" },
+    { href: "/admin/media", label: isBn ? "মিডিয়া" : "Media", icon: "📸", restricted: true, category: "content" },
+    { href: "/admin/gallery", label: isBn ? "গ্যালারি" : "Gallery", icon: "🎞️", restricted: true, category: "content" },
+    { href: "/admin/testimonials", label: isBn ? "টেস্টিমোনিয়াল" : "Testimonials", icon: "💬", restricted: true, category: "content" },
+    { href: "/admin/partners", label: isBn ? "অংশীদার" : "Partners", icon: "🤝", restricted: true, category: "content" },
+    { href: "/admin/honours", label: isBn ? "সম্মাননা" : "Honours", icon: "🏅", restricted: true, category: "content" },
+    { href: "/admin/trophies", label: isBn ? "ট্রফি" : "Trophies", icon: "🏆", restricted: true, category: "content" },
+    { href: "/admin/fans", label: isBn ? "অনুরাগী" : "Fans", icon: "👥", restricted: false, category: "community" },
+    { href: "/admin/contacts", label: isBn ? "যোগাযোগ" : "Contacts", icon: "✉️", restricted: true, category: "community" },
+    { href: "/admin/polls", label: isBn ? "পোল" : "Polls", icon: "📊", restricted: true, category: "community" },
     { href: "/admin/store/products", label: isBn ? "পণ্য" : "Products", icon: "🛍️", restricted: true, category: "store" },
     { href: "/admin/store/orders", label: isBn ? "অর্ডার" : "Orders", icon: "📦", restricted: true, category: "store" },
     { href: "/admin/store/inventory", label: isBn ? "ইনভেন্টরি" : "Inventory", icon: "📋", restricted: true, category: "store" },
     { href: "/admin/store/analytics", label: isBn ? "বিক্রয় বিশ্লেষণ" : "Sales Analytics", icon: "💹", restricted: true, category: "store" },
-    
-    // CMS Management
     { href: "/admin/cms", label: isBn ? "সিএমএস" : "CMS", icon: "📝", restricted: true, category: "tools" },
     { href: "/admin/data", label: isBn ? "সুপাবেস ডেটা" : "Supabase Data", icon: "🗄️", restricted: true, category: "tools" },
-    
     { href: "/admin/users", label: isBn ? "ব্যবহারকারী" : "Users", icon: "👤", restricted: true, category: "tools" },
     { href: "/admin/analytics", label: isBn ? "বিশ্লেষণ" : "Analytics", icon: "📈", restricted: true, category: "tools" },
     { href: "/admin/settings", label: isBn ? "সেটিংস" : "Settings", icon: "🔧", restricted: true, category: "tools" },
     { href: "/admin/system", label: isBn ? "সিস্টেম" : "System", icon: "💾", restricted: true, category: "tools" },
-    { href: "/admin/features", label: isBn ? "বৈশিষ্ট্য" : "Features", icon: "⚙️", restricted: true, category: "tools" },
   ]
 
   // Filter menu items based on admin role
