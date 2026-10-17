@@ -254,6 +254,9 @@ export function usePlayers() {
 
   useEffect(() => {
     let isMounted = true
+    const loadingFallback = globalThis.setTimeout(() => {
+      if (isMounted) setLoading(false)
+    }, 3000)
 
     const loadPlayers = async () => {
       // If cache is fresh and available, use it immediately
@@ -302,6 +305,7 @@ export function usePlayers() {
 
     return () => {
       isMounted = false
+      globalThis.clearTimeout(loadingFallback)
       unsubscribe()
     }
   }, [service])
