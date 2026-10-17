@@ -163,6 +163,13 @@ export function useDataStore() {
 
     // Use the existing Supabase service only for user-driven realtime updates.
     const dataService = getDataService()
+    const unsubscribePublicContent = dataService.subscribeToPublicDataChanges((tableName, payload) => {
+      if (!isMounted) return
+      window.dispatchEvent(new CustomEvent('public-data-change', {
+        detail: { tableName, payload },
+      }))
+    })
+
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {
@@ -216,6 +223,7 @@ export function useDataStore() {
       document.removeEventListener('visibilitychange', refreshOnReturn)
       window.removeEventListener('shared-data-change', handleSharedDataChange)
       unsubscribeAll()
+      unsubscribePublicContent()
     }
   }, [])
 
