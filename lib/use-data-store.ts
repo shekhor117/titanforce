@@ -29,9 +29,9 @@ const dataCache = {
 
 // Keep public data fresh while still preventing duplicate requests during navigation.
 const CACHE_DURATION = 5000
-const PUBLIC_DATA_TIMEOUT = 12000
-const PUBLIC_DATA_RETRIES = 3
-const PUBLIC_DATA_RETRY_DELAY = 500
+const PUBLIC_DATA_TIMEOUT = 7000
+const PUBLIC_DATA_RETRIES = 1
+const PUBLIC_DATA_RETRY_DELAY = 250
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
@@ -86,14 +86,20 @@ export function useDataStore() {
             async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) },
           ]
 
-          for (const job of jobs) {
+          // Load the sections used above the fold together. Each result is committed
+          // independently, so a slow optional dataset cannot hold up the homepage.
+          const critical = await Promise.allSettled(jobs.slice(0, 3).map((job) => job()))
+          if (!isMounted) return
+          critical.forEach((result) => {
+            if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
+          })
+
+          // Optional sections continue in the background without blocking the first paint.
+          for (const job of jobs.slice(3)) {
             if (!isMounted) return
-            try {
-              await job()
-            } catch (reason) {
+            try { await job() } catch (reason) {
               if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
             }
-            await new Promise<void>((resolve) => globalThis.setTimeout(resolve, 50))
           }
           dataCache.lastFetch = Date.now()
         }
@@ -163,6 +169,13 @@ export function useDataStore() {
 
     // Use the existing Supabase service only for user-driven realtime updates.
     const dataService = getDataService()
+    const unsubscribePublicContent = dataService.subscribeToPublicDataChanges((tableName, payload) => {
+      if (!isMounted) return
+      window.dispatchEvent(new CustomEvent('public-data-change', {
+        detail: { tableName, payload },
+      }))
+    })
+
     const unsubscribeAll = dataService.subscribeToAllData(
       (data) => {
         if (isMounted) {
@@ -216,6 +229,7 @@ export function useDataStore() {
       document.removeEventListener('visibilitychange', refreshOnReturn)
       window.removeEventListener('shared-data-change', handleSharedDataChange)
       unsubscribeAll()
+      unsubscribePublicContent()
     }
   }, [])
 
@@ -240,6 +254,9 @@ export function usePlayers() {
 
   useEffect(() => {
     let isMounted = true
+    const loadingFallback = globalThis.setTimeout(() => {
+      if (isMounted) setLoading(false)
+    }, 3000)
 
     const loadPlayers = async () => {
       // If cache is fresh and available, use it immediately
@@ -251,7 +268,9 @@ export function usePlayers() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getPlayers())
+        // Public pages use the fast cached JSON snapshot first. Supabase realtime
+        // remains subscribed below, so admin edits still arrive without blocking paint.
+        const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } }))
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -262,10 +281,8 @@ export function usePlayers() {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          // Still show cached data even if fetch fails
-          if (dataCache.players) {
-            setPlayers(dataCache.players)
-          }
+          // Still show cached data even if fetch fails.
+          if (dataCache.players) setPlayers(dataCache.players)
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -288,6 +305,7 @@ export function usePlayers() {
 
     return () => {
       isMounted = false
+      globalThis.clearTimeout(loadingFallback)
       unsubscribe()
     }
   }, [service])

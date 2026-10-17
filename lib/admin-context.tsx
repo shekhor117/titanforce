@@ -130,10 +130,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             }
           }
         } catch (sessionError) {
-          // Session check failed or timed out, continue anyway
-          // The auth state change listener will catch real sessions
-          if (isMounted) {
-            console.debug('[v0] Session check error (non-fatal):', sessionError)
+          // An unauthenticated visitor has no session; that is an expected state.
+          // Keep unexpected auth failures visible without noisy console output.
+          const isMissingSession =
+            sessionError instanceof Error &&
+            (sessionError.name === 'AuthSessionMissingError' ||
+              (sessionError as Error & { status?: number }).status === 400)
+          if (!isMissingSession && isMounted) {
+            console.error('[v0] Unexpected admin session check error:', sessionError)
           }
         }
         

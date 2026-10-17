@@ -1758,6 +1758,41 @@ export class DataService {
     }
   }
 
+  /**
+   * Subscribe the public site to every content table managed by the admin panel.
+   * Entity-specific subscriptions above refresh their caches; this bridge also
+   * invalidates other public modules so API-backed sections can refresh without
+   * a full page reload.
+   */
+  subscribeToPublicDataChanges(onChange: (tableName: string, payload: unknown) => void): () => void {
+    if (!this.supabase) return () => {}
+
+    const publicTables = [
+      'site_settings', 'club_info', 'banners', 'footer_content', 'social_links',
+      'features', 'players', 'player_profiles', 'player_ratings', 'matches',
+      'match_events', 'standings', 'rankings', 'lineups', 'injuries', 'news_items',
+      'media_items', 'gallery', 'testimonials', 'partners', 'honours', 'trophies',
+      'polls', 'app_users',
+    ]
+    const channel = this.supabase.channel('public-site-content-sync')
+
+    for (const table of publicTables) {
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table },
+        (payload) => onChange(table, payload),
+      )
+    }
+
+    channel.subscribe()
+    this.subscriptions.set('public-site-content-sync', channel)
+
+    return () => {
+      void this.supabase?.removeChannel(channel)
+      this.subscriptions.delete('public-site-content-sync')
+    }
+  }
+
   // App Users
   async getAppUsers(filters?: { role?: string; status?: string }): Promise<AppUser[]> {
     if (!this.supabase) return []
