@@ -265,7 +265,9 @@ export function usePlayers() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getPlayers())
+        // Public pages use the fast cached JSON snapshot first. Supabase realtime
+        // remains subscribed below, so admin edits still arrive without blocking paint.
+        const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } }))
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -276,10 +278,8 @@ export function usePlayers() {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
-          // Still show cached data even if fetch fails
-          if (dataCache.players) {
-            setPlayers(dataCache.players)
-          }
+          // Still show cached data even if fetch fails.
+          if (dataCache.players) setPlayers(dataCache.players)
         }
       } finally {
         if (isMounted) setLoading(false)
