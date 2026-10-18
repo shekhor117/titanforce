@@ -64,7 +64,8 @@ function validateTable(table: string) {
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ table: string }> }) {
-  const table = await tableFromParams(params)
+  try {
+    const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
   const { supabase, response } = await getAdminClient()
@@ -74,6 +75,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
   const { data, error } = await supabase.from(resolvedTable).select("*")
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data ?? [])
+  } catch (error) {
+    console.error('[v0] Admin CRUD GET failed:', error)
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to load records' }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ table: string }> }) {

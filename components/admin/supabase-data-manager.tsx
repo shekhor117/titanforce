@@ -45,9 +45,9 @@ export function SupabaseDataManager() {
     setMessage(null)
     try {
       const response = await fetch(`/api/admin/${table}`, { credentials: 'include' })
-      const payload = await response.json()
-      if (!response.ok) throw new Error(payload.error || 'Failed to load data')
-      setRows(Array.isArray(payload) ? payload : [])
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(payload.error || `Failed to load data (${response.status})`)
+      setRows(Array.isArray(payload) ? payload : payload.data && Array.isArray(payload.data) ? payload.data : [])
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Failed to load data')
     } finally {
@@ -57,13 +57,7 @@ export function SupabaseDataManager() {
 
   useEffect(() => {
     setRows([])
-    const scheduleLoad = () => { void load() }
-    if ('requestIdleCallback' in window) {
-      const idleId = window.requestIdleCallback(scheduleLoad, { timeout: 1200 })
-      return () => window.cancelIdleCallback(idleId)
-    }
-    const timeoutId = globalThis.setTimeout(scheduleLoad, 100)
-    return () => globalThis.clearTimeout(timeoutId)
+    void load()
   }, [table])
 
   const startEdit = (row: Row | null) => {
