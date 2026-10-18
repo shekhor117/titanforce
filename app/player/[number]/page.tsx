@@ -174,15 +174,12 @@ export default function PlayerProfile() {
           </div>
         )}
 
-        {/* Statistics Tab */}
-        {activeTab === 'stats' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-            <div className="lg:col-span-2">
-              <PlayerCareerStats player={player} />
-            </div>
-            <PlayerHonoursSection playerId={player.id} />
-          </div>
-        )}
+  {/* Statistics Tab */}
+  {activeTab === 'stats' && (
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+  <PlayerHonoursSection playerId={player.id} />
+  </div>
+  )}
 
         {/* Career Tab */}
         {activeTab === 'career' && (
