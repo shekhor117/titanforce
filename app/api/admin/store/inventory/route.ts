@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 // GET - Fetch inventory
 export async function GET(request: NextRequest) {
@@ -9,7 +8,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get('productId')
 
-    let query = supabase.from('products').select('id, name, stock, price', { count: 'exact' })
+    let query = supabase.from('products').select('id, name, stock, price')
 
     if (productId) {
       query = query.eq('id', productId)
@@ -20,6 +19,7 @@ export async function GET(request: NextRequest) {
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0
 
     const { data, error, count } = await query
+      .select('*')
       .range(offset, offset + limit - 1)
 
     if (error) {
@@ -41,12 +41,10 @@ export async function GET(request: NextRequest) {
 
 // PUT - Update inventory (stock)
 export async function PUT(request: NextRequest) {
-  const adminAuth = await checkAdminAuth(request)
-  if (!adminAuth.authorized) return NextResponse.json({ error: adminAuth.error }, { status: adminAuth.status })
-
   try {
     const supabase = await createClient()
 
+    // Check admin authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

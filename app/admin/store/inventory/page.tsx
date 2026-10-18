@@ -23,14 +23,6 @@ export default function StoreInventoryPage() {
   const [newVariantStock, setNewVariantStock] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState("")
-  const [stockDraft, setStockDraft] = useState<Record<string, number>>({})
-  const [savingStock, setSavingStock] = useState<string | null>(null)
-
-  const filteredProducts = products.filter((product) => {
-    const query = search.trim().toLowerCase()
-    return !query || [product.name, product.sku, product.category].filter(Boolean).some((value) => String(value).toLowerCase().includes(query))
-  })
 
   useEffect(() => {
     try {
@@ -114,27 +106,6 @@ export default function StoreInventoryPage() {
     }
   }
 
-  const getProductStock = (product: AdminProduct) => Number((product as any).totalStock ?? (product as any).total_stock ?? product.stock ?? 0)
-
-  const saveStock = async (product: AdminProduct) => {
-    const stock = Math.max(0, Math.floor(stockDraft[product.id] ?? getProductStock(product)))
-    try {
-      setSavingStock(product.id)
-      const response = await fetch('/api/admin/store/inventory', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, quantity: stock, operation: 'set' }),
-      })
-      if (!response.ok) throw new Error('Stock update failed')
-      setStockDraft((current) => ({ ...current, [product.id]: stock }))
-      await loadInventory()
-    } catch {
-      setError(isBn ? 'স্টক আপডেট ব্যর্থ' : 'Failed to update stock')
-    } finally {
-      setSavingStock(null)
-    }
-  }
-
   const getStockStatus = (stock: number) => {
     if (stock > 20) return { label: isBn ? "পর্যাপ্ত" : "Adequate", color: "text-green-400", bg: "bg-green-500/10" }
     if (stock > 5) return { label: isBn ? "কম" : "Low", color: "text-yellow-400", bg: "bg-yellow-500/10" }
@@ -165,14 +136,6 @@ export default function StoreInventoryPage() {
           </div>
         </div>
       )}
-
-      <div className="flex flex-col gap-3 rounded-lg border border-primary/20 bg-secondary/50 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="font-semibold text-foreground">{isBn ? 'A-Z ইনভেন্টরি কন্ট্রোল' : 'A-Z Inventory Control'}</p>
-          <p className="text-sm text-foreground/60">{isBn ? 'সার্চ করুন, স্টক সরাসরি আপডেট করুন এবং ভেরিয়েন্ট সম্পাদনা করুন' : 'Search, update stock directly, and edit every size/color variant'}</p>
-        </div>
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={isBn ? 'পণ্য বা SKU খুঁজুন' : 'Search product or SKU'} aria-label="Search inventory" className="w-full rounded border bg-background px-3 py-2 text-sm sm:w-64" />
-      </div>
 
       {/* Low Stock Alert */}
       {lowStockProducts.length > 0 && (
@@ -220,7 +183,7 @@ export default function StoreInventoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((product, index) => (
+                {products.map((product, index) => (
                   <motion.tr
                     key={product.id}
                     initial={{ opacity: 0 }}
@@ -241,7 +204,7 @@ export default function StoreInventoryPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2"><input type="number" min="0" value={stockDraft[product.id] ?? getProductStock(product)} onChange={(event) => setStockDraft((current) => ({ ...current, [product.id]: Number(event.target.value) }))} aria-label={`${product.name} stock`} className="w-20 rounded border bg-background px-2 py-1 text-right font-bold text-foreground" /><button type="button" onClick={() => void saveStock(product)} disabled={savingStock === product.id} className="rounded bg-primary/20 px-2 py-1 text-xs text-primary disabled:opacity-50">{savingStock === product.id ? '...' : isBn ? 'Save' : 'Save'}</button></div>
+                      <span className="font-bold text-foreground text-lg">{(product as any).totalStock || (product as any).stock || 0}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span
