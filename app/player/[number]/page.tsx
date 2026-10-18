@@ -6,7 +6,7 @@ import { ArrowLeft, Edit } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { PlayerProfileHero } from '@/components/player/player-profile-hero'
 import { PlayerAttributesChart } from '@/components/player/player-attributes-chart'
-
+import { PlayerCareerStats } from '@/components/player/player-career-stats'
 import { PlayerPositionDiagram } from '@/components/player/player-position-diagram'
 import { PlayerNewsSection } from '@/components/player/player-news-section'
 import { PlayerHonoursSection } from '@/components/player/player-honours-section'
@@ -119,6 +119,8 @@ export default function PlayerProfile() {
         <div className="flex flex-wrap gap-2 md:gap-4 border-b border-secondary pb-4 overflow-x-auto">
           {[
             { id: 'overview', label: isBn ? 'সংক্ষিপ্তি' : 'Overview' },
+            { id: 'stats', label: isBn ? 'পরিসংখ্যান' : 'Stats' },
+            { id: 'career', label: isBn ? 'ক্যারিয়ার' : 'Career' },
             { id: 'skills', label: isBn ? 'দক্ষতা' : 'Skills' },
             { id: 'news', label: isBn ? 'সংবাদ' : 'News' },
             { id: 'honours', label: isBn ? 'সম্মাননা' : 'Honours' },
@@ -170,6 +172,21 @@ export default function PlayerProfile() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Statistics Tab */}
+        {activeTab === 'stats' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2">
+              <PlayerCareerStats player={player} />
+            </div>
+            <PlayerHonoursSection playerId={player.id} />
+          </div>
+        )}
+
+        {/* Career Tab */}
+        {activeTab === 'career' && (
+          <PlayerCareerStats player={player} />
         )}
 
         {/* Skills Tab */}
