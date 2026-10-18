@@ -64,7 +64,8 @@ function validateTable(table: string) {
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ table: string }> }) {
-  const table = await tableFromParams(params)
+  try {
+    const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
   const { supabase, response } = await getAdminClient()
@@ -74,6 +75,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
   const { data, error } = await supabase.from(resolvedTable).select("*")
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data ?? [])
+  } catch (error) {
+    console.error('[v0] Admin CRUD GET failed:', error)
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to load records' }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ table: string }> }) {
@@ -107,6 +112,23 @@ export async function PUT(request: Request, { params }: { params: Promise<{ tabl
   delete updates.created_at
   delete updates.updated_at
   const { data, error } = await supabase.from(resolvedTable).update(updates).eq("id", id).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+  return NextResponse.json(data)
+}
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ table: string }> }) {
+  const table = await tableFromParams(params)
+  if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
+
+  const { supabase, response } = await getAdminClient()
+  if (response) return response
+  const { id, ...updates } = await request.json()
+  if (!id || !updates || Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: "An id and updates are required" }, { status: 400 })
+  }
+  delete updates.created_at
+  delete updates.updated_at
+  const { data, error } = await supabase.from(resolveTable(table)).update(updates).eq("id", id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data)
 }

@@ -104,13 +104,9 @@ export function useDataStore() {
           dataCache.lastFetch = Date.now()
         }
 
-        // Do not block the first paint; fetch every public dataset after the page is interactive.
-        setLoading(false)
-        if ('requestIdleCallback' in window) {
-          window.requestIdleCallback(loadAllBackgroundData, { timeout: 2500 })
-        } else {
-          window.setTimeout(loadAllBackgroundData, 100)
-        }
+        // Start loading immediately on mount instead of waiting for browser idle time.
+        // Each dataset still resolves independently, so one slow request cannot block the others.
+        void loadAllBackgroundData()
       } catch (err) {
         if (isMounted) {
           const error = err instanceof Error ? err : new Error(String(err))
