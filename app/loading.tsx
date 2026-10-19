@@ -1,5 +1,4 @@
-import { MainSiteLoadingSkeleton } from '@/components/main-site-loading-skeleton'
-
 export default function Loading() {
-  return <MainSiteLoadingSkeleton />
+  // Keep the shell visible; data components own their loading states.
+  return null
 }

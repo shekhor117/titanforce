@@ -1,5 +1,4 @@
-import { AdminRouteLoading } from "@/components/admin-loading-skeleton"
-
 export default function Loading() {
-  return <AdminRouteLoading />
+  // Keep the admin shell visible; individual data views own their loading states.
+  return null
 }
