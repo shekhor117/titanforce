@@ -27,6 +27,12 @@ const dataCache = {
   isLoading: false,
 }
 
+// One in-flight request per dataset prevents duplicate calls when multiple
+// homepage sections use the same hook during the first render.
+let playersRequest: Promise<Player[]> | null = null
+let matchesRequest: Promise<Match[]> | null = null
+let newsRequest: Promise<NewsItem[]> | null = null
+
 // Keep public data fresh while still preventing duplicate requests during navigation.
 const CACHE_DURATION = 5000
 const PUBLIC_DATA_TIMEOUT = 7000
@@ -263,10 +269,12 @@ export function usePlayers() {
       }
 
       try {
-        setLoading(true)
+        // Public content must not block the page while the data layer refreshes.
+        setLoading(false)
         // Public pages use the fast cached JSON snapshot first. Supabase realtime
         // remains subscribed below, so admin edits still arrive without blocking paint.
-        const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } }))
+playersRequest ??= fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })).finally(() => { playersRequest = null })
+        const data = await playersRequest
         if (isMounted) {
           dataCache.players = data
           dataCache.lastFetch = Date.now()
@@ -328,7 +336,8 @@ export function useMatches() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getMatches())
+        matchesRequest ??= fetchWithRetry(() => service.getMatches()).finally(() => { matchesRequest = null })
+        const data = await matchesRequest
         if (isMounted) {
           dataCache.matches = data
           dataCache.lastFetch = Date.now()
@@ -448,7 +457,8 @@ export function useNewsItems() {
 
       try {
         setLoading(true)
-        const data = await fetchWithRetry(() => service.getNewsItems())
+        newsRequest ??= fetchWithRetry(() => service.getNewsItems()).finally(() => { newsRequest = null })
+        const data = await newsRequest
         if (isMounted) {
           dataCache.newsItems = data
           dataCache.lastFetch = Date.now()

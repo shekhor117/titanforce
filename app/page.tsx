@@ -11,25 +11,11 @@ import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
-import { PublicSectionSkeleton } from "@/components/main-site-loading-skeleton"
-
-// Lazy load heavy animation components with loading delay
-const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })), { 
-  ssr: false,
-  loading: () => <PublicSectionSkeleton variant="wide" />
-})
-const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })), { 
-  ssr: false,
-  loading: () => <PublicSectionSkeleton variant="players" />
-})
-const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })), { 
-  ssr: false,
-  loading: () => <PublicSectionSkeleton variant="shop" />
-})
-const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })), { 
-  ssr: false,
-  loading: () => <PublicSectionSkeleton variant="gallery" />
-})
+// Load heavy sections without replacing the page with a full-page loader.
+const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then(m => ({ default: m.PremiumMatchStats })))
+const PlayersGrid = dynamic(() => import("@/components/players-grid").then(m => ({ default: m.PlayersGrid })))
+const HomeShopLatest = dynamic(() => import("@/components/home-shop-latest").then(m => ({ default: m.HomeShopLatest })))
+const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").then(m => ({ default: m.GalleryShowcase })))
 
 export default function Home() {
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
@@ -93,21 +79,21 @@ export default function Home() {
 
         <HomeLatestNews />
         
-        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
+        <Suspense fallback={null}>
           <PremiumMatchStats />
         </Suspense>
         
-        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
+        <Suspense fallback={null}>
           <PlayersGrid />
         </Suspense>
         
         <HomeAboutGallery />
         
-        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
+        <Suspense fallback={null}>
           <HomeShopLatest />
         </Suspense>
         
-        <Suspense fallback={<PublicSectionSkeleton variant="wide" />}>
+        <Suspense fallback={null}>
           <GalleryShowcase />
         </Suspense>
         
