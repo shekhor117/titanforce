@@ -263,7 +263,8 @@ export function usePlayers() {
       }
 
       try {
-        setLoading(true)
+        // Public content must not block the page while the data layer refreshes.
+        setLoading(false)
         // Public pages use the fast cached JSON snapshot first. Supabase realtime
         // remains subscribed below, so admin edits still arrive without blocking paint.
         const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } }))

@@ -41,7 +41,7 @@ class OptimizedDataService {
   }
 
   private async fetchJsonData<T>(table: string, source: string, options?: { select?: string; filter?: { key: string; value: any }; order?: { key: string; ascending?: boolean }; limit?: number }): Promise<T[]> {
-    const response = await fetch(source, { next: { revalidate: 60 } })
+    const response = await fetch(source, { cache: 'force-cache' })
     if (!response.ok) throw new Error(`Could not load ${source}`)
     const backup = await response.json()
     const tableAliases: Record<string, string> = {
