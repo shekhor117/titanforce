@@ -30,6 +30,10 @@ export function HomeShopLatest() {
     return () => unsubscribe()
   }, [])
 
+  if (!isLoading && products.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">

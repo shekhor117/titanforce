@@ -646,6 +646,19 @@ class StoreDataService {
     }
   }
 
+  async deleteOrder(id: string): Promise<boolean> {
+    try {
+      const supabase = createClient()
+      if (!supabase) return false
+      const { error } = await supabase.from('orders').delete().eq('id', id)
+      if (error) throw error
+      return true
+    } catch (error) {
+      console.debug('[v0] Error deleting order:', error)
+      return false
+    }
+  }
+
   async updateOrderStatus(id: string, status: Order['status']): Promise<Order | null> {
     try {
       const supabase = createClient()

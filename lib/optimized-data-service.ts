@@ -91,15 +91,11 @@ class OptimizedDataService {
     }
 
     console.log(`[v0] Fetching fresh data for ${table}`)
+    const jsonSource = this.jsonSources[table]
 
     try {
-      const jsonSource = this.jsonSources[table]
-      if (jsonSource) {
-        const data = await this.fetchJsonData<T>(table, jsonSource, options)
-        this.cache.set(cacheKey, { data, timestamp: Date.now() })
-        return data
-      }
-
+      // Supabase is the source of truth. Static JSON is only a fast fallback
+      // when a table is unavailable or the network is temporarily offline.
       let query = this.supabase.from(table).select(options?.select || '*')
 
       if (options?.filter) {
@@ -119,13 +115,12 @@ class OptimizedDataService {
       const { data, error } = await query
 
       if (error) {
-        // If table doesn't exist, don't log as error - this is expected during initial setup
-        if (error.code === 'PGRST205' || error.message?.includes('Could not find the table') || error.message?.includes('schema cache')) {
-          console.debug(`[v0] Table '${table}' not yet created, returning cached or empty data`)
-          return cached?.data || []
+        if (jsonSource) {
+          const fallback = await this.fetchJsonData<T>(table, jsonSource, options)
+          this.cache.set(cacheKey, { data: fallback, timestamp: Date.now() })
+          return fallback
         }
         console.error(`[v0] Error fetching ${table}:`, error)
-        // Return stale cache if available, otherwise empty array
         return cached?.data || []
       }
 
@@ -137,10 +132,10 @@ class OptimizedDataService {
 
       return data || []
     } catch (err) {
-      // If table doesn't exist, don't log as error - this is expected during initial setup
-      if (err?.code === 'PGRST205' || err?.message?.includes('Could not find the table') || err?.message?.includes('schema cache')) {
-        console.debug(`[v0] Table '${table}' not yet created (exception), returning cached or empty data`)
-        return cached?.data || []
+      if (jsonSource) {
+        const fallback = await this.fetchJsonData<T>(table, jsonSource, options)
+        this.cache.set(cacheKey, { data: fallback, timestamp: Date.now() })
+        return fallback
       }
       console.error(`[v0] Exception fetching ${table}:`, err)
       return cached?.data || []
@@ -156,9 +151,6 @@ class OptimizedDataService {
     options?: { select?: string; filter?: { key: string; value: any } }
   ): () => void {
     const cacheKey = `${table}:${JSON.stringify(options)}`
-    if (this.jsonSources[table]) {
-      return () => undefined
-    }
     const channelKey = `${table}:channel`
 
     // Clean up existing subscription for this table
