@@ -20,14 +20,19 @@ export default function StoreProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     category: "Home",
     price: 0,
+    sku: "",
+    imageUrl: "",
+    stock: 0,
     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
     colors: ["Navy", "Gold"],
+    features: [],
   })
 
   useEffect(() => {
@@ -61,8 +66,12 @@ export default function StoreProductsPage() {
       description: product.description,
       category: product.category,
       price: product.price,
+      sku: product.sku || "",
+      imageUrl: product.imageUrl || product.image || "",
+      stock: product.stock || product.totalStock || 0,
       sizes: product.sizes,
       colors: product.colors,
+      features: product.features || [],
     })
     setShowForm(true)
   }
@@ -74,6 +83,9 @@ export default function StoreProductsPage() {
       description: "",
       category: "Home",
       price: 0,
+      sku: "",
+      imageUrl: "",
+      stock: 0,
       sizes: ["XS", "S", "M", "L", "XL", "XXL"],
       colors: ["Navy", "Gold"],
     })
@@ -95,7 +107,8 @@ export default function StoreProductsPage() {
         await StoreDataService.updateProduct(editingProduct.id, {
           ...formData,
           variants: editingProduct.variants,
-          imageUrl: editingProduct.image,
+          imageUrl: formData.imageUrl,
+          stock: formData.stock,
           rating: editingProduct.rating,
           reviews: editingProduct.reviews,
           features: editingProduct.features,
@@ -104,7 +117,7 @@ export default function StoreProductsPage() {
       } else {
         await StoreDataService.addProduct({
           ...formData,
-          imageUrl: "/placeholder.jpg",
+          imageUrl: formData.imageUrl,
           rating: 0,
           reviews: 0,
           features: [],
@@ -118,11 +131,14 @@ export default function StoreProductsPage() {
       await loadProducts()
       setShowForm(false)
     } catch (error) {
+      setError(error instanceof Error ? error.message : (isBn ? "পণ্য সংরক্ষণ ব্যর্থ" : "Failed to save product"))
     }
   }
 
   return (
     <div className="space-y-6">
+      {error && <div role="alert" className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-300">{error}</div>}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
@@ -303,9 +319,17 @@ export default function StoreProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    {isBn ? "মূল্য (৳)" : "Price (৳)"}
-                  </label>
+                  <label className="block text-sm font-medium text-foreground mb-2">SKU</label>
+                  <input type="text" name="sku" value={formData.sku} onChange={handleFormChange} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" placeholder="TF-HOME-2026" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Image URL</label>
+                  <input type="url" name="imageUrl" value={formData.imageUrl} onChange={handleFormChange} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" placeholder="https://..." />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">{isBn ? "মূল্য (৳)" : "Price (৳)"}</label>
                   <input
                     type="number"
                     name="price"
@@ -315,6 +339,17 @@ export default function StoreProductsPage() {
                     required
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><label className="block text-sm font-medium text-foreground mb-2">Initial stock</label><input type="number" min="0" name="stock" value={formData.stock} onChange={handleFormChange} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" /></div>
+                <div><label className="block text-sm font-medium text-foreground mb-2">Sizes</label><input value={formData.sizes.join(", ")} onChange={(e) => setFormData((prev) => ({ ...prev, sizes: e.target.value.split(",").map((v) => v.trim()).filter(Boolean) }))} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" /></div>
+                <div><label className="block text-sm font-medium text-foreground mb-2">Colors</label><input value={formData.colors.join(", ")} onChange={(e) => setFormData((prev) => ({ ...prev, colors: e.target.value.split(",").map((v) => v.trim()).filter(Boolean) }))} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" /></div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">{isBn ? "বৈশিষ্ট্য" : "Features (comma separated)"}</label>
+                <input value={formData.features.join(", ")} onChange={(e) => setFormData((prev) => ({ ...prev, features: e.target.value.split(",").map((v) => v.trim()).filter(Boolean) }))} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" />
               </div>
 
               <div>

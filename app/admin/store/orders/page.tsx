@@ -66,6 +66,17 @@ export default function StoreOrdersPage() {
     return matchesSearch && matchesStatus
   })
 
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm(isBn ? "এই অর্ডার মুছে ফেলবেন?" : "Delete this order?")) return
+    const deleted = await StoreDataService.deleteOrder(orderId)
+    if (!deleted) {
+      setError(isBn ? "অর্ডার মুছতে ব্যর্থ" : "Failed to delete order")
+      return
+    }
+    setSelectedOrder(null)
+    await loadOrders()
+  }
+
   const handleStatusChange = (orderId: string, newStatus: Order["status"]) => {
     StoreDataService.updateOrderStatus(orderId, newStatus)
     loadOrders()
@@ -374,6 +385,7 @@ export default function StoreOrdersPage() {
                         </button>
                       ))}
                     </div>
+                    <button type="button" onClick={() => void handleDeleteOrder(order.id)} className="mt-4 rounded-md border border-red-500/40 px-3 py-2 text-sm text-red-300 hover:bg-red-500/10">{isBn ? "অর্ডার মুছুন" : "Delete order"}</button>
                   </div>
                 </motion.div>
               )}
