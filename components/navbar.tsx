@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo, useEffect } from "react"
+import { useState, memo, useCallback, useMemo } from "react"
 import { Menu, X, Globe, ShoppingBag, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -18,15 +18,6 @@ function NavbarComponent() {
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
-
-  useEffect(() => {
-    if (!mobileMenuOpen) return
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMobileMenuOpen(false)
-    }
-    document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [mobileMenuOpen])
 
   const navLinks = [
     { href: "/", label: t.nav.home, icon: Home },
@@ -116,19 +107,12 @@ function NavbarComponent() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-black/55 backdrop-blur-md animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
+        <div className="md:hidden fixed inset-0 top-[73px] z-40 bg-foreground/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setMobileMenuOpen(false)}>
           <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={language === "bn" ? "মোবাইল মেনু" : "Mobile menu"}
-            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(88vw,360px)] flex-col overflow-y-auto rounded-l-3xl border-l border-white/10 bg-background/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-2xl shadow-black/40 animate-in slide-in-from-right duration-300"
+            className="ml-auto flex h-[calc(100dvh-73px)] w-[min(82vw,320px)] flex-col overflow-y-auto bg-background px-4 pb-4 pt-4 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-5 flex items-center justify-between border-b border-border/70 pb-4">
-              <div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary">Titan Force</p><p className="text-lg font-black tracking-tight">{language === "bn" ? "মেনু" : "Menu"}</p></div>
-              <button type="button" onClick={() => setMobileMenuOpen(false)} className="grid size-10 place-items-center rounded-full border border-border bg-muted/40 text-foreground transition-colors hover:bg-primary hover:text-primary-foreground" aria-label={language === "bn" ? "মেনু বন্ধ করুন" : "Close menu"}><X className="size-5" /></button>
-            </div>
-            <div className="mb-5 border-b border-border/70 pb-5">
+            <div className="mb-5 border-b border-border pb-5">
               <div className="grid grid-cols-[1fr_auto_auto] gap-2">
                 <div className="min-w-0 [&>div]:w-full [&>div>button]:min-h-11 [&>div>button]:rounded-xl [&>div>button]:border-0 [&>div>button]:bg-background [&>div>button]:shadow-lg [&>div>button]:hover:bg-background/80">
                   <ThemeToggle />
@@ -147,16 +131,15 @@ function NavbarComponent() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`group flex min-h-12 items-center justify-between rounded-xl border px-3.5 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === link.href ? "border-primary/30 bg-primary/10 text-primary shadow-sm shadow-primary/10" : "border-transparent text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
+                    className={`group flex min-h-11 items-center rounded-lg border px-3 py-2.5 text-sm font-bold uppercase tracking-wide transition-all ${pathname === link.href ? "border-primary/30 bg-primary/10 text-primary" : "border-transparent text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"} ${language === "bn" ? "font-[var(--font-bengali)]" : ""}`}
                     style={{ animationDelay: `${index * 40}ms` }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <span className="flex items-center gap-3"><span className={`grid size-8 place-items-center rounded-lg ${pathname === link.href ? "bg-primary text-primary-foreground" : "bg-muted/60 text-primary/80 group-hover:bg-primary/15"}`}><Icon className="size-4 transition-colors" /></span>{link.label}</span>
-                    <span className={`size-1.5 rounded-full bg-primary transition-opacity ${pathname === link.href ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
+                    <span className="flex items-center gap-3"><Icon className="size-4 text-primary/70 transition-colors group-hover:text-primary" />{link.label}</span>
                   </Link>
                 )
               })}
-              <Link href="/shop" className={`mt-3 flex min-h-14 items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border border-primary/20 bg-gradient-to-r from-primary/15 to-blue-500/10 text-foreground hover:border-primary/40 hover:bg-primary/20"}`} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/shop" className={`mt-2 flex min-h-12 items-center justify-between rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-wide transition-all ${pathname === "/shop" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border border-transparent bg-muted/40 text-foreground/70 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"}`} onClick={() => setMobileMenuOpen(false)}>
                 <span className="flex items-center gap-3"><ShoppingBag className="size-4" />{language === "bn" ? "স্টোর" : "STORE"}</span>
                 {cartItemCount > 0 && <span className="rounded-full bg-primary-foreground/20 px-2 py-0.5 text-xs">{cartItemCount > 9 ? "9+" : cartItemCount}</span>}
               </Link>
