@@ -63,13 +63,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
+      <main className="overflow-hidden">
         <Hero skipAnimation={hasSeenAnimation} />
         <ClubInfoSection />
         
         {/* Three Column Section */}
-        <section className="py-12 md:py-16 px-4 bg-background">
-          <div className="max-w-7xl mx-auto">
+        <section className="relative py-14 md:py-20 px-4 bg-background/70">
+          <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <HomeNextFixture />
               <HomeLeagueStandings />
