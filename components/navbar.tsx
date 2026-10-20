@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo, useCallback, useMemo } from "react"
+import { useState, useEffect, memo, useCallback, useMemo } from "react"
 import { Menu, X, Globe, ShoppingBag, Home, Users, CalendarDays, Sparkles, Mail } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -18,6 +18,17 @@ function NavbarComponent() {
   const { language, setLanguage, t } = useLanguage()
   const { user } = useAuth()
   const { items } = useCart()
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileMenuOpen])
 
   const navLinks = [
     { href: "/", label: t.nav.home, icon: Home },
