@@ -47,6 +47,10 @@ export function HomeLeagueStandings() {
     return <StandingsSkeleton />
   }
 
+  if (standings.length === 0) {
+    return null
+  }
+
   return (
     <div className="neo-card overflow-hidden h-full flex flex-col">
       {/* Header */}

@@ -64,6 +64,10 @@ export function PremiumMatchStats() {
     return 'Draw'
   }
 
+  if (!nextMatch && !lastMatch && topPlayers.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-12 md:py-16 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
@@ -80,6 +84,7 @@ export function PremiumMatchStats() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Next Match - Full Stats Link */}
           <motion.div
+            className={!nextMatch ? 'hidden' : undefined}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -106,17 +111,14 @@ export function PremiumMatchStats() {
                     View Full Stats & Prediction
                   </button>
                 </div>
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  <p className="text-sm">No upcoming matches</p>
-                </div>
-              )}
+              ) : null}
             </div>
           </Link>
           </motion.div>
 
           {/* Last Match - Stats & Facts */}
           <motion.div
+            className={!lastMatch ? 'hidden' : undefined}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
@@ -184,6 +186,7 @@ export function PremiumMatchStats() {
 
           {/* Top Players - with link */}
           <motion.div
+            className={topPlayers.length === 0 ? 'hidden' : undefined}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}

@@ -24,13 +24,7 @@ export function HomeNextFixture() {
   const nextMatch = matches.find(m => m.status === 'upcoming') || matches[0]
 
   if (!nextMatch) {
-    return (
-      <ScrollAnimatedElement variant="fadeInLeft">
-        <div className="neo-card p-6 h-full flex items-center justify-center">
-          <p className="text-muted-foreground text-center">No upcoming matches</p>
-        </div>
-      </ScrollAnimatedElement>
-    )
+    return null
   }
 
   return (
