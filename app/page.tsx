@@ -7,16 +7,33 @@ const HOME_TABLES = ["matches", "players", "news", "standings", "products"] as c
 
 type HomeData = Record<string, unknown[]>
 
+const HOME_DATA_TIMEOUT_MS = 2500
+
 async function getHomeData(): Promise<HomeData> {
   const supabase = await createClient()
   const results = await Promise.all(
     HOME_TABLES.map(async (table) => {
-      const { data, error } = await supabase.from(table).select("*").limit(50)
-      if (error) {
-        console.error(`[v0] Server homepage fetch failed for ${table}:`, error.message)
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), HOME_DATA_TIMEOUT_MS)
+
+      try {
+        const { data, error } = await supabase
+          .from(table)
+          .select("*")
+          .limit(50)
+          .abortSignal(controller.signal)
+
+        if (error) {
+          console.error(`[v0] Server homepage fetch failed for ${table}:`, error.message)
+          return [table, []] as const
+        }
+        return [table, data ?? []] as const
+      } catch (error) {
+        console.error(`[v0] Server homepage fetch timed out for ${table}:`, error)
         return [table, []] as const
+      } finally {
+        clearTimeout(timeout)
       }
-      return [table, data ?? []] as const
     }),
   )
   return Object.fromEntries(results)
