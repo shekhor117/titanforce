@@ -36,22 +36,22 @@ export function CookieConsent() {
   return (
     <aside
       aria-label="Cookie preferences"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-2xl rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-2xl sm:inset-x-6 sm:p-6"
+      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-h-[calc(100dvh-1.5rem)] max-w-2xl overflow-y-auto rounded-2xl border border-border bg-card/95 p-4 text-card-foreground shadow-2xl backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-6"
     >
       <div className="flex items-start gap-4">
         <div className="hidden size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary sm:flex" aria-hidden="true">
           <Cookie data-icon="inline-start" />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="font-display text-xl uppercase tracking-wide">We use cookies</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <h2 className="font-display text-lg uppercase tracking-wide sm:text-xl">We use cookies</h2>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
             We use essential cookies to keep Titan Force running and optional analytics cookies to improve your experience. Read our{" "}
             <Link href="/cookie-policy" className="font-semibold text-primary underline-offset-4 hover:underline">
               Cookie Policy
             </Link>
             .
           </p>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:flex sm:justify-end">
             <button
               type="button"
               onClick={() => chooseConsent("rejected")}
