@@ -19,6 +19,7 @@ interface CacheEntry<T> {
 
 class OptimizedDataService {
   private cache: Map<string, CacheEntry<any>> = new Map()
+  private inFlight: Map<string, Promise<any[]>> = new Map()
   private subscriptions: Map<string, RealtimeChannel> = new Map()
   private supabase = createClient()
   private CACHE_TTL = 5 * 60 * 1000 // 5 minutes
@@ -92,6 +93,21 @@ class OptimizedDataService {
 
     console.log(`[v0] Fetching fresh data for ${table}`)
     const jsonSource = this.jsonSources[table]
+    const inFlight = this.inFlight.get(cacheKey)
+    if (inFlight) return inFlight as Promise<T[]>
+
+    const request = this.fetchFromSupabase<T>(table, options, jsonSource, cacheKey)
+    this.inFlight.set(cacheKey, request)
+    return request.finally(() => this.inFlight.delete(cacheKey))
+  }
+
+  private async fetchFromSupabase<T>(
+    table: string,
+    options: { select?: string; filter?: { key: string; value: any }; order?: { key: string; ascending?: boolean }; limit?: number } | undefined,
+    jsonSource: string | undefined,
+    cacheKey: string,
+  ): Promise<T[]> {
+    const cached = this.cache.get(cacheKey)
 
     try {
       // Supabase is the source of truth. Static JSON is only a fast fallback

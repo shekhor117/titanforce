@@ -35,16 +35,19 @@ const notoSansBengali = Noto_Sans_Bengali({
 
 export const viewport: Viewport = defaultViewport
 
-export const metadata: Metadata = generatePageMetadata({
-  title: 'Titan Force Mulikandi | Official Football Club Website',
-  description: 'Official football club website',
-  alternates: {
-    languages: {
-      en: 'https://titanforcemulikandi.vercel.app/en',
-      bn: 'https://titanforcemulikandi.vercel.app/bn',
+export const metadata: Metadata = {
+  ...generatePageMetadata({
+    title: 'Titan Force Mulikandi | Official Football Club Website',
+    description: 'Official football club website',
+    alternates: {
+      languages: {
+        en: 'https://titanforcemulikandi.vercel.app/en',
+        bn: 'https://titanforcemulikandi.vercel.app/bn',
+      },
     },
-  },
-})
+  }),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://titanforcemulikandi.vercel.app'),
+}
 
 export default function RootLayout({
   children,

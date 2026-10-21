@@ -35,9 +35,10 @@ let newsRequest: Promise<NewsItem[]> | null = null
 
 // Keep public data fresh while still preventing duplicate requests during navigation.
 const CACHE_DURATION = 5000
-const PUBLIC_DATA_TIMEOUT = 7000
-const PUBLIC_DATA_RETRIES = 1
-const PUBLIC_DATA_RETRY_DELAY = 250
+// Keep the first paint responsive; static data is used only if Supabase is slow.
+const PUBLIC_DATA_TIMEOUT = 2500
+const PUBLIC_DATA_RETRIES = 0
+const PUBLIC_DATA_RETRY_DELAY = 0
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
@@ -100,13 +101,12 @@ export function useDataStore() {
             if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
           })
 
-          // Optional sections continue in the background without blocking the first paint.
-          for (const job of jobs.slice(3)) {
-            if (!isMounted) return
-            try { await job() } catch (reason) {
-              if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
-            }
-          }
+          // Optional sections also load together; no unrelated dataset can delay another.
+          const optional = await Promise.allSettled(jobs.slice(3).map((job) => job()))
+          if (!isMounted) return
+          optional.forEach((result) => {
+            if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
+          })
           dataCache.lastFetch = Date.now()
         }
 
