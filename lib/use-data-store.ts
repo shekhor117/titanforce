@@ -101,13 +101,12 @@ export function useDataStore() {
             if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
           })
 
-          // Optional sections continue in the background without blocking the first paint.
-          for (const job of jobs.slice(3)) {
-            if (!isMounted) return
-            try { await job() } catch (reason) {
-              if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
-            }
-          }
+          // Optional sections also load together; no unrelated dataset can delay another.
+          const optional = await Promise.allSettled(jobs.slice(3).map((job) => job()))
+          if (!isMounted) return
+          optional.forEach((result) => {
+            if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
+          })
           dataCache.lastFetch = Date.now()
         }
 
