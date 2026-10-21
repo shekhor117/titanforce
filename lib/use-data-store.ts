@@ -35,9 +35,10 @@ let newsRequest: Promise<NewsItem[]> | null = null
 
 // Keep public data fresh while still preventing duplicate requests during navigation.
 const CACHE_DURATION = 5000
-const PUBLIC_DATA_TIMEOUT = 7000
-const PUBLIC_DATA_RETRIES = 1
-const PUBLIC_DATA_RETRY_DELAY = 250
+// Keep the first paint responsive; static data is used only if Supabase is slow.
+const PUBLIC_DATA_TIMEOUT = 2500
+const PUBLIC_DATA_RETRIES = 0
+const PUBLIC_DATA_RETRY_DELAY = 0
 
 function withTimeout<T>(promise: Promise<T>, timeout = PUBLIC_DATA_TIMEOUT): Promise<T> {
   return Promise.race([
