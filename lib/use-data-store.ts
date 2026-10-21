@@ -34,7 +34,7 @@ let matchesRequest: Promise<Match[]> | null = null
 let newsRequest: Promise<NewsItem[]> | null = null
 
 // Keep public data fresh while still preventing duplicate requests during navigation.
-const CACHE_DURATION = 5000
+  const CACHE_DURATION = 60000
 // Keep the first paint responsive; static data is used only if Supabase is slow.
 const PUBLIC_DATA_TIMEOUT = 2500
 const PUBLIC_DATA_RETRIES = 0
@@ -80,7 +80,8 @@ export function useDataStore() {
     let isMounted = true
     const loadData = async () => {
       try {
-        setLoading(true)
+        // Render the server-provided shell immediately; refresh data in the background.
+        setLoading(false)
         setService(optimizedDataService)
 
         const loadAllBackgroundData = async () => {
