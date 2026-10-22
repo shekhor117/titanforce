@@ -21,6 +21,8 @@ export default function StoreProductsPage() {
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -100,38 +102,55 @@ export default function StoreProductsPage() {
     }))
   }
 
+  const handleImageUpload = async (file: File) => {
+    setError(null)
+    setIsUploading(true)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      const response = await fetch('/api/upload-product-image', { method: 'POST', body })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || 'Image upload failed')
+      setFormData((prev) => ({ ...prev, imageUrl: result.url }))
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Image upload failed')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+    setIsSaving(true)
     try {
-      if (editingProduct) {
-        await StoreDataService.updateProduct(editingProduct.id, {
-          ...formData,
-          variants: editingProduct.variants,
-          imageUrl: formData.imageUrl,
-          stock: formData.stock,
-          rating: editingProduct.rating,
-          reviews: editingProduct.reviews,
-          features: editingProduct.features,
-          sku: editingProduct.sku,
-        })
-      } else {
-        await StoreDataService.addProduct({
-          ...formData,
-          imageUrl: formData.imageUrl,
-          rating: 0,
-          reviews: 0,
-          features: [],
-          sku: `SKU-${Date.now()}`,
-          variants: formData.colors.flatMap((color) =>
-            formData.sizes.map((size) => ({ color, size, stock: 10 }))
-          ),
-          stock: formData.colors.length * formData.sizes.length * 10,
-        })
-      }
+      const savedProduct = editingProduct
+        ? await StoreDataService.updateProduct(editingProduct.id, {
+            ...formData,
+            variants: editingProduct.variants,
+            imageUrl: formData.imageUrl,
+            stock: formData.stock,
+            rating: editingProduct.rating,
+            reviews: editingProduct.reviews,
+            features: formData.features,
+            sku: formData.sku,
+          })
+        : await StoreDataService.addProduct({
+            ...formData,
+            rating: 0,
+            reviews: 0,
+            features: formData.features,
+            sku: formData.sku || `SKU-${Date.now()}`,
+            variants: formData.colors.flatMap((color) => formData.sizes.map((size) => ({ color, size, stock: 10 }))),
+            stock: formData.colors.length * formData.sizes.length * 10,
+          })
+      if (!savedProduct) throw new Error(isBn ? 'পণ্য সংরক্ষণ করা যায়নি' : 'Product could not be saved')
       await loadProducts()
       setShowForm(false)
     } catch (error) {
       setError(error instanceof Error ? error.message : (isBn ? "পণ্য সংরক্ষণ ব্যর্থ" : "Failed to save product"))
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -324,8 +343,15 @@ export default function StoreProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Image URL</label>
-                  <input type="url" name="imageUrl" value={formData.imageUrl} onChange={handleFormChange} className="w-full px-4 py-2 bg-background rounded-lg neo-input border text-foreground focus:outline-none" placeholder="https://..." />
+                  <label className="block text-sm font-medium text-foreground mb-2">Product image</label>
+                  <div className="flex gap-2">
+                    <input type="url" name="imageUrl" value={formData.imageUrl} onChange={handleFormChange} className="min-w-0 flex-1 rounded-lg border bg-background px-4 py-2 text-foreground neo-input focus:outline-none" placeholder="https://..." />
+                    <label className="cursor-pointer rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/20">
+                      {isUploading ? 'Uploading...' : 'Upload'}
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" disabled={isUploading} onChange={(event) => { const file = event.target.files?.[0]; if (file) void handleImageUpload(file); event.currentTarget.value = '' }} />
+                    </label>
+                  </div>
+                  {formData.imageUrl && <img src={formData.imageUrl} alt="Product preview" className="mt-3 h-24 w-24 rounded-lg object-cover" />}
                 </div>
 
                 <div>
@@ -369,7 +395,8 @@ export default function StoreProductsPage() {
               <div className="flex gap-4">
                 <button
                   type="submit"
-                  className="neo-btn neo-btn-primary flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                  disabled={isSaving || isUploading}
+                  className="neo-btn neo-btn-primary flex-1 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
                 >
                   {isBn ? "সংরক্ষণ" : "Save"}
                 </button>
