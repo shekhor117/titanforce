@@ -94,20 +94,15 @@ export function useDataStore() {
             async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) },
           ]
 
-          // Load the sections used above the fold together. Each result is committed
-          // independently, so a slow optional dataset cannot hold up the homepage.
-          const critical = await Promise.allSettled(jobs.slice(0, 3).map((job) => job()))
-          if (!isMounted) return
-          critical.forEach((result) => {
-            if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
-          })
-
-          // Optional sections also load together; no unrelated dataset can delay another.
-          const optional = await Promise.allSettled(jobs.slice(3).map((job) => job()))
-          if (!isMounted) return
-          optional.forEach((result) => {
-            if (result.status === 'rejected') setError(result.reason instanceof Error ? result.reason : new Error(String(result.reason)))
-          })
+          // Load each dataset one at a time to keep database traffic predictable.
+          for (const job of jobs) {
+            if (!isMounted) return
+            try {
+              await job()
+            } catch (reason) {
+              if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
+            }
+          }
           dataCache.lastFetch = Date.now()
         }
 
