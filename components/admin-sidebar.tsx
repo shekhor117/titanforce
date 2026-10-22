@@ -2,16 +2,26 @@
 
 import { useAdmin } from "@/lib/admin-context"
 import { useLanguage } from "@/lib/language-context"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { LogOut, Menu } from "lucide-react"
-import { useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export function AdminSidebar() {
   const { logout, isLoading, admin } = useAdmin()
   const { language } = useLanguage()
   const router = useRouter()
+  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileOpen])
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isBn = language === "bn"
   const isAdmin = admin?.role === "admin"
@@ -120,7 +130,7 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-colors ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-foreground hover:bg-primary/10 hover:text-primary transition-colors ${pathname === item.href || pathname?.startsWith(`${item.href}/`) ? "bg-primary/10 text-primary" : ""} ${
                 isBn ? "font-[var(--font-bengali)]" : ""
               }`}
             >

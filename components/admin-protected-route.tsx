@@ -24,7 +24,8 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     // Check if we're on a public admin page
     const isPublicPage = pathname?.includes("/admin/login") || 
                          pathname?.includes("/admin/signup") || 
-                         pathname?.includes("/admin/forgot-password")
+                         pathname?.includes("/admin/forgot-password") ||
+                         pathname?.includes("/admin/reset-password")
 
     // Only attempt redirect when initialization is complete AND we're not logged in
     if (isInitialized && !admin && !isPublicPage) {
