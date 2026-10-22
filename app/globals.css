@@ -151,6 +151,16 @@ html {
   }
 }
 
+/* Shared admin/public control-surface tokens keep CRUD screens and public pages visually consistent. */
+.admin-shell .neo-btn {
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, var(--border));
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+}
+
+.admin-shell .neo-btn:hover {
+  background: color-mix(in srgb, var(--primary) 14%, var(--card));
+}
+
 /* Keep admin content readable in both theme modes, including native controls. */
 .admin-shell {
   color: var(--foreground);

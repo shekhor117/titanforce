@@ -42,8 +42,8 @@ function NavbarComponent() {
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-xl bg-background/70">
-      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-4 sm:py-4">
+    <nav className="sticky top-0 z-50 border-b-2 border-primary bg-card/95 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-4">
         <Link href="/" className="flex items-center gap-1 sm:gap-2 min-w-0 group">
           <Image
             src="/logos/titanforce-logo.svg"

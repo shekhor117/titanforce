@@ -39,7 +39,10 @@ export function HomePageClient({ initialData }: { initialData: InitialData }) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background" data-initial-data={Object.keys(initialData).join(",")}>
+    <div className="admin-shell min-h-screen bg-background text-foreground" data-initial-data={Object.keys(initialData).join(",")}>
+      <div className="border-b border-primary/30 bg-card/90 px-4 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+        Titan Force Mulikandi · Official Control Surface
+      </div>
       <Navbar />
       <main className="overflow-hidden">
         <Hero skipAnimation={hasSeenAnimation} />
