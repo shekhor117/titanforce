@@ -45,24 +45,22 @@ export default function AdminDashboard() {
   const [honourStats, setHonourStats] = useState({ total: 0, featured: 0, byCategory: {} })
   const [storeProducts, setStoreProducts] = useState<any[]>([])
   const [storeOrders, setStoreOrders] = useState<any[]>([])
+  const [dashboardError, setDashboardError] = useState<string | null>(null)
   
   useEffect(() => {
     // Consolidate all data loading into a single effect
     const loadAllData = async () => {
       try {
-        // Load all stats in parallel for better performance
-        const [playerStatsData, galleryStatsData, honourStatsData, products, orders] = await Promise.all([
-          PlayerDataService.getPlayerStats(),
-          GalleryDataService.getGalleryStats(),
-          HonourDataService.getHonourStats(),
-          StoreDataService.getProducts(),
-          StoreDataService.getOrders(),
-        ])
-
+        setDashboardError(null)
+        const playerStatsData = await PlayerDataService.getPlayerStats()
         setPlayerStats(playerStatsData)
+        const galleryStatsData = await GalleryDataService.getGalleryStats()
         setGalleryStats(galleryStatsData)
+        const honourStatsData = await HonourDataService.getHonourStats()
         setHonourStats(honourStatsData)
+        const products = await StoreDataService.getProducts()
         setStoreProducts(products)
+        const orders = await StoreDataService.getOrders()
         setStoreOrders(orders)
 
         // Load local storage data
@@ -73,6 +71,7 @@ export default function AdminDashboard() {
         setActivityLog(Array.isArray(dataStore.getActivityLog()) ? dataStore.getActivityLog() : [])
       } catch (err) {
         console.error("[v0] Error loading dashboard data:", err)
+        setDashboardError(err instanceof Error ? err.message : (isBn ? "ড্যাশবোর্ড ডেটা লোড করা যায়নি" : "Dashboard data could not be loaded"))
       }
     }
     loadAllData()
@@ -176,7 +175,7 @@ export default function AdminDashboard() {
       subtext: `${galleryStats.featured} ${isBn ? "বৈশিষ্ট্য" : "featured"}`
     },
     {
-      label: isBn ? "সম্মান���া" : "Honours",
+      label: isBn ? "সম্মান�����া" : "Honours",
       value: honourStats.total.toString(),
       icon: <Trophy className="w-6 h-6" />,
       href: "/admin/honours",
@@ -332,14 +331,14 @@ export default function AdminDashboard() {
     },
     { 
       label: isBn ? "বিশ্লেষণ ড্যাশবোর্ড" : "Analytics Dashboard", 
-      description: isBn ? "বিস্তারিত পার��রম্যান্স মেট্রিক্স দেখুন" : "View detailed performance metrics",
+      description: isBn ? "বিস্তারিত প��র��রম্যান্স মেট্রিক্স দেখুন" : "View detailed performance metrics",
       href: "/admin/analytics", 
       icon: <BarChart3 className="w-5 h-5" />,
       color: "text-purple-400",
       bgColor: "bg-purple-500/10"
     },
     { 
-      label: isBn ? "ব্যবহারকারী ���্যবস্থাপনা" : "User Management", 
+      label: isBn ? "ব্যবহারকা���ী ���্যবস্থাপনা" : "User Management",
       description: isBn ? "সমস্ত ব্যবহ��রকারী অ্যাকাউন্ট পরিচালন��� করুন" : "Manage all user accounts",
       href: "/admin/users", 
       icon: <Users className="w-5 h-5" />,
@@ -671,11 +670,11 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
         {/* Error State */}
-        {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
-            <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{error instanceof Error ? error.message : "Unknown error"}</p>
-          </div>
-        )}
+  {(error || dashboardError) && (
+  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-200">
+  <p>{isBn ? "ডেটা লোড করতে ত্রুটি: " : "Error loading data: "}{dashboardError || (error instanceof Error ? error.message : "Unknown error")}</p>
+  </div>
+  )}
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
