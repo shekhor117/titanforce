@@ -36,7 +36,8 @@ let newsRequest: Promise<NewsItem[]> | null = null
 // Keep public data fresh while still preventing duplicate requests during navigation.
   const CACHE_DURATION = 60000
 // Keep the first paint responsive; static data is used only if Supabase is slow.
-const PUBLIC_DATA_TIMEOUT = 2500
+// Production Supabase requests may include a cold-start round trip.
+const PUBLIC_DATA_TIMEOUT = 8000
 const PUBLIC_DATA_RETRIES = 0
 const PUBLIC_DATA_RETRY_DELAY = 0
 
