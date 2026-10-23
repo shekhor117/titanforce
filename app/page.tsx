@@ -3,11 +3,13 @@ import { createClient } from "@/lib/supabase/server"
 
 export const dynamic = "force-dynamic"
 
-const HOME_TABLES = ["matches", "players", "news", "standings", "products"] as const
+const HOME_TABLES = ["matches", "players", "news_items", "partners", "media_items", "products"] as const
 
 type HomeData = Record<string, unknown[]>
 
-const HOME_DATA_TIMEOUT_MS = 2500
+// Vercel-to-Supabase cold starts can exceed local preview timings.
+const HOME_DATA_TIMEOUT_MS = 8000
+const HOME_PAGE_SIZE = 12
 
 async function getHomeData(): Promise<HomeData> {
   const supabase = await createClient()
@@ -21,7 +23,7 @@ async function getHomeData(): Promise<HomeData> {
       const { data, error } = await supabase
         .from(table)
         .select("*")
-        .limit(50)
+        .range(0, HOME_PAGE_SIZE - 1)
         .abortSignal(controller.signal)
 
       if (error) {

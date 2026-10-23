@@ -19,6 +19,16 @@ const GalleryShowcase = dynamic(() => import("@/components/gallery-showcase").th
 
 type InitialData = Record<string, unknown[]>
 
+function SectionFallback({ label }: { label: string }) {
+  return (
+    <section className="mx-auto my-8 max-w-7xl px-4" aria-live="polite">
+      <div className="rounded-2xl border border-border/60 bg-card/60 p-6 text-sm text-muted-foreground">
+        Loading {label}…
+      </div>
+    </section>
+  )
+}
+
 export function HomePageClient({ initialData }: { initialData: InitialData }) {
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
 
@@ -51,11 +61,11 @@ export function HomePageClient({ initialData }: { initialData: InitialData }) {
           <div className="mx-auto max-w-7xl"><div className="grid grid-cols-1 gap-6 md:grid-cols-2"><HomeNextFixture /><HomeLeagueStandings /></div></div>
         </section>
         <HomeLatestNews />
-        <Suspense fallback={null}><PremiumMatchStats /></Suspense>
-        <Suspense fallback={null}><PlayersGrid /></Suspense>
+        <Suspense fallback={<SectionFallback label="match statistics" />}><PremiumMatchStats /></Suspense>
+        <Suspense fallback={<SectionFallback label="players" />}><PlayersGrid /></Suspense>
         <HomeAboutGallery />
-        <Suspense fallback={null}><HomeShopLatest /></Suspense>
-        <Suspense fallback={null}><GalleryShowcase /></Suspense>
+        <Suspense fallback={<SectionFallback label="shop products" />}><HomeShopLatest /></Suspense>
+        <Suspense fallback={<SectionFallback label="gallery" />}><GalleryShowcase /></Suspense>
         <Contact />
       </main>
       <Footer />
