@@ -7,25 +7,30 @@ import { useEffect, useState } from 'react'
 import StoreDataService, { StoreProduct } from '@/lib/store-data-service'
 import { ScrollProgressAnimation } from './scroll-progress-animation'
 
-export function HomeShopLatest() {
-  const [products, setProducts] = useState<StoreProduct[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+export function HomeShopLatest({ initialProducts = [] }: { initialProducts?: StoreProduct[] }) {
+  const [products, setProducts] = useState<StoreProduct[]>(initialProducts.slice(0, 6))
+  const [isLoading, setIsLoading] = useState(initialProducts.length === 0)
 
   useEffect(() => {
+    let isMounted = true
     const loadProducts = async () => {
-      setIsLoading(true)
-      const data = await StoreDataService.getFeaturedProducts(6)
-      setProducts(data || [])
+      const timeout = new Promise<StoreProduct[]>((resolve) => window.setTimeout(() => resolve([]), 6000))
+      const data = await Promise.race([StoreDataService.getFeaturedProducts(6), timeout])
+      if (!isMounted) return
+      if (data.length > 0) setProducts(data)
       setIsLoading(false)
     }
 
     loadProducts()
 
-    // Subscribe to realtime updates
+    return () => { isMounted = false }
+  }, [])
+
+  /* Realtime updates are optional; they must never keep the initial section loading. */
+  useEffect(() => {
     const unsubscribe = StoreDataService.subscribeToProducts((updatedProducts) => {
       setProducts(updatedProducts.slice(0, 6))
-    }, (error) => {
-    })
+    }, () => {})
 
     return () => unsubscribe()
   }, [])
