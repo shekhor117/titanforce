@@ -164,6 +164,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [isConfigured])
 
   const login = async (email: string, password: string) => {
+    if (isLoading) return
     setIsLoading(true)
     setError(null)
 

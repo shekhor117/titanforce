@@ -44,6 +44,7 @@ export function AdminLoginPage() {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isSubmitting) return
     setLocalError("")
 
     if (!email || !password) {
