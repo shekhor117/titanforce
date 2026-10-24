@@ -33,6 +33,14 @@ let playersRequest: Promise<Player[]> | null = null
 let matchesRequest: Promise<Match[]> | null = null
 let newsRequest: Promise<NewsItem[]> | null = null
 
+export function hydrateDataCache(initialData: Record<string, unknown[]>) {
+  if (Array.isArray(initialData.players) && initialData.players.length > 0) dataCache.players = initialData.players as Player[]
+  if (Array.isArray(initialData.matches) && initialData.matches.length > 0) dataCache.matches = initialData.matches as Match[]
+  if (Array.isArray(initialData.partners) && initialData.partners.length > 0) dataCache.partners = initialData.partners as Partner[]
+  if (Array.isArray(initialData.news_items) && initialData.news_items.length > 0) dataCache.newsItems = initialData.news_items as NewsItem[]
+  if (Array.isArray(initialData.media_items) && initialData.media_items.length > 0) dataCache.mediaItems = initialData.media_items as MediaItem[]
+}
+
 // Keep public data fresh while still preventing duplicate requests during navigation.
   const CACHE_DURATION = 60000
 // Keep the first paint responsive; static data is used only if Supabase is slow.

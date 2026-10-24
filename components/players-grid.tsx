@@ -22,8 +22,8 @@ export function PlayersGrid() {
   const [api, setApi] = useState<any>(null)
 
   // Get all active players for carousel
-  const activePlayers = Array.isArray(players) 
-    ? players.filter(p => p.status?.toLowerCase() === "active")
+  const activePlayers = Array.isArray(players)
+    ? players.filter((p) => !p.status || p.status.toLowerCase() === "active")
     : []
 
   // Show skeleton while loading
