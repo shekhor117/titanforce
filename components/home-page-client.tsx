@@ -11,6 +11,7 @@ import { HomeLeagueStandings } from "@/components/home-league-standings"
 import { HomeAboutGallery } from "@/components/home-about-gallery"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { hydrateDataCache } from "@/lib/use-data-store"
 
 const PremiumMatchStats = dynamic(() => import("@/components/premium-match-stats").then((m) => ({ default: m.PremiumMatchStats })))
 const PlayersGrid = dynamic(() => import("@/components/players-grid").then((m) => ({ default: m.PlayersGrid })))
@@ -30,6 +31,7 @@ function SectionFallback({ label }: { label: string }) {
 }
 
 export function HomePageClient({ initialData }: { initialData: InitialData }) {
+  hydrateDataCache(initialData)
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
 
   useEffect(() => {
