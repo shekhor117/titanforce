@@ -88,8 +88,17 @@ export function useDataStore() {
   useEffect(() => {
     let isMounted = true
     const loadData = async () => {
+      if (dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION &&
+          (dataCache.players || dataCache.matches || dataCache.newsItems)) {
+        if (isMounted) {
+          setService(optimizedDataService)
+          setLoading(false)
+        }
+        return
+      }
+
       try {
-        // Render the server-provided shell immediately; refresh data in the background.
+        // Keep existing data visible while a stale cache refreshes in the background.
         setLoading(false)
         setService(optimizedDataService)
 
@@ -266,8 +275,8 @@ export function usePlayers() {
     }, 3000)
 
     const loadPlayers = async () => {
-      // If cache is fresh and available, use it immediately
-      if (dataCache.players && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      // If cache is fresh and available, use it immediately without refetching.
+      if (dataCache.players && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setPlayers(dataCache.players)
         setLoading(false)
         return
@@ -333,7 +342,7 @@ export function useMatches() {
 
     const loadMatches = async () => {
       // If cache is fresh and available, use it immediately
-      if (dataCache.matches && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      if (dataCache.matches && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setMatches(dataCache.matches)
         setLoading(false)
         return
@@ -395,7 +404,7 @@ export function usePartners() {
     let isMounted = true
 
     const loadPartners = async () => {
-      if (dataCache.partners && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      if (dataCache.partners && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setPartners(dataCache.partners)
         setLoading(false)
         return
@@ -454,7 +463,7 @@ export function useNewsItems() {
 
     const loadNewsItems = async () => {
       // If cache is fresh and available, use it immediately
-      if (dataCache.newsItems && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      if (dataCache.newsItems && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setNewsItems(dataCache.newsItems)
         setLoading(false)
         return
@@ -516,7 +525,7 @@ export function useMediaItems() {
     let isMounted = true
 
     const loadMediaItems = async () => {
-      if (dataCache.mediaItems && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      if (dataCache.mediaItems && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setMediaItems(dataCache.mediaItems)
         setLoading(false)
         return
@@ -574,7 +583,7 @@ export function useTrophies() {
     let isMounted = true
 
     const loadTrophies = async () => {
-      if (dataCache.trophies && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
+      if (dataCache.trophies && dataCache.lastFetch && Date.now() - dataCache.lastFetch < CACHE_DURATION) {
         setTrophies(dataCache.trophies)
         setLoading(false)
         return
