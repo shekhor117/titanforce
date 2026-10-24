@@ -66,7 +66,7 @@ export function HomePageClient({ initialData }: { initialData: InitialData }) {
         <Suspense fallback={<SectionFallback label="match statistics" />}><PremiumMatchStats /></Suspense>
         <Suspense fallback={<SectionFallback label="players" />}><PlayersGrid /></Suspense>
         <HomeAboutGallery />
-        <Suspense fallback={<SectionFallback label="shop products" />}><HomeShopLatest /></Suspense>
+        <Suspense fallback={<SectionFallback label="shop products" />}><HomeShopLatest initialProducts={(initialData.products || []) as any[]} /></Suspense>
         <Suspense fallback={<SectionFallback label="gallery" />}><GalleryShowcase /></Suspense>
         <Contact />
       </main>

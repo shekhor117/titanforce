@@ -109,7 +109,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           const { data, error } = await Promise.race([
             supabase.auth.getUser(),
             new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('User session check timeout')), 15000)
+              setTimeout(() => reject(new Error('User session check timed out')), 6000)
             ),
           ]) as any
 
@@ -168,7 +168,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setError(null)
 
     try {
-      const user = await signInWithEmail(email, password)
+      const user = await Promise.race([
+        signInWithEmail(email, password),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 12000),
+        ),
+      ])
       
       // Use the user returned by signInWithPassword. Calling getUser immediately
       // afterwards can contend with Supabase's auth lock and lose the session.
