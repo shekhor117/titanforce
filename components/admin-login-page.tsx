@@ -23,6 +23,15 @@ export function AdminLoginPage() {
   const [shouldAutoRedirect, setShouldAutoRedirect] = useState(true)
 
   useEffect(() => {
+    if (!isSubmitting) return
+    const timeout = window.setTimeout(() => {
+      setIsSubmitting(false)
+      setLocalError(isBn ? "লগইন সময় শেষ হয়েছে। আবার চেষ্টা করুন।" : "Login timed out. Please try again.")
+    }, 14000)
+    return () => window.clearTimeout(timeout)
+  }, [isSubmitting, isBn])
+
+  useEffect(() => {
     // Check if user is already logged in and not on login page
     // Don't auto-redirect from login page - let user control navigation
     // This allows testing the login form functionality
