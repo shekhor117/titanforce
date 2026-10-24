@@ -27,8 +27,6 @@ class OptimizedDataService {
     players: '/data/players.json',
     player_profiles: '/data/players.json',
     player_positions: '/data/players.json',
-    standings: '/data/players.json',
-    injuries: '/data/players.json',
     matches: '/data/matches.json',
     news: '/data/content.json',
     news_items: '/data/content.json',
@@ -39,6 +37,16 @@ class OptimizedDataService {
     fans: '/data/club.json',
     trophies: '/data/club.json',
     products: '/data/store.json',
+  }
+
+  private normalizeRows<T>(rows: T[]): T[] {
+    const seen = new Set<string>()
+    return rows.filter((row: any) => {
+      const key = row?.id == null ? JSON.stringify(row) : String(row.id)
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
   }
 
   private async fetchJsonData<T>(table: string, source: string, options?: { select?: string; filter?: { key: string; value: any }; order?: { key: string; ascending?: boolean }; limit?: number }): Promise<T[]> {
@@ -66,7 +74,7 @@ class OptimizedDataService {
       const fields = options.select.split(',').map((field) => field.trim())
       rows = rows.map((row: any) => Object.fromEntries(fields.map((field) => [field, row[field]]))) as T[]
     }
-    return rows
+    return this.normalizeRows(rows)
   }
 
   /**
@@ -141,12 +149,13 @@ class OptimizedDataService {
       }
 
       // Update cache
+      const normalizedData = this.normalizeRows<T>((data || []) as T[])
       this.cache.set(cacheKey, {
-        data: data || [],
+        data: normalizedData,
         timestamp: Date.now(),
       })
 
-      return data || []
+      return normalizedData
     } catch (err) {
       if (jsonSource) {
         const fallback = await this.fetchJsonData<T>(table, jsonSource, options)
@@ -207,8 +216,8 @@ class OptimizedDataService {
           const data = cached.data as T[]
 
           if (payload.eventType === 'INSERT') {
-            // Add new item to cache
-            cached.data = [...data, payload.new as T]
+            // Realtime can replay an insert after a refresh; keep one row per id.
+            cached.data = this.normalizeRows([...data, payload.new as T])
           } else if (payload.eventType === 'UPDATE') {
             // Update existing item
             cached.data = data.map((item) =>
