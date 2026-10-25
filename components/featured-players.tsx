@@ -142,6 +142,10 @@ export function FeaturedPlayers() {
                       fill
                       className="object-cover object-top group-hover/card:scale-110 transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, 320px"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null
+                        event.currentTarget.src = "/api/placeholder/600/600"
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
