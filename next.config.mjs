@@ -22,6 +22,16 @@ const nextConfig = {
         destination: '/team-squad',
         permanent: false,
       },
+      {
+        source: '/squad',
+        destination: '/team-squad',
+        permanent: false,
+      },
+      {
+        source: '/fixtures',
+        destination: '/fixtures-results',
+        permanent: false,
+      },
     ]
   },
 }
