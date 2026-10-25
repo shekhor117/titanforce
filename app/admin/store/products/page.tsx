@@ -207,7 +207,7 @@ export default function StoreProductsPage() {
       {/* Products Table */}
       {isLoading ? (
         <div className="text-center py-12">
-          <p className="text-foreground/60">{isBn ? "লোড হচ্ছে..." : "Loading..."}</p>
+          <p className="text-foreground/60">{isBn ? "লো��� হচ্ছে..." : "Loading..."}</p>
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="bg-secondary rounded-lg p-8 text-center">
@@ -238,11 +238,15 @@ export default function StoreProductsPage() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-10 h-10 rounded object-cover"
-                        />
+              <img
+                src={product.imageUrl || "/placeholder.svg"}
+                alt={product.name}
+                className="w-10 h-10 rounded object-cover"
+                onError={(event) => {
+                  event.currentTarget.onerror = null
+                  event.currentTarget.src = "/placeholder.svg"
+                }}
+              />
                         <span className="font-medium text-foreground">{product.name}</span>
                       </div>
                     </td>

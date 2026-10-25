@@ -15,6 +15,15 @@ const nextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
+  async redirects() {
+    return [
+      {
+        source: '/players',
+        destination: '/team-squad',
+        permanent: false,
+      },
+    ]
+  },
 }
 
 export default nextConfig
