@@ -453,6 +453,22 @@ class StoreDataService {
       const supabase = createClient()
       if (!supabase) return null
 
+      const updateData = {
+        ...(updates.name !== undefined && { name: updates.name }),
+        ...(updates.description !== undefined && { description: updates.description }),
+        ...(updates.category !== undefined && { category: updates.category }),
+        ...(updates.price !== undefined && { price: updates.price }),
+        ...(updates.imageUrl !== undefined && { image_url: updates.imageUrl }),
+        ...(updates.sizes !== undefined && { sizes: updates.sizes }),
+        ...(updates.colors !== undefined && { colors: updates.colors }),
+        ...(updates.stock !== undefined && { total_stock: updates.stock }),
+        ...(updates.rating !== undefined && { rating: updates.rating }),
+        ...(updates.reviews !== undefined && { reviews: updates.reviews }),
+        ...(updates.features !== undefined && { features: updates.features }),
+        ...(updates.sku !== undefined && { sku: updates.sku }),
+        ...(updates.variants !== undefined && { variants: updates.variants }),
+      }
+
       const { data, error } = await supabase
         .from('products')
         .update(updateData)
