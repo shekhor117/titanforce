@@ -13,32 +13,31 @@ const HOME_PAGE_SIZE = 12
 
 async function getHomeData(): Promise<HomeData> {
   const supabase = await createClient()
-  const results: Array<readonly [string, unknown[]]> = []
+  const results = await Promise.all(
+    HOME_TABLES.map(async (table) => {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), HOME_DATA_TIMEOUT_MS)
 
-  for (const table of HOME_TABLES) {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), HOME_DATA_TIMEOUT_MS)
+      try {
+        const { data, error } = await supabase
+          .from(table)
+          .select("*")
+          .range(0, HOME_PAGE_SIZE - 1)
+          .abortSignal(controller.signal)
 
-    try {
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .range(0, HOME_PAGE_SIZE - 1)
-        .abortSignal(controller.signal)
-
-      if (error) {
-        console.error(`[v0] Server homepage fetch failed for ${table}:`, error.message)
-        results.push([table, []])
-      } else {
-        results.push([table, data ?? []])
+        if (error) {
+          console.error(`[v0] Server homepage fetch failed for ${table}:`, error.message)
+          return [table, []] as const
+        }
+        return [table, data ?? []] as const
+      } catch (error) {
+        console.error(`[v0] Server homepage fetch timed out for ${table}:`, error)
+        return [table, []] as const
+      } finally {
+        clearTimeout(timeout)
       }
-    } catch (error) {
-      console.error(`[v0] Server homepage fetch timed out for ${table}:`, error)
-      results.push([table, []])
-    } finally {
-      clearTimeout(timeout)
-    }
-  }
+    }),
+  )
 
   return Object.fromEntries(results)
 }
