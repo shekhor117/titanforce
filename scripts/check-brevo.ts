@@ -131,7 +131,7 @@ async function sendTestEmail(testEmail: string) {
                 Your Brevo SMTP connection is working correctly!
               </p>
               <p style="color: #aaa; font-size: 12px; margin: 20px 0;">
-                If you received this email, you can now use Brevo to send OTP codes and other transactional emails.
+                If you received this email, Brevo is configured for transactional email.
               </p>
               <p style="color: #aaa; font-size: 11px; margin: 20px 0;">
                 Sent at: ${new Date().toISOString()}

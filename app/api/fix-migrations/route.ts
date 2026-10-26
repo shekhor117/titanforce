@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const tables = [
       'players', 'matches', 'standings', 'honours', 'player_honours',
       'news_items', 'media_items', 'site_settings', 'injuries', 
-      'partnerships', 'contact_messages', 'trophies', 'otp_codes'
+      'partnerships', 'contact_messages', 'trophies'
     ]
 
     for (const table of tables) {

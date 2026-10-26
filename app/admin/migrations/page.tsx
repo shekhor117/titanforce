@@ -168,7 +168,7 @@ export default function MigrationsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  OTP & Auth
+                  Authentication
                 </div>
               </div>
             </div>

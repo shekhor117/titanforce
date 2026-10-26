@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { checkUploadRateLimit } from "@/lib/otp-rate-limit"
+import { checkUploadRateLimit } from "@/lib/upload-rate-limit"
 import { NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 

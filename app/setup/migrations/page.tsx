@@ -212,8 +212,7 @@ export default function MigrationsSetupPage() {
                   <li>Go to <a href="https://app.supabase.com" target="_blank" className="text-primary hover:underline">Supabase Dashboard</a></li>
                   <li>Select your project and navigate to SQL Editor</li>
                   <li>Click "New Query" and create a new SQL query</li>
-                  <li>Open <code className="bg-background px-2 py-1 rounded text-foreground">supabase/migrations/20260618_create_otp_codes_table.sql</code> from your repo</li>
-                  <li>Copy and paste the entire SQL content</li>
+                            <li>Copy and paste the entire SQL content</li>
                   <li>Click "Run" to execute the migration</li>
                 </ol>
               </div>
@@ -227,7 +226,7 @@ export default function MigrationsSetupPage() {
               <div>
                 <h3 className="font-bold text-green-900 text-lg">{message}</h3>
                 <p className="text-green-800 mt-2">
-                  Your OTP table is ready. Users can now receive OTP codes via Brevo email. Refresh the page to test the login flow.
+                  Your authentication tables are ready. Refresh the page to test the login flow.
                 </p>
               </div>
             </div>
@@ -252,7 +251,7 @@ export default function MigrationsSetupPage() {
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>✓ players, matches, news_items</li>
                 <li>✓ media_items, honours, injuries</li>
-                <li>✓ otp_codes, site_settings</li>
+                <li>✓ site_settings</li>
                 <li>✓ partnerships & contact messages</li>
               </ul>
             </div>
@@ -261,7 +260,7 @@ export default function MigrationsSetupPage() {
               <ul className="text-sm text-purple-800 space-y-1">
                 <li>✓ All admin features enabled</li>
                 <li>✓ User authentication ready</li>
-                <li>✓ OTP email system active</li>
+                <li>✓ Authentication system active</li>
                 <li>✓ Complete database schema</li>
               </ul>
             </div>

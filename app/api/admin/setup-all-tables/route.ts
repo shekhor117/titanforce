@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
       'player_positions',
       'app_users',
       'contact_messages',
-      'otp_codes',
       'site_settings',
       'trophies',
     ]
@@ -94,7 +93,6 @@ export async function GET(request: NextRequest) {
             .filter(f => 
               f.includes('media_items') || 
               f.includes('site_settings') ||
-              f.includes('otp_codes') ||
               f.includes('news_items') ||
               f.includes('honours') ||
               f.includes('player_positions')
@@ -104,8 +102,7 @@ export async function GET(request: NextRequest) {
         ],
         migrationFiles: migrationFiles.filter(f => 
           f.includes('media_items') || 
-          f.includes('site_settings') ||
-          f.includes('otp_codes')
+          f.includes('site_settings')
         ),
       },
       { status: 202 }
