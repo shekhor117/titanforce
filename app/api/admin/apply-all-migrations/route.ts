@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 export async function POST() {
+  if (process.env.NODE_ENV === 'production') return Response.json({ error: 'Not found' }, { status: 404 })
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

@@ -48,22 +48,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique filename
-    const fileExtension = file.name.split(".").pop() || "jpg"
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    const signatures: Record<string, (bytes: Uint8Array) => boolean> = {
+      'image/jpeg': (value) => value[0] === 0xff && value[1] === 0xd8 && value[2] === 0xff,
+      'image/png': (value) => [137, 80, 78, 71, 13, 10, 26, 10].every((byte, index) => value[index] === byte),
+      'image/gif': (value) => value[0] === 0x47 && value[1] === 0x49 && value[2] === 0x46,
+      'image/webp': (value) => value[0] === 0x52 && value[1] === 0x49 && value[2] === 0x46 && value[3] === 0x46 && value[8] === 0x57 && value[9] === 0x45 && value[10] === 0x42 && value[11] === 0x50,
+    }
+    if (!signatures[file.type]?.(bytes)) return NextResponse.json({ error: "Invalid image file" }, { status: 400 })
+    const extensionByType: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif', 'image/webp': 'webp' }
     const uniqueId = uuidv4()
-    const fileName = `${uniqueId}.${fileExtension}`
+    const fileName = `${uniqueId}.${extensionByType[file.type]}`
 
     // Build folder path: ${userId}/player-photos/${itemId}/${uuid}.${extension}
     const itemFolder = itemId ? `${itemId}/` : ""
     const filePath = `${user.id}/player-photos/${itemFolder}${fileName}`
 
-    // Convert file to buffer
-    const buffer = await file.arrayBuffer()
-
-
     // Upload to Supabase Storage
     const { data, error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
-      .upload(filePath, buffer, {
+      .upload(filePath, bytes, {
         contentType: file.type,
         cacheControl: "3600",
       })

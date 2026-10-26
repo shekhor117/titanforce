@@ -63,10 +63,8 @@ export function getAdminClient() {
 export function handleApiError(error: unknown, operation: string = 'Operation') {
   console.error(`[v0] Error in ${operation}:`, error)
   
-  const message = error instanceof Error ? error.message : String(error)
   const errorResponse = {
-    error: `${operation} failed`,
-    details: message
+    error: `${operation} failed`
   }
 
   return NextResponse.json(errorResponse, { status: 500 })
@@ -88,7 +86,7 @@ export async function wrapApiOperation<T>(
     return {
       success: false,
       error: `${operationName} failed`,
-      details: message
+      details: 'The operation could not be completed.'
     }
   }
 }
