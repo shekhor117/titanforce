@@ -1,12 +1,13 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-const url = process.env.UPSTASH_REDIS_REST_URL
-const token = process.env.UPSTASH_REDIS_REST_TOKEN
+const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL
+const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN
 
 const redis = url && token ? new Redis({ url, token }) : null
 const sendLimiter = redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(3, "10 m"), prefix: "titanforce:otp:send" }) : null
 const verifyLimiter = redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "10 m"), prefix: "titanforce:otp:verify" }) : null
+const uploadLimiter = redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(20, "10 m"), prefix: "titanforce:upload" }) : null
 
 export type OtpRateLimitResult = {
   allowed: boolean
@@ -15,7 +16,7 @@ export type OtpRateLimitResult = {
 }
 
 async function check(limiter: Ratelimit | null, identifier: string): Promise<OtpRateLimitResult> {
-  if (!limiter) return { allowed: true, configured: false, unavailable: false }
+  if (!limiter) return { allowed: process.env.NODE_ENV !== 'production', configured: false, unavailable: process.env.NODE_ENV === 'production' }
 
   try {
     const result = await limiter.limit(identifier)
@@ -36,4 +37,10 @@ export async function checkOtpVerifyRateLimit(email: string, ip: string): Promis
   const emailResult = await check(verifyLimiter, `email:${email}`)
   if (!emailResult.allowed || emailResult.unavailable) return emailResult
   return check(verifyLimiter, `ip:${ip}`)
+}
+
+export async function checkUploadRateLimit(userId: string, ip: string): Promise<OtpRateLimitResult> {
+  const userResult = await check(uploadLimiter, `user:${userId}`)
+  if (!userResult.allowed || userResult.unavailable) return userResult
+  return check(uploadLimiter, `ip:${ip}`)
 }

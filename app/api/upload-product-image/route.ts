@@ -41,12 +41,15 @@ export async function POST(request: Request) {
       cacheControl: '31536000',
       upsert: false,
     })
-    if (error) return NextResponse.json({ error: `Image upload failed: ${error.message}` }, { status: 502 })
+    if (error) {
+      console.error('[v0] Product image storage upload failed:', error.message)
+      return NextResponse.json({ error: 'Image upload failed' }, { status: 502 })
+    }
 
     const { data } = admin.storage.from(BUCKET).getPublicUrl(path)
     return NextResponse.json({ url: data.publicUrl, path })
   } catch (error) {
-    console.error('[v0] Product image upload failed:', error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Image upload failed' }, { status: 500 })
+    console.error('[v0] Product image upload failed:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: 'Image upload failed' }, { status: 500 })
   }
 }

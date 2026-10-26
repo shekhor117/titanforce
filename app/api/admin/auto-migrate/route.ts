@@ -10,7 +10,7 @@ interface MigrationResult {
 }
 
 export async function POST(request: Request) {
-  if (process.env.NODE_ENV === 'production') return Response.json({ error: 'Not found' }, { status: 404 })
+  if (process.env.NODE_ENV !== 'development') return Response.json({ error: 'Not found' }, { status: 404 })
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -136,7 +136,7 @@ export async function POST(request: Request) {
 
 // GET returns a single migration file content for manual backup
 export async function GET(request: Request) {
-  if (process.env.NODE_ENV === 'production') return Response.json({ error: 'Not found' }, { status: 404 })
+  if (process.env.NODE_ENV !== 'development') return Response.json({ error: 'Not found' }, { status: 404 })
   const { searchParams } = new URL(request.url)
   const fileName = searchParams.get('file')
 

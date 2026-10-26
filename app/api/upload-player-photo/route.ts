@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { checkUploadRateLimit } from "@/lib/otp-rate-limit"
 import { NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 
@@ -41,10 +42,21 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not authenticated" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "User not authenticated" }, { status: 401 })
+    }
+
+    const role = String(user.app_metadata?.role || '').toLowerCase()
+    const isPrivileged = ['admin', 'super_admin', 'moderator', 'manager'].includes(role)
+    if (!isPrivileged && itemId && itemId !== user.id) {
+      return NextResponse.json({ error: "You cannot upload for this player" }, { status: 403 })
+    }
+    if (itemId && !/^[0-9a-f-]{36}$/i.test(itemId)) {
+      return NextResponse.json({ error: "Invalid player identifier" }, { status: 400 })
+    }
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
+    const rateLimit = await checkUploadRateLimit(user.id, ip)
+    if (!rateLimit.allowed || rateLimit.unavailable || !rateLimit.configured) {
+      return NextResponse.json({ error: 'Too many upload requests. Please try again later.' }, { status: 429 })
     }
 
     // Generate unique filename
@@ -90,12 +102,10 @@ export async function POST(request: NextRequest) {
       success: true,
       filePath: data.path,
       signedUrl: signedData?.signedUrl || "",
-      fileName: file.name,
+      fileName,
     })
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Upload failed" },
-      { status: 500 }
-    )
+    console.error('[v0] Player photo upload failed:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 })
   }
 }
