@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkOtpVerifyRateLimit } from '@/lib/otp-rate-limit'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,6 +27,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
+    const rateLimit = await checkOtpVerifyRateLimit(email, ip)
+    if (rateLimit.unavailable) return NextResponse.json({ error: 'Rate limiting service unavailable' }, { status: 503 })
+    if (!rateLimit.allowed) return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
 
     // Never log OTP values or other authentication secrets.
     // Find the OTP record

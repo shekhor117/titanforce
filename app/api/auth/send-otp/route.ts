@@ -2,6 +2,7 @@ import { randomInt } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { checkOtpSendRateLimit } from '@/lib/otp-rate-limit'
 
 // Generate a random 6-digit OTP
 function generateOTP(): string {
@@ -137,6 +138,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown'
+    const rateLimit = await checkOtpSendRateLimit(email, ip)
+    if (rateLimit.unavailable) return NextResponse.json({ error: 'Rate limiting service unavailable' }, { status: 503 })
+    if (!rateLimit.allowed) return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
 
     // Generate OTP
     const otp = generateOTP()
