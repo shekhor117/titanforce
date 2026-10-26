@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
  * Body: { "email": "test@example.com" }
  */
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') return NextResponse.json({ error: 'Not found' }, { status: 404 })
   try {
     const { email } = await request.json()
 

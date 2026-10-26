@@ -16,23 +16,23 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { email, code } = await request.json()
+    const { email: rawEmail, code: rawCode } = await request.json()
+    const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : ''
+    const code = typeof rawCode === 'string' ? rawCode.trim() : ''
 
-    if (!email || !code) {
+    if (!email || !/^\d{6}$/.test(code)) {
       return NextResponse.json(
         { error: 'Email and code are required' },
         { status: 400 }
       )
     }
 
-    console.log('[v0] Verifying OTP for email:', email, 'code:', code)
-
+    // Never log OTP values or other authentication secrets.
     // Find the OTP record
     const { data: otpRecords, error: queryError } = await supabase
       .from('otp_codes')
-      .select('*')
+      .select('id, email, code, expires_at, attempts, verified_at')
       .eq('email', email)
-      .eq('code', code)
       .is('verified_at', null)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -46,11 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!otpRecords || otpRecords.length === 0) {
-      console.warn('[v0] OTP not found or already verified for:', email)
-      return NextResponse.json(
-        { error: 'Invalid or expired OTP code' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid or expired OTP code' }, { status: 400 })
     }
 
     const otpRecord = otpRecords[0]
@@ -74,15 +70,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (otpRecord.code !== code) {
+      const nextAttempts = Number(otpRecord.attempts || 0) + 1
+      await supabase
+        .from('otp_codes')
+        .update({ attempts: nextAttempts, updated_at: new Date().toISOString() })
+        .eq('id', otpRecord.id)
+      return NextResponse.json({ error: 'Invalid or expired OTP code' }, { status: nextAttempts >= 5 ? 429 : 400 })
+    }
+
     // Mark OTP as verified
-    const { data: updateData, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('otp_codes')
       .update({
         verified_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq('id', otpRecord.id)
-      .select()
+      .is('verified_at', null)
 
     if (updateError) {
       console.error('[v0] Error updating OTP verification:', updateError)
@@ -91,8 +96,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-
-    console.log('[v0] OTP verified successfully for:', email)
 
     return NextResponse.json(
       {

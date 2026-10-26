@@ -1,8 +1,20 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient as createServerClient } from '@/lib/supabase/server'
 import { validateAdminSetup } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  const authClient = await createServerClient()
+  const { data: { user: requestingUser } } = await authClient.auth.getUser()
+  const requestingRole = requestingUser?.app_metadata?.role
+  if (!requestingUser || !['admin', 'super_admin'].includes(String(requestingRole))) {
+    return NextResponse.json({ error: 'Admin authorization required' }, { status: 403 })
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -41,11 +53,13 @@ export async function POST(request: NextRequest) {
       const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
-        user_metadata: {
-          full_name: name || 'Admin',
-          role: 'admin',
-        },
-        email_confirm: true, // Auto-confirm email
+          user_metadata: {
+            full_name: name || 'Admin',
+          },
+          app_metadata: {
+            role: 'admin',
+          },
+          email_confirm: true,
       })
 
       if (error) {
@@ -65,6 +79,8 @@ export async function POST(request: NextRequest) {
         {
           user_metadata: {
             full_name: name || existingUser.user_metadata?.full_name || 'Admin',
+          },
+          app_metadata: {
             role: 'admin',
           },
         }

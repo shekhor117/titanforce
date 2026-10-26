@@ -1,10 +1,11 @@
+import { randomInt } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
 // Generate a random 6-digit OTP
 function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString()
+  return randomInt(100000, 1000000).toString()
 }
 
 // Create Brevo SMTP transporter
@@ -96,11 +97,7 @@ async function sendOTPEmail(email: string, otp: string): Promise<boolean> {
       }
     }
 
-    // Fallback: Log OTP to console for development
-    console.log('[v0] [DEVELOPMENT MODE] OTP Code:', otp)
-    console.log('[v0] [DEVELOPMENT MODE] Email:', email)
-    console.log('[v0] Configure BREVO_API_KEY or RESEND_API_KEY environment variables for production email sending')
-    return true
+    return false
   } catch (error) {
     console.error('[v0] Error sending OTP email:', error)
     return false
@@ -122,9 +119,10 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { email } = await request.json()
+    const { email: rawEmail } = await request.json()
+    const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : ''
 
-    if (!email || typeof email !== 'string') {
+    if (!email) {
       return NextResponse.json(
         { error: 'Email is required' },
         { status: 400 }
@@ -144,10 +142,8 @@ export async function POST(request: NextRequest) {
     const otp = generateOTP()
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000) // 5 minutes from now
 
-    console.log('[v0] Generated OTP:', otp, 'for email:', email)
-
-    // Store OTP in database
-    console.log('[v0] Storing OTP in database for email:', email)
+    // Store the OTP server-side; never log the code.
+    console.log('[v0] Storing OTP request')
     
     const { data: otpData, error: dbError } = await supabase
       .from('otp_codes')
@@ -197,8 +193,8 @@ export async function POST(request: NextRequest) {
     const emailSent = await sendOTPEmail(email, otp)
 
     if (!emailSent) {
-      console.warn('[v0] Failed to send OTP email, but OTP was stored in database')
-      // Still return success as OTP is stored
+      await supabase.from('otp_codes').delete().eq('email', email).eq('code', otp)
+      return NextResponse.json({ error: 'Unable to send verification code' }, { status: 503 })
     }
 
     return NextResponse.json(

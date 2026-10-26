@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 export async function GET(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') return NextResponse.json({ error: 'Not found' }, { status: 404 })
   try {
     const supabase = createAdminClient()
 
@@ -77,6 +78,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === 'production') return NextResponse.json({ error: 'Not found' }, { status: 404 })
   try {
     // This endpoint requires manual Supabase setup due to SQL execution limitations
     // Provide detailed instructions instead

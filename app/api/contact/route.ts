@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, name, email, message } = await request.json()
+    const { name, email, message } = await request.json()
 
-    if (!userId || !name || !email || !message) {
+    if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string' || !name.trim() || !email.trim() || !message.trim() || name.length > 120 || email.length > 320 || message.length > 5000) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -13,26 +13,23 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = await createClient()
-    if (!supabase) {
-      // Fallback: return success without saving (localStorage handles it on client)
-      return NextResponse.json({ success: true, message: "Message received" })
-    }
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 })
 
-    // Try to save to Supabase
     const { error } = await supabase
       .from("contact_messages")
       .insert({
-        user_id: userId,
-        name,
-        email,
-        message,
+        user_id: user.id,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
         status: "unread",
         created_at: new Date().toISOString(),
       })
 
     if (error) {
-      // Still return success - localStorage has already saved it
-      return NextResponse.json({ success: true, message: "Message received" })
+      console.error('[v0] Contact message persistence failed:', error.message)
+      return NextResponse.json({ error: "Unable to save your message" }, { status: 502 })
     }
 
     return NextResponse.json({ success: true, message: "Message saved successfully" })
