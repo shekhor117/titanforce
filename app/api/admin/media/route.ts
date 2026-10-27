@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching media:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process media request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching media:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
       }
 
       return NextResponse.json(data || [])
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating media:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -129,7 +129,7 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('[v0] Error updating media:', error)
       const statusCode = error.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: error.message }, { status: statusCode })
+      return NextResponse.json({ error: 'Unable to process media request' }, { status: statusCode })
     }
 
     return NextResponse.json(data)
@@ -169,7 +169,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting media:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

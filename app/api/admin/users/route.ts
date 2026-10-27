@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching user:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: statusCode === 404 ? 'User not found' : 'Unable to fetch user' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -35,13 +35,13 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching users:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process user request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in GET /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -72,13 +72,13 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process user request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error in POST /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -115,13 +115,13 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process user request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in PUT /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -151,12 +151,12 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting user:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process user request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('[v0] Unexpected error in DELETE /api/admin/users:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching trophy:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process trophy request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching trophies:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
       }
 
       return NextResponse.json(data || [])
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in trophies GET:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch trophies' },
+      { error: 'Unable to fetch trophies' },
       { status: 500 }
     )
   }
@@ -85,14 +85,14 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating trophy:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Error in trophies POST:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create trophy' },
+      { error: 'Unable to create trophy' },
       { status: 500 }
     )
   }
@@ -134,14 +134,14 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('[v0] Error updating trophy:', error)
       const statusCode = error.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: error.message }, { status: statusCode })
+      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: statusCode })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Error in trophies PUT:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update trophy' },
+      { error: 'Unable to update trophy' },
       { status: 500 }
     )
   }
@@ -174,7 +174,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting trophy:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
