@@ -1,21 +1,16 @@
 import { randomUUID } from 'node:crypto'
-import { NextResponse } from 'next/server'
-import { createAdminClient, createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
 const BUCKET = 'app-files'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    const role = user.app_metadata?.role
-    if (!['admin', 'super_admin', 'moderator'].includes(String(role))) {
-      return NextResponse.json({ error: 'Admin authorization required' }, { status: 403 })
-    }
-
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const formData = await request.formData()
     const file = formData.get('file')
     if (!(file instanceof File)) return NextResponse.json({ error: 'Image file is required' }, { status: 400 })
@@ -34,7 +29,7 @@ export async function POST(request: Request) {
       'image/webp': 'webp',
       'image/gif': 'gif',
     }
-    const path = `products/${user.id}/${randomUUID()}.${extensionByType[file.type]}`
+    const path = `products/${auth.user.id}/${randomUUID()}.${extensionByType[file.type]}`
     const admin = createAdminClient()
     const { error } = await admin.storage.from(BUCKET).upload(path, bytes, {
       contentType: file.type,

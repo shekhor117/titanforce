@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 import { validatePartial, validateMedia } from '@/lib/validation'
 
 // GET - Fetch all media or by ID
 export async function GET(request: NextRequest) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
 
     const { searchParams } = new URL(request.url)
