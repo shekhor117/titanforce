@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
     if (fetchError) {
       console.error('[v0] Error fetching product:', fetchError)
       const statusCode = fetchError.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: fetchError.message }, { status: statusCode })
+      return NextResponse.json({ error: statusCode === 404 ? 'Product not found' : 'Unable to fetch inventory' }, { status: statusCode })
     }
 
     let newStock = quantity
