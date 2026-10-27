@@ -4,6 +4,7 @@ import { Redis } from "@upstash/redis"
 const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL
 const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN
 
+// Local development may proceed without Redis; production fails closed when rate limiting is unavailable.
 const redis = url && token ? new Redis({ url, token }) : null
 const uploadLimiter = redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(20, "10 m"), prefix: "titanforce:upload" }) : null
 

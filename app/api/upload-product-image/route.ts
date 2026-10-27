@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { checkUploadRateLimit } from '@/lib/upload-rate-limit'
+import { normalizeImage } from '@/lib/image-security'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
@@ -11,6 +13,8 @@ export async function POST(request: NextRequest) {
   try {
     const auth = await checkAdminAuth(request)
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+    const rateLimit = await checkUploadRateLimit(auth.user.id, request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown')
+    if (!rateLimit.allowed) return NextResponse.json({ error: rateLimit.unavailable ? 'Rate limiting service unavailable' : 'Too many upload requests. Please try again later.' }, { status: rateLimit.unavailable ? 503 : 429 })
     const formData = await request.formData()
     const file = formData.get('file')
     if (!(file instanceof File)) return NextResponse.json({ error: 'Image file is required' }, { status: 400 })
@@ -23,16 +27,11 @@ export async function POST(request: NextRequest) {
     const isWebp = bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
     if (!isJpeg && !isPng && !isGif && !isWebp) return NextResponse.json({ error: 'Invalid image file' }, { status: 400 })
 
-    const extensionByType: Record<string, string> = {
-      'image/jpeg': 'jpg',
-      'image/png': 'png',
-      'image/webp': 'webp',
-      'image/gif': 'gif',
-    }
-    const path = `products/${auth.user.id}/${randomUUID()}.${extensionByType[file.type]}`
+    const normalized = await normalizeImage(bytes, file.type)
+    const path = `products/${auth.user.id}/${randomUUID()}.${normalized.extension}`
     const admin = createAdminClient()
-    const { error } = await admin.storage.from(BUCKET).upload(path, bytes, {
-      contentType: file.type,
+    const { error } = await admin.storage.from(BUCKET).upload(path, normalized.bytes, {
+      contentType: normalized.contentType,
       cacheControl: '31536000',
       upsert: false,
     })

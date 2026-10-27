@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { checkUploadRateLimit } from "@/lib/upload-rate-limit"
+import { normalizeImage } from "@/lib/image-security"
 import { NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 
@@ -68,9 +69,9 @@ export async function POST(request: NextRequest) {
       'image/webp': (value) => value[0] === 0x52 && value[1] === 0x49 && value[2] === 0x46 && value[3] === 0x46 && value[8] === 0x57 && value[9] === 0x45 && value[10] === 0x42 && value[11] === 0x50,
     }
     if (!signatures[file.type]?.(bytes)) return NextResponse.json({ error: "Invalid image file" }, { status: 400 })
-    const extensionByType: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif', 'image/webp': 'webp' }
+    const normalized = await normalizeImage(bytes, file.type)
     const uniqueId = uuidv4()
-    const fileName = `${uniqueId}.${extensionByType[file.type]}`
+    const fileName = `${uniqueId}.${normalized.extension}`
 
     // Build folder path: ${userId}/player-photos/${itemId}/${uuid}.${extension}
     const itemFolder = itemId ? `${itemId}/` : ""
@@ -79,8 +80,8 @@ export async function POST(request: NextRequest) {
     // Upload to Supabase Storage
     const { data, error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
-      .upload(filePath, bytes, {
-        contentType: file.type,
+      .upload(filePath, normalized.bytes, {
+        contentType: normalized.contentType,
         cacheControl: "3600",
       })
 
