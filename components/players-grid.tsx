@@ -17,6 +17,36 @@ import { ScrollAnimatedElement } from "./scroll-animated-element"
 import { ScrollProgressAnimation } from "./scroll-progress-animation"
 import { PlayerGridSkeleton } from "./skeletons/player-card-skeleton"
 
+type PlayerImageProps = {
+  src: string
+  alt: string
+}
+
+function PlayerImage({ src, alt }: PlayerImageProps) {
+  const [hasError, setHasError] = useState(false)
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-3xl text-red-500/20 font-bold mb-2">Player</div>
+          <p className="text-xs text-white/40">Image unavailable</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover group-hover:scale-110 transition-transform duration-500"
+      onError={() => setHasError(true)}
+    />
+  )
+}
+
 export function PlayersGrid() {
   const { players, loading } = usePlayers()
   const [api, setApi] = useState<any>(null)
@@ -114,12 +144,7 @@ export function PlayersGrid() {
                         {/* Player Image or Placeholder */}
                         <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
                           {player.image_url ? (
-                            <Image
-                              src={player.image_url}
-                              alt={player.name}
-                              fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
+                            <PlayerImage src={player.image_url} alt={player.name} />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <div className="text-center">

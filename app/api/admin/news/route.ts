@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateNews } from '@/lib/validation'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch all news or by ID
 export async function GET(request: NextRequest) {
   try {
@@ -15,14 +16,14 @@ export async function GET(request: NextRequest) {
       // Fetch specific news
       const { data, error } = await supabase
         .from('news_items')
-        .select('*')
+        .select('id, title, slug, excerpt, content, image_url, category, author, published, published_at, created_at, updated_at')
         .eq('id', newsId)
         .single()
 
       if (error) {
         console.error('[v0] Error fetching news:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -30,12 +31,12 @@ export async function GET(request: NextRequest) {
       // Fetch all news
       const { data, error } = await supabase
         .from('news_items')
-        .select('*')
+        .select('id, title, slug, excerpt, content, image_url, category, author, published, published_at, created_at, updated_at')
         .order('created_at', { ascending: false })
 
       if (error) {
         console.error('[v0] Error fetching news:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
       }
 
       return NextResponse.json(data || [])
@@ -44,8 +45,7 @@ export async function GET(request: NextRequest) {
     console.error('[v0] Error in news GET:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
       { 
-        error: 'Failed to fetch news',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Failed to fetch news'
       },
       { status: 500 }
     )
@@ -58,17 +58,15 @@ export async function POST(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate news data
     const validation = validateNews(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for database operations
@@ -83,7 +81,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('[v0] Error creating news:', error)
       console.error('[v0] Table: news_items, Error code:', error.code)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -91,8 +89,7 @@ export async function POST(request: NextRequest) {
     console.error('[v0] Error in news POST:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
       { 
-        error: 'Failed to create news',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Failed to create news'
       },
       { status: 500 }
     )
@@ -105,10 +102,8 @@ export async function PUT(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -120,7 +115,7 @@ export async function PUT(request: NextRequest) {
     // Validate news data (partial updates are OK)
     const validation = validatePartial(updates, validateNews)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for database operations
@@ -136,7 +131,7 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('[v0] Error updating news:', error)
       const statusCode = error.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: error.message }, { status: statusCode })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
     }
 
     return NextResponse.json(data)
@@ -144,8 +139,7 @@ export async function PUT(request: NextRequest) {
     console.error('[v0] Error in news PUT:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
       { 
-        error: 'Failed to update news',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Failed to update news'
       },
       { status: 500 }
     )
@@ -158,10 +152,8 @@ export async function DELETE(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const newsId = searchParams.get('id')
@@ -180,7 +172,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting news:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
@@ -188,8 +180,7 @@ export async function DELETE(request: NextRequest) {
     console.error('[v0] Error in news DELETE:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
       { 
-        error: 'Failed to delete news',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Failed to delete news'
       },
       { status: 500 }
     )

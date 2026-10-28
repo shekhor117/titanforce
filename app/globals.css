@@ -25,6 +25,7 @@
   --input: #1a1a1a;
   --ring: #a71930;
   --radius: 0.625rem;
+  --font-bengali: "Noto Sans Bengali", "Nirmala UI", sans-serif;
   /* Neumorphism shadows - dark theme */
   --neo-shadow-light: rgba(255, 255, 255, 0.05);
   --neo-shadow-dark: rgba(0, 0, 0, 0.5);

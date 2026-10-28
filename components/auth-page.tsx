@@ -11,16 +11,15 @@ import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 
 type Role = 'user'
-type AuthStep = 'credentials' | 'otp' | 'details' | 'preferences'
+type AuthStep = 'credentials' | 'details' | 'preferences'
 
 interface AuthPageProps {
   defaultView?: 'login' | 'signup'
   defaultRole?: Role
   showAllRoles?: boolean
-  enableOTP?: boolean
 }
 
-export default function AuthPage({ defaultView = 'login', defaultRole = 'user', showAllRoles: _showAllRoles = false, enableOTP = false }: AuthPageProps) {
+export default function AuthPage({ defaultView = 'login', defaultRole = 'user', showAllRoles: _showAllRoles = false }: AuthPageProps) {
   const router = useRouter()
   const supabase = createClient()
   const { login } = useAuth()
@@ -36,14 +35,11 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
   const [confirmPassword, setConfirmPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const selectedRole: Role = 'user'
-  const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState(false)
   const [isAppleLoading, setIsAppleLoading] = useState(false)
-  const [otpSentEmail, setOtpSentEmail] = useState('')
-  const [otpResendTimer, setOtpResendTimer] = useState(0)
 
   // Additional signup details
   const [phone, setPhone] = useState('')
@@ -66,66 +62,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false)
   const [shareData, setShareData] = useState(false)
 
-  // Generate a 6-digit mock OTP (in production, this would be sent to email)
-  const generateMockOTP = (): string => {
-    return Math.floor(100000 + Math.random() * 900000).toString()
-  }
-
-  // Store OTP in session (in production, send via email)
-  const sendOTPEmail = async (emailAddress: string) => {
-    try {
-      // Call the API route to send OTP via Supabase
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: emailAddress }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to send OTP')
-      }
-
-      const data = await response.json()
-
-      setOtpSentEmail(emailAddress)
-      setOtpResendTimer(60) // 60 second cooldown
-    } catch (err) {
-      throw err
-    }
-  }
-
-  // Verify OTP code via API
-  const verifyOTPCode = async (code: string): Promise<boolean> => {
-    try {
-      // Call the verify-otp API route
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          email: otpSentEmail,
-          code 
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        setError(errorData.error || (isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed'))
-        return false
-      }
-
-      const data = await response.json()
-      return true
-    } catch (err) {
-      setError(isBn ? 'OTP যাচাই ব্যর্থ হয়েছে' : 'OTP verification failed')
-      return false
-    }
-  }
-
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -138,25 +74,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
           // Use the shared auth context for one password-auth request.
           // A second signInWithPassword call here caused inconsistent sessions and auth errors.
 
-          // If OTP is enabled, proceed to OTP verification
-          if (enableOTP) {
-            await sendOTPEmail(email)
-            setAuthStep('otp')
-            setIsLoading(false)
-            return
-          }
-
-          // Otherwise login directly
-          await login(email, password, selectedRole)
-          router.push('/profile')
-        } else if (authStep === 'otp') {
-          // Verify OTP
-          const isOtpValid = await verifyOTPCode(otp)
-          if (!isOtpValid) {
-            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
-          }
-
-          // OTP verified, complete login
           await login(email, password, selectedRole)
           router.push('/profile')
         }
@@ -180,23 +97,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
             throw new Error(error.message || 'Failed to sign up')
           }
 
-          // Proceed to OTP verification if enabled
-          if (enableOTP) {
-            await sendOTPEmail(email)
-            setAuthStep('otp')
-            setIsLoading(false)
-            return
-          }
-
-          router.push('/auth/sign-up-success')
-        } else if (authStep === 'otp') {
-          // Verify OTP for signup
-          const isOtpValid = await verifyOTPCode(otp)
-          if (!isOtpValid) {
-            throw new Error(isBn ? 'অবৈধ OTP' : 'Invalid OTP code')
-          }
-
-          // OTP verified, complete signup
           router.push('/auth/sign-up-success')
         }
       }
@@ -229,27 +129,6 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
       setIsFacebookLoading(false)
       setIsAppleLoading(false)
     }
-  }
-
-  const handleResendOTP = async () => {
-    try {
-      if (otpResendTimer > 0) return
-      setIsLoading(true)
-      setError(null)
-      await sendOTPEmail(otpSentEmail)
-      setOtp('')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : (isBn ? 'OTP পুনরায় পাঠাতে ব্যর্থ' : 'Failed to resend OTP'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleBackToCredentials = () => {
-    setAuthStep('credentials')
-    setOtp('')
-    setError(null)
-    setOtpResendTimer(0)
   }
 
   // Signup step navigation
@@ -335,14 +214,6 @@ emailRedirectTo:
       })
       if (error) throw error
 
-      // Proceed to OTP verification if enabled
-      if (enableOTP) {
-        await sendOTPEmail(email)
-        setAuthStep('otp')
-        setIsLoading(false)
-        return
-      }
-
       router.push('/auth/sign-up-success')
     } catch (err) {
       setError(err instanceof Error ? err.message : (isBn ? 'সাইন আপ ব্যর্থ' : 'Sign up failed'))
@@ -384,14 +255,10 @@ emailRedirectTo:
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">
-            {authStep === 'otp' ? (isBn ? 'OTP যাচাই করুন' : 'Verify OTP') : (view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up'))}
+            {view === 'login' ? (isBn ? 'লগইন' : 'Log In') : (isBn ? 'সাইন আপ' : 'Sign Up')}
           </h1>
           <p className="text-base font-medium text-muted-foreground">
-            {authStep === 'otp' ? (
-              <>
-                {isBn ? 'আমরা একটি OTP পাঠিয়েছি' : 'We sent an OTP to'} <span className="font-semibold text-foreground">{otpSentEmail}</span>
-              </>
-            ) : view === 'login' ? (
+            {view === 'login' ? (
               <>
                 {isBn ? 'অ্যাকাউন্ট নেই?' : "Don't have an account?"}{' '}
                 <button
@@ -431,62 +298,12 @@ emailRedirectTo:
             // Signup flow
             if (authStep === 'credentials' || authStep === 'details') {
               handleNextStep(e)
-            } else if (authStep === 'preferences') {
-              handleCompleteSignup(e)
             } else {
-              handleEmailAuth(e)
+              handleCompleteSignup(e)
             }
           }
         }} className="w-full space-y-4">
-          {authStep === 'otp' ? (
-            <>
-              {/* OTP Input Section */}
-              <div className="space-y-4">
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
-                  <p className="text-sm text-muted-foreground text-center mb-2">
-                    {isBn ? 'আপনার ইমেলে পাঠানো 6-ডিজিট কোড প্রবেশ করুন' : 'Enter the 6-digit code sent to your email'}
-                  </p>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="000000"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    maxLength={6}
-                    className="neo-input w-full p-4 text-center text-2xl tracking-widest font-mono bg-background rounded-lg focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading || otp.length !== 6}
-                  className="neo-btn neo-btn-primary w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 rounded-xl transition-colors text-base disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-                  {isLoading ? (isBn ? 'যাচাই করছি...' : 'Verifying...') : (isBn ? 'চালিয়ে যান' : 'Continue')}
-                </button>
-
-                <div className="text-center space-y-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={handleResendOTP}
-                    disabled={otpResendTimer > 0 || isLoading}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors disabled:opacity-50 cursor-pointer"
-                  >
-                    {isBn ? 'কোড পুনরায় পাঠান' : 'Resend code'}
-                    {otpResendTimer > 0 && ` (${otpResendTimer}s)`}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleBackToCredentials}
-                    className="block w-full text-sm font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
-                  >
-                    {isBn ? 'পিছনে ফিরুন' : 'Go back'}
-                  </button>
-                </div>
-              </div>
-            </>
-          ) : view === 'signup' && authStep === 'details' ? (
+          {view === 'signup' && authStep === 'details' ? (
             <>
               {/* Details Step */}
               <div className="space-y-4">
@@ -739,7 +556,7 @@ emailRedirectTo:
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showPassword ? (isBn ? "পাসওয়ার্ড লুকান" : "Hide password") : (isBn ? "পাস��য়ার্ড দেখান" : "Show password")}
+                  aria-label={showPassword ? (isBn ? "পাসওয়ার���ড লুকান" : "Hide password") : (isBn ? "পাস��য়ার্ড দেখান" : "Show password")}
                 >
                   {showPassword ? <EyeOff size={22} strokeWidth={1.5} /> : <Eye size={22} strokeWidth={1.5} />}
                 </button>
@@ -796,7 +613,7 @@ emailRedirectTo:
               )}
 
               {/* Show step indicator for signup */}
-              {view === 'signup' && authStep !== 'otp' && (
+              {view === 'signup' && (
                 <div className="flex justify-center gap-2 py-4">
                   {(['credentials', 'details', 'preferences'] as const).map((step) => (
                     <div

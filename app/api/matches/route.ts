@@ -7,11 +7,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const league = searchParams.get('league')
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 50
+    const requestedLimit = Number(searchParams.get('limit') ?? 50)
+    const limit = Number.isInteger(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 100) : 50
 
     let query = supabase
       .from('matches')
-      .select('*')
+      .select('id, home_team, away_team, home_score, away_score, date, time, venue, status, result, league, season_year, notes, goals')
       .order('date', { ascending: false })
       .limit(limit)
 
@@ -27,12 +28,12 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching matches:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to fetch matches' }, { status: 500 })
     }
 
     return NextResponse.json(data || [])
   } catch (error) {
     console.error('[v0] Unexpected error:', error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

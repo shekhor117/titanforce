@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePlayer } from '@/lib/validation'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch all players or a specific player
 export async function GET(request: NextRequest) {
   try {
@@ -10,10 +11,8 @@ export async function GET(request: NextRequest) {
     const playerId = searchParams.get('id')
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     // Use admin client for database queries
     const supabase = createAdminClient()
@@ -22,7 +21,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific player
       const { data, error } = await supabase
         .from('players')
-        .select('*')
+        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
         .eq('id', playerId)
         .single()
 
@@ -30,7 +29,7 @@ export async function GET(request: NextRequest) {
         console.error('[v0] Error fetching player:', error)
         // Return 404 if no record found, 400 for other errors
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -38,12 +37,12 @@ export async function GET(request: NextRequest) {
       // Fetch all players
       const { data, error } = await supabase
         .from('players')
-        .select('*')
+        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
         .order('num', { ascending: true })
 
       if (error) {
         console.error('[v0] Error fetching players:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
       }
 
       return NextResponse.json(data)
@@ -51,8 +50,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -63,17 +61,15 @@ export async function POST(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate player data
     const validation = validatePlayer(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for database operations
@@ -87,7 +83,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating player:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     console.log('[v0] Player created:', data)
@@ -95,8 +91,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -107,10 +102,8 @@ export async function PUT(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -122,7 +115,7 @@ export async function PUT(request: NextRequest) {
     // Validate player data (partial updates are OK)
     const validation = validatePlayer(updates, { partial: true })
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for database operations
@@ -137,7 +130,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating player:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     console.log('[v0] Player updated:', data)
@@ -145,8 +138,7 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -157,10 +149,8 @@ export async function DELETE(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const playerId = searchParams.get('id')
@@ -179,7 +169,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting player:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     console.log('[v0] Player deleted:', playerId)
@@ -187,8 +177,7 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }

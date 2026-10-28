@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ num: string }> }
@@ -8,10 +9,8 @@ export async function PUT(
   try {
     // Check authentication
     const userClient = await createClient()
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const supabase = createAdminClient()
     const resolvedParams = await params
@@ -92,7 +91,7 @@ export async function PUT(
     if (error) {
       console.error('[v0] Error updating player:', error)
       return NextResponse.json(
-        { error: error.message || 'Failed to update player' },
+        { error: 'Unable to update player' },
         { status: 400 }
       )
     }
@@ -110,8 +109,7 @@ export async function PUT(
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
     return NextResponse.json(
       { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Internal server error'
       },
       { status: 500 }
     )
@@ -124,10 +122,8 @@ export async function DELETE(
 ) {
   try {
     const userClient = await createClient()
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const supabase = createAdminClient()
     const resolvedParams = await params
@@ -156,7 +152,7 @@ export async function DELETE(
 
     if (error) {
       console.error('[v0] Error deleting player:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true })
@@ -164,8 +160,7 @@ export async function DELETE(
     console.error('[v0] Unexpected error in DELETE:', error)
     return NextResponse.json(
       { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Internal server error'
       },
       { status: 500 }
     )

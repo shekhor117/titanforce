@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch inventory
 export async function GET(request: NextRequest) {
   try {
@@ -19,12 +20,12 @@ export async function GET(request: NextRequest) {
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0
 
     const { data, error, count } = await query
-      .select('*')
+      .select('id, product_id, quantity, reserved, updated_at')
       .range(offset, offset + limit - 1)
 
     if (error) {
       console.error('[v0] Error fetching inventory:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('[v0] Unexpected error in GET:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -45,10 +46,8 @@ export async function PUT(request: NextRequest) {
     const supabase = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { productId, quantity, operation } = body
@@ -75,7 +74,7 @@ export async function PUT(request: NextRequest) {
     if (fetchError) {
       console.error('[v0] Error fetching product:', fetchError)
       const statusCode = fetchError.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: fetchError.message }, { status: statusCode })
+      return NextResponse.json({ error: statusCode === 404 ? 'Product not found' : 'Unable to fetch inventory' }, { status: statusCode })
     }
 
     let newStock = quantity
@@ -98,7 +97,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating inventory:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -109,6 +108,6 @@ export async function PUT(request: NextRequest) {
     })
   } catch (error) {
     console.error('[v0] Unexpected error in PUT:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

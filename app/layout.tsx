@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
-import { Bebas_Neue, Barlow, Noto_Sans_Bengali } from 'next/font/google'
+import { Bebas_Neue, Barlow } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LanguageProvider } from '@/lib/language-context'
 import { AuthProvider } from '@/lib/auth-context'
@@ -25,12 +25,6 @@ const barlow = Barlow({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   variable: '--font-sans',
-})
-
-const notoSansBengali = Noto_Sans_Bengali({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['bengali'],
-  variable: '--font-bengali',
 })
 
 export const viewport: Viewport = defaultViewport
@@ -74,7 +68,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a1a1a" />
         <meta name="msapplication-TileColor" content="#1a1a1a" />
       </head>
-      <body className={`${bebasNeue.variable} ${barlow.variable} ${notoSansBengali.variable} font-sans antialiased`}>
+      <body className={`${bebasNeue.variable} ${barlow.variable} font-sans antialiased`}>
         <ScrollAnimationProvider>
           <ThemeProvider>
             <TransitionProvider>

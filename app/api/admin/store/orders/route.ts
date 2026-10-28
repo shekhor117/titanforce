@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 import { validatePartial, validateOrder } from '@/lib/validation'
 
 // GET - Fetch all orders or specific order by ID
 export async function GET(request: NextRequest) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     const orderId = searchParams.get('id')
@@ -13,14 +16,14 @@ export async function GET(request: NextRequest) {
       // Fetch specific order
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select('id, user_id, status, total, shipping_address, created_at, updated_at')
         .eq('id', orderId)
         .single()
 
       if (error) {
         console.error('[v0] Error fetching order:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process order request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -41,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching orders:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -52,7 +55,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('[v0] Unexpected error in GET:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -62,17 +65,15 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate order data
     const validation = validateOrder(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -83,13 +84,13 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating order:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error in POST:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -99,10 +100,8 @@ export async function PUT(request: NextRequest) {
     const supabase = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -114,7 +113,7 @@ export async function PUT(request: NextRequest) {
     // Validate order data (partial updates are OK)
     const validation = validatePartial(updates, validateOrder)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -127,13 +126,13 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('[v0] Error updating order:', error)
       const statusCode = error.message?.includes('no rows') ? 404 : 400
-      return NextResponse.json({ error: error.message }, { status: statusCode })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: statusCode })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in PUT:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -143,10 +142,8 @@ export async function DELETE(request: NextRequest) {
     const supabase = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const orderId = searchParams.get('id')
@@ -162,12 +159,12 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting order:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] Unexpected error in DELETE:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

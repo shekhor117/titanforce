@@ -22,16 +22,18 @@ export async function checkAdminAuth(_request: NextRequest) {
       ? user.app_metadata.role.trim().toLowerCase()
       : ''
     let role = metadataRole
+    const { data: appUser } = await userClient
+      .from('app_users')
+      .select('role, is_active')
+      .eq('email', user.email ?? '')
+      .maybeSingle()
 
-    if (!ADMIN_ROLES.has(role)) {
-      const { data: appUser } = await userClient
-        .from('app_users')
-        .select('role, is_active')
-        .eq('email', user.email ?? '')
-        .maybeSingle()
-      if (appUser?.is_active !== false && typeof appUser?.role === 'string') {
-        role = appUser.role.trim().toLowerCase()
-      }
+    if (appUser && appUser.is_active !== true) {
+      return { authorized: false, error: 'Forbidden', status: 403 as const }
+    }
+
+    if (!ADMIN_ROLES.has(role) && appUser?.is_active === true && typeof appUser.role === 'string') {
+      role = appUser.role.trim().toLowerCase()
     }
 
     if (!ADMIN_ROLES.has(role)) {
@@ -63,10 +65,8 @@ export function getAdminClient() {
 export function handleApiError(error: unknown, operation: string = 'Operation') {
   console.error(`[v0] Error in ${operation}:`, error)
   
-  const message = error instanceof Error ? error.message : String(error)
   const errorResponse = {
-    error: `${operation} failed`,
-    details: message
+    error: `${operation} failed`
   }
 
   return NextResponse.json(errorResponse, { status: 500 })
@@ -88,7 +88,7 @@ export async function wrapApiOperation<T>(
     return {
       success: false,
       error: `${operationName} failed`,
-      details: message
+      details: 'The operation could not be completed.'
     }
   }
 }

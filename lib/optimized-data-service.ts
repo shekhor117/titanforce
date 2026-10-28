@@ -95,11 +95,9 @@ class OptimizedDataService {
 
     // Return cached data if fresh (within TTL)
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
-      console.log(`[v0] Returning cached data for ${table}`)
-      return cached.data
+        return cached.data
     }
 
-    console.log(`[v0] Fetching fresh data for ${table}`)
     const jsonSource = this.jsonSources[table]
     const inFlight = this.inFlight.get(cacheKey)
     if (inFlight) return inFlight as Promise<T[]>
