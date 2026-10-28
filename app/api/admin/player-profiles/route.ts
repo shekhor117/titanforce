@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     if (profileId) {
       const { data, error } = await supabase
         .from('player_profiles')
-        .select('*')
+        .select('id, player_id, bio, height, weight, nationality, preferred_position, created_at, updated_at')
         .eq('id', profileId)
         .single()
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('player_profiles')
-      .select('*')
+      .select('id, player_id, bio, height, weight, nationality, preferred_position, created_at, updated_at')
       .order('created_at', { ascending: false })
 
     if (error) {

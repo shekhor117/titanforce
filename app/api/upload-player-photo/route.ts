@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { checkAdminAuth } from "@/lib/admin-api-helper"
 import { checkUploadRateLimit } from "@/lib/upload-rate-limit"
 import { normalizeImage } from "@/lib/image-security"
 import { NextRequest, NextResponse } from "next/server"
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    if (!file.type.startsWith("image/")) {
+    if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type)) {
       return NextResponse.json(
         { error: "File must be an image" },
         { status: 400 }
@@ -46,8 +47,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not authenticated" }, { status: 401 })
     }
 
-    const role = String(user.app_metadata?.role || '').toLowerCase()
-    const isPrivileged = ['admin', 'super_admin', 'moderator', 'manager'].includes(role)
+    const adminAuth = await checkAdminAuth(request)
+    const isPrivileged = adminAuth.authorized
     if (!isPrivileged && itemId && itemId !== user.id) {
       return NextResponse.json({ error: "You cannot upload for this player" }, { status: 403 })
     }
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
     // Get signed URL (valid for 1 year)
     const { data: signedData, error: signedError } = await supabase.storage
       .from(BUCKET_NAME)
-      .createSignedUrl(filePath, 31536000)
+      .createSignedUrl(filePath, 3600)
 
     if (signedError) {
       throw signedError

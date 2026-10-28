@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (injuryId) {
       const { data, error } = await supabase
         .from('injuries')
-        .select('*')
+        .select('id, player_id, injury_type, description, status, start_date, expected_return, created_at, updated_at')
         .eq('id', injuryId)
         .single()
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('injuries')
-      .select('*')
+      .select('id, player_id, injury_type, description, status, start_date, expected_return, created_at, updated_at')
       .order('injuryDate', { ascending: false })
 
     if (error) {

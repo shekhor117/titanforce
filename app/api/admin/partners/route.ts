@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (partnerId) {
       const { data, error } = await supabase
         .from('partners')
-        .select('*')
+        .select('id, name, logo_url, website_url, description, is_active, sort_order, created_at, updated_at')
         .eq('id', partnerId)
         .single()
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     } else {
       const { data, error } = await supabase
         .from('partners')
-        .select('*')
+        .select('id, name, logo_url, website_url, description, is_active, sort_order, created_at, updated_at')
         .order('name', { ascending: true })
 
       if (error) {

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific media
       const { data, error } = await supabase
         .from('media')
-        .select('*')
+        .select('id, title, description, media_type, url, thumbnail_url, alt_text, category, created_at, updated_at')
         .eq('id', mediaId)
         .single()
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       // Fetch all media
       const { data, error } = await supabase
         .from('media')
-        .select('*')
+        .select('id, title, description, media_type, url, thumbnail_url, alt_text, category, created_at, updated_at')
         .order('created_at', { ascending: false })
 
       if (error) {

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific contact
       const { data, error } = await supabase
         .from('contact_messages')
-        .select('*')
+        .select('id, name, email, subject, message, status, created_at, updated_at')
         .eq('id', contactId)
         .single()
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       // Fetch all contacts
       const { data, error } = await supabase
         .from('contact_messages')
-        .select('*')
+        .select('id, name, email, subject, message, status, created_at, updated_at')
         .order('created_at', { ascending: false })
 
       if (error) {

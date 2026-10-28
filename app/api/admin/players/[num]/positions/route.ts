@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
@@ -6,6 +7,8 @@ export async function GET(
   { params }: { params: Promise<{ num: string }> }
 ) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     const resolvedParams = await params
     const playerNum = parseInt(resolvedParams.num)
@@ -24,7 +27,7 @@ export async function GET(
     // Get positions
     const { data: positions, error } = await supabase
       .from('player_positions')
-      .select('*')
+      .select('id, player_id, position, is_primary, created_at, updated_at')
       .eq('player_id', player.id)
       .order('is_primary', { ascending: false })
       .order('created_at', { ascending: true })
@@ -45,13 +48,14 @@ export async function POST(
   { params }: { params: Promise<{ num: string }> }
 ) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     const resolvedParams = await params
     const playerNum = parseInt(resolvedParams.num)
     const { position_name, x_coordinate, y_coordinate, is_primary, description } = await request.json()
 
-    // Validate input
-    if (!position_name || x_coordinate === undefined || y_coordinate === undefined) {
+    if (typeof position_name !== 'string' || position_name.trim().length === 0 || position_name.length > 80 || !Number.isFinite(Number(x_coordinate)) || !Number.isFinite(Number(y_coordinate)) || Number(x_coordinate) < 0 || Number(x_coordinate) > 100 || Number(y_coordinate) < 0 || Number(y_coordinate) > 100) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -104,12 +108,14 @@ export async function PUT(
   { params }: { params: Promise<{ num: string }> }
 ) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     await params
     const { positionId, position_name, x_coordinate, y_coordinate, is_primary, description } = await request.json()
 
-    if (!positionId) {
-      return NextResponse.json({ error: 'Position ID required' }, { status: 400 })
+    if (typeof positionId !== 'string' || !/^[0-9a-f-]{36}$/i.test(positionId)) {
+      return NextResponse.json({ error: 'Valid position ID required' }, { status: 400 })
     }
 
     // Get the position to find player_id
@@ -161,12 +167,14 @@ export async function DELETE(
   { params }: { params: Promise<{ num: string }> }
 ) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     await params
     const { positionId } = await request.json()
 
-    if (!positionId) {
-      return NextResponse.json({ error: 'Position ID required' }, { status: 400 })
+    if (typeof positionId !== 'string' || !/^[0-9a-f-]{36}$/i.test(positionId)) {
+      return NextResponse.json({ error: 'Valid position ID required' }, { status: 400 })
     }
 
     const { error } = await supabase

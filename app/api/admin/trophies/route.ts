@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific trophy
       const { data, error } = await supabase
         .from('trophies')
-        .select('*')
+        .select('id, title, description, year, image_url, created_at, updated_at')
         .eq('id', trophyId)
         .single()
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       // Fetch all trophies
       const { data, error } = await supabase
         .from('trophies')
-        .select('*')
+        .select('id, title, description, year, image_url, created_at, updated_at')
         .order('year', { ascending: false })
 
       if (error) {

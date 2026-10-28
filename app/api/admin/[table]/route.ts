@@ -8,7 +8,7 @@ const ALLOWED_TABLES = new Set([
   "lineup", "features", "club_info", "footer_content", "features_content", "gallery",
   "news_updates", "banners", "social_links", "pages", "events", "articles",
   "player_honours", "honours", "gallery_categories", "sponsors", "achievements",
-  "fan_clubs", "fundraisers", "performance_metrics",
+  "fan_clubs", "fundraisers", "performance_metrics", "products", "orders",
 ])
 
 async function getAdminClient(request: NextRequest) {
@@ -34,7 +34,8 @@ function resolveTable(table: string) {
 }
 
 function validateTable(table: string) {
-  return ALLOWED_TABLES.has(table)
+  const resolvedTable = resolveTable(table)
+  return ALLOWED_TABLES.has(resolvedTable) && Boolean(TABLE_COLUMNS[resolvedTable])
 }
 
 const TABLE_COLUMNS: Record<string, string> = {
@@ -70,6 +71,8 @@ const TABLE_COLUMNS: Record<string, string> = {
   fan_clubs: 'id, name, description, image_url, enabled, created_at, updated_at',
   fundraisers: 'id, title, description, goal, raised, status, created_at, updated_at',
   performance_metrics: 'id, name, value, period, created_at, updated_at',
+  products: 'id, name, description, price, image_url, stock, category, is_active, created_at, updated_at',
+  orders: 'id, user_id, status, total, shipping_address, created_at, updated_at',
 }
 
 const WRITE_FIELDS: Record<string, Set<string>> = Object.fromEntries(
@@ -86,7 +89,7 @@ function sanitizeRecord(table: string, value: unknown) {
   return Object.fromEntries(Object.entries(value).filter(([key]) => fields.has(key)))
 }
 
-export async function GET(_request: Request, { params }: { params: Promise<{ table: string }> }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ table: string }> }) {
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
@@ -102,7 +105,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
   return NextResponse.json(data ?? [])
 }
 
-export async function POST(request: Request, { params }: { params: Promise<{ table: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ table: string }> }) {
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
@@ -121,7 +124,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tab
   return NextResponse.json(data, { status: 201 })
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ table: string }> }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ table: string }> }) {
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
@@ -143,7 +146,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ tabl
   return NextResponse.json(data)
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ table: string }> }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ table: string }> }) {
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 

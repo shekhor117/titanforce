@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (rankingId) {
       const { data, error } = await supabase
         .from('rankings')
-        .select('*')
+        .select('id, player_id, category, rank, score, season_year, created_at, updated_at')
         .eq('id', rankingId)
         .single()
 
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('rankings')
-      .select('*')
+      .select('id, player_id, category, rank, score, season_year, created_at, updated_at')
       .order('rank', { ascending: true })
 
     if (error) {

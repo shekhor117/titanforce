@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (fanId) {
       const { data, error } = await supabase
         .from('fans')
-        .select('*')
+        .select('id, name, email, avatar_url, is_active, created_at, updated_at')
         .eq('id', fanId)
         .single()
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     } else {
       const { data, error } = await supabase
         .from('fans')
-        .select('*')
+        .select('id, name, email, avatar_url, is_active, created_at, updated_at')
         .order('created_at', { ascending: false })
 
       if (error) {

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     if (updateId) {
       const { data, error } = await supabase
         .from('news_items')
-        .select('*')
+        .select('id, title, content, image_url, published, published_at, created_at, updated_at')
         .eq('id', updateId)
         .single()
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('news_items')
-      .select('*')
+      .select('id, title, content, image_url, published, published_at, created_at, updated_at')
       .order('created_at', { ascending: false })
 
     if (error) {

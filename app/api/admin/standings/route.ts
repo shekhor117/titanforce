@@ -114,6 +114,8 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')

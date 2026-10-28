@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific player
       const { data, error } = await supabase
         .from('players')
-        .select('*')
+        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
         .eq('id', playerId)
         .single()
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       // Fetch all players
       const { data, error } = await supabase
         .from('players')
-        .select('*')
+        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
         .order('num', { ascending: true })
 
       if (error) {

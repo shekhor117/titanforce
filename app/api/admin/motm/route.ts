@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     if (motmId) {
       const { data, error } = await supabase
         .from('man_of_the_match')
-        .select('*')
+        .select('id, match_id, player_id, votes, created_at, updated_at')
         .eq('id', motmId)
         .single()
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('man_of_the_match')
-      .select('*')
+      .select('id, match_id, player_id, votes, created_at, updated_at')
       .order('matchDate', { ascending: false })
 
     if (error) {

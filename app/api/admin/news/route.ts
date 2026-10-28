@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific news
       const { data, error } = await supabase
         .from('news_items')
-        .select('*')
+        .select('id, title, slug, excerpt, content, image_url, category, author, published, published_at, created_at, updated_at')
         .eq('id', newsId)
         .single()
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       // Fetch all news
       const { data, error } = await supabase
         .from('news_items')
-        .select('*')
+        .select('id, title, slug, excerpt, content, image_url, category, author, published, published_at, created_at, updated_at')
         .order('created_at', { ascending: false })
 
       if (error) {

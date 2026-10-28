@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (lineupId) {
       const { data, error } = await supabase
         .from('lineups')
-        .select('*')
+        .select('id, match_id, player_id, position, is_starting, shirt_number, created_at, updated_at')
         .eq('id', lineupId)
         .single()
 
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('lineups')
-      .select('*')
+      .select('id, match_id, player_id, position, is_starting, shirt_number, created_at, updated_at')
       .order('createdAt', { ascending: false })
 
     if (error) {

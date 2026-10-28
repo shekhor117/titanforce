@@ -91,7 +91,7 @@ export async function PUT(
     if (error) {
       console.error('[v0] Error updating player:', error)
       return NextResponse.json(
-        { error: error.message || 'Failed to update player' },
+        { error: 'Unable to update player' },
         { status: 400 }
       )
     }

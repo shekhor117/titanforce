@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     if (featureId) {
       const { data, error } = await supabase
         .from('features')
-        .select('*')
+        .select('id, name, description, enabled, config, created_at, updated_at')
         .eq('id', featureId)
         .single()
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('features')
-      .select('*')
+      .select('id, name, description, enabled, config, created_at, updated_at')
       .order('name')
 
     if (error) {

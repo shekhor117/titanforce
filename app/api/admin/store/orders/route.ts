@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific order
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select('id, user_id, status, total, shipping_address, created_at, updated_at')
         .eq('id', orderId)
         .single()
 
