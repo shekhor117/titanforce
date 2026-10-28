@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 import { validatePartial, validateRanking } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     const rankingId = searchParams.get('id')
@@ -18,7 +21,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching ranking:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -31,13 +34,13 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching rankings:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in GET /api/admin/rankings:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -45,16 +48,14 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     const validation = validateRanking(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -65,13 +66,13 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating ranking:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error in POST /api/admin/rankings:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -79,10 +80,8 @@ export async function PUT(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -93,7 +92,7 @@ export async function PUT(request: NextRequest) {
 
     const validation = validatePartial(updates, validateRanking)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -105,13 +104,13 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating ranking:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in PUT /api/admin/rankings:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -119,10 +118,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const rankingId = searchParams.get('id')
@@ -138,12 +135,12 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting ranking:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('[v0] Unexpected error in DELETE /api/admin/rankings:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

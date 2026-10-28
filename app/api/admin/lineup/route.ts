@@ -48,16 +48,14 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     const validation = validateLineup(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -82,10 +80,8 @@ export async function PUT(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -96,7 +92,7 @@ export async function PUT(request: NextRequest) {
 
     const validation = validatePartial(updates, validateLineup)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -122,10 +118,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const lineupId = searchParams.get('id')

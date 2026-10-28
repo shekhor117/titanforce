@@ -65,17 +65,15 @@ export async function POST(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate product data
     const validation = validateProduct(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -107,10 +105,8 @@ export async function PUT(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -122,7 +118,7 @@ export async function PUT(request: NextRequest) {
     // Validate product data (partial updates are OK)
     const validation = validatePartial(updates, validateProduct)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -156,10 +152,8 @@ export async function DELETE(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get('id')

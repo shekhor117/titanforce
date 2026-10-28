@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 const ALLOWED_TABLES = new Set([
   "partners", "fans", "news_items", "media_items", "contacts", "trophies",
@@ -10,32 +11,10 @@ const ALLOWED_TABLES = new Set([
   "fan_clubs", "fundraisers", "performance_metrics",
 ])
 
-async function getAdminClient() {
-  const supabase = await createClient()
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error || !user) return { supabase, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) }
-
-  let role = user.app_metadata?.role as string | undefined
-
-  // Keep authorization server-side and support existing app_users records while
-  // still refusing editable user_metadata as an authorization source.
-  if (role !== "admin" && role !== "manager") {
-    const { data: appUser } = await supabase
-      .from("app_users")
-      .select("role, is_active")
-      .eq("email", user.email ?? "")
-      .maybeSingle()
-    if (appUser?.is_active !== false) role = appUser?.role
-  }
-
-  if (role !== "admin" && role !== "manager") {
-    return { supabase, response: NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
-  }
-
-  // Use the service-role client only after the user has been authenticated and
-  // authorized above, so admin CRUD is not blocked by public-table RLS policies.
-  return { supabase, response: null }
+async function getAdminClient(request: NextRequest) {
+  const auth = await checkAdminAuth(request)
+  if (!auth.authorized) return { supabase: null, response: NextResponse.json({ error: auth.error }, { status: auth.status }) }
+  return { supabase: await createClient(), response: null }
 }
 
 async function tableFromParams(params: Promise<{ table: string }>) {
@@ -111,7 +90,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tab
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
-  const { supabase, response } = await getAdminClient()
+  const { supabase, response } = await getAdminClient(request)
   if (response) return response
   const resolvedTable = resolveTable(table)
 
@@ -127,7 +106,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tab
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
-  const { supabase, response } = await getAdminClient()
+  const { supabase, response } = await getAdminClient(request)
   if (response) return response
 
   const resolvedTable = resolveTable(table)
@@ -146,7 +125,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ tabl
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
-  const { supabase, response } = await getAdminClient()
+  const { supabase, response } = await getAdminClient(request)
   if (response) return response
 
   const resolvedTable = resolveTable(table)
@@ -168,7 +147,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ t
   const table = await tableFromParams(params)
   if (!validateTable(table)) return NextResponse.json({ error: "Unsupported admin table" }, { status: 400 })
 
-  const { supabase, response } = await getAdminClient()
+  const { supabase, response } = await getAdminClient(request)
   if (response) return response
 
   const resolvedTable = resolveTable(table)

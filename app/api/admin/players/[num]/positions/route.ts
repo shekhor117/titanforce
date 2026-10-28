@@ -30,7 +30,7 @@ export async function GET(
       .order('created_at', { ascending: true })
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ positions })
@@ -89,7 +89,7 @@ export async function POST(
       .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ position: data }, { status: 201 })
@@ -146,7 +146,7 @@ export async function PUT(
       .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ position: data })
@@ -175,7 +175,7 @@ export async function DELETE(
       .eq('id', positionId)
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

@@ -2,16 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateTrophy } from '@/lib/validation'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch all trophies or by ID
 export async function GET(request: NextRequest) {
   try {
     const userClient = await createClient()
     
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const supabase = createAdminClient()
 
@@ -62,17 +61,15 @@ export async function POST(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate trophy data
     const validation = validateTrophy(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -104,10 +101,8 @@ export async function PUT(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const supabase = createAdminClient()
 
@@ -121,7 +116,7 @@ export async function PUT(request: NextRequest) {
     // Validate trophy data (partial updates are OK)
     const validation = validatePartial(updates, validateTrophy)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -153,10 +148,8 @@ export async function DELETE(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const trophyId = searchParams.get('id')
@@ -181,7 +174,7 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in trophies DELETE:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete trophy' },
+      { error: 'Failed to delete trophy' },
       { status: 500 }
     )
   }

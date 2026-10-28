@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateMatch } from '@/lib/validation'
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 
 // Helper to map database fields to admin form fields
 function mapMatchData(dbMatch: any) {
@@ -34,11 +35,8 @@ export async function GET(request: NextRequest) {
     const matchId = searchParams.get('id')
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      console.error('[v0] Auth error:', authError)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     // Use admin client for querying
     const supabase = createAdminClient()
@@ -54,7 +52,7 @@ export async function GET(request: NextRequest) {
         console.error('[v0] Error fetching match:', error)
         // Return 404 if no record found, 400 for other errors
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
       return NextResponse.json(mapMatchData(data))
@@ -66,7 +64,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching matches:', error)
-        return NextResponse.json({ error: error.message }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
       }
 
       return NextResponse.json((data || []).map(mapMatchData))
@@ -74,8 +72,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Unexpected error in GET:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -84,18 +81,15 @@ export async function POST(request: NextRequest) {
   try {
     const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      console.error('[v0] Auth error:', authError)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     // Validate match data
     const validation = validateMatch(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Map field names from admin form to database schema
@@ -164,15 +158,14 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating match:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error in POST:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -181,11 +174,8 @@ export async function PUT(request: NextRequest) {
   try {
     const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      console.error('[v0] Auth error:', authError)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -197,7 +187,7 @@ export async function PUT(request: NextRequest) {
     // Validate match data (partial updates are OK)
     const validation = validatePartial(updates, validateMatch)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Map field names from admin form to database schema
@@ -280,15 +270,14 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating match:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in PUT:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -297,11 +286,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const userClient = await createClient()
 
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      console.error('[v0] Auth error:', authError)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const matchId = searchParams.get('id')
@@ -320,15 +306,14 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting match:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true, id: matchId })
   } catch (error) {
     console.error('[v0] Unexpected error in DELETE:', error instanceof Error ? error.message : String(error))
     return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      error: 'Internal server error'
     }, { status: 500 })
   }
 }

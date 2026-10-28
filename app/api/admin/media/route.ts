@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in media GET:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch media' },
+      { error: 'Failed to fetch media' },
       { status: 500 }
     )
   }
@@ -57,10 +57,8 @@ export async function POST(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const supabase = createAdminClient()
 
@@ -69,7 +67,7 @@ export async function POST(request: NextRequest) {
     // Validate media data
     const validation = validateMedia(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
@@ -87,7 +85,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in media POST:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create media' },
+      { error: 'Failed to create media' },
       { status: 500 }
     )
   }
@@ -99,10 +97,8 @@ export async function PUT(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -114,7 +110,7 @@ export async function PUT(request: NextRequest) {
     // Validate media data (partial updates are OK)
     const validation = validatePartial(updates, validateMedia)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -136,7 +132,7 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in media PUT:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update media' },
+      { error: 'Failed to update media' },
       { status: 500 }
     )
   }
@@ -148,10 +144,8 @@ export async function DELETE(request: NextRequest) {
     const userClient = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await userClient.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const mediaId = searchParams.get('id')
@@ -176,7 +170,7 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('[v0] Error in media DELETE:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete media' },
+      { error: 'Failed to delete media' },
       { status: 500 }
     )
   }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch inventory
 export async function GET(request: NextRequest) {
   try {
@@ -45,10 +46,8 @@ export async function PUT(request: NextRequest) {
     const supabase = await createClient()
 
     // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { productId, quantity, operation } = body

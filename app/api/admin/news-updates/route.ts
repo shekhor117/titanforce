@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateNewsUpdate } from '@/lib/validation'
 
+import { checkAdminAuth } from '@/lib/admin-api-helper'
 export async function GET(request: NextRequest) {
   try {
     // Use admin client to bypass RLS for listing all news items
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching news update:', error)
         const statusCode = error.message?.includes('no rows') ? 404 : 400
-        return NextResponse.json({ error: error.message }, { status: statusCode })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
       return NextResponse.json(data)
@@ -32,13 +33,13 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching news items:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in GET /api/admin/news-updates:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -46,35 +47,33 @@ export async function POST(request: NextRequest) {
   try {
     const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
 
     const validation = validateNewsUpdate(body)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for insert
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('news_items')
-      .insert([{ ...body, author_id: user.id }])
+      .insert([{ ...body, author_id: auth.user.id }])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating news item:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error in POST /api/admin/news-updates:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -82,10 +81,8 @@ export async function PUT(request: NextRequest) {
   try {
     const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
     const { id, ...updates } = body
@@ -96,7 +93,7 @@ export async function PUT(request: NextRequest) {
 
     const validation = validatePartial(updates, validateNewsUpdate)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     // Use admin client for update
@@ -110,13 +107,13 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating news item:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error in PUT /api/admin/news-updates:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -124,10 +121,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const clientSupa = await createClient()
 
-    const { data: { user }, error: authError } = await clientSupa.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const { searchParams } = new URL(request.url)
     const updateId = searchParams.get('id')
@@ -145,12 +140,12 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting news update:', error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('[v0] Unexpected error in DELETE /api/admin/news-updates:', error)
-    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

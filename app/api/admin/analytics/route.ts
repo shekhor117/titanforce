@@ -67,7 +67,7 @@ export async function PUT(request: NextRequest) {
 
     const validation = validateAnalytics(analyticsData)
     if (!validation.isValid) {
-      return NextResponse.json({ error: 'Validation failed', details: validation.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
     const { data, error } = await supabase
