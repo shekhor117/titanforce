@@ -1319,6 +1319,7 @@ export class DataService {
   async createContactMessage(message: Omit<ContactMessage, 'id' | 'created_at' | 'updated_at'>): Promise<ContactMessage> {
     if (!this.supabase) throw new Error('Supabase not configured')
     
+    console.log("[v0] DataService: Creating contact message:", message)
     
     const { data, error } = await this.supabase
       .from('contact_messages')
@@ -1331,6 +1332,7 @@ export class DataService {
       throw new Error(`Failed to save message: ${error.message || JSON.stringify(error)}`)
     }
     
+    console.log("[v0] DataService: Contact message created successfully:", data)
     return data
   }
 
@@ -1842,6 +1844,7 @@ export class DataService {
   async createAppUser(user: Omit<AppUser, 'id' | 'created_at' | 'updated_at' | 'joined_at'>): Promise<AppUser> {
     if (!this.supabase) throw new Error('Supabase not configured')
 
+    console.log("[v0] DataService: Creating app user:", user)
 
     const { data, error } = await this.supabase
       .from('app_users')
@@ -1854,6 +1857,7 @@ export class DataService {
       throw new Error(`Failed to create user: ${error.message || JSON.stringify(error)}`)
     }
 
+    console.log("[v0] DataService: App user created successfully:", data)
     return data
   }
 

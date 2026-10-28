@@ -16,14 +16,11 @@ export async function GET(request: NextRequest) {
       .order('date', { ascending: false })
       .limit(limit)
 
-    const allowedStatuses = new Set(['scheduled', 'live', 'completed', 'cancelled', 'postponed'])
     if (status) {
-      if (status.length > 32 || !allowedStatuses.has(status)) return NextResponse.json({ error: 'Invalid match status' }, { status: 400 })
       query = query.eq('status', status)
     }
 
     if (league) {
-      if (league.length > 80) return NextResponse.json({ error: 'Invalid league' }, { status: 400 })
       query = query.eq('league', league)
     }
 
