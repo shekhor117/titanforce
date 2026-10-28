@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
 
-    // Get signed URL (valid for 1 year)
+    // Return a short-lived bearer URL so leaked responses expire quickly.
     const { data: signedData, error: signedError } = await supabase.storage
       .from(BUCKET_NAME)
       .createSignedUrl(filePath, 3600)
