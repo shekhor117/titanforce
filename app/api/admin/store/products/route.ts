@@ -73,12 +73,14 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const productRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('products')
-      .insert([body])
+      .insert([productRecord])
       .select()
       .single()
 
@@ -105,7 +107,9 @@ export async function PUT(request: NextRequest) {
     // Check admin authentication
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing product ID' }, { status: 400 })
@@ -113,6 +117,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate product data (partial updates are OK)
     const validation = validatePartial(updates, validateProduct)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }

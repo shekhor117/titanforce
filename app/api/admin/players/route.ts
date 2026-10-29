@@ -72,12 +72,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
+    const writableFields = ['number', 'name', 'position', 'photo_url', 'bio', 'is_active', 'nationality', 'date_of_birth'] as const
+    const playerRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
+
     // Use admin client for database operations
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('players')
-      .insert([body])
+      .insert([playerRecord])
       .select()
       .single()
 
@@ -86,7 +89,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
-    console.log('[v0] Player created:', data)
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
@@ -106,7 +108,9 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['number', 'name', 'position', 'photo_url', 'bio', 'is_active', 'nationality', 'date_of_birth'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing player ID' }, { status: 400 })
@@ -114,6 +118,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate player data (partial updates are OK)
     const validation = validatePlayer(updates, { partial: true })
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
@@ -133,7 +138,6 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
-    console.log('[v0] Player updated:', data)
     return NextResponse.json(data)
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
@@ -172,7 +176,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
-    console.log('[v0] Player deleted:', playerId)
     return NextResponse.json({ success: true, id: playerId })
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))

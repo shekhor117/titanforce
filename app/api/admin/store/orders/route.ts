@@ -76,9 +76,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
+    const writableFields = ['user_id', 'status', 'total', 'shipping_address', 'billing_address', 'items', 'notes'] as const
+    const orderRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
     const { data, error } = await supabase
       .from('orders')
-      .insert([body])
+      .insert([orderRecord])
       .select()
       .single()
 
@@ -104,7 +106,9 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['status', 'shipping_address', 'billing_address', 'items', 'notes'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing order ID' }, { status: 400 })
@@ -112,6 +116,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate order data (partial updates are OK)
     const validation = validatePartial(updates, validateOrder)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }

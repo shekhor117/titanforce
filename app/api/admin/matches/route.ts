@@ -256,8 +256,6 @@ export async function PUT(request: NextRequest) {
     // Always add updated_at timestamp
     matchData.updated_at = new Date().toISOString()
 
-    console.log('[v0] Updating match', id, 'with data:', matchData)
-
     // Use admin client for database operations
     const supabase = createAdminClient()
 

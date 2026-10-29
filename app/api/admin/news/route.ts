@@ -69,12 +69,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
+    const writableFields = ['title', 'slug', 'excerpt', 'content', 'image_url', 'category', 'author', 'published', 'published_at'] as const
+    const newsRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
+
     // Use admin client for database operations
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('news_items')
-      .insert([body])
+      .insert([newsRecord])
       .select()
       .single()
 
@@ -106,7 +109,9 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['title', 'slug', 'excerpt', 'content', 'image_url', 'category', 'author', 'published', 'published_at'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing news ID' }, { status: 400 })
@@ -114,6 +119,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate news data (partial updates are OK)
     const validation = validatePartial(updates, validateNews)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
