@@ -70,9 +70,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
+    const writableFields = ['title', 'description', 'media_type', 'url', 'thumbnail_url', 'alt_text', 'category'] as const
+    const mediaRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
     const { data, error } = await supabase
       .from('media')
-      .insert([body])
+      .insert([mediaRecord])
       .select()
       .single()
 
@@ -101,7 +103,9 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['title', 'description', 'media_type', 'url', 'thumbnail_url', 'alt_text', 'category'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing media ID' }, { status: 400 })
@@ -109,6 +113,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate media data (partial updates are OK)
     const validation = validatePartial(updates, validateMedia)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }

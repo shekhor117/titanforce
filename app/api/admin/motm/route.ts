@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateMotm } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('man_of_the_match')
-      .insert([body])
+      .insert([pickWritableFields(body, ['match_id', 'player_id', 'votes'])])
       .select()
       .single()
 
@@ -82,7 +83,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['match_id', 'player_id', 'votes'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing MOTM ID' }, { status: 400 })

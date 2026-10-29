@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateNewsUpdate } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     // Use admin client to bypass RLS for listing all news items
@@ -85,7 +86,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['title', 'content', 'image_url', 'published', 'published_at'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing news item ID' }, { status: 400 })

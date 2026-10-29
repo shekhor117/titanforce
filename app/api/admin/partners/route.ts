@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validatePartner } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('partners')
-      .insert([body])
+      .insert([pickWritableFields(body, ['name', 'logo_url', 'website_url', 'description', 'is_active', 'sort_order'])])
       .select()
       .single()
 
@@ -88,7 +89,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['name', 'logo_url', 'website_url', 'description', 'is_active', 'sort_order'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing partner ID' }, { status: 400 })

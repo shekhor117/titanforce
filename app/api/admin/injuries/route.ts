@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateInjury } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 // GET - Fetch all injuries or by ID
 export async function GET(request: NextRequest) {
   try {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('injuries')
-      .insert([body])
+      .insert([pickWritableFields(body, ['player_id', 'injury_type', 'description', 'status', 'start_date', 'expected_return'])])
       .select()
       .single()
 
@@ -93,7 +94,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['player_id', 'injury_type', 'description', 'status', 'start_date', 'expected_return'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing injury ID' }, { status: 400 })

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateMatch } from '@/lib/validation'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 
 // Helper to map database fields to admin form fields
 function mapMatchData(dbMatch: any) {
@@ -178,7 +179,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['home_team', 'home', 'away_team', 'away', 'match_date', 'date', 'match_time', 'time', 'venue', 'status', 'home_logo_url', 'away_logo_url', 'home_score', 'away_score', 'attendance', 'league', 'competition'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })

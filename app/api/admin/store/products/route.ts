@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error, count } = await supabase
       .from('products')
-      .select('*', { count: 'exact' })
+      .select('id, name, description, price, image_url, stock, category, is_active, created_at, updated_at', { count: 'exact' })
       .range(offset, offset + limit - 1)
 
     if (error) {

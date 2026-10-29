@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateTrophy } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 // GET - Fetch all trophies or by ID
 export async function GET(request: NextRequest) {
   try {
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('trophies')
-      .insert([body])
+      .insert([pickWritableFields(body, ['title', 'description', 'year', 'image_url'])])
       .select()
       .single()
 
@@ -107,7 +108,8 @@ export async function PUT(request: NextRequest) {
     const supabase = createAdminClient()
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['title', 'description', 'year', 'image_url'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing trophy ID' }, { status: 400 })

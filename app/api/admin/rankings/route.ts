@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 import { validatePartial, validateRanking } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('rankings')
-      .insert([body])
+      .insert([pickWritableFields(body, ['player_id', 'category', 'rank', 'score', 'season_year'])])
       .select()
       .single()
 
@@ -84,7 +85,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['player_id', 'category', 'rank', 'score', 'season_year'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing ranking ID' }, { status: 400 })

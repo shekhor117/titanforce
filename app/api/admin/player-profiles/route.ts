@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validatePlayerProfile } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('player_profiles')
-      .insert([body])
+      .insert([pickWritableFields(body, ['player_id', 'bio', 'height', 'weight', 'nationality', 'preferred_position'])])
       .select()
       .single()
 
@@ -82,7 +83,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['player_id', 'bio', 'height', 'weight', 'nationality', 'preferred_position'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing player profile ID' }, { status: 400 })

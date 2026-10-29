@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch all orders with pagination and filtering
-    let query = supabase.from('orders').select('*', { count: 'exact' })
+    let query = supabase.from('orders').select('id, user_id, status, total, shipping_address, created_at, updated_at', { count: 'exact' })
 
     const status = searchParams.get('status')
     if (status) {
