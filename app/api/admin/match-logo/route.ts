@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
-import { normalizeImage } from '@/lib/image-security'
+import { hasValidImageSignature, normalizeImage, SUPPORTED_IMAGE_TYPES } from '@/lib/image-security'
 import { randomUUID } from 'node:crypto'
 
 const BUCKET = 'app-files'
@@ -17,10 +17,12 @@ export async function POST(request: NextRequest) {
   if (!(file instanceof File) || (side !== 'home' && side !== 'away')) {
     return NextResponse.json({ error: 'A logo file and side are required' }, { status: 400 })
   }
-  if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) return NextResponse.json({ error: 'Logo must be a supported image' }, { status: 400 })
+  if (!SUPPORTED_IMAGE_TYPES.includes(file.type as (typeof SUPPORTED_IMAGE_TYPES)[number])) return NextResponse.json({ error: 'Logo must be a supported image' }, { status: 400 })
   if (file.size > 2 * 1024 * 1024) return NextResponse.json({ error: 'Logo must be smaller than 2MB' }, { status: 400 })
 
-  const normalized = await normalizeImage(new Uint8Array(await file.arrayBuffer()), file.type)
+  const bytes = new Uint8Array(await file.arrayBuffer())
+  if (!hasValidImageSignature(bytes, file.type)) return NextResponse.json({ error: 'Invalid image file' }, { status: 400 })
+  const normalized = await normalizeImage(bytes, file.type)
   const path = `match-logos/${auth.user.id}/${side}-${randomUUID()}.${normalized.extension}`
   const { error } = await supabase.storage.from(BUCKET).upload(path, normalized.bytes, {
     contentType: normalized.contentType,

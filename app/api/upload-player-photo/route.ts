@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { checkAdminAuth } from "@/lib/admin-api-helper"
 import { checkUploadRateLimit } from "@/lib/upload-rate-limit"
-import { normalizeImage } from "@/lib/image-security"
+import { hasValidImageSignature, normalizeImage, SUPPORTED_IMAGE_TYPES } from "@/lib/image-security"
 import { NextRequest, NextResponse } from "next/server"
 import { v4 as uuidv4 } from "uuid"
 
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type)) {
+    if (!SUPPORTED_IMAGE_TYPES.includes(file.type as (typeof SUPPORTED_IMAGE_TYPES)[number])) {
       return NextResponse.json(
         { error: "File must be an image" },
         { status: 400 }
@@ -63,13 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Generate unique filename
     const bytes = new Uint8Array(await file.arrayBuffer())
-    const signatures: Record<string, (bytes: Uint8Array) => boolean> = {
-      'image/jpeg': (value) => value[0] === 0xff && value[1] === 0xd8 && value[2] === 0xff,
-      'image/png': (value) => [137, 80, 78, 71, 13, 10, 26, 10].every((byte, index) => value[index] === byte),
-      'image/gif': (value) => value[0] === 0x47 && value[1] === 0x49 && value[2] === 0x46,
-      'image/webp': (value) => value[0] === 0x52 && value[1] === 0x49 && value[2] === 0x46 && value[3] === 0x46 && value[8] === 0x57 && value[9] === 0x45 && value[10] === 0x42 && value[11] === 0x50,
-    }
-    if (!signatures[file.type]?.(bytes)) return NextResponse.json({ error: "Invalid image file" }, { status: 400 })
+    if (!hasValidImageSignature(bytes, file.type)) return NextResponse.json({ error: "Invalid image file" }, { status: 400 })
     const normalized = await normalizeImage(bytes, file.type)
     const uniqueId = uuidv4()
     const fileName = `${uniqueId}.${normalized.extension}`
