@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   })
   if (error) {
     console.error('[v0] Match logo upload failed:', error.message)
-    return NextResponse.json({ error: 'Logo upload failed' }, { status: 400 })
+    return NextResponse.json({ error: 'Logo upload failed' }, { status: 500 })
   }
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)

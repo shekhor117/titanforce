@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching injury:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching injuries:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating injury:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -115,7 +115,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating injury:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -149,7 +149,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting injury:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

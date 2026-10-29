@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching trophy:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process trophy request' }, { status: statusCode })
       }
 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching trophies:', error)
-        return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 500 })
       }
 
       return NextResponse.json(data || [])
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating trophy:', error)
-      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating trophy:', error)
-      const statusCode = error.message?.includes('no rows') ? 404 : 400
+      const statusCode = error.code === 'PGRST116' ? 404 : 500
       return NextResponse.json({ error: 'Unable to process trophy request' }, { status: statusCode })
     }
 
@@ -167,7 +167,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting trophy:', error)
-      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process trophy request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

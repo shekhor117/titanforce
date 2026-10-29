@@ -92,7 +92,7 @@ export async function PUT(
       console.error('[v0] Error updating player:', error)
       return NextResponse.json(
         { error: 'Unable to update player' },
-        { status: 400 }
+        { status: 500 }
       )
     }
 
@@ -152,7 +152,7 @@ export async function DELETE(
 
     if (error) {
       console.error('[v0] Error deleting player:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

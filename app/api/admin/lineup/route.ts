@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching lineup:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: statusCode === 404 ? 'Lineup not found' : 'Unable to fetch lineup' }, { status: statusCode })
       }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching lineups:', error)
-      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating lineup:', error)
-      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -104,7 +104,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating lineup:', error)
-      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -135,7 +135,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting lineup:', error)
-      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process lineup request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

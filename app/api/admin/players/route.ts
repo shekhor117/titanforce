@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching player:', error)
         // Return 404 if no record found, 400 for other errors
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching players:', error)
-        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
       }
 
       return NextResponse.json(data)
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating player:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Player created:', data)
@@ -130,7 +130,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating player:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Player updated:', data)
@@ -169,7 +169,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting player:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Player deleted:', playerId)

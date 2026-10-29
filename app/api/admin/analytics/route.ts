@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching analytics:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: statusCode === 404 ? 'Player analytics not found' : 'Unable to fetch analytics' }, { status: statusCode })
       }
 
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching analytics:', error)
-      return NextResponse.json({ error: 'Unable to process analytics request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process analytics request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating analytics:', error)
-      return NextResponse.json({ error: 'Unable to process analytics request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process analytics request' }, { status: 500 })
     }
 
     return NextResponse.json(data)

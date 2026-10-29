@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         console.debug('[v0] Standings table not yet created - migration needed')
         return NextResponse.json(
           { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
-          { status: 400 }
+          { status: 500 }
         )
       }
       console.error('[v0] Error creating standing:', error.message)
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest) {
         console.debug('[v0] Standings table not yet created - migration needed')
         return NextResponse.json(
           { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
-          { status: 400 }
+          { status: 500 }
         )
       }
       console.error('[v0] Error updating standing:', error.message)
@@ -135,7 +135,7 @@ export async function DELETE(request: NextRequest) {
         console.debug('[v0] Standings table not yet created - migration needed')
         return NextResponse.json(
           { error: 'Standings table not yet created. Please run the database migration: supabase/migrations/20260702_create_matches_standings_tables.sql' },
-          { status: 400 }
+          { status: 500 }
         )
       }
       console.error('[v0] Error deleting standing:', error.message)

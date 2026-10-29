@@ -51,10 +51,10 @@ export async function uploadFileToSupabase(
       throw uploadError
     }
 
-    // Get signed URL (valid for 1 year)
+    // Get signed URL (valid for 1 hour)
     const { data: signedData } = await supabase.storage
       .from(BUCKET_NAME)
-      .createSignedUrl(filePath, 31536000) // 1 year
+      .createSignedUrl(filePath, 3600) // 1 hour; URLs are bearer credentials and should expire quickly.
 
     return {
       success: true,

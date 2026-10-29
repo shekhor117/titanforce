@@ -100,7 +100,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { data, error } = await supabase.from(resolvedTable).select(TABLE_COLUMNS[resolvedTable])
   if (error) {
     console.error('[v0] Admin table read failed:', error.message)
-    return NextResponse.json({ error: "Unable to fetch records" }, { status: 400 })
+    return NextResponse.json({ error: "Unable to fetch records" }, { status: 500 })
   }
   return NextResponse.json(data ?? [])
 }
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const { data, error } = await supabase.from(resolvedTable).insert(record).select(TABLE_COLUMNS[resolvedTable]).single()
   if (error) {
     console.error('[v0] Admin table insert failed:', error.message)
-    return NextResponse.json({ error: "Unable to create record" }, { status: 400 })
+    return NextResponse.json({ error: "Unable to create record" }, { status: 500 })
   }
   return NextResponse.json(data, { status: 201 })
 }
@@ -141,7 +141,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const { data, error } = await supabase.from(resolvedTable).update(updates).eq("id", id).select(TABLE_COLUMNS[resolvedTable]).single()
   if (error) {
     console.error('[v0] Admin table update failed:', error.message)
-    return NextResponse.json({ error: "Unable to update record" }, { status: 400 })
+    return NextResponse.json({ error: "Unable to update record" }, { status: 500 })
   }
   return NextResponse.json(data)
 }
@@ -159,7 +159,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const { error } = await supabase.from(resolvedTable).delete().eq("id", id)
   if (error) {
     console.error('[v0] Admin table delete failed:', error.message)
-    return NextResponse.json({ error: "Unable to delete record" }, { status: 400 })
+    return NextResponse.json({ error: "Unable to delete record" }, { status: 500 })
   }
   return NextResponse.json({ success: true })
 }

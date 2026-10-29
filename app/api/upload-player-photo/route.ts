@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
 
-    // Get signed URL (valid for 1 year)
+    // Get signed URL (valid for 1 hour)
     const { data: signedData, error: signedError } = await supabase.storage
       .from(BUCKET_NAME)
       .createSignedUrl(filePath, 3600)

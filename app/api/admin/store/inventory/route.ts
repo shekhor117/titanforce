@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching inventory:', error)
-      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -97,7 +97,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating inventory:', error)
-      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process inventory request' }, { status: 500 })
     }
 
     return NextResponse.json({

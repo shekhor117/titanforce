@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching order:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process order request' }, { status: statusCode })
       }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching orders:', error)
-      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating order:', error)
-      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -125,7 +125,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating order:', error)
-      const statusCode = error.message?.includes('no rows') ? 404 : 400
+      const statusCode = error.code === 'PGRST116' ? 404 : 500
       return NextResponse.json({ error: 'Unable to process order request' }, { status: statusCode })
     }
 
@@ -159,7 +159,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting order:', error)
-      return NextResponse.json({ error: 'Unable to process order request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process order request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
