@@ -1,15 +1,19 @@
-// @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server'
+import type { User } from '@supabase/supabase-js'
 import { createClient, createAdminClient } from './supabase/server'
 
 const ADMIN_ROLES = new Set(['admin', 'super_admin', 'moderator', 'manager'])
+
+type AdminAuthResult =
+  | { authorized: true; user: User; role: string; error: null; status: 200 }
+  | { authorized: false; user?: undefined; role?: undefined; error: string; status: 401 | 403 | 500 }
 
 /**
  * Authenticates and authorizes every admin API request.
  * Roles must come from server-controlled app_metadata or an active app_users row;
  * editable user_metadata is intentionally never used for authorization.
  */
-export async function checkAdminAuth(_request: NextRequest) {
+export async function checkAdminAuth(_request: NextRequest): Promise<AdminAuthResult> {
   try {
     const userClient = await createClient()
     const { data: { user }, error: authError } = await userClient.auth.getUser()

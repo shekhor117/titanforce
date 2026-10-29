@@ -241,7 +241,7 @@ export async function PUT(request: NextRequest) {
     const decimalFields = ['home_pass_accuracy', 'away_pass_accuracy', 'home_xg', 'away_xg', 'weather_wind_speed']
     for (const field of decimalFields) {
       if (updates[field] !== undefined && updates[field] !== null && !isNaN(Number(updates[field]))) {
-        matchData[field] = parseFloat(updates[field])
+        matchData[field] = parseFloat(String(updates[field]))
       }
     }
     
