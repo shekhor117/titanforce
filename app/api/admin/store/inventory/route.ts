@@ -5,23 +5,26 @@ import { checkAdminAuth } from '@/lib/admin-api-helper'
 // GET - Fetch inventory
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const auth = await checkAdminAuth(request)
+    if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
+    const supabase = createAdminClient()
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get('productId')
 
-    let query = supabase.from('products').select('id, name, stock, price')
+    let query = supabase.from('products').select('id, name, stock, price', { count: 'exact' })
 
-    if (productId) {
-      query = query.eq('id', productId)
+    if (productId) query = query.eq('id', productId)
+
+    const rawLimit = Number(searchParams.get('limit') ?? 50)
+    const rawOffset = Number(searchParams.get('offset') ?? 0)
+    if (!Number.isInteger(rawLimit) || rawLimit < 1 || rawLimit > 100 || !Number.isInteger(rawOffset) || rawOffset < 0) {
+      return NextResponse.json({ error: 'Invalid pagination' }, { status: 400 })
     }
+    const limit = rawLimit
+    const offset = rawOffset
 
-    // Add pagination
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 50
-    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0
-
-    const { data, error, count } = await query
-      .select('id, product_id, quantity, reserved, updated_at')
-      .range(offset, offset + limit - 1)
+    const { data, error, count } = await query.range(offset, offset + limit - 1)
 
     if (error) {
       console.error('[v0] Error fetching inventory:', error)

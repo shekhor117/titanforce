@@ -26,17 +26,21 @@ export async function checkAdminAuth(_request: NextRequest): Promise<AdminAuthRe
       ? user.app_metadata.role.trim().toLowerCase()
       : ''
     let role = metadataRole
-    const { data: appUser } = await userClient
+    const { data: appUser, error: appUserError } = await userClient
       .from('app_users')
       .select('role, is_active')
       .eq('email', user.email ?? '')
       .maybeSingle()
 
-    if (appUser && appUser.is_active !== true) {
+    if (appUserError) {
+      return { authorized: false, error: 'Authentication service unavailable', status: 500 as const }
+    }
+
+    if (!appUser || appUser.is_active !== true) {
       return { authorized: false, error: 'Forbidden', status: 403 as const }
     }
 
-    if (!ADMIN_ROLES.has(role) && appUser?.is_active === true && typeof appUser.role === 'string') {
+    if (typeof appUser.role === 'string') {
       role = appUser.role.trim().toLowerCase()
     }
 
