@@ -13,10 +13,11 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
   const refresh = useCallback(async () => {
     setReadLoading(true)
     try {
-      const response = await fetch(`/api/admin/${tableName}`, { cache: 'no-store' })
-      const payload = await response.json()
-      if (!response.ok) throw new Error(payload.error || 'Failed to load records')
-      setData(Array.isArray(payload) ? payload : [])
+      const response = await fetch(`/api/admin/${encodeURIComponent(tableName)}`, { cache: 'no-store' })
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(payload?.error || 'Failed to load records')
+      const records = Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : []
+      setData(records)
       setReadError(null)
     } catch (err) {
       const nextError = err instanceof Error ? err : new Error('Failed to load records')
@@ -67,7 +68,6 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
 
         const created = await response.json()
         setData((current) => [...current, created as T])
-        console.log(`[v0] Created ${tableName} record:`, created)
         return { data: created, error: null }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Unknown error')
@@ -94,7 +94,6 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
 
         const updated = await response.json()
         setData((current) => current.map((item) => item.id === id ? updated as T : item))
-        console.log(`[v0] Updated ${tableName} record:`, updated)
         return { data: updated, error: null }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Unknown error')
@@ -108,7 +107,7 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
   const deleteRecord = useCallback(
     async (id: string) => {
       try {
-        const response = await fetch(`/api/admin/${tableName}?id=${id}`, {
+        const response = await fetch(`/api/admin/${encodeURIComponent(tableName)}?id=${encodeURIComponent(id)}`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
         })
@@ -119,7 +118,6 @@ export function useAdminData<T extends { id: string }>(tableName: string) {
         }
 
         setData((current) => current.filter((item) => item.id !== id))
-        console.log(`[v0] Deleted ${tableName} record:`, id)
         return { error: null }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Unknown error')
@@ -155,7 +153,7 @@ export function useAdminBulkOperations<T extends { id: string }>(tableName: stri
         setError(null)
 
         const promises = records.map((record) =>
-          fetch(`/api/admin/${tableName}`, {
+fetch(`/api/admin/${encodeURIComponent(tableName)}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(record),
@@ -190,7 +188,7 @@ export function useAdminBulkOperations<T extends { id: string }>(tableName: stri
         setError(null)
 
         const promises = ids.map((id) =>
-          fetch(`/api/admin/${tableName}?id=${id}`, {
+fetch(`/api/admin/${encodeURIComponent(tableName)}?id=${encodeURIComponent(id)}`, {
             method: 'DELETE',
           })
         )
