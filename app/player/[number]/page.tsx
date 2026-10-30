@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Edit } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
+import { useAdmin } from '@/lib/admin-context'
 import { PlayerProfileHero } from '@/components/player/player-profile-hero'
 import { PlayerAttributesChart } from '@/components/player/player-attributes-chart'
 import { PlayerCareerStats } from '@/components/player/player-career-stats'
@@ -18,9 +19,10 @@ export default function PlayerProfile() {
   const params = useParams()
   const router = useRouter()
   const { language } = useLanguage()
+  const { admin, isInitialized } = useAdmin()
   const isBn = language === 'bn'
   const [mounted, setMounted] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const isAdmin = Boolean(admin)
   const [player, setPlayer] = useState<Player | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
@@ -36,15 +38,6 @@ export default function PlayerProfile() {
 
   useEffect(() => {
     setMounted(true)
-    try {
-      const adminData = localStorage.getItem('titanforce_admin')
-      if (adminData) {
-        const admin = JSON.parse(adminData)
-        setIsAdmin(admin.role === 'admin')
-      }
-    } catch {
-      // Silent fail
-    }
   }, [])
 
   useEffect(() => {
@@ -66,7 +59,7 @@ export default function PlayerProfile() {
     fetchPlayer()
   }, [playerNum, mounted])
 
-  if (!mounted || loading) {
+  if (!mounted || !isInitialized || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
