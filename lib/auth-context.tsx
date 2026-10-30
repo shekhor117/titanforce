@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from "react"
@@ -22,7 +21,6 @@ interface PlayerProfile {
   about?: string
   website?: string
   dateOfBirth?: string
-  jersey?: string
 }
 
 interface Profile {

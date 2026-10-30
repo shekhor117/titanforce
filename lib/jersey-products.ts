@@ -8,14 +8,15 @@ export interface StoreProduct {
   name: string
   description: string
   price: number
-  image: string
-  category: "home" | "away" | "training" | "retro" | "accessories"
+  image?: string
+  imageUrl?: string
+  category: string
   sizes: string[]
   colors: string[]
   stock: number
-  rating: number
-  reviews: number
-  features: string[]
+  rating?: number
+  reviews?: number
+  features?: string[]
 }
 
 export interface CartItem extends StoreProduct {

@@ -1,12 +1,11 @@
-// @ts-nocheck
 "use client"
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
-import { CartItem, JerseyProduct } from "@/lib/jersey-products"
+import { CartItem, StoreProduct } from "@/lib/jersey-products"
 
 interface CartContextType {
   items: CartItem[]
-  addItem: (product: JerseyProduct, quantity: number, size: string, color: string) => void
+  addItem: (product: StoreProduct, quantity: number, size: string, color: string) => void
   removeItem: (cartId: string) => void
   updateQuantity: (cartId: string, quantity: number) => void
   clearCart: () => void
@@ -47,7 +46,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isInitialized])
 
-  const addItem = (product: JerseyProduct, quantity: number, size: string, color: string) => {
+  const addItem = (product: StoreProduct, quantity: number, size: string, color: string) => {
     setItems(prevItems => {
       // Check if item with same product, size, and color already exists
       const existing = prevItems.find(
