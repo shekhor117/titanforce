@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import StoreDataService, { StoreProduct } from '@/lib/store-data-service'
 import { ScrollProgressAnimation } from './scroll-progress-animation'
+import { ProductImage } from './product-image'
 
 export function HomeShopLatest({ initialProducts = [] }: { initialProducts?: StoreProduct[] }) {
   const [products, setProducts] = useState<StoreProduct[]>(initialProducts.slice(0, 6))
@@ -82,20 +82,11 @@ export function HomeShopLatest({ initialProducts = [] }: { initialProducts?: Sto
                 <div className="neo-floating relative overflow-hidden">
                   {/* Product Image */}
                   <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
-                    {product.imageUrl ? (
-                      <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          // Show fallback if image fails to load
-                          e.currentTarget.style.display = 'none'
-                        }}
-                      />
-                    ) : null}
-                    {/* Fallback gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-900/40 to-black/60" />
+                    <ProductImage
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
                   </div>
 
                   {/* Product Info */}

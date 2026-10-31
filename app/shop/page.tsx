@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { ShoppingCart, Star, Filter, Search, ChevronRight } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
 import { EntranceReveal } from "@/components/entrance-reveal"
+import { ProductImage } from "@/components/product-image"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 import { dataStore } from "@/lib/data-store"
 
@@ -218,7 +219,7 @@ export default function ShopPage() {
                   <div className="bg-secondary rounded-lg overflow-hidden hover:shadow-lg transition-shadow group h-full flex flex-col">
                     {/* Image */}
                     <div className="relative aspect-square bg-background overflow-hidden">
-                      <img
+                      <ProductImage
                         src={product.imageUrl}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

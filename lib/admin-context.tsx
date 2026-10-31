@@ -172,7 +172,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const user = await Promise.race([
         signInWithEmail(email, password),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 12000),
+          setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 30000),
         ),
       ])
       
