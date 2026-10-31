@@ -7,12 +7,10 @@ type ProductImageProps = {
   src?: string | null
   alt: string
   className?: string
-  fallbackSrc?: string
 }
 
-export function ProductImage({ src, alt, className = "", fallbackSrc = "/products/kit-17.png" }: ProductImageProps) {
-  const [currentSrc, setCurrentSrc] = useState(src || fallbackSrc)
-  const [failed, setFailed] = useState(false)
+export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
+  const [failed, setFailed] = useState(!src)
 
   if (failed) {
     return (
@@ -23,15 +21,5 @@ export function ProductImage({ src, alt, className = "", fallbackSrc = "/product
     )
   }
 
-  return (
-    <img
-      src={currentSrc}
-      alt={alt}
-      className={className}
-      onError={() => {
-        if (currentSrc !== fallbackSrc) setCurrentSrc(fallbackSrc)
-        else setFailed(true)
-      }}
-    />
-  )
+  return <img src={src ?? ""} alt={alt} className={className} onError={() => setFailed(true)} />
 }
