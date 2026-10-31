@@ -52,6 +52,15 @@ class StoreDataService {
     return error?.code === 'PGRST205' || error?.message?.includes('Could not find the table') || error?.message?.includes('schema cache')
   }
 
+  private resolveImageUrl(value: unknown): string {
+    if (typeof value !== 'string' || !value.trim()) return ''
+    const image = value.trim()
+    if (/^https?:\/\//i.test(image) || image.startsWith('data:')) return image
+
+    const path = image.replace(/^\/+/, '').replace(/^app-files\//, '')
+    return createClient().storage.from('app-files').getPublicUrl(path).data.publicUrl
+  }
+
   async getProducts(): Promise<StoreProduct[]> {
     try {
       const supabase = createClient()
@@ -70,7 +79,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -107,7 +116,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
@@ -143,7 +152,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -179,7 +188,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -239,7 +248,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -279,7 +288,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -323,7 +332,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -365,7 +374,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -424,7 +433,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
@@ -484,7 +493,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
