@@ -57,7 +57,8 @@ class StoreDataService {
     const image = value.trim()
     if (/^https?:\/\//i.test(image) || image.startsWith('data:')) return image
 
-    const path = image.replace(/^\/+/, '').replace(/^app-files\//, '')
+    const normalizedPath = decodeURIComponent(image.replace(/^\/+/, '').replace(/^app-files\//, ''))
+    const path = normalizedPath.startsWith('products/') ? normalizedPath : `products/${normalizedPath}`
     return createClient().storage.from('app-files').getPublicUrl(path).data.publicUrl
   }
 
