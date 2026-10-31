@@ -55,11 +55,24 @@ class StoreDataService {
   private resolveImageUrl(value: unknown): string {
     if (typeof value !== 'string' || !value.trim()) return ''
     const image = value.trim()
-    if (/^https?:\/\//i.test(image) || image.startsWith('data:')) return image
+    if (image.startsWith('data:')) return image
 
-    const normalizedPath = decodeURIComponent(image.replace(/^\/+/, '').replace(/^app-files\//, ''))
+    let normalizedPath = image
+    if (/^https?:\/\//i.test(image)) {
+      try {
+        const url = new URL(image)
+        const marker = '/storage/v1/object/public/app-files/'
+        const markerIndex = url.pathname.indexOf(marker)
+        if (markerIndex === -1) return image
+        normalizedPath = url.pathname.slice(markerIndex + marker.length)
+      } catch {
+        return ''
+      }
+    }
+
+    normalizedPath = decodeURIComponent(normalizedPath.replace(/^\/+/, '').replace(/^app-files\//, ''))
     const path = normalizedPath.startsWith('products/') ? normalizedPath : `products/${normalizedPath}`
-    return createClient().storage.from('app-files').getPublicUrl(path).data.publicUrl
+    return `/api/store/product-image?path=${encodeURIComponent(path)}`
   }
 
   async getProducts(): Promise<StoreProduct[]> {
