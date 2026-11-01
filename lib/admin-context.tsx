@@ -175,10 +175,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 30000),
         ),
       ])
-      
-      // Use the user returned by signInWithPassword. Calling getUser immediately
-      // afterwards can contend with Supabase's auth lock and lose the session.
-      const hasAccess = ["admin", "super_admin", "moderator"].includes(user.role)
+
+      const sessionResponse = await fetch("/api/admin/session", { cache: "no-store" })
+      const sessionData = await sessionResponse.json().catch(() => ({}))
+      if (!sessionResponse.ok) {
+        throw new Error(sessionData.error || "Your account does not have admin access.")
+      }
+
+      const authorizedUser = { ...user, role: sessionData.role as AuthUser["role"] }
+      const hasAccess = ["admin", "super_admin", "moderator"].includes(authorizedUser.role)
       if (!hasAccess) {
         setIsLoading(false)
         await signOut()
@@ -187,7 +192,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin(user)
+      setAdmin(authorizedUser)
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"
