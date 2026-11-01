@@ -26,7 +26,7 @@ export async function checkAdminAuth(_request: NextRequest): Promise<AdminAuthRe
       ? user.app_metadata.role.trim().toLowerCase()
       : ''
     let role = metadataRole
-    const { data: appUser, error: appUserError } = await userClient
+    const { data: appUser, error: appUserError } = await createAdminClient()
       .from('app_users')
       .select('role, is_active')
       .eq('email', user.email ?? '')
