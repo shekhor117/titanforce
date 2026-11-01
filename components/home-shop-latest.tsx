@@ -8,8 +8,12 @@ import { ScrollProgressAnimation } from './scroll-progress-animation'
 import { ProductImage } from './product-image'
 
 export function HomeShopLatest({ initialProducts = [] }: { initialProducts?: StoreProduct[] }) {
-  const [products, setProducts] = useState<StoreProduct[]>(initialProducts.slice(0, 6))
-  const [isLoading, setIsLoading] = useState(initialProducts.length === 0)
+  const normalizedInitialProducts = initialProducts.map((product) => ({
+    ...product,
+    imageUrl: product.imageUrl || StoreDataService.resolveImageUrl((product as StoreProduct & { image_url?: string }).image_url),
+  }))
+  const [products, setProducts] = useState<StoreProduct[]>(normalizedInitialProducts.slice(0, 6))
+  const [isLoading, setIsLoading] = useState(normalizedInitialProducts.length === 0)
 
   useEffect(() => {
     let isMounted = true

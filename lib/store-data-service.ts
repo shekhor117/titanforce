@@ -52,7 +52,7 @@ class StoreDataService {
     return error?.code === 'PGRST205' || error?.message?.includes('Could not find the table') || error?.message?.includes('schema cache')
   }
 
-  private resolveImageUrl(value: unknown): string {
+  resolveImageUrl(value: unknown): string {
     if (typeof value !== 'string' || !value.trim()) return ''
     const image = value.trim()
     if (image.startsWith('data:')) return image
