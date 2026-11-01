@@ -34,8 +34,6 @@ async function hasDualAdminAccess(
     user_metadata?: Record<string, unknown>
   },
 ) {
-  // Supabase Auth app_metadata is the single source of truth for admin access.
-  // It is server-controlled and cannot be edited by the user from the client.
   const appRole = typeof user.app_metadata?.role === "string"
     ? user.app_metadata.role.trim().toLowerCase()
     : ""
@@ -176,7 +174,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         ),
       ])
 
-      const sessionResponse = await fetch("/api/admin/session", { cache: "no-store" })
+      const { data: sessionState } = await getSupabaseClient().auth.getSession()
+      const sessionResponse = await fetch("/api/admin/session", {
+        cache: "no-store",
+        headers: sessionState.session?.access_token
+          ? { Authorization: `Bearer ${sessionState.session.access_token}` }
+          : undefined,
+      })
       const sessionData = await sessionResponse.json().catch(() => ({}))
       if (!sessionResponse.ok) {
         throw new Error(sessionData.error || "Your account does not have admin access.")
