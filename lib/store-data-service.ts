@@ -414,32 +414,21 @@ class StoreDataService {
         return null
       }
 
-      const supabase = createClient()
-      if (!supabase) return null
-
-      const { data, error } = await supabase
-        .from('products')
-        .insert([
-          {
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            price: product.price,
-            image_url: product.imageUrl,
-            sizes: product.sizes,
-            colors: product.colors,
-            total_stock: product.stock,
-            rating: product.rating,
-            reviews: product.reviews,
-            features: product.features,
-            sku: product.sku,
-            variants: product.variants
-          }
-        ])
-        .select()
-        .single()
-
-      if (error) throw error
+      const response = await fetch('/api/admin/store/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: product.name,
+          description: product.description,
+          category: product.category,
+          price: product.price,
+          image_url: product.imageUrl,
+          stock: product.stock,
+          is_active: true,
+        }),
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Product creation failed')
 
       return {
         id: data.id,
@@ -473,33 +462,21 @@ class StoreDataService {
         return null
       }
 
-      const supabase = createClient()
-      if (!supabase) return null
-
       const updateData = {
         ...(updates.name !== undefined && { name: updates.name }),
         ...(updates.description !== undefined && { description: updates.description }),
         ...(updates.category !== undefined && { category: updates.category }),
         ...(updates.price !== undefined && { price: updates.price }),
         ...(updates.imageUrl !== undefined && { image_url: updates.imageUrl }),
-        ...(updates.sizes !== undefined && { sizes: updates.sizes }),
-        ...(updates.colors !== undefined && { colors: updates.colors }),
-        ...(updates.stock !== undefined && { total_stock: updates.stock }),
-        ...(updates.rating !== undefined && { rating: updates.rating }),
-        ...(updates.reviews !== undefined && { reviews: updates.reviews }),
-        ...(updates.features !== undefined && { features: updates.features }),
-        ...(updates.sku !== undefined && { sku: updates.sku }),
-        ...(updates.variants !== undefined && { variants: updates.variants }),
+        ...(updates.stock !== undefined && { stock: updates.stock }),
       }
-
-      const { data, error } = await supabase
-        .from('products')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single()
-
-      if (error) throw error
+      const response = await fetch('/api/admin/store/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...updateData }),
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Product update failed')
 
       return {
         id: data.id,
@@ -526,15 +503,13 @@ class StoreDataService {
 
   async deleteProduct(id: string): Promise<boolean> {
     try {
-      const supabase = createClient()
-      if (!supabase) return false
-
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
+      const response = await fetch(`/api/admin/store/products?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error || 'Product deletion failed')
+      }
       return true
     } catch (error) {
       if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error deleting product:', error) }
