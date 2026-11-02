@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react"
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
+import { getAuthRedirectUrl } from "@/lib/auth-utils"
 
 export type UserRole = "user" | "fan" | "player" | "partner" | "admin" | null
 export type UserStatus = "pending" | "approved" | "rejected"
@@ -221,7 +222,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
         options: {
           data: { full_name: name, role },
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? `${window.location.origin}/auth/callback`}?role=${encodeURIComponent(role ?? "fan")}`,
+          emailRedirectTo: getAuthRedirectUrl(role ?? "fan"),
         },
       })
 

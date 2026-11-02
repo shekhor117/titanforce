@@ -9,6 +9,7 @@ import { Eye, EyeOff, ArrowLeft, Loader2, Mail, Lock, Phone, MapPin, Calendar, I
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
+import { getAuthRedirectUrl } from '@/lib/auth-utils'
 
 type Role = 'user'
 type AuthStep = 'credentials' | 'details' | 'preferences'
@@ -88,9 +89,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
               data: {
                 full_name: fullName,
               },
-              emailRedirectTo:
-                process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
-                `${window.location.origin}/auth/callback`,
+              emailRedirectTo: getAuthRedirectUrl(),
             },
           })
           if (error) {
@@ -207,9 +206,7 @@ export default function AuthPage({ defaultView = 'login', defaultRole = 'user', 
         password,
         options: {
           data: signupData,
-emailRedirectTo:
-                process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
-                `${window.location.origin}/auth/callback`,
+emailRedirectTo: getAuthRedirectUrl(selectedRole ?? 'user'),
         },
       })
       if (error) throw error
