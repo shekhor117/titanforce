@@ -9,6 +9,7 @@ import { useLanguage } from "@/lib/language-context"
 import { usePlayers } from "@/lib/use-data-store"
 import { dataStore } from "@/lib/data-store"
 import { PlayerRating } from "@/components/player-rating"
+import { resolvePlayerImageUrl } from "@/lib/player-image"
 
 type Position = "all" | "GK" | "DEF" | "MID" | "FWD"
 
@@ -74,7 +75,7 @@ export function Squad() {
     selectedPosition === "all" ? activePlayers : activePlayers.filter((p) => p.category === selectedPosition)
 
   const getPlayerPhoto = (player: Player) => {
-    return player.image_url || null
+    return resolvePlayerImageUrl(player.image_url) || null
   }
 
   return (
