@@ -18,18 +18,7 @@ export function createClient() {
 
   // Keep one browser client so auth listeners and the session cookie store
   // are shared across the app instead of being recreated during renders.
-  browserClient ??= createBrowserClient(supabaseUrl, supabaseAnonKey, {
-    global: {
-      fetch: async (input, init) => {
-        const controller = new AbortController()
-        const timeout = window.setTimeout(() => controller.abort(), 12000)
-        try {
-          return await fetch(input, { ...init, signal: controller.signal })
-        } finally {
-          window.clearTimeout(timeout)
-        }
-      },
-    },
-  })
+  // Use Supabase's native fetch so its auth refresh and abort signals are preserved.
+  browserClient ??= createBrowserClient(supabaseUrl, supabaseAnonKey)
   return browserClient
 }
