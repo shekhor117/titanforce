@@ -4,6 +4,7 @@ import { Player } from "@/lib/data-store"
 import { useLanguage } from "@/lib/language-context"
 import { Trophy, Target, Zap, Award } from "lucide-react"
 import Image from "next/image"
+import { resolvePlayerImageUrl } from "@/lib/player-image"
 
 interface TopPlayersCardsProps {
   players: Player[]
@@ -64,10 +65,10 @@ export function TopPlayersCards({ players, limit = 6 }: TopPlayersCardsProps) {
               </div>
 
               {/* Player Photo */}
-              {(player.image_url || player.photo) && (
+              {resolvePlayerImageUrl(player.image_url || player.photo) && (
                 <div className="relative w-full h-32 sm:h-40 mb-2 sm:mb-3 rounded-lg overflow-hidden bg-secondary/50 flex items-center justify-center flex-shrink-0">
                   <Image
-                    src={player.image_url || player.photo || ""}
+                    src={resolvePlayerImageUrl(player.image_url || player.photo)}
                     alt={player.name}
                     fill
                     className="object-cover"
