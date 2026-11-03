@@ -1,5 +1,12 @@
 import { createClient } from "@/lib/supabase/client"
 
+export function getAuthRedirectUrl(role?: string): string {
+  const configuredUrl = process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL
+  const redirectUrl = new URL(configuredUrl || "/auth/callback", window.location.origin)
+  if (role) redirectUrl.searchParams.set("role", role)
+  return redirectUrl.toString()
+}
+
 export interface AuthUser {
   id: string
   email: string
@@ -25,9 +32,7 @@ export async function signUpWithEmail(
       data: {
         full_name: name,
       },
-      emailRedirectTo:
-        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
-        `${window.location.origin}/auth/callback`,
+      emailRedirectTo: getAuthRedirectUrl(),
     },
   })
 

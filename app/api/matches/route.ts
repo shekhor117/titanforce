@@ -16,24 +16,27 @@ export async function GET(request: NextRequest) {
       .order('date', { ascending: false })
       .limit(limit)
 
+    const allowedStatuses = new Set(['scheduled', 'live', 'completed', 'cancelled', 'postponed'])
     if (status) {
+      if (!allowedStatuses.has(status)) return NextResponse.json({ error: 'Invalid match status' }, { status: 400 })
       query = query.eq('status', status)
     }
 
     if (league) {
+      if (league.length > 80) return NextResponse.json({ error: 'Invalid league' }, { status: 400 })
       query = query.eq('league', league)
     }
 
     const { data, error } = await query
 
     if (error) {
-      console.error('[v0] Error fetching matches:', error)
+      console.error('[v0] Error fetching matches:', error.code)
       return NextResponse.json({ error: 'Unable to fetch matches' }, { status: 500 })
     }
 
     return NextResponse.json(data || [])
   } catch (error) {
-    console.error('[v0] Unexpected error:', error)
+    console.error('[v0] Unexpected error while fetching matches')
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

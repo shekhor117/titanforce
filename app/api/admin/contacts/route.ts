@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateContact } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 // GET - Fetch all contacts or by ID
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching contact:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching contacts:', error)
-        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
       }
 
       return NextResponse.json(data || [])
@@ -64,13 +65,13 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('contact_messages')
-      .insert([body])
+      .insert([pickWritableFields(body, ['name', 'email', 'subject', 'message', 'status'])])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating contact:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -93,7 +94,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['name', 'email', 'subject', 'message', 'status'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing contact ID' }, { status: 400 })
@@ -114,7 +116,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating contact:', error)
-      const statusCode = error.message?.includes('no rows') ? 404 : 400
+      const statusCode = error.code === 'PGRST116' ? 404 : 500
       return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
     }
 
@@ -151,7 +153,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting contact:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

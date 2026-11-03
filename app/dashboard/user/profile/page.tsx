@@ -56,8 +56,7 @@ export default function UserProfile() {
     try {
       // Here you would typically make an API call to update the user profile
       await new Promise(resolve => setTimeout(resolve, 1000))
-      console.log("[v0] Profile updated:", formData)
-    } finally {
+      } finally {
       setIsSaving(false)
     }
   }

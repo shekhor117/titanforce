@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching product:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process product request' }, { status: statusCode })
       }
 
@@ -36,12 +36,12 @@ export async function GET(request: NextRequest) {
 
     const { data, error, count } = await supabase
       .from('products')
-      .select('*', { count: 'exact' })
+      .select('id, name, description, price, image_url, stock, category, is_active, created_at, updated_at', { count: 'exact' })
       .range(offset, offset + limit - 1)
 
     if (error) {
       console.error('[v0] Error fetching products:', error)
-      return NextResponse.json({ error: 'Unable to process product request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process product request' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -73,18 +73,20 @@ export async function POST(request: NextRequest) {
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const productRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from('products')
-      .insert([body])
+      .insert([productRecord])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating product:', error)
-      return NextResponse.json({ error: 'Unable to process product request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process product request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -105,7 +107,9 @@ export async function PUT(request: NextRequest) {
     // Check admin authentication
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing product ID' }, { status: 400 })
@@ -113,6 +117,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate product data (partial updates are OK)
     const validation = validatePartial(updates, validateProduct)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
@@ -128,7 +133,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating product:', error)
-      const statusCode = error.message?.includes('no rows') ? 404 : 400
+      const statusCode = error.code === 'PGRST116' ? 404 : 500
       return NextResponse.json({ error: 'Unable to process product request' }, { status: statusCode })
     }
 
@@ -165,7 +170,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting product:', error)
-      return NextResponse.json({ error: 'Unable to process product request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process product request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

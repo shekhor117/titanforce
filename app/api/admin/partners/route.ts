@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validatePartner } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching partner:', error)
         // Return 404 if no record found, 400 for other errors
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching partners:', error)
-        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
       }
 
       return NextResponse.json(data)
@@ -63,13 +64,13 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('partners')
-      .insert([body])
+      .insert([pickWritableFields(body, ['name', 'logo_url', 'website_url', 'description', 'is_active', 'sort_order'])])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating partner:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Partner created:', data)
@@ -88,7 +89,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['name', 'logo_url', 'website_url', 'description', 'is_active', 'sort_order'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing partner ID' }, { status: 400 })
@@ -109,7 +111,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating partner:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Partner updated:', data)
@@ -141,7 +143,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting partner:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     console.log('[v0] Partner deleted:', partnerId)

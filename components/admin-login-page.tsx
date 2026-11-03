@@ -27,7 +27,7 @@ export function AdminLoginPage() {
     const timeout = window.setTimeout(() => {
       setIsSubmitting(false)
       setLocalError(isBn ? "লগইন সময় শেষ হয়েছে। আবার চেষ্টা করুন।" : "Login timed out. Please try again.")
-    }, 14000)
+    }, 32000)
     return () => window.clearTimeout(timeout)
   }, [isSubmitting, isBn])
 
@@ -65,7 +65,9 @@ export function AdminLoginPage() {
       // Replace prevents the login page from remaining in browser history.
       router.replace("/admin/dashboard")
     } catch (err) {
-      const message = err instanceof Error ? err.message : (isBn ? "লগইন ব্যর্থ হয়েছে" : "Login failed")
+      const message = err instanceof Error && err.message !== "Login request timed out. Please check your connection and try again."
+        ? err.message
+        : (isBn ? "লগইন ব্যর্থ হয়েছে। ইমেল ও পাসওয়ার্ড যাচাই করে আবার চেষ্টা করুন।" : "Login failed. Check your email and password, then try again.")
       setLocalError(message)
       setIsSubmitting(false)
     }

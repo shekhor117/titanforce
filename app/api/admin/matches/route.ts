@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateMatch } from '@/lib/validation'
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 
 // Helper to map database fields to admin form fields
 function mapMatchData(dbMatch: any) {
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
       if (error) {
         console.error('[v0] Error fetching match:', error)
         // Return 404 if no record found, 400 for other errors
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching matches:', error)
-        return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
       }
 
       return NextResponse.json((data || []).map(mapMatchData))
@@ -158,7 +159,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating match:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -178,7 +179,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['home_team', 'home', 'away_team', 'away', 'match_date', 'date', 'match_time', 'time', 'venue', 'status', 'home_logo_url', 'away_logo_url', 'home_score', 'away_score', 'attendance', 'league', 'competition'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing match ID' }, { status: 400 })
@@ -239,7 +241,7 @@ export async function PUT(request: NextRequest) {
     const decimalFields = ['home_pass_accuracy', 'away_pass_accuracy', 'home_xg', 'away_xg', 'weather_wind_speed']
     for (const field of decimalFields) {
       if (updates[field] !== undefined && updates[field] !== null && !isNaN(Number(updates[field]))) {
-        matchData[field] = parseFloat(updates[field])
+        matchData[field] = parseFloat(String(updates[field]))
       }
     }
     
@@ -256,8 +258,6 @@ export async function PUT(request: NextRequest) {
     // Always add updated_at timestamp
     matchData.updated_at = new Date().toISOString()
 
-    console.log('[v0] Updating match', id, 'with data:', matchData)
-
     // Use admin client for database operations
     const supabase = createAdminClient()
 
@@ -270,7 +270,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating match:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -306,7 +306,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting match:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, id: matchId })

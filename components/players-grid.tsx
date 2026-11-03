@@ -16,6 +16,8 @@ import {
 import { ScrollAnimatedElement } from "./scroll-animated-element"
 import { ScrollProgressAnimation } from "./scroll-progress-animation"
 import { PlayerGridSkeleton } from "./skeletons/player-card-skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
+import { resolvePlayerImageUrl } from "@/lib/player-image"
 
 type PlayerImageProps = {
   src: string
@@ -74,6 +76,7 @@ export function PlayersGrid() {
                 Players
               </h2>
             </div>
+            <Skeleton className="hidden h-5 w-28 sm:block" />
           </motion.div>
           <PlayerGridSkeleton count={6} />
         </div>
@@ -143,8 +146,8 @@ export function PlayersGrid() {
 
                         {/* Player Image or Placeholder */}
                         <div className="relative w-full aspect-square bg-gradient-to-br from-red-900/40 to-black/60 overflow-hidden">
-                          {player.image_url ? (
-                            <PlayerImage src={player.image_url} alt={player.name} />
+                          {resolvePlayerImageUrl(player.image_url) ? (
+                            <PlayerImage src={resolvePlayerImageUrl(player.image_url)} alt={player.name} />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <div className="text-center">

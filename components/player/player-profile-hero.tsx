@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Player } from '@/lib/data-service'
 import { useLanguage } from '@/lib/language-context'
+import { resolvePlayerImageUrl } from '@/lib/player-image'
 
 interface PlayerProfileHeroProps {
   player: Player
@@ -11,6 +12,7 @@ interface PlayerProfileHeroProps {
 export function PlayerProfileHero({ player }: PlayerProfileHeroProps) {
   const { language } = useLanguage()
   const isBn = language === 'bn'
+  const imageUrl = resolvePlayerImageUrl(player.image_url)
 
   return (
     <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl">
@@ -22,9 +24,9 @@ export function PlayerProfileHero({ player }: PlayerProfileHeroProps) {
           {/* Player Image */}
           <div className="flex justify-center md:col-span-1">
             <div className="relative w-48 sm:w-56 md:w-64 aspect-[3/4] rounded-2xl border-4 border-blue-400/50 overflow-hidden shadow-2xl">
-              {player.image_url ? (
+              {imageUrl ? (
                 <Image
-                  src={player.image_url}
+                  src={imageUrl}
                   alt={player.full_name}
                   fill
                   className="object-cover object-center"

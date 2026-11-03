@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { Star, ShoppingCart, Check, ChevronLeft, AlertCircle } from "lucide-react"
 import StoreDataService, { StoreProduct } from "@/lib/store-data-service"
 import { PageEntrance } from '@/components/page-entrance'
+import { ProductImage } from '@/components/product-image'
 
 export default function ProductDetailPage() {
   const { language } = useLanguage()
@@ -111,7 +112,7 @@ export default function ProductDetailPage() {
         >
           {/* Image */}
           <div className="bg-secondary rounded-lg overflow-hidden h-96 lg:h-full flex items-center justify-center">
-            <img
+            <ProductImage
               src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-cover"

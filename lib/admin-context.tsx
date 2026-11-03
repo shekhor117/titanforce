@@ -34,8 +34,6 @@ async function hasDualAdminAccess(
     user_metadata?: Record<string, unknown>
   },
 ) {
-  // Supabase Auth app_metadata is the single source of truth for admin access.
-  // It is server-controlled and cannot be edited by the user from the client.
   const appRole = typeof user.app_metadata?.role === "string"
     ? user.app_metadata.role.trim().toLowerCase()
     : ""
@@ -172,13 +170,24 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const user = await Promise.race([
         signInWithEmail(email, password),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 12000),
+          setTimeout(() => reject(new Error("Login request timed out. Please check your connection and try again.")), 30000),
         ),
       ])
-      
-      // Use the user returned by signInWithPassword. Calling getUser immediately
-      // afterwards can contend with Supabase's auth lock and lose the session.
-      const hasAccess = ["admin", "super_admin", "moderator"].includes(user.role)
+
+      const { data: sessionState } = await getSupabaseClient().auth.getSession()
+      const sessionResponse = await fetch("/api/admin/session", {
+        cache: "no-store",
+        headers: sessionState.session?.access_token
+          ? { Authorization: `Bearer ${sessionState.session.access_token}` }
+          : undefined,
+      })
+      const sessionData = await sessionResponse.json().catch(() => ({}))
+      if (!sessionResponse.ok) {
+        throw new Error(sessionData.error || "Your account does not have admin access.")
+      }
+
+      const authorizedUser = { ...user, role: sessionData.role as AuthUser["role"] }
+      const hasAccess = ["admin", "super_admin", "moderator"].includes(authorizedUser.role)
       if (!hasAccess) {
         setIsLoading(false)
         await signOut()
@@ -187,7 +196,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       // Resolve the login promise before navigation so the form cannot remain
       // blocked if the auth event callback is delayed by the network.
-      setAdmin(user)
+      setAdmin(authorizedUser)
       setIsLoading(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed"

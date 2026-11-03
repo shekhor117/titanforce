@@ -52,6 +52,29 @@ class StoreDataService {
     return error?.code === 'PGRST205' || error?.message?.includes('Could not find the table') || error?.message?.includes('schema cache')
   }
 
+  resolveImageUrl(value: unknown): string {
+    if (typeof value !== 'string' || !value.trim()) return ''
+    const image = value.trim()
+    if (image.startsWith('data:')) return image
+
+    let normalizedPath = image
+    if (/^https?:\/\//i.test(image)) {
+      try {
+        const url = new URL(image)
+        const marker = '/storage/v1/object/public/app-files/'
+        const markerIndex = url.pathname.indexOf(marker)
+        if (markerIndex === -1) return image
+        normalizedPath = url.pathname.slice(markerIndex + marker.length)
+      } catch {
+        return ''
+      }
+    }
+
+    normalizedPath = decodeURIComponent(normalizedPath.replace(/^\/+/, '').replace(/^app-files\//, ''))
+    const path = normalizedPath.startsWith('products/') ? normalizedPath : `products/${normalizedPath}`
+    return `/api/store/product-image?path=${encodeURIComponent(path)}`
+  }
+
   async getProducts(): Promise<StoreProduct[]> {
     try {
       const supabase = createClient()
@@ -70,7 +93,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -107,7 +130,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
@@ -143,7 +166,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -179,7 +202,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -239,7 +262,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -279,7 +302,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -323,7 +346,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -365,7 +388,7 @@ class StoreDataService {
         description: p.description,
         category: p.category,
         price: parseFloat(p.price),
-        imageUrl: p.image_url || '',
+        imageUrl: this.resolveImageUrl(p.image_url),
         sizes: p.sizes || [],
         colors: p.colors || [],
         stock: p.total_stock || 0,
@@ -391,32 +414,21 @@ class StoreDataService {
         return null
       }
 
-      const supabase = createClient()
-      if (!supabase) return null
-
-      const { data, error } = await supabase
-        .from('products')
-        .insert([
-          {
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            price: product.price,
-            image_url: product.imageUrl,
-            sizes: product.sizes,
-            colors: product.colors,
-            total_stock: product.stock,
-            rating: product.rating,
-            reviews: product.reviews,
-            features: product.features,
-            sku: product.sku,
-            variants: product.variants
-          }
-        ])
-        .select()
-        .single()
-
-      if (error) throw error
+      const response = await fetch('/api/admin/store/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: product.name,
+          description: product.description,
+          category: product.category,
+          price: product.price,
+          image_url: product.imageUrl,
+          stock: product.stock,
+          is_active: true,
+        }),
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Product creation failed')
 
       return {
         id: data.id,
@@ -424,7 +436,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
@@ -450,33 +462,21 @@ class StoreDataService {
         return null
       }
 
-      const supabase = createClient()
-      if (!supabase) return null
-
       const updateData = {
         ...(updates.name !== undefined && { name: updates.name }),
         ...(updates.description !== undefined && { description: updates.description }),
         ...(updates.category !== undefined && { category: updates.category }),
         ...(updates.price !== undefined && { price: updates.price }),
         ...(updates.imageUrl !== undefined && { image_url: updates.imageUrl }),
-        ...(updates.sizes !== undefined && { sizes: updates.sizes }),
-        ...(updates.colors !== undefined && { colors: updates.colors }),
-        ...(updates.stock !== undefined && { total_stock: updates.stock }),
-        ...(updates.rating !== undefined && { rating: updates.rating }),
-        ...(updates.reviews !== undefined && { reviews: updates.reviews }),
-        ...(updates.features !== undefined && { features: updates.features }),
-        ...(updates.sku !== undefined && { sku: updates.sku }),
-        ...(updates.variants !== undefined && { variants: updates.variants }),
+        ...(updates.stock !== undefined && { stock: updates.stock }),
       }
-
-      const { data, error } = await supabase
-        .from('products')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single()
-
-      if (error) throw error
+      const response = await fetch('/api/admin/store/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...updateData }),
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Product update failed')
 
       return {
         id: data.id,
@@ -484,7 +484,7 @@ class StoreDataService {
         description: data.description,
         category: data.category,
         price: parseFloat(data.price),
-        imageUrl: data.image_url || '',
+        imageUrl: this.resolveImageUrl(data.image_url),
         sizes: data.sizes || [],
         colors: data.colors || [],
         stock: data.total_stock || 0,
@@ -503,15 +503,13 @@ class StoreDataService {
 
   async deleteProduct(id: string): Promise<boolean> {
     try {
-      const supabase = createClient()
-      if (!supabase) return false
-
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
+      const response = await fetch(`/api/admin/store/products?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error || 'Product deletion failed')
+      }
       return true
     } catch (error) {
       if (this.isTableNotFoundError(error)) { console.debug('Products table not yet created') } else { console.debug('Error deleting product:', error) }

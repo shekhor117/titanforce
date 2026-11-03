@@ -17,10 +17,10 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching settings:', error)
-      if (error.message?.includes('no rows')) {
+      if (error.code === 'PGRST116') {
         return NextResponse.json({ message: 'No settings found, using defaults' }, { status: 200 })
       }
-      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -70,7 +70,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating settings:', error)
-      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -114,7 +114,7 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating setting:', error)
-      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process settings request' }, { status: 500 })
     }
 
     return NextResponse.json(data)

@@ -98,22 +98,13 @@ export function useDataStore() {
       }
 
       try {
-        // Keep existing data visible while a stale cache refreshes in the background.
-        setLoading(false)
+        // Keep existing data visible while refreshing stale content in the background.
+        // When there is no hydrated data, keep the skeleton visible until the first
+        // primary dataset resolves instead of rendering an empty section.
         setService(optimizedDataService)
 
         const loadAllBackgroundData = async () => {
-          const jobs: Array<() => Promise<void>> = [
-            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } })); dataCache.players = data; setPlayers(data) },
-            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })); dataCache.matches = data; setMatches(data) },
-            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })); dataCache.newsItems = data; setNewsItems(data) },
-            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })); dataCache.partners = data; setPartners(data) },
-            async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })); dataCache.mediaItems = data; setMediaItems(data) },
-            async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) },
-          ]
-
-          // Load each dataset one at a time to keep database traffic predictable.
-          for (const job of jobs) {
+          const load = async (job: () => Promise<void>) => {
             if (!isMounted) return
             try {
               await job()
@@ -121,6 +112,22 @@ export function useDataStore() {
               if (isMounted) setError(reason instanceof Error ? reason : new Error(String(reason)))
             }
           }
+
+          await load(async () => {
+            const data = await fetchWithRetry(() => optimizedDataService.fetchData<Player>('players', { order: { key: 'num' } }))
+            dataCache.players = data
+            setPlayers(data)
+            if (isMounted) setLoading(false)
+          })
+
+          if (isMounted) setLoading(false)
+          await Promise.all([
+            load(async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Match>('matches', { order: { key: 'date', ascending: false } })); dataCache.matches = data; setMatches(data) }),
+            load(async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<NewsItem>('news_items', { order: { key: 'created_at', ascending: false } })); dataCache.newsItems = data; setNewsItems(data) }),
+            load(async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<Partner>('partners', { order: { key: 'name' } })); dataCache.partners = data; setPartners(data) }),
+            load(async () => { const data = await fetchWithRetry(() => optimizedDataService.fetchData<MediaItem>('media_items', { order: { key: 'created_at', ascending: false } })); dataCache.mediaItems = data; setMediaItems(data) }),
+            load(async () => { dataCache.trophies = await fetchWithRetry(() => optimizedDataService.fetchData<Trophy>('trophies', { order: { key: 'year', ascending: false } })) }),
+          ])
           dataCache.lastFetch = Date.now()
         }
 
@@ -132,8 +139,6 @@ export function useDataStore() {
           const error = err instanceof Error ? err : new Error(String(err))
           setError(error)
         }
-      } finally {
-        if (isMounted) setLoading(false)
       }
     }
 

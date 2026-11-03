@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching media:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process media request' }, { status: statusCode })
       }
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching media:', error)
-        return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
+        return NextResponse.json({ error: 'Unable to process media request' }, { status: 500 })
       }
 
       return NextResponse.json(data || [])
@@ -70,15 +70,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
+    const writableFields = ['title', 'description', 'media_type', 'url', 'thumbnail_url', 'alt_text', 'category'] as const
+    const mediaRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
     const { data, error } = await supabase
       .from('media')
-      .insert([body])
+      .insert([mediaRecord])
       .select()
       .single()
 
     if (error) {
       console.error('[v0] Error creating media:', error)
-      return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process media request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -101,7 +103,9 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const writableFields = ['title', 'description', 'media_type', 'url', 'thumbnail_url', 'alt_text', 'category'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing media ID' }, { status: 400 })
@@ -109,6 +113,7 @@ export async function PUT(request: NextRequest) {
 
     // Validate media data (partial updates are OK)
     const validation = validatePartial(updates, validateMedia)
+    if (Object.keys(updates).length === 0) return NextResponse.json({ error: 'No writable fields provided' }, { status: 400 })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
@@ -124,7 +129,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating media:', error)
-      const statusCode = error.message?.includes('no rows') ? 404 : 400
+      const statusCode = error.code === 'PGRST116' ? 404 : 500
       return NextResponse.json({ error: 'Unable to process media request' }, { status: statusCode })
     }
 
@@ -163,7 +168,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting media:', error)
-      return NextResponse.json({ error: 'Unable to process media request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process media request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

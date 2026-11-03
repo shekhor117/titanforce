@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { EntranceReveal } from "@/components/entrance-reveal"
 import { ScrollStaggerContainer } from "@/components/scroll-stagger-container"
 import { PlayerGridSkeleton } from "@/components/skeletons/player-card-skeleton"
+import { resolvePlayerImageUrl } from "@/lib/player-image"
 
 export function FeaturedPlayers() {
   const [isVisible, setIsVisible] = useState(false)
@@ -135,9 +136,9 @@ export function FeaturedPlayers() {
               <div className="neo-floating overflow-hidden">
                 {/* Player Image */}
                 <div className="relative w-full aspect-square overflow-hidden bg-secondary/30">
-                  {player.image_url ? (
-                    <Image
-                      src={player.image_url}
+{resolvePlayerImageUrl(player.image_url) ? (
+                  <Image
+                    src={resolvePlayerImageUrl(player.image_url)}
                       alt={player.name}
                       fill
                       className="object-cover object-top group-hover/card:scale-110 transition-transform duration-300"
@@ -185,7 +186,7 @@ export function FeaturedPlayers() {
                     </div>
                     <div className="flex-1 p-2 rounded bg-secondary/50 text-center">
                       <div className="font-bold text-primary">{player.appearances || 0}</div>
-                      <div className="text-foreground/60 text-[10px]">{isBn ? "ম্যাচ" : "Matches"}</div>
+                      <div className="text-foreground/60 text-[10px]">{isBn ? "ম্য��চ" : "Matches"}</div>
                     </div>
                   </div>
                 </div>

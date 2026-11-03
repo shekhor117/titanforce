@@ -3,6 +3,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { validatePartial, validateNewsUpdate } from '@/lib/validation'
 
 import { checkAdminAuth } from '@/lib/admin-api-helper'
+import { pickWritableFields } from '@/lib/admin-write'
 export async function GET(request: NextRequest) {
   try {
     // Use admin client to bypass RLS for listing all news items
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
 
       if (error) {
         console.error('[v0] Error fetching news update:', error)
-        const statusCode = error.message?.includes('no rows') ? 404 : 400
+        const statusCode = error.code === 'PGRST116' ? 404 : 500
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error fetching news items:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error creating news item:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
@@ -85,7 +86,8 @@ export async function PUT(request: NextRequest) {
     if (!auth.authorized) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
     const body = await request.json()
-    const { id, ...updates } = body
+    const { id } = body
+    const updates = pickWritableFields(body, ['title', 'content', 'image_url', 'published', 'published_at'])
 
     if (!id) {
       return NextResponse.json({ error: 'Missing news item ID' }, { status: 400 })
@@ -107,7 +109,7 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error updating news item:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json(data)
@@ -140,7 +142,7 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error('[v0] Error deleting news update:', error)
-      return NextResponse.json({ error: 'Unable to process request' }, { status: 400 })
+      return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
