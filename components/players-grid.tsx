@@ -16,6 +16,7 @@ import {
 import { ScrollAnimatedElement } from "./scroll-animated-element"
 import { ScrollProgressAnimation } from "./scroll-progress-animation"
 import { PlayerGridSkeleton } from "./skeletons/player-card-skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 import { resolvePlayerImageUrl } from "@/lib/player-image"
 
 type PlayerImageProps = {
@@ -75,6 +76,7 @@ export function PlayersGrid() {
                 Players
               </h2>
             </div>
+            <Skeleton className="hidden h-5 w-28 sm:block" />
           </motion.div>
           <PlayerGridSkeleton count={6} />
         </div>
