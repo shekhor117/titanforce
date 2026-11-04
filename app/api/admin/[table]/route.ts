@@ -71,7 +71,7 @@ const TABLE_COLUMNS: Record<string, string> = {
   fan_clubs: 'id, name, description, image_url, enabled, created_at, updated_at',
   fundraisers: 'id, title, description, goal, raised, status, created_at, updated_at',
   performance_metrics: 'id, name, value, period, created_at, updated_at',
-  products: 'id, name, description, price, image_url, stock, category, is_active, created_at, updated_at',
+  products: 'id, name, description, price, image_url, total_stock, category, created_at, updated_at, sizes, colors, sku, variants, rating, reviews',
   orders: 'id, user_id, status, total, shipping_address, created_at, updated_at',
 }
 

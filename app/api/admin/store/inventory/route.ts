@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get('productId')
 
-    let query = supabase.from('products').select('id, name, stock, price', { count: 'exact' })
+    let query = supabase.from('products').select('id, name, total_stock, price', { count: 'exact' })
 
     if (productId) query = query.eq('id', productId)
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      data,
+      data: (data || []).map((product) => ({ ...product, stock: product.total_stock })),
       total: count,
       limit,
       offset
@@ -70,7 +70,7 @@ export async function PUT(request: NextRequest) {
     // First, get current stock
     const { data: product, error: fetchError } = await supabase
       .from('products')
-      .select('stock')
+      .select('total_stock')
       .eq('id', productId)
       .single()
 
@@ -82,9 +82,9 @@ export async function PUT(request: NextRequest) {
 
     let newStock = quantity
     if (operation === 'add') {
-      newStock = (product.stock || 0) + quantity
+      newStock = (product.total_stock || 0) + quantity
     } else if (operation === 'subtract') {
-      newStock = (product.stock || 0) - quantity
+      newStock = (product.total_stock || 0) - quantity
       if (newStock < 0) {
         return NextResponse.json({ error: 'Insufficient stock' }, { status: 400 })
       }
@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest) {
     // Update stock
     const { data, error } = await supabase
       .from('products')
-      .update({ stock: newStock })
+      .update({ total_stock: newStock })
       .eq('id', productId)
       .select()
       .single()
@@ -105,7 +105,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       productId,
-      previousStock: product.stock || 0,
+      previousStock: product.total_stock || 0,
       newStock,
       operation: operation || 'set'
     })

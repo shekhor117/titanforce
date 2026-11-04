@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error, count } = await supabase
       .from('products')
-      .select('id, name, description, price, image_url, stock, category, is_active, created_at, updated_at', { count: 'exact' })
+      .select('id, name, description, price, image_url, total_stock, category, created_at, updated_at, sizes, colors, sku, variants, rating, reviews', { count: 'exact' })
       .range(offset, offset + limit - 1)
 
     if (error) {
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      data,
+      data: (data || []).map((product) => ({ ...product, stock: product.total_stock, is_active: true })),
       total: count,
       limit,
       offset

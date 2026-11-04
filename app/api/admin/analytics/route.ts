@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('players')
-      .select('id, name, number, position')
+      .select('id, name, num, position')
       .range(offset, offset + limit - 1)
 
     if (error) {
