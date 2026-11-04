@@ -422,9 +422,14 @@ class StoreDataService {
           description: product.description,
           category: product.category,
           price: product.price,
-          image_url: product.imageUrl,
-          stock: product.stock,
-          is_active: true,
+  image_url: product.imageUrl,
+  total_stock: product.stock,
+  sizes: product.sizes,
+  colors: product.colors,
+  sku: product.sku,
+  variants: product.variants,
+  rating: product.rating ?? 0,
+  reviews: product.reviews ?? 0,
         }),
       })
       const data = await response.json()
@@ -468,7 +473,7 @@ class StoreDataService {
         ...(updates.category !== undefined && { category: updates.category }),
         ...(updates.price !== undefined && { price: updates.price }),
         ...(updates.imageUrl !== undefined && { image_url: updates.imageUrl }),
-        ...(updates.stock !== undefined && { stock: updates.stock }),
+        ...(updates.stock !== undefined && { total_stock: updates.stock }),
       }
       const response = await fetch('/api/admin/store/products', {
         method: 'PUT',

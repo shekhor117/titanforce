@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific product
       const { data, error } = await supabase
         .from('products')
-        .select('id, name, description, price, image_url, stock, category, is_active, created_at, updated_at')
+        .select('id, name, description, price, image_url, total_stock, category, created_at, updated_at, sizes, colors, sku, variants, rating, reviews')
         .eq('id', productId)
         .single()
 
@@ -68,12 +68,16 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    // Validate product data
-    const validation = validateProduct(body)
+    // Normalize the client payload to the live products schema before validation.
+    const validation = validateProduct({
+      ...body,
+      imageUrl: body.imageUrl ?? body.image_url,
+      stock: body.stock ?? body.total_stock,
+    })
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
-    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'total_stock', 'sizes', 'colors', 'sku', 'variants', 'rating', 'reviews'] as const
     const productRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     const supabase = createAdminClient()
@@ -108,7 +112,7 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
     const { id } = body
-    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'stock', 'is_active'] as const
+    const writableFields = ['name', 'description', 'price', 'image_url', 'category', 'total_stock', 'sizes', 'colors', 'sku', 'variants', 'rating', 'reviews'] as const
     const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
 
     if (!id) {
