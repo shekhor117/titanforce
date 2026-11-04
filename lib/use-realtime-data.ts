@@ -27,6 +27,7 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
     const initializeRealtime = async () => {
       try {
         const supabase = createClient()
+        if (!supabase) throw new Error('Supabase is not configured')
         setLoading(true)
 
         // Initial data fetch
@@ -50,17 +51,19 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
 
         // Set up real-time subscription
         channel = supabase
-          .channel(`${options.tableName}_changes`)
+          .channel(`${options.tableName}_changes_${options.filter || 'all'}`)
           .on(
             'postgres_changes',
             {
               event: '*',
               schema: 'public',
               table: options.tableName,
+              ...(options.filter ? (() => {
+                const [column, value] = options.filter.split('=')
+                return column && value ? { filter: `${column}=eq.${value}` } : {}
+              })() : {}),
             },
             (payload) => {
-              console.log(`[v0] Real-time update for ${options.tableName}:`, payload)
-
               if (!isMounted) return
 
               if (payload.eventType === 'INSERT') {
@@ -78,7 +81,6 @@ export function useRealtimeData<T extends { id: string }>(options: UseRealtimeDa
           )
           .subscribe((status) => {
             if (status === 'SUBSCRIBED') {
-              console.log(`[v0] Real-time subscription established for ${options.tableName}`)
             } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
               console.warn(`[v0] Real-time subscription failed for ${options.tableName} (${status}). Falling back to polling.`)
             }

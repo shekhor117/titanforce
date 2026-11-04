@@ -90,9 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       
-      if (data) {
-        setProfile(data as Profile)
-      }
+      setProfile((data as Profile | null) ?? null)
       return data || null
     } catch (err) {
       // If profile doesn't exist, just return null - it will be created on first update
@@ -118,32 +116,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let isMounted = true
 
     const initAuth = async () => {
-      // Set up auth state change listener
-      const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const applySession = async (session: NonNullable<Awaited<ReturnType<typeof supabase.auth.getSession>>>['data']['session']) => {
         if (!isMounted) return
-        
-        if (event === "SIGNED_IN" && session?.user) {
-          const supabaseUser = session.user
-          // Fetch profile first to get role
-          const profileData = await fetchProfile(supabaseUser.id)
-          if (isMounted) {
-            const newUser: User = {
-              id: supabaseUser.id,
-              name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-              email: supabaseUser.email || "",
-              role: profileData?.role || null,
-              avatar: supabaseUser.user_metadata?.avatar_url,
-            }
-            setUser(newUser)
-            setIsLoading(false)
-          }
-        } else if (event === "SIGNED_OUT") {
-          if (isMounted) {
-            setUser(null)
-            setProfile(null)
-            setIsLoading(false)
-          }
+        if (!session?.user) {
+          setUser(null)
+          setProfile(null)
+          setIsLoading(false)
+          return
         }
+
+        const supabaseUser = session.user
+        const profileData = await fetchProfile(supabaseUser.id)
+        if (!isMounted) return
+        setUser({
+          id: supabaseUser.id,
+          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
+          email: supabaseUser.email || "",
+          role: profileData?.role || null,
+          avatar: supabaseUser.user_metadata?.avatar_url,
+        })
+        setIsLoading(false)
+      }
+
+      // Never await Supabase queries inside onAuthStateChange; Supabase can deadlock
+      // while it is still holding its internal auth lock.
+      const { data } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_OUT") {
+          setUser(null)
+          setProfile(null)
+          setIsLoading(false)
+          return
+        }
+        if (session?.user) queueMicrotask(() => void applySession(session))
       })
       subscription = data.subscription
       
@@ -152,22 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (!isMounted) return
       
-      if (session?.user) {
-        const supabaseUser = session.user
-        // Fetch profile first to get role
-        const profileData = await fetchProfile(supabaseUser.id)
-        if (isMounted) {
-          const newUser: User = {
-            id: supabaseUser.id,
-            name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-            email: supabaseUser.email || "",
-            role: profileData?.role || null,
-            avatar: supabaseUser.user_metadata?.avatar_url,
-          }
-          setUser(newUser)
-        }
-      }
-      if (isMounted) setIsLoading(false)
+      await applySession(session)
     }
 
     initAuth()
@@ -249,17 +238,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
     try {
       if (user) {
-        // Update profile in Supabase
         const { error } = await supabase
-          .from("players")
+          .from("player_profiles")
           .upsert({
-            id: user.id,
-            ...playerProfile,
-          })
-        
-        if (error) {
-          throw new Error(error.message)
-        }
+            user_id: user.id,
+            address: playerProfile.address ?? null,
+            position: playerProfile.position ?? null,
+            jersey: playerProfile.jersey ?? null,
+            foot: playerProfile.foot ?? null,
+          }, { onConflict: "user_id" })
+
+        if (error) throw new Error(error.message)
 
         const updatedUser: User = {
           ...user,
