@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       // Fetch specific player
       const { data, error } = await supabase
         .from('players')
-        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
+        .select('id, num, name, position, image_url, bio, created_at, updated_at')
         .eq('id', playerId)
         .single()
 
@@ -32,12 +32,12 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Unable to process request' }, { status: statusCode })
       }
 
-      return NextResponse.json(data)
+      return NextResponse.json({ ...data, number: data.num, photo_url: data.image_url, is_active: true })
     } else {
       // Fetch all players
       const { data, error } = await supabase
         .from('players')
-        .select('id, number, name, position, photo_url, bio, is_active, created_at, updated_at')
+        .select('id, num, name, position, image_url, bio, created_at, updated_at')
         .order('num', { ascending: true })
 
       if (error) {
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Unable to process request' }, { status: 500 })
       }
 
-      return NextResponse.json(data)
+      return NextResponse.json((data || []).map((player) => ({ ...player, number: player.num, photo_url: player.image_url, is_active: true })))
     }
   } catch (error) {
     console.error('[v0] Unexpected error:', error instanceof Error ? error.message : String(error))
@@ -67,13 +67,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate player data
-    const validation = validatePlayer(body)
+    const normalizedBody = { ...body, num: body.num ?? body.number, image_url: body.image_url ?? body.photo_url }
+    const validation = validatePlayer(normalizedBody)
     if (!validation.isValid) {
       return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
     }
 
-    const writableFields = ['number', 'name', 'position', 'photo_url', 'bio', 'is_active', 'nationality', 'date_of_birth'] as const
-    const playerRecord = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
+    const writableFields = ['num', 'name', 'position', 'image_url', 'bio', 'nationality', 'date_of_birth'] as const
+    const playerRecord = Object.fromEntries(writableFields.filter((field) => normalizedBody[field] !== undefined).map((field) => [field, normalizedBody[field]]))
 
     // Use admin client for database operations
     const supabase = createAdminClient()
@@ -109,8 +110,9 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
     const { id } = body
-    const writableFields = ['number', 'name', 'position', 'photo_url', 'bio', 'is_active', 'nationality', 'date_of_birth'] as const
-    const updates = Object.fromEntries(writableFields.filter((field) => body[field] !== undefined).map((field) => [field, body[field]]))
+    const normalizedBody = { ...body, num: body.num ?? body.number, image_url: body.image_url ?? body.photo_url }
+    const writableFields = ['num', 'name', 'position', 'image_url', 'bio', 'nationality', 'date_of_birth'] as const
+    const updates = Object.fromEntries(writableFields.filter((field) => normalizedBody[field] !== undefined).map((field) => [field, normalizedBody[field]]))
 
     if (!id) {
       return NextResponse.json({ error: 'Missing player ID' }, { status: 400 })

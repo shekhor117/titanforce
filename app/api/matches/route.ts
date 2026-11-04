@@ -12,19 +12,18 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('matches')
-      .select('id, home_team, away_team, home_score, away_score, date, time, venue, status, result, league, season_year, notes, goals')
+      .select('id, home, away, home_score, away_score, date, time, venue, status, result, season_year, notes, goals')
       .order('date', { ascending: false })
       .limit(limit)
 
-    const allowedStatuses = new Set(['scheduled', 'live', 'completed', 'cancelled', 'postponed'])
+    const allowedStatuses = new Set(['upcoming', 'scheduled', 'live', 'completed', 'cancelled', 'postponed'])
     if (status) {
       if (!allowedStatuses.has(status)) return NextResponse.json({ error: 'Invalid match status' }, { status: 400 })
       query = query.eq('status', status)
     }
 
     if (league) {
-      if (league.length > 80) return NextResponse.json({ error: 'Invalid league' }, { status: 400 })
-      query = query.eq('league', league)
+      return NextResponse.json({ error: 'League filtering is not available for this schema' }, { status: 400 })
     }
 
     const { data, error } = await query
@@ -34,7 +33,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unable to fetch matches' }, { status: 500 })
     }
 
-    return NextResponse.json(data || [])
+    return NextResponse.json((data || []).map((match) => ({
+      ...match,
+      home_team: match.home,
+      away_team: match.away,
+    })))
   } catch (error) {
     console.error('[v0] Unexpected error while fetching matches')
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

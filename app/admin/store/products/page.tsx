@@ -43,9 +43,18 @@ export default function StoreProductsPage() {
 
   const loadProducts = async () => {
     setIsLoading(true)
-    const data = await StoreDataService.getProducts()
-    setProducts(data as any)
-    setIsLoading(false)
+    setError(null)
+    try {
+      const timeout = new Promise<AdminProduct[]>((_, reject) => {
+        window.setTimeout(() => reject(new Error(isBn ? "পণ্য লোড হতে সময় শেষ হয়েছে" : "Product loading timed out")), 10000)
+      })
+      const data = await Promise.race([StoreDataService.getProducts(), timeout])
+      setProducts(data as any)
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : (isBn ? "পণ্য লোড করা যায়নি" : "Unable to load products"))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const filteredProducts = products.filter((p) => {
@@ -207,7 +216,7 @@ export default function StoreProductsPage() {
       {/* Products Table */}
       {isLoading ? (
         <div className="text-center py-12">
-          <p className="text-foreground/60">{isBn ? "লো��� হচ্ছে..." : "Loading..."}</p>
+          <p className="text-foreground/60">{isBn ? "লো����� হচ্ছে..." : "Loading..."}</p>
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="bg-secondary rounded-lg p-8 text-center">

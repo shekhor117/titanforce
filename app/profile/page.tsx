@@ -21,7 +21,6 @@ import {
   Edit,
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { createClient } from "@/lib/supabase/client"
 import { PageEntrance } from '@/components/page-entrance'
 
 export default function ProfilePage() {
@@ -93,43 +92,14 @@ export default function ProfilePage() {
 
     setIsSubmitting(true)
     try {
-      const supabase = createClient()
-      
-      // Update profile in Supabase
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          phone: formData.phone,
-          address: formData.address,
-          bio: formData.bio,
-          website: formData.website,
-          dateOfBirth: formData.dateOfBirth,
-          position: formData.position,
-          jersey: formData.jersey,
-          experience: formData.experience,
-          foot: formData.foot,
-          height: formData.height,
-          weight: formData.weight,
-        })
-        .eq("id", user.id)
-
-      if (error) throw error
-
-      setSuccessMessage(isBn ? "প্রোফাইল আপডেট হয়েছে" : "Profile updated successfully")
       await updatePlayerProfile({
-        phone: formData.phone,
         address: formData.address,
-        bio: formData.bio,
-        website: formData.website,
-        dateOfBirth: formData.dateOfBirth,
         position: formData.position,
         jersey: formData.jersey,
-        experience: formData.experience,
         foot: formData.foot,
-        height: formData.height,
-        weight: formData.weight,
       })
-      
+
+      setSuccessMessage(isBn ? "প্রোফাইল আপডেট হয়েছে" : "Profile updated successfully")
       setTimeout(() => setSuccessMessage(""), 3000)
     } catch (error) {
     } finally {
