@@ -50,7 +50,13 @@ export default function MaintenancePage() {
           <Image src="/logos/titanforce-logo.svg" alt="Titan Force Mulikandi crest" width={68} height={68} priority className="h-14 w-14 object-contain sm:h-[68px] sm:w-[68px]" />
           <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-400 sm:mt-4 sm:text-xs sm:tracking-[0.32em]">Titan Force Mulikandi</p>
         </header>
-        <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-[#07111f]/60 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-200 backdrop-blur-sm sm:mt-8 sm:text-xs"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />Temporarily unavailable</div>
+        <div role="status" className="mx-auto mt-6 inline-flex items-center gap-3 rounded-lg border border-amber-400/30 bg-[#07111f]/70 px-4 py-3 text-left shadow-lg shadow-black/10 backdrop-blur-sm sm:mt-8">
+          <span className="relative flex size-2.5 shrink-0" aria-hidden="true"><span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-400/50" /><span className="relative inline-flex size-2.5 rounded-full bg-amber-400" /></span>
+          <span className="flex flex-col gap-0.5">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-400">Website status</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-amber-300 sm:text-xs">Temporarily unavailable</span>
+          </span>
+        </div>
         <h1 className="mt-7 text-4xl font-black uppercase leading-[0.98] tracking-tight text-white sm:mt-9 sm:text-6xl md:text-7xl">{title}</h1>
         <p className="mt-4 text-xl font-bold text-amber-400 sm:mt-5 sm:text-3xl">Back on the Pitch Soon!</p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-200 sm:mt-5 sm:text-lg sm:leading-8">{message}</p>
