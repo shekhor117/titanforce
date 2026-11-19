@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import useSWR from 'swr'
 import { useEffect, useState } from 'react'
-import { Clock3, Trophy } from 'lucide-react'
+import { Clock3 } from 'lucide-react'
 
 type MaintenanceState = {
   maintenance_title: string
@@ -41,21 +41,23 @@ export default function MaintenancePage() {
   const hasCountdown = Boolean(maintenance?.show_countdown && maintenance.expected_return && Date.parse(maintenance.expected_return) > Date.now())
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07111f] px-4 py-8 text-white sm:px-8">
-      <div className="absolute inset-0 bg-cover bg-center opacity-35" style={{ backgroundImage: 'url(/images/maintenance-stadium.png)' }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#07111f]/60 via-[#07111f]/80 to-[#07111f]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(218,165,58,0.12),transparent_60%)]" />
-      <section className="relative w-full max-w-3xl animate-in fade-in slide-in-from-bottom-3 duration-700 rounded-[2rem] border border-white/10 bg-[#0c1929]/75 px-6 py-10 text-center shadow-2xl shadow-black/40 backdrop-blur-md sm:px-12 sm:py-14">
-        <Image src="/logos/titanforce-logo.svg" alt="Titan Force Mulikandi crest" width={80} height={80} priority className="mx-auto h-16 w-16 object-contain sm:h-20 sm:w-20" />
-        <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-amber-400 sm:text-sm">Titan Force Mulikandi</p>
-        <div className="mx-auto mt-8 flex h-12 w-12 items-center justify-center rounded-full border border-amber-400/25 bg-amber-400/10 text-amber-300"><Trophy className="h-5 w-5" /></div>
-        <h1 className="mt-5 text-4xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl">{title}</h1>
-        <p className="mt-5 text-xl font-bold text-amber-400 sm:text-2xl">Back on the Pitch Soon!</p>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">{message}</p>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07111f] px-5 py-12 text-white sm:px-8">
+      <div className="absolute inset-0 scale-105 bg-cover bg-center" style={{ backgroundImage: 'url(/images/maintenance-stadium.png)' }} aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#07111f]/65 via-[#07111f]/75 to-[#07111f]/95" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgba(218,165,58,0.12),transparent_58%)]" aria-hidden="true" />
+      <section className="relative w-full max-w-5xl animate-in fade-in slide-in-from-bottom-3 duration-700 text-center">
+        <header className="flex flex-col items-center">
+          <Image src="/logos/titanforce-logo.svg" alt="Titan Force Mulikandi crest" width={80} height={80} priority className="h-16 w-16 object-contain sm:h-20 sm:w-20" />
+          <p className="mt-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400 sm:text-sm sm:tracking-[0.34em]">Titan Force Mulikandi</p>
+        </header>
+        <div className="mx-auto mt-10 h-px w-16 bg-amber-400/70 sm:mt-12" aria-hidden="true" />
+        <h1 className="mt-8 text-4xl font-black uppercase leading-[0.98] tracking-tight text-white sm:mt-10 sm:text-6xl md:text-7xl">{title}</h1>
+        <p className="mt-5 text-xl font-bold text-amber-400 sm:mt-6 sm:text-3xl">Back on the Pitch Soon!</p>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-200 sm:mt-7 sm:text-xl sm:leading-8">{message}</p>
         {hasCountdown && <Countdown target={maintenance!.expected_return!} />}
-        {maintenance?.expected_return && !hasCountdown && <p className="mt-6 text-sm text-slate-300">Expected reopening: <time dateTime={maintenance.expected_return}>{new Date(maintenance.expected_return).toLocaleString()}</time></p>}
-        <div className="mx-auto mt-9 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-amber-200"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />System maintenance</div>
-        <p className="mt-7 text-xs font-medium uppercase tracking-[0.16em] text-slate-400">Titan Force Mulikandi <span aria-hidden="true">·</span> Est. 2025</p>
+        {maintenance?.expected_return && !hasCountdown && <p className="mt-6 text-sm text-slate-200">Expected reopening: <time dateTime={maintenance.expected_return}>{new Date(maintenance.expected_return).toLocaleString()}</time></p>}
+        <div className="mt-9 inline-flex items-center gap-3 border-y border-amber-300/35 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-amber-200 sm:mt-11 sm:text-sm"><span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />System maintenance</div>
+        <footer className="mt-10 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-300/80 sm:mt-12 sm:text-xs">Titan Force Mulikandi <span aria-hidden="true">·</span> Est. 2025</footer>
       </section>
     </main>
   )
