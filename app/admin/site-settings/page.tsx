@@ -206,19 +206,6 @@ export default function AdminSiteSettingsPage() {
             </div>
           </div>
 
-          {/* Maintenance Mode */}
-          <div>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.maintenanceMode || false}
-                onChange={(e) => handleChange('maintenanceMode', e.target.checked)}
-                className="w-4 h-4 accent-accent"
-              />
-              <span className="text-sm font-medium">{isBn ? 'রক্ষণাবেক্ষণ মোড' : 'Maintenance Mode'}</span>
-            </label>
-          </div>
-
           {/* Save Button */}
           <div className="flex gap-3">
             <button

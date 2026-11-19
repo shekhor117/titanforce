@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 import { Cookie } from "lucide-react"
 
 const CONSENT_COOKIE = "titanforce-cookie-consent"
@@ -14,6 +15,7 @@ function saveConsent(choice: ConsentChoice) {
 }
 
 export function CookieConsent() {
+  const pathname = usePathname()
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function CookieConsent() {
     }
   }, [])
 
-  if (!isVisible) return null
+  if (pathname === '/maintenance' || !isVisible) return null
 
   const chooseConsent = (choice: ConsentChoice) => {
     saveConsent(choice)

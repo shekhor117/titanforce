@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/language-context"
-import { Save, Globe, Palette, Bell, Shield, RefreshCw } from "lucide-react"
+import { Save, Globe, Palette, Bell, Shield, RefreshCw, Siren } from "lucide-react"
+import { MaintenanceSettingsPanel } from '@/components/admin/maintenance-settings-panel'
 import { dataStore, SiteSettings } from "@/lib/data-store"
 import { PageEntrance } from '@/components/page-entrance'
 
@@ -70,6 +71,7 @@ export default function AdminSettingsPage() {
     { key: "hero", label: isBn ? "হিরো" : "Hero Section", icon: <Palette className="w-4 h-4" /> },
     { key: "about", label: isBn ? "সম্পর্কে" : "About Section", icon: <Bell className="w-4 h-4" /> },
     { key: "advanced", label: isBn ? "উন্নত" : "Advanced", icon: <Shield className="w-4 h-4" /> },
+    { key: "maintenance", label: isBn ? "রক্ষণাবেক্ষণ" : "Maintenance Mode", icon: <Siren className="w-4 h-4" /> },
   ]
 
   return (
@@ -84,14 +86,16 @@ export default function AdminSettingsPage() {
             {isBn ? "ওয়েবসাইট কনফিগারেশন পরিচালনা করুন" : "Manage website configuration"}
           </p>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={!hasChanges}
-          className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
-        >
-          <Save className="w-4 h-4" />
-          {isBn ? "সংরক্ষণ করুন" : "Save Changes"}
-        </button>
+        {activeTab !== "maintenance" && (
+          <button
+            onClick={handleSave}
+            disabled={!hasChanges}
+            className={`flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed ${isBn ? "font-[var(--font-bengali)]" : ""}`}
+          >
+            <Save className="w-4 h-4" />
+            {isBn ? "সংরক্ষণ করুন" : "Save Changes"}
+          </button>
+        )}
       </div>
 
       {/* Tabs */}
@@ -311,6 +315,8 @@ export default function AdminSettingsPage() {
             </div>
           </div>
         )}
+
+        {activeTab === "maintenance" && <MaintenanceSettingsPanel />}
 
         {activeTab === "advanced" && (
           <div className="space-y-6">
