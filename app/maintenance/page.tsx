@@ -66,7 +66,7 @@ export default function MaintenancePage() {
           <p className="text-lg font-bold text-[#102b50] sm:text-2xl">Something exciting is coming!</p>
           <p className="mt-1 text-sm text-[#172a43] sm:text-lg">Thank you for your patience.</p>
         </div>
-        <footer className="mt-6 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[#102b50]/75 sm:mt-8 sm:text-xs sm:tracking-[0.2em]">Titan Force Mulikandi <span aria-hidden="true">·</span> <a href="mailto:titanforcefc@gmail.com" className="normal-case tracking-normal text-[#8b2336] underline decoration-[#8b2336]/40 underline-offset-4">titanforcefc@gmail.com</a></footer>
+        <footer className="mt-6 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[#102b50]/75 sm:mt-8 sm:text-xs sm:tracking-[0.2em]">Titan Force Mulikandi <span aria-hidden="true">·</span> <a href="mailto:titanforcemulikandi@gmail.com" aria-label="Email Titan Force Mulikandi support" className="normal-case tracking-normal text-[#8b2336] underline decoration-[#8b2336]/40 underline-offset-4">Support</a></footer>
       </section>
     </main>
   )
