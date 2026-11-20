@@ -42,8 +42,10 @@ export default function MaintenancePage() {
 
   return (
     <main className="relative flex min-h-screen justify-center overflow-hidden bg-[#f7faff] px-5 py-8 text-[#102b50] sm:px-8 sm:py-10">
-      <div className="pointer-events-none absolute -left-28 -top-32 size-80 rounded-full bg-[#cfe4f8]/70 blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -bottom-40 -right-28 size-96 rounded-full bg-[#f3d7dc]/70 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: 'url(/images/maintenance-stadium.png)' }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#f7faff]/75 via-[#f7faff]/72 to-[#f7faff]/86" aria-hidden="true" />
+      <div className="pointer-events-none absolute -left-28 -top-32 size-80 rounded-full bg-[#cfe4f8]/55 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-40 -right-28 size-96 rounded-full bg-[#f3d7dc]/55 blur-3xl" aria-hidden="true" />
       <section className="relative w-full max-w-4xl animate-in fade-in slide-in-from-bottom-3 duration-700 text-center">
         <header className="flex flex-col items-center">
           <Image src="/logos/titanforce-logo.svg" alt="Titan Force Mulikandi crest" width={72} height={72} priority className="h-14 w-14 object-contain sm:h-[72px] sm:w-[72px]" />
