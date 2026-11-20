@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import useSWR from 'swr'
 import { useEffect, useState } from 'react'
-import { Clock3 } from 'lucide-react'
+import { Clock3, Wrench } from 'lucide-react'
 
 type MaintenanceState = {
   maintenance_title: string
@@ -50,7 +50,8 @@ export default function MaintenancePage() {
           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#7b2036] sm:mt-4 sm:text-sm sm:tracking-[0.24em]">Titan Force Mulikandi</p>
         </header>
         <div className="relative mx-auto mt-3 w-full max-w-3xl sm:mt-1">
-          <Image src="/images/maintenance-team.png" alt="Titan Force maintenance crew working on club servers and equipment" width={1536} height={1024} priority sizes="(max-width: 768px) 100vw, 768px" className="h-auto max-h-[330px] w-full object-contain sm:max-h-[410px]" />
+          <Image src="/images/maintenance-team-transparent.png" alt="Titan Force maintenance crew working on club servers and equipment" width={1376} height={768} priority sizes="(max-width: 768px) 100vw, 768px" className="h-auto max-h-[330px] w-full object-contain sm:max-h-[410px]" />
+          <Wrench aria-hidden="true" className="absolute left-[67%] top-[65%] size-8 -translate-x-1/2 -translate-y-1/2 text-white sm:size-10" strokeWidth={3.5} />
         </div>
         <p role="status" className="mt-2 inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.19em] text-[#7b2036] sm:mt-0 sm:text-sm sm:tracking-[0.22em]">
           <span className="size-2.5 rounded-full bg-[#8b2336]" aria-hidden="true" />System maintenance
